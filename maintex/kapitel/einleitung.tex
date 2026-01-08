@@ -1,0 +1,105 @@
+\chapter{Einleitung}
+Die Digitalisierung revolutioniert zunehmend die traditionellen Arbeitsprozesse in der Industrie und eröffnet neue Möglichkeiten zur Steigerung der Effizienz, Verbesserung der Qualität und Senkung der Kosten. Im Bereich der Bahninfrastruktur, insbesondere in der Planung und Dokumentation von Stellwerkanlagen, besteht ein signifikantes Potenzial für digitale Transformationsprozesse. Die vorliegende Masterarbeit, die innerhalb der Siemens Mobility GmbH durchgeführt wurde, thematisiert diese Herausforderung durch die Entwicklung eines KI unterstützten Systems zur automatischen Verarbeitung der Gleispläne.
+\\
+\\
+Stellwerke bilden das Herzstück moderner Schieneninfrastruktur und gewährleisten durch ihre komplexe Steuerungstechnik den sicheren und effizienten Zugverkehr. Die präzise Dokumentation ihrer Komponenten von Signalen über Weichen bis hin zu Gleiskoppelspulen ist dabei von essentieller Bedeutung für Planung, Wartung und Modernisierung. In der gegenwärtigen Praxis erfolgt die Übertragung dieser Informationen von technischen Zeichnungen in strukturierte Datenformate jedoch weitgehend manuell, was sowohl zeit- als auch ressourcenintensiv ist \cite{sym17050674}.
+\\
+\\
+Die fortschreitende Entwicklung in den Bereichen Computer Vision, Machine Learning und Prozessautomatisierung eröffnet jetzt weitere Perspektiven für die Optimierung dieser Arbeitsabläufe. Diese technologischen Möglichkeiten bilden die Grundlage für den in dieser Arbeit verfolgten Ansatz, der darauf abzielt, den Prozess der Datenextraktion und -verwaltung grundlegend zu modernisieren.
+\\
+\\
+Ziel dieser Arbeit ist es, theoretische Konzepte der künstlichen Intelligenz mit den praktischen Anforderungen der Schienenverkehrstechnik zu verknüpfen. Durch die Entwicklung und Validierung eines domänenspezifischen Ansatzes wird demonstriert, wie die Lücke zwischen analogen Planungsunterlagen und digitalen Datenmodellen geschlossen werden kann. Damit leistet die Arbeit einen konkreten Beitrag zur digitalen Transformation in einem sicherheitskritischen Bereich der Infrastrukturplanung.
+
+\section{Motivation}
+Die Digitalisierung von technischen Planungsprozessen stellt eine zentrale Herausforderung für Unternehmen im Infrastruktursektor und im allgemeinen Maschinenbau dar. Insbesondere im Bereich der Eisenbahnsignaltechnik beruhen viele Arbeitsschritte noch auf der manuellen Auswertung von Gleisplänen, in denen eine Vielzahl von Symbolen, Textbausteinen und kundenindividuellen Darstellungen enthalten ist. Diese manuelle Analyse ist nicht nur zeitaufwendig und fehleranfällig, sondern erschwert auch die systematische Versionierung und Rückverfolgbarkeit von Änderungen über die Lebenszyklen eines Projekts hinweg \cite{Ristic2023AutomatedDO}.
+\\
+\\
+Über den spezifischen Anwendungsfall der Bahntechnik hinaus besitzt die Fragestellung eine hohe Relevanz für den gesamten Ingenieursbereich. Ähnlich wie bei Hydraulikschaltplänen im Maschinenbau oder R\&I(Rohrleitungs- und Instrumenten) Fließschemata im Anlagenbau liegt hier das Problem vor, dass wertvolle Informationen in unstrukturierten Vektorgrafiken \enquote{gefangen} sind \cite{VogelHeuser2017}. Die Extraktion dieser Informationen ist essenziell für moderne Ansätze wie den \enquote{Digitalen Zwilling}. Ein Verfahren, das komplexe Symboliken in technischen Zeichnungen zuverlässig erkennt und semantisch interpretiert, bietet daher einen universellen Lösungsansatz zur Automatisierung der Bestandsdatenaufnahme.
+\\
+\\
+Ziel der vorliegenden Masterarbeit ist es daher, eine intelligente und automatisierte Lösung zu entwickeln, die auf Basis aktueller Deep Learning Modelle eine zuverlässige Erkennung und Interpretation von Symbolen und Text in technischen Plänen ermöglicht. In Kombination mit regelbasierter Logik sowie strukturierten Ausgabeformaten entsteht ein skalierbarer Prototyp zur Verarbeitung, Auswertung und semantischen Interpretation von Gleisplänen.
+\\
+\\
+Die Umsetzung einer solchen Lösung verspricht nicht nur eine erhebliche Effizienzsteigerung in der Planungs- und Prüfphase, sondern schafft auch eine fundierte Grundlage für Rückverfolgbarkeit, Änderungsmanagement und automatisierte Konsistenzprüfungen. Damit leistet die Arbeit einen praxisnahen Beitrag zur digitalen Transformation innerhalb der Siemens Mobility GmbH und zeigt exemplarisch auf, wie moderne Verfahren wie Computer Vision konkret auf industrielle Anwendungsfälle im Ingenieurwesen übertragen werden können.
+
+\subsection{Praxisbeispiel: Herausforderungen bei Siemens Mobility}
+
+Die Relevanz dieser Problemstellung zeigt sich konkret am Beispiel der Siemens 
+Mobility GmbH:
+
+\begin{itemize}
+    \item \textbf{Aktueller Aufwand}: 1,5-2 Stunden manuelle Datenübertragung 
+    pro Fahrstraße im 4-Augen-Prinzip
+    
+    \item \textbf{Fehlerquellen}: Zahlendreher, Positionsverwechslungen werden 
+    oft erst nach Testfahrten erkannt → kostenintensive Nacharbeiten
+    
+    \item \textbf{Fehlende Automatisierung}: Keine automatisierte Datenübertragung 
+    vom Gleisplan zur Prüftabelle im System verfügbar
+\end{itemize}
+
+Das Projektziel ist eine Zeitreduktion um $> 80\,\%$ durch KI-gestützte 
+Automatisierung, wodurch Ingenieure nur noch KI-Ergebnisse validieren müssen 
+(2-Augen-Prinzip) statt komplett manuell zu arbeiten.
+
+\section{Problemstellung}
+Im Bereich der Bahninfrastrukturplanung sowie im klassischen Konstruktionswesen werden Pläne häufig als PDF- oder Bilddateien bereitgestellt. Diese Dokumente enthalten eine Vielzahl relevanter Informationen wie Stellwerke, Signale, Weichen, Gleiskoppelspulen und Positionsangaben. Diese grafischen Pläne müssen regelmäßig in strukturierte Datenformate wie Excel, XML oder Datenbanken überführt werden etwa für Prüfroutinen, Dokumentation oder die Weiterverarbeitung in ERP- und Planungssystemen.
+\\
+\\
+Aktuell erfolgt dieser Prozess (\enquote{Medienbruch}) meist manuell, was sowohl 
+zeitaufwendig als auch fehleranfällig ist und mit zunehmender Gleisplankomplexität 
+kaum skalierbar bleibt. \cite{Ristic2023AutomatedDO} Insbesondere fehlt die \textit{Rückverfolgbarkeit (Traceability)} zwischen den extrahierten Daten und ihrer visuellen Repräsentation im Ursprungsdokument. Auch Änderungen in neuen Gleisplanversionen müssen mühsam manuell identifiziert und nachgepflegt werden.
+\\
+\\
+Ein zusätzlicher Schwierigkeitsfaktor liegt in der Varianz der Daten: Kunden liefern Pläne in unterschiedlich formatierten Varianten mit rotationsabhängigen Symbolen, uneinheitlicher Symbolik sowie unterschiedlichen Textlayouts. Dadurch steigt der Aufwand für die Interpretation und die Anpassung an kundenspezifische Besonderheiten weiter an.
+\\
+\\
+Die zu lösende Herausforderung besteht darin:
+\begin{itemize}
+    \item möglichst viele relevante Informationen automatisiert aus unstrukturierten Plänen zu extrahieren,
+    \item diese flexibel in strukturierte Formate wie Excel oder PostgreSQL zu überführen,
+    \item kundenabhängige Symbolbedeutungen über konfigurierbare Mappings zuzuordnen,
+    \item Rückverfolgbarkeit und Änderungsverfolgung zwischen Layout und Exportdaten zu ermöglichen,
+    \item sowie eine benutzerfreundliche Benutzeroberfläche (UI) für die Ingenieurabteilung bereitzustellen.
+\end{itemize}
+\section{Zielsetzung der Arbeit}
+Ziel dieser Masterarbeit ist die Entwicklung eines skalierbaren Prototyps zur automatisierten Erkennung, Interpretation und strukturierten Verarbeitung von Gleisplänen im PDF Format. Im Fokus steht dabei die Extraktion von symbolischen und textlichen Inhalten aus Plänen mittels moderner Verfahren der Objekt- und Texterkennung. Der Ansatz soll dabei so generisch gestaltet werden, dass er prinzipiell auch auf andere technische Zeichnungen (z.B. im Maschinenbau) übertragbar wäre.
+
+Konkret sollen folgende Teilziele erreicht werden:
+\begin{enumerate}
+    \item \textbf{Automatisierte Symbolerkennung}\\ Einsatz eines geeigneten Deep-Learning-Modells, um relevante Symbole (Signale, Weichen, Streckenelemente usw.) präzise in Gleisplan-PDFs zu detektieren, unabhängig von Orientierung und Planvarianz.
+    \item \textbf{Texterkennung mit OCR} \\ Durchführung einer Textextraktion innerhalb oder neben den erkannten Symbolbereichen, um wichtige Informationen zu extrahieren, einschließlich Vorverarbeitung bei rotierten oder überlagerten Beschriftungen.
+    \item \textbf{Strukturierte Datenzuordnung} \\ Abbildung der erkannten Objekte und Texte auf semantische Bedeutungen mittels YAML-basierter, kundenspezifischer Mapping-Logik.
+    \item \textbf{Export in kundenspezifische Formate} \\ Ausgabe der extrahierten und interpretierten Informationen in strukturierte Zielformate, steuerbar durch eine Konfiguration.
+    \item \textbf{Rückverfolgbarkeit \& Änderungsverfolgung} \\ Entwicklung von Mechanismen zur Verknüpfung zwischen Bilddaten (PDF) und extrahierten Datenpunkten sowie zur automatisierten Erkennung von Änderungen in unterschiedlichen Planversionen.
+    \item \textbf{Benutzeroberfläche} \\ Aufbau einer interaktiven UI zur Ergebnisdarstellung mit Visualisierung der erkannten Symbole, der zugehörigen Daten und Änderungen sowie der Nachverfolgbarkeit zwischen Daten und Symbolen.
+\end{enumerate}
+Durch die Umsetzung dieser Ziele soll ein robuster, praxisnaher Demonstrator entstehen, der mit realen Kundendaten anwendbar ist, reproduzierbare Ergebnisse liefert und Potenzial für eine weiterführende Integration in bestehende Prozesse bietet.
+
+\section{Forschungsfragen}
+Abgeleitet aus der Problemstellung und den Zielsetzungen beschäftigt sich diese Arbeit mit der folgenden zentralen Forschungsfrage:
+\\
+\\
+\textbf{HF: Wie lässt sich der Prozess der Datenextraktion aus heterogenen technischen Gleisplänen durch den Einsatz von Deep Learning und hybriden Verarbeitungsstrategien automatisieren, um eine valide Überführung in strukturierte Datenmodelle zu gewährleisten?}
+\\
+\\
+Zur Beantwortung dieser Hauptfrage werden folgende Teilforschungsfragen (TF) untersucht:
+\begin{itemize}
+    \item \textbf{TF1:} Inwieweit eignen sich aktuelle One Stage Objektdetektoren zur zuverlässigen Erkennung von kleinteiligen, rotierten Symbolen in technischen Zeichnungen und welche Vorverarbeitungsschritte sind notwendig, um die Präzision bei variierenden Layouts zu maximieren?
+    \item \textbf{TF2:} Wie können geometrische Informationen und unstrukturierte Textdaten algorithmisch so verknüpft werden, dass eine korrekte semantische Zuordnung (z.\,B. Signalbezeichnung zu Signalsymbol) auch bei hoher Objektdichte erfolgt?
+    \item \textbf{TF3:} Wie muss eine Systemarchitektur gestaltet sein, um kundenspezifische Symbol-Variationen und Datenformate flexibel zu integrieren, ohne dass ein Nachtraining des KI Modells erforderlich ist?
+    \item \textbf{TF4:} Welcher algorithmische Ansatz eignet sich, um in rein visuellen Daten semantische Änderungen zwischen zwei Planversionen robust zu identifizieren und visualisierbar zu machen?
+\end{itemize}
+
+\section{Aufbau der Arbeit}
+Die vorliegende Arbeit gliedert sich in acht Hauptkapitel:
+\begin{itemize}
+    \item \textbf{Kapitel 1 (Abstract)} liefert eine kurze Zusammenfassung der Zielsetzung, Methodik und zentralen Ergebnisse der Arbeit.
+    \item \textbf{Kapitel 2 (Einleitung)} führt in das Thema ein, erläutert die Motivation, beschreibt die zugrunde liegende Problemstellung sowie das Ziel der Arbeit.
+    \item \textbf{Kapitel 3 (Theoretische und technische Grundlagen)} stellt die relevanten Konzepte aus dem Bereich der grafischen Gleispläne, der Symbolik sowie der objekterkennenden Verfahren mit Deep Learning vor.
+    \item \textbf{Kapitel 4 (Anforderungsanalyse)} identifiziert die funktionalen und nicht-funktionalen Anforderungen an das System und beschreibt die Herausforderungen in der praktischen Umsetzung.
+    \item \textbf{Kapitel 5 (Konzeption des Prototyps)} erläutert die Architektur und den geplanten Workflow des Systems von der PDF-Konvertierung bis zur strukturierten Ausgabe.
+    \item \textbf{Kapitel 6 (Implementierung)} beschreibt die technische Realisierung der Komponenten, inklusive des Trainings von Detektionsmodellen, der Texterkennung, des Mappings sowie der Versionierung und Rückverfolgbarkeit.
+    \item \textbf{Kapitel 7 (Evaluation)} bewertet das System anhand verschiedener Testmethoden und diskutiert die Ergebnisse und Validierungen mit Siemens-internen Daten.
+    \item \textbf{Kapitel 8 (Fazit)} fasst die wichtigsten Erkenntnisse zusammen, reflektiert kritisch den Entwicklungsprozess und gibt einen Ausblick auf mögliche Weiterentwicklungen.
+\end{itemize}

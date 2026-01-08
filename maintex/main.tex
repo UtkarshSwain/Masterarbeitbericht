@@ -1,0 +1,178 @@
+\documentclass[a4paper,11pt,twoside]{report} % twoside für innere/äußere Ränder hinzugefügt
+\usepackage[ngerman]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{titlesec}
+\usepackage{graphicx}
+\usepackage{geometry}
+\usepackage{longtable} % For tables that may span multiple pages
+\usepackage{array}     % For vertical centering in table cells
+\usepackage{caption}   % For table captions
+\usepackage{fancyhdr}  % For header customization
+\usepackage{comment}
+\usepackage{csquotes}
+\usepackage{enumitem}
+\usepackage{tabularx}
+\usepackage{float} 
+\usepackage{ragged2e}
+\usepackage{amsmath}   % enables \text, \xleftrightarrow, etc.
+\usepackage[tracking=true]{microtype}
+\usepackage{amssymb}       % For \mathbb{R} and symbols
+\usepackage{algorithm}     % For algorithm environment
+\usepackage{algpseudocode} % For algorithmic environment
+\usepackage{booktabs}      % For better tables
+% --- HINZUGEFÜGT FÜR RICHTLINIEN ---
+\usepackage{helvet} % Verwendet Helvetica als serifenlose Schrift (Arial-Alternative)
+\renewcommand{\familydefault}{\sfdefault} % Setzt serifenlose Schrift als Standard
+\usepackage{setspace} % Für benutzerdefinierten Zeilenabstand
+% --- Notwendige Pakete für TikZ ---
+\usepackage{tikz} 
+% --- WICHTIG: Diese Bibliotheken laden ---
+% 'decorations.pathreplacing' brauchst du für die geschweiften Klammern (Option 2)
+% 'arrows.meta' brauchst du für die schönen Pfeilspitzen (>=latex)
+\usetikzlibrary{decorations.pathreplacing, arrows.meta, positioning, shadows,shapes, ,shapes.geometric, calc, fit}
+\usepackage{placeins}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage{amssymb} % Für das Checkmark-Symbol
+\usetikzlibrary{shapes.multipart}
+% Removes indentation and adds vertical space between paragraphs
+\usepackage{parskip}
+
+% --- ENDE HINZUGEFÜGT ---
+
+% for \RaggedRight (better than \raggedright)
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+
+\usepackage[style=numeric,sorting=none]{biblatex} % Use APA style
+\addbibresource{kapitel/literatur.bib}
+\titlespacing*{\chapter}{0pt}{-20pt}{10pt}
+% Link to your .bib file
+
+\titleformat{\chapter}[hang]{\normalfont\huge\bfseries}{\thechapter.}{1em}{}
+
+% --- GEÄNDERTE SEITENRÄNDER (laut Richtlinie) ---
+\geometry{
+    top=2cm,
+    bottom=3cm,
+    inner=3cm,  % Innenrand (statt left)
+    outer=2cm   % Außenrand (statt right)
+}
+% --- ENDE GEÄNDERTE SEITENRÄNDER ---
+
+% --- KORRIGIERTE HEADER-HÖHE (aus vorherigem Fehler) ---
+\setlength{\headheight}{46.13278pt} % Adjust the height of the header (Wert aus Compiler-Warnung)
+\setlength{\headsep}{1cm}     % Add gap between the header and the text
+% --- ENDE KORRIGIERTE HEADER-HÖHE ---
+
+
+% --- ANGEPASSTES FANCY HEADER SETUP (für twoside) ---
+\pagestyle{fancy}
+\fancyhf{} % Clear all header and footer fields
+\fancyhead[LO,RE]{% Innerer Header (Links auf ungeraden, Rechts auf geraden)
+    \includegraphics[height=1cm]{images/tu-clausthal-logo.jpg}\\ % Logo (adjust size and path)
+    \nouppercase{\leftmark} % Chapter name below the logo
+}
+\fancyhead[LE,RO]{\thepage} % Äußerer Header: Seitenzahl
+\renewcommand{\headrulewidth}{0.4pt} % Line below the header
+
+% Start header only from the Introduction chapter
+\fancypagestyle{plain}{
+    \fancyhf{} % Clear existing header/footer
+    \fancyhead[LO,RE]{% Innerer Header
+        \includegraphics[height=1cm]{images/tu-clausthal-logo.jpg}\\% Logo
+        \nouppercase{\leftmark} % Chapter name below logo
+    }
+    \fancyhead[LE,RO]{\thepage} % Äußerer Header: Page number
+    \renewcommand{\headrulewidth}{0.4pt} % Header line
+}
+% --- ENDE ANGEPASSTES FANCY HEADER ---
+
+% --- NEU HINZUGEFÜGT: Für klickbare Links in Schwarz ---
+% (hyperref MUSS als eines der letzten Pakete geladen werden)
+\usepackage[hidelinks]{hyperref}
+% --- ENDE NEU HINZUGEFÜGT ---
+
+
+\begin{document}
+
+% --- HINZUGEFÜGT FÜR RICHTLINIEN ---
+\setstretch{1.3} % Setzt 1,3-fachen Zeilenabstand für das gesamte Dokument
+% --- ENDE HINZUGEFÜGT ---
+
+% University and institute logos and title
+\begin{titlepage}
+    \begin{center}
+        % Logos at the top
+       \includegraphics[width=0.6\textwidth]{images/tu-clausthal-logo.jpg} \hfill
+       \includegraphics[width=0.2\textwidth]{images/IMW-logo.png}\\[2cm]
+
+        % Title
+        {\large \textbf{KI-gestützte Verarbeitung und Analyse von PDF-Gleisplänen 
+        zur automatisierten Symbolinterpretation und Änderungsverfolgung}}\\[2cm]
+
+        % Subtitle
+        {\large \textbf{Masterarbeit}}\\[3cm]
+
+        % Author information
+        \textbf{Utkarsh Swain}\\
+        \textbf{Matrikel-Nr.: 542847}\\[2cm]
+        
+        % Gutachter and Betreuer
+        \begin{tabular}{l l}
+            Gutachter: & Prof. Dr.-Ing. David Inkermann (Institut für Maschinenwesen) \\ 
+            Betreuer: & Schumacher, Thomas M. Sc. (Institut für Maschinenwesen)\\
+            Betreuer in der Firma: & Dipl.-Ing. Tobias Wolff (Siemens Mobility GmbH)
+
+        \end{tabular}\\[2cm]
+        
+        % Institution and date
+        
+        \textbf{Institut für Maschinenwesen}\\
+        \textbf{Technische Universität Clausthal}\\[1.5cm]
+
+        \textbf{\today}
+    \end{center}
+\end{titlepage}
+
+% ===== RÖMISCHE SEITENZAHLEN FÜR VORSPANN =====
+\pagenumbering{roman}  % Aktiviert römische Seitenzahlen (i, ii, iii, ...)
+% Table of Contents
+\tableofcontents
+\newpage
+\listoffigures
+\newpage
+\listoftables
+\input{kapitel/Abstract.tex}
+\newpage
+% ===== ARABISCHE SEITENZAHLEN AB EINLEITUNG =====
+\pagenumbering{arabic}  % Wechselt zu arabischen Zahlen (1, 2, 3, ...) und setzt Zähler auf 1 zurück
+
+    
+\input{kapitel/einleitung.tex}
+\clearpage
+
+\input{kapitel/Theorietische und technische Grundlagen.tex}
+\clearpage
+
+\input{kapitel/anforderungsanalyse.tex}
+\clearpage
+
+\input{kapitel/konzeptiondesprototyps.tex}
+\clearpage
+    
+\input{kapitel/Implementierung.tex}
+\clearpage
+
+\input{kapitel/evaluation.tex}
+\clearpage
+
+\input{kapitel/fazit.tex}
+\clearpage
+
+\input{kapitel/anhang}
+\clearpage
+\nocite{*}
+\printbibliography[title=Literaturverzeichnis]
+
+\end{document}

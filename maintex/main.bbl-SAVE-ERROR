@@ -1,0 +1,3491 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.3 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{0}
+  \datalist[entry]{none/global//global/global/global}
+    \entry{sym17050674}{article}{}{}
+      \name{author}{5}{}{%
+        {{hash=0087d36f590f4cc378e4a4e69260a71a}{%
+           family={Sun},
+           familyi={S\bibinitperiod},
+           given={Qi},
+           giveni={Q\bibinitperiod}}}%
+        {{hash=54401ea92acafbe51029010ea66499e0}{%
+           family={Zhu},
+           familyi={Z\bibinitperiod},
+           given={Mengxin},
+           giveni={M\bibinitperiod}}}%
+        {{hash=71ca466228eef00ed0d24cbdfbad295c}{%
+           family={Li},
+           familyi={L\bibinitperiod},
+           given={Minzhi},
+           giveni={M\bibinitperiod}}}%
+        {{hash=656955efb746610784a9f90de36faeb9}{%
+           family={Li},
+           familyi={L\bibinitperiod},
+           given={Gaoju},
+           giveni={G\bibinitperiod}}}%
+        {{hash=cd8fae4cc061182740052210f395f022}{%
+           family={Deng},
+           familyi={D\bibinitperiod},
+           given={Weizhi},
+           giveni={W\bibinitperiod}}}%
+      }
+      \strng{namehash}{f9a0231ac74aa6fee97ec9d09cc72b4f}
+      \strng{fullhash}{d2b122d0256ad1a0b3878691b15a85f5}
+      \strng{fullhashraw}{d2b122d0256ad1a0b3878691b15a85f5}
+      \strng{bibnamehash}{f9a0231ac74aa6fee97ec9d09cc72b4f}
+      \strng{authorbibnamehash}{f9a0231ac74aa6fee97ec9d09cc72b4f}
+      \strng{authornamehash}{f9a0231ac74aa6fee97ec9d09cc72b4f}
+      \strng{authorfullhash}{d2b122d0256ad1a0b3878691b15a85f5}
+      \strng{authorfullhashraw}{d2b122d0256ad1a0b3878691b15a85f5}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{2073-8994}
+      \field{journaltitle}{Symmetry}
+      \field{number}{5}
+      \field{title}{Symbol Recognition Method for Railway Catenary Layout Drawings Based on Deep Learning}
+      \field{volume}{17}
+      \field{year}{2025}
+      \verb{doi}
+      \verb 10.3390/sym17050674
+      \endverb
+      \verb{urlraw}
+      \verb https://www.mdpi.com/2073-8994/17/5/674
+      \endverb
+      \verb{url}
+      \verb https://www.mdpi.com/2073-8994/17/5/674
+      \endverb
+    \endentry
+    \entry{Ristic2023AutomatedDO}{research-article}{}{}
+      \name{author}{1}{}{%
+        {{hash=359a9e9615b8f2220349b53dcc5faad6}{%
+           family={Ristic},
+           familyi={R\bibinitperiod},
+           given={Ivan},
+           giveni={I\bibinitperiod}}}%
+      }
+      \strng{namehash}{359a9e9615b8f2220349b53dcc5faad6}
+      \strng{fullhash}{359a9e9615b8f2220349b53dcc5faad6}
+      \strng{fullhashraw}{359a9e9615b8f2220349b53dcc5faad6}
+      \strng{bibnamehash}{359a9e9615b8f2220349b53dcc5faad6}
+      \strng{authorbibnamehash}{359a9e9615b8f2220349b53dcc5faad6}
+      \strng{authornamehash}{359a9e9615b8f2220349b53dcc5faad6}
+      \strng{authorfullhash}{359a9e9615b8f2220349b53dcc5faad6}
+      \strng{authorfullhashraw}{359a9e9615b8f2220349b53dcc5faad6}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Mechatronics and Intelligent Transportation Systems}
+      \field{title}{Automated Development of Railway Signalling Control Tables: A Case Study from Serbia}
+      \field{year}{2023}
+      \verb{doi}
+      \verb https://doi.org/10.56578/mits020404
+      \endverb
+    \endentry
+    \entry{VogelHeuser2017}{book}{}{}
+      \name{author}{3}{}{%
+        {{hash=5d217c5b417c733c101c2ef0d92c458d}{%
+           family={Vogel-Heuser},
+           familyi={V\bibinithyphendelim H\bibinitperiod},
+           given={Birgit},
+           giveni={B\bibinitperiod}}}%
+        {{hash=509c536add6ee6b56bd34737c3249dca}{%
+           family={Bauernhansl},
+           familyi={B\bibinitperiod},
+           given={Thomas},
+           giveni={T\bibinitperiod}}}%
+        {{hash=bbac15fa32ba325edf67f68088cf599e}{%
+           family={Hompel},
+           familyi={H\bibinitperiod},
+           given={Michael},
+           giveni={M\bibinitperiod},
+           prefix={ten},
+           prefixi={t\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {Berlin, Heidelberg}%
+      }
+      \list{publisher}{1}{%
+        {Springer Vieweg}%
+      }
+      \strng{namehash}{86e19f03e391bc7f5309520f44da5795}
+      \strng{fullhash}{86e19f03e391bc7f5309520f44da5795}
+      \strng{fullhashraw}{86e19f03e391bc7f5309520f44da5795}
+      \strng{bibnamehash}{86e19f03e391bc7f5309520f44da5795}
+      \strng{authorbibnamehash}{86e19f03e391bc7f5309520f44da5795}
+      \strng{authornamehash}{86e19f03e391bc7f5309520f44da5795}
+      \strng{authorfullhash}{86e19f03e391bc7f5309520f44da5795}
+      \strng{authorfullhashraw}{86e19f03e391bc7f5309520f44da5795}
+      \field{sortinit}{5}
+      \field{sortinithash}{20e9b4b0b173788c5dace24730f47d8c}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{isbn}{978-3-662-53249-6}
+      \field{title}{Handbuch Industrie 4.0 Bd.2: Automatisierung}
+      \field{year}{2017}
+    \endentry
+    \entry{railroadstationdrawing}{article}{}{}
+      \name{author}{3}{}{%
+        {{hash=9ada4bcdae17a026fd90c53ac3c8b89b}{%
+           family={Wang},
+           familyi={W\bibinitperiod},
+           given={Yuan},
+           giveni={Y\bibinitperiod}}}%
+        {{hash=454b205decd85572e544b67661174894}{%
+           family={Li},
+           familyi={L\bibinitperiod},
+           given={Xiaopeng},
+           giveni={X\bibinitperiod}}}%
+        {{hash=9a4f4a1ff661cd600eb26523a5ba8bb4}{%
+           family={Zhang},
+           familyi={Z\bibinitperiod},
+           given={Yu},
+           giveni={Y\bibinitperiod}}}%
+      }
+      \strng{namehash}{48b7d7e2d147699802862fc30f244ec7}
+      \strng{fullhash}{48b7d7e2d147699802862fc30f244ec7}
+      \strng{fullhashraw}{48b7d7e2d147699802862fc30f244ec7}
+      \strng{bibnamehash}{48b7d7e2d147699802862fc30f244ec7}
+      \strng{authorbibnamehash}{48b7d7e2d147699802862fc30f244ec7}
+      \strng{authornamehash}{48b7d7e2d147699802862fc30f244ec7}
+      \strng{authorfullhash}{48b7d7e2d147699802862fc30f244ec7}
+      \strng{authorfullhashraw}{48b7d7e2d147699802862fc30f244ec7}
+      \field{sortinit}{7}
+      \field{sortinithash}{108d0be1b1bee9773a1173443802c0a3}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{Abstract Creating a high-fidelity railroad station model to match the physical details of hundreds of tracks and switches is never a trivial task. The manual modeling approach often costs engineers significant efforts and constrains the generality and extensivity of many advanced methods. Taking advantage that many stations are drawn proportionally into two-dimensional drawing exchange format (DXF) files via state-of-the-art computer-aided design (CAD) techniques, this paper proposed an efficient solution to convert DXF files into meaningful station models. The proposed solution consists of two phases (1) converting graphic basic primitives without explicit engineering interpretations into recognizable railroad symbols and (2) modeling undirected railroad station graphs with necessary configurations such as endpoints and routes. The proposed solution is developed into a graphic user interface application with minimal user interactions and subsequently tested at several real-world passenger stations in Asia for its validity, productivity, and applicability.}
+      \field{journaltitle}{Computer-Aided Civil and Infrastructure Engineering}
+      \field{number}{5}
+      \field{title}{An automation solution to convert CAD engineering drawings into railroad station models}
+      \field{volume}{39}
+      \field{year}{2024}
+      \field{pages}{679\bibrangedash 691}
+      \range{pages}{13}
+      \verb{doi}
+      \verb https://doi.org/10.1111/mice.13091
+      \endverb
+      \verb{eprint}
+      \verb https://onlinelibrary.wiley.com/doi/pdf/10.1111/mice.13091
+      \endverb
+      \verb{urlraw}
+      \verb https://onlinelibrary.wiley.com/doi/abs/10.1111/mice.13091
+      \endverb
+      \verb{url}
+      \verb https://onlinelibrary.wiley.com/doi/abs/10.1111/mice.13091
+      \endverb
+    \endentry
+    \entry{Pachl}{book}{}{}
+      \name{author}{1}{}{%
+        {{hash=d2e840e64184914e5310d05a198701cd}{%
+           family={Pachl},
+           familyi={P\bibinitperiod},
+           given={Jörn},
+           giveni={J\bibinitperiod}}}%
+      }
+      \strng{namehash}{d2e840e64184914e5310d05a198701cd}
+      \strng{fullhash}{d2e840e64184914e5310d05a198701cd}
+      \strng{fullhashraw}{d2e840e64184914e5310d05a198701cd}
+      \strng{bibnamehash}{d2e840e64184914e5310d05a198701cd}
+      \strng{authorbibnamehash}{d2e840e64184914e5310d05a198701cd}
+      \strng{authornamehash}{d2e840e64184914e5310d05a198701cd}
+      \strng{authorfullhash}{d2e840e64184914e5310d05a198701cd}
+      \strng{authorfullhashraw}{d2e840e64184914e5310d05a198701cd}
+      \field{sortinit}{8}
+      \field{sortinithash}{a231b008ebf0ecbe0b4d96dcc159445f}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{isbn}{978-3-658-31164-3}
+      \field{month}{01}
+      \field{title}{Systemtechnik des Schienenverkehrs: Bahnbetrieb planen, steuern und sichern}
+      \field{year}{2021}
+      \verb{doi}
+      \verb 10.1007/978-3-658-31165-0
+      \endverb
+    \endentry
+    \entry{signallayout}{article}{}{}
+      \name{author}{2}{}{%
+        {{hash=5d389787af3ad81f72470e774fcf44c4}{%
+           family={Luteberget},
+           familyi={L\bibinitperiod},
+           given={BjØrnar},
+           giveni={B\bibinitperiod}}}%
+        {{hash=e290d864c2575a3239e477d4cef14f0f}{%
+           family={Johansen},
+           familyi={J\bibinitperiod},
+           given={Christian},
+           giveni={C\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {USA}%
+      }
+      \list{publisher}{1}{%
+        {Kluwer Academic Publishers}%
+      }
+      \strng{namehash}{3ce3177efb30622035725a6e63cca5ad}
+      \strng{fullhash}{3ce3177efb30622035725a6e63cca5ad}
+      \strng{fullhashraw}{3ce3177efb30622035725a6e63cca5ad}
+      \strng{bibnamehash}{3ce3177efb30622035725a6e63cca5ad}
+      \strng{authorbibnamehash}{3ce3177efb30622035725a6e63cca5ad}
+      \strng{authornamehash}{3ce3177efb30622035725a6e63cca5ad}
+      \strng{authorfullhash}{3ce3177efb30622035725a6e63cca5ad}
+      \strng{authorfullhashraw}{3ce3177efb30622035725a6e63cca5ad}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{In designing safety-critical infrastructures s.a. railway systems, engineers often have to deal with complex and large-scale designs. Formal methods can play an important role in helping automate various tasks. For railway designs formal methods have mainly been used to verify the safety of so-called interlockings through model checking, which deals with state change and rather complex properties, usually incurring considerable computational burden (e.g., the state-space explosion problem). In contrast, we focus on static infrastructure models, and are interested in checking requirements coming from design guidelines and regulations, as usually given by railway authorities or safety certification bodies. Our goal is to automate the tedious manual work that railway engineers do when ensuring compliance with regulations, through using software that is fast enough to do verification on-the-fly, thus being able to be included in the railway design tools, much like a compiler in an IDE. In consequence, this paper describes the integration into the railway design process of formal methods for automatically extracting railway models from the CAD railway designs and for describing relevant technical regulations and expert knowledge as properties to be checked on the models. We employ a variant of Datalog and use the standardized "railway markup language" railML as basis and exchange format for the formalization. We developed a prototype tool and integrated it in industrial railway CAD software, developed under the name RailCOMPLETE®. This on-the-fly verification tool is a help for the engineer while doing the designs, and is not a replacement to other more heavy-weight software like for doing interlocking verification or capacity analysis. Our tool, through the export into railML, can be easily integrated with these other tools. We apply our tool chain in a Norwegian railway project, the upgrade of the Arna railway station.}
+      \field{issn}{0925-9856}
+      \field{journaltitle}{Form. Methods Syst. Des.}
+      \field{month}{2}
+      \field{number}{1}
+      \field{title}{Efficient verification of railway infrastructure designs against standard regulations}
+      \field{volume}{52}
+      \field{year}{2018}
+      \field{pages}{1\bibrangedash 32}
+      \range{pages}{32}
+      \verb{doi}
+      \verb 10.1007/s10703-017-0281-z
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1007/s10703-017-0281-z
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1007/s10703-017-0281-z
+      \endverb
+      \keyw{Automation,CAD,Datalog,Incremental verification,Logic programming,Railway designs,Railway infrastructure,Signalling,railML}
+    \endentry
+    \entry{helle2023}{thesis}{}{}
+      \name{author}{1}{}{%
+        {{hash=ec4733f654317213af07fd2bfcfe16c0}{%
+           family={Helle},
+           familyi={H\bibinitperiod},
+           given={Riku},
+           giveni={R\bibinitperiod}}}%
+      }
+      \list{institution}{1}{%
+        {University of Turku, Department of Computing}%
+      }
+      \list{location}{1}{%
+        {Turku, Finland}%
+      }
+      \strng{namehash}{ec4733f654317213af07fd2bfcfe16c0}
+      \strng{fullhash}{ec4733f654317213af07fd2bfcfe16c0}
+      \strng{fullhashraw}{ec4733f654317213af07fd2bfcfe16c0}
+      \strng{bibnamehash}{ec4733f654317213af07fd2bfcfe16c0}
+      \strng{authorbibnamehash}{ec4733f654317213af07fd2bfcfe16c0}
+      \strng{authornamehash}{ec4733f654317213af07fd2bfcfe16c0}
+      \strng{authorfullhash}{ec4733f654317213af07fd2bfcfe16c0}
+      \strng{authorfullhashraw}{ec4733f654317213af07fd2bfcfe16c0}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{month}{6}
+      \field{note}{Software Engineering}
+      \field{title}{Intelligent symbol attributes extraction from engineering drawings}
+      \field{type}{Master of Science (Tech) Thesis}
+      \field{urlday}{29}
+      \field{urlmonth}{6}
+      \field{urlyear}{2023}
+      \field{year}{2023}
+      \field{urldateera}{ce}
+      \field{pages}{69}
+      \range{pages}{1}
+      \verb{urlraw}
+      \verb https://urn.fi/URN:NBN:fi-fe2023072691658
+      \endverb
+      \verb{url}
+      \verb https://urn.fi/URN:NBN:fi-fe2023072691658
+      \endverb
+    \endentry
+    \entry{szeliski2022}{book}{}{}
+      \name{author}{1}{}{%
+        {{hash=f2e556c93256e7d70895d67702e14f1a}{%
+           family={Szeliski},
+           familyi={S\bibinitperiod},
+           given={Richard},
+           giveni={R\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Springer Cham}%
+      }
+      \strng{namehash}{f2e556c93256e7d70895d67702e14f1a}
+      \strng{fullhash}{f2e556c93256e7d70895d67702e14f1a}
+      \strng{fullhashraw}{f2e556c93256e7d70895d67702e14f1a}
+      \strng{bibnamehash}{f2e556c93256e7d70895d67702e14f1a}
+      \strng{authorbibnamehash}{f2e556c93256e7d70895d67702e14f1a}
+      \strng{authornamehash}{f2e556c93256e7d70895d67702e14f1a}
+      \strng{authorfullhash}{f2e556c93256e7d70895d67702e14f1a}
+      \strng{authorfullhashraw}{f2e556c93256e7d70895d67702e14f1a}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{edition}{2}
+      \field{isbn}{978-3-030-34371-2}
+      \field{note}{Also available as eBook: ISBN 978-3-030-34372-9}
+      \field{series}{Texts in Computer Science}
+      \field{title}{Computer Vision: Algorithms and Applications}
+      \field{year}{2022}
+      \field{pages}{xxii+925}
+      \range{pages}{-1}
+      \verb{doi}
+      \verb 10.1007/978-3-030-34372-9
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1007/978-3-030-34372-9
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1007/978-3-030-34372-9
+      \endverb
+    \endentry
+    \entry{neuralnetwork}{article}{}{}
+      \name{author}{3}{}{%
+        {{hash=6a1aa6b7eab12b931ca7c7e3f927231d}{%
+           family={LeCun},
+           familyi={L\bibinitperiod},
+           given={Yann},
+           giveni={Y\bibinitperiod}}}%
+        {{hash=419350ebbeb4eba5351469f378dee007}{%
+           family={Bengio},
+           familyi={B\bibinitperiod},
+           given={Y.},
+           giveni={Y\bibinitperiod}}}%
+        {{hash=9a8750ccdb2a4cf14d2655face1ce016}{%
+           family={Hinton},
+           familyi={H\bibinitperiod},
+           given={Geoffrey},
+           giveni={G\bibinitperiod}}}%
+      }
+      \strng{namehash}{4cdbdf6bda52e35be20da5dd176c4431}
+      \strng{fullhash}{4cdbdf6bda52e35be20da5dd176c4431}
+      \strng{fullhashraw}{4cdbdf6bda52e35be20da5dd176c4431}
+      \strng{bibnamehash}{4cdbdf6bda52e35be20da5dd176c4431}
+      \strng{authorbibnamehash}{4cdbdf6bda52e35be20da5dd176c4431}
+      \strng{authornamehash}{4cdbdf6bda52e35be20da5dd176c4431}
+      \strng{authorfullhash}{4cdbdf6bda52e35be20da5dd176c4431}
+      \strng{authorfullhashraw}{4cdbdf6bda52e35be20da5dd176c4431}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Nature}
+      \field{month}{05}
+      \field{title}{Deep Learning}
+      \field{volume}{521}
+      \field{year}{2015}
+      \field{pages}{436\bibrangedash 44}
+      \range{pages}{9}
+      \verb{doi}
+      \verb 10.1038/nature14539
+      \endverb
+    \endentry
+    \entry{Wang2022Classification}{article}{}{}
+      \name{author}{2}{}{%
+        {{hash=8299411e801162727f349d4f6e600064}{%
+           family={Wang},
+           familyi={W\bibinitperiod},
+           given={Weiwei},
+           giveni={W\bibinitperiod}}}%
+        {{hash=6dab4309d6d4a1cfb29be015c067c6b7}{%
+           family={Sun},
+           familyi={S\bibinitperiod},
+           given={Dandan},
+           giveni={D\bibinitperiod}}}%
+      }
+      \strng{namehash}{bc641749c1229c669dce8b54d9246554}
+      \strng{fullhash}{bc641749c1229c669dce8b54d9246554}
+      \strng{fullhashraw}{bc641749c1229c669dce8b54d9246554}
+      \strng{bibnamehash}{bc641749c1229c669dce8b54d9246554}
+      \strng{authorbibnamehash}{bc641749c1229c669dce8b54d9246554}
+      \strng{authornamehash}{bc641749c1229c669dce8b54d9246554}
+      \strng{authorfullhash}{bc641749c1229c669dce8b54d9246554}
+      \strng{authorfullhashraw}{bc641749c1229c669dce8b54d9246554}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Advances in Multimedia}
+      \field{title}{Classification of 3D CAD Models considering the Knowledge Recognition Algorithm of Convolutional Neural Network}
+      \field{year}{2022}
+      \verb{doi}
+      \verb 10.1155/2022/1794571
+      \endverb
+    \endentry
+    \entry{Fedorov2023Railway}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=d9494e982c9e0759f6ee9088f0f5feb0}{%
+           family={Fedorov},
+           familyi={F\bibinitperiod},
+           given={V.\bibnamedelimi A.},
+           giveni={V\bibinitperiod\bibinitdelim A\bibinitperiod}}}%
+      }
+      \strng{namehash}{d9494e982c9e0759f6ee9088f0f5feb0}
+      \strng{fullhash}{d9494e982c9e0759f6ee9088f0f5feb0}
+      \strng{fullhashraw}{d9494e982c9e0759f6ee9088f0f5feb0}
+      \strng{bibnamehash}{d9494e982c9e0759f6ee9088f0f5feb0}
+      \strng{authorbibnamehash}{d9494e982c9e0759f6ee9088f0f5feb0}
+      \strng{authornamehash}{d9494e982c9e0759f6ee9088f0f5feb0}
+      \strng{authorfullhash}{d9494e982c9e0759f6ee9088f0f5feb0}
+      \strng{authorfullhashraw}{d9494e982c9e0759f6ee9088f0f5feb0}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{2023 International Russian Automation Conference (RusAutoCon)}
+      \field{title}{Railway Infrastructure Instance Segmentation Based on Convolutional Neural Networks}
+      \field{year}{2023}
+      \field{pages}{443\bibrangedash 447}
+      \range{pages}{5}
+      \verb{doi}
+      \verb 10.1109/RusAutoCon58002.2023.10272908
+      \endverb
+    \endentry
+    \entry{NIPS2014_532a2f85}{inproceedings}{}{}
+      \name{author}{4}{}{%
+        {{hash=9f400712248e594ce887c5cd06d9767b}{%
+           family={Yosinski},
+           familyi={Y\bibinitperiod},
+           given={Jason},
+           giveni={J\bibinitperiod}}}%
+        {{hash=ec864655608cdb84e55422b0797b6419}{%
+           family={Clune},
+           familyi={C\bibinitperiod},
+           given={Jeff},
+           giveni={J\bibinitperiod}}}%
+        {{hash=40a8e4774982146adc2688546f54efb2}{%
+           family={Bengio},
+           familyi={B\bibinitperiod},
+           given={Yoshua},
+           giveni={Y\bibinitperiod}}}%
+        {{hash=475bdf26aafc86ddd3f62a8ff9267f8a}{%
+           family={Lipson},
+           familyi={L\bibinitperiod},
+           given={Hod},
+           giveni={H\bibinitperiod}}}%
+      }
+      \name{editor}{5}{}{%
+        {{hash=b8fd0c0f416ef8a8bbb50286418e9df8}{%
+           family={Ghahramani},
+           familyi={G\bibinitperiod},
+           given={Z.},
+           giveni={Z\bibinitperiod}}}%
+        {{hash=064d84a432787740019dc765d9115718}{%
+           family={Welling},
+           familyi={W\bibinitperiod},
+           given={M.},
+           giveni={M\bibinitperiod}}}%
+        {{hash=c294bbcb0687bdb5113cc4c4cd6ebad3}{%
+           family={Cortes},
+           familyi={C\bibinitperiod},
+           given={C.},
+           giveni={C\bibinitperiod}}}%
+        {{hash=5fa5574879f8e77bee73db4442b005f7}{%
+           family={Lawrence},
+           familyi={L\bibinitperiod},
+           given={N.},
+           giveni={N\bibinitperiod}}}%
+        {{hash=ad5ed31dbb8d37755c6cb48bedfdfe1d}{%
+           family={Weinberger},
+           familyi={W\bibinitperiod},
+           given={K.Q.},
+           giveni={K\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Curran Associates, Inc.}%
+      }
+      \strng{namehash}{73b0eb667b42d956848df75c7dfb6b12}
+      \strng{fullhash}{1b793354c73b5eaf9d3e535540209ef1}
+      \strng{fullhashraw}{1b793354c73b5eaf9d3e535540209ef1}
+      \strng{bibnamehash}{73b0eb667b42d956848df75c7dfb6b12}
+      \strng{authorbibnamehash}{73b0eb667b42d956848df75c7dfb6b12}
+      \strng{authornamehash}{73b0eb667b42d956848df75c7dfb6b12}
+      \strng{authorfullhash}{1b793354c73b5eaf9d3e535540209ef1}
+      \strng{authorfullhashraw}{1b793354c73b5eaf9d3e535540209ef1}
+      \strng{editorbibnamehash}{65b7e9a4aa080eb7f3776176b707f81c}
+      \strng{editornamehash}{65b7e9a4aa080eb7f3776176b707f81c}
+      \strng{editorfullhash}{b2f067643f7898bb0a30922a39443e6d}
+      \strng{editorfullhashraw}{b2f067643f7898bb0a30922a39443e6d}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Advances in Neural Information Processing Systems}
+      \field{title}{How transferable are features in deep neural networks?}
+      \field{volume}{27}
+      \field{year}{2014}
+      \verb{urlraw}
+      \verb https://proceedings.neurips.cc/paper_files/paper/2014/file/532a2f85b6977104bc93f8580abbb330-Paper.pdf
+      \endverb
+      \verb{url}
+      \verb https://proceedings.neurips.cc/paper_files/paper/2014/file/532a2f85b6977104bc93f8580abbb330-Paper.pdf
+      \endverb
+    \endentry
+    \entry{transferlearning}{article}{}{}
+      \name{author}{2}{}{%
+        {{hash=224c02b5d289fefd08d4f9f1a83c5d0c}{%
+           family={Pan},
+           familyi={P\bibinitperiod},
+           given={Sinno\bibnamedelima Jialin},
+           giveni={S\bibinitperiod\bibinitdelim J\bibinitperiod}}}%
+        {{hash=55242d2a60270145342841e4d4238da0}{%
+           family={Yang},
+           familyi={Y\bibinitperiod},
+           given={Qiang},
+           giveni={Q\bibinitperiod}}}%
+      }
+      \strng{namehash}{770fc1d95710074c9506ab4f7d386573}
+      \strng{fullhash}{770fc1d95710074c9506ab4f7d386573}
+      \strng{fullhashraw}{770fc1d95710074c9506ab4f7d386573}
+      \strng{bibnamehash}{770fc1d95710074c9506ab4f7d386573}
+      \strng{authorbibnamehash}{770fc1d95710074c9506ab4f7d386573}
+      \strng{authornamehash}{770fc1d95710074c9506ab4f7d386573}
+      \strng{authorfullhash}{770fc1d95710074c9506ab4f7d386573}
+      \strng{authorfullhashraw}{770fc1d95710074c9506ab4f7d386573}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{IEEE Transactions on Knowledge and Data Engineering}
+      \field{number}{10}
+      \field{title}{A Survey on Transfer Learning}
+      \field{volume}{22}
+      \field{year}{2010}
+      \field{pages}{1345\bibrangedash 1359}
+      \range{pages}{15}
+      \verb{doi}
+      \verb 10.1109/TKDE.2009.191
+      \endverb
+      \keyw{Machine learning;Training data;Data mining;Knowledge transfer;Space technology;Knowledge engineering;Machine learning algorithms;Labeling;Learning systems;Testing;Transfer learning;survey;machine learning;data mining.}
+    \endentry
+    \entry{dataugmentation}{article}{}{}
+      \name{author}{2}{}{%
+        {{hash=d49d1c5cbce775054678e29a462ca723}{%
+           family={Shorten},
+           familyi={S\bibinitperiod},
+           given={Connor},
+           giveni={C\bibinitperiod}}}%
+        {{hash=66103f48b4f2fac926e9530d18b148ca}{%
+           family={Khoshgoftaar},
+           familyi={K\bibinitperiod},
+           given={Taghi},
+           giveni={T\bibinitperiod}}}%
+      }
+      \strng{namehash}{1aa4ec46ffb9922f2aa9fe1c3caff961}
+      \strng{fullhash}{1aa4ec46ffb9922f2aa9fe1c3caff961}
+      \strng{fullhashraw}{1aa4ec46ffb9922f2aa9fe1c3caff961}
+      \strng{bibnamehash}{1aa4ec46ffb9922f2aa9fe1c3caff961}
+      \strng{authorbibnamehash}{1aa4ec46ffb9922f2aa9fe1c3caff961}
+      \strng{authornamehash}{1aa4ec46ffb9922f2aa9fe1c3caff961}
+      \strng{authorfullhash}{1aa4ec46ffb9922f2aa9fe1c3caff961}
+      \strng{authorfullhashraw}{1aa4ec46ffb9922f2aa9fe1c3caff961}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Journal of Big Data}
+      \field{month}{07}
+      \field{title}{A survey on Image Data Augmentation for Deep Learning}
+      \field{volume}{6}
+      \field{year}{2019}
+      \verb{doi}
+      \verb 10.1186/s40537-019-0197-0
+      \endverb
+    \endentry
+    \entry{RCNN}{inproceedings}{}{}
+      \name{author}{4}{}{%
+        {{hash=bb295293acacd54387339079ebbe4ead}{%
+           family={Ren},
+           familyi={R\bibinitperiod},
+           given={Shaoqing},
+           giveni={S\bibinitperiod}}}%
+        {{hash=6b4b60e909e78633945f3f9c9dc83e01}{%
+           family={He},
+           familyi={H\bibinitperiod},
+           given={Kaiming},
+           giveni={K\bibinitperiod}}}%
+        {{hash=bd5dadbe57bedc5957c19a3154c4d424}{%
+           family={Girshick},
+           familyi={G\bibinitperiod},
+           given={Ross},
+           giveni={R\bibinitperiod}}}%
+        {{hash=f85751488058842b5777c7b4074077b5}{%
+           family={Sun},
+           familyi={S\bibinitperiod},
+           given={Jian},
+           giveni={J\bibinitperiod}}}%
+      }
+      \name{editor}{5}{}{%
+        {{hash=c294bbcb0687bdb5113cc4c4cd6ebad3}{%
+           family={Cortes},
+           familyi={C\bibinitperiod},
+           given={C.},
+           giveni={C\bibinitperiod}}}%
+        {{hash=5fa5574879f8e77bee73db4442b005f7}{%
+           family={Lawrence},
+           familyi={L\bibinitperiod},
+           given={N.},
+           giveni={N\bibinitperiod}}}%
+        {{hash=98056d9ddecda0076a31a183e3e69326}{%
+           family={Lee},
+           familyi={L\bibinitperiod},
+           given={D.},
+           giveni={D\bibinitperiod}}}%
+        {{hash=0ef91066dee98e654f9aebd57da00647}{%
+           family={Sugiyama},
+           familyi={S\bibinitperiod},
+           given={M.},
+           giveni={M\bibinitperiod}}}%
+        {{hash=36b98b7ab533936cf1b5716148de704f}{%
+           family={Garnett},
+           familyi={G\bibinitperiod},
+           given={R.},
+           giveni={R\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Curran Associates, Inc.}%
+      }
+      \strng{namehash}{f086ca4da3e532e8a41cb758ea461825}
+      \strng{fullhash}{008a132af3e2d4ff15eb01a8fb4b005c}
+      \strng{fullhashraw}{008a132af3e2d4ff15eb01a8fb4b005c}
+      \strng{bibnamehash}{f086ca4da3e532e8a41cb758ea461825}
+      \strng{authorbibnamehash}{f086ca4da3e532e8a41cb758ea461825}
+      \strng{authornamehash}{f086ca4da3e532e8a41cb758ea461825}
+      \strng{authorfullhash}{008a132af3e2d4ff15eb01a8fb4b005c}
+      \strng{authorfullhashraw}{008a132af3e2d4ff15eb01a8fb4b005c}
+      \strng{editorbibnamehash}{f981a0b37ac43bd0fc3784cbcce306be}
+      \strng{editornamehash}{f981a0b37ac43bd0fc3784cbcce306be}
+      \strng{editorfullhash}{95e40444732d7905041fa015b18cfa44}
+      \strng{editorfullhashraw}{95e40444732d7905041fa015b18cfa44}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Advances in Neural Information Processing Systems}
+      \field{title}{Faster R-CNN: Towards Real-Time Object Detection with Region Proposal Networks}
+      \field{volume}{28}
+      \field{year}{2015}
+      \verb{urlraw}
+      \verb https://proceedings.neurips.cc/paper_files/paper/2015/file/14bfa6bb14875e45bba028a21ed38046-Paper.pdf
+      \endverb
+      \verb{url}
+      \verb https://proceedings.neurips.cc/paper_files/paper/2015/file/14bfa6bb14875e45bba028a21ed38046-Paper.pdf
+      \endverb
+    \endentry
+    \entry{redmon2016lookonceunifiedrealtime}{misc}{}{}
+      \name{author}{4}{}{%
+        {{hash=99bced2e56a5253f3fe98a5f04e6d9b2}{%
+           family={Redmon},
+           familyi={R\bibinitperiod},
+           given={Joseph},
+           giveni={J\bibinitperiod}}}%
+        {{hash=05ca9f19da9ecbd2def4e5514f8043c8}{%
+           family={Divvala},
+           familyi={D\bibinitperiod},
+           given={Santosh},
+           giveni={S\bibinitperiod}}}%
+        {{hash=bd5dadbe57bedc5957c19a3154c4d424}{%
+           family={Girshick},
+           familyi={G\bibinitperiod},
+           given={Ross},
+           giveni={R\bibinitperiod}}}%
+        {{hash=396c6ddedb6f986906fc3e4994d19974}{%
+           family={Farhadi},
+           familyi={F\bibinitperiod},
+           given={Ali},
+           giveni={A\bibinitperiod}}}%
+      }
+      \strng{namehash}{e1203a0044715040adeb8c5079ee645a}
+      \strng{fullhash}{b5530443e433a4da53dbe3cf155225b4}
+      \strng{fullhashraw}{b5530443e433a4da53dbe3cf155225b4}
+      \strng{bibnamehash}{e1203a0044715040adeb8c5079ee645a}
+      \strng{authorbibnamehash}{e1203a0044715040adeb8c5079ee645a}
+      \strng{authornamehash}{e1203a0044715040adeb8c5079ee645a}
+      \strng{authorfullhash}{b5530443e433a4da53dbe3cf155225b4}
+      \strng{authorfullhashraw}{b5530443e433a4da53dbe3cf155225b4}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{eprintclass}{cs.CV}
+      \field{eprinttype}{arXiv}
+      \field{title}{You Only Look Once: Unified, Real-Time Object Detection}
+      \field{year}{2016}
+      \verb{eprint}
+      \verb 1506.02640
+      \endverb
+      \verb{urlraw}
+      \verb https://arxiv.org/abs/1506.02640
+      \endverb
+      \verb{url}
+      \verb https://arxiv.org/abs/1506.02640
+      \endverb
+    \endentry
+    \entry{yaseen2024yolov8indepthexplorationinternal}{misc}{}{}
+      \name{author}{1}{}{%
+        {{hash=5eec75ed6272db6ea5cc80721e9f7521}{%
+           family={Yaseen},
+           familyi={Y\bibinitperiod},
+           given={Muhammad},
+           giveni={M\bibinitperiod}}}%
+      }
+      \strng{namehash}{5eec75ed6272db6ea5cc80721e9f7521}
+      \strng{fullhash}{5eec75ed6272db6ea5cc80721e9f7521}
+      \strng{fullhashraw}{5eec75ed6272db6ea5cc80721e9f7521}
+      \strng{bibnamehash}{5eec75ed6272db6ea5cc80721e9f7521}
+      \strng{authorbibnamehash}{5eec75ed6272db6ea5cc80721e9f7521}
+      \strng{authornamehash}{5eec75ed6272db6ea5cc80721e9f7521}
+      \strng{authorfullhash}{5eec75ed6272db6ea5cc80721e9f7521}
+      \strng{authorfullhashraw}{5eec75ed6272db6ea5cc80721e9f7521}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{eprintclass}{cs.CV}
+      \field{eprinttype}{arXiv}
+      \field{title}{What is YOLOv8: An In-Depth Exploration of the Internal Features of the Next-Generation Object Detector}
+      \field{year}{2024}
+      \verb{eprint}
+      \verb 2408.15857
+      \endverb
+      \verb{urlraw}
+      \verb https://arxiv.org/abs/2408.15857
+      \endverb
+      \verb{url}
+      \verb https://arxiv.org/abs/2408.15857
+      \endverb
+    \endentry
+    \entry{yolov8_ultralytics}{software}{}{}
+      \name{author}{3}{}{%
+        {{hash=c5c5e5cd7f4f477f617289b32613deb0}{%
+           family={Jocher},
+           familyi={J\bibinitperiod},
+           given={Glenn},
+           giveni={G\bibinitperiod}}}%
+        {{hash=ec281637802454e8df4de72f3b1ee401}{%
+           family={Chaurasia},
+           familyi={C\bibinitperiod},
+           given={Ayush},
+           giveni={A\bibinitperiod}}}%
+        {{hash=b8739ebbf3f871d471b6720a02ed541f}{%
+           family={Qiu},
+           familyi={Q\bibinitperiod},
+           given={Jing},
+           giveni={J\bibinitperiod}}}%
+      }
+      \strng{namehash}{dde928f96d7839eed6effd0fbfbe5acc}
+      \strng{fullhash}{dde928f96d7839eed6effd0fbfbe5acc}
+      \strng{fullhashraw}{dde928f96d7839eed6effd0fbfbe5acc}
+      \strng{bibnamehash}{dde928f96d7839eed6effd0fbfbe5acc}
+      \strng{authorbibnamehash}{dde928f96d7839eed6effd0fbfbe5acc}
+      \strng{authornamehash}{dde928f96d7839eed6effd0fbfbe5acc}
+      \strng{authorfullhash}{dde928f96d7839eed6effd0fbfbe5acc}
+      \strng{authorfullhashraw}{dde928f96d7839eed6effd0fbfbe5acc}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Ultralytics YOLOv8}
+      \field{version}{8.0.0}
+      \field{year}{2023}
+      \verb{urlraw}
+      \verb https://github.com/ultralytics/ultralytics
+      \endverb
+      \verb{url}
+      \verb https://github.com/ultralytics/ultralytics
+      \endverb
+    \endentry
+    \entry{wang2024yolov9learningwantlearn}{misc}{}{}
+      \name{author}{3}{}{%
+        {{hash=053d491932411950eccf2bb9a1025d11}{%
+           family={Wang},
+           familyi={W\bibinitperiod},
+           given={Chien-Yao},
+           giveni={C\bibinithyphendelim Y\bibinitperiod}}}%
+        {{hash=48d31f7ede2c284da665286f4df2a8aa}{%
+           family={Yeh},
+           familyi={Y\bibinitperiod},
+           given={I-Hau},
+           giveni={I\bibinithyphendelim H\bibinitperiod}}}%
+        {{hash=c81478c691c1bc1cc01404c44b5bd5bf}{%
+           family={Liao},
+           familyi={L\bibinitperiod},
+           given={Hong-Yuan\bibnamedelima Mark},
+           giveni={H\bibinithyphendelim Y\bibinitperiod\bibinitdelim M\bibinitperiod}}}%
+      }
+      \strng{namehash}{2943db7df85f5f45575a1f2afe08031c}
+      \strng{fullhash}{2943db7df85f5f45575a1f2afe08031c}
+      \strng{fullhashraw}{2943db7df85f5f45575a1f2afe08031c}
+      \strng{bibnamehash}{2943db7df85f5f45575a1f2afe08031c}
+      \strng{authorbibnamehash}{2943db7df85f5f45575a1f2afe08031c}
+      \strng{authornamehash}{2943db7df85f5f45575a1f2afe08031c}
+      \strng{authorfullhash}{2943db7df85f5f45575a1f2afe08031c}
+      \strng{authorfullhashraw}{2943db7df85f5f45575a1f2afe08031c}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{eprintclass}{cs.CV}
+      \field{eprinttype}{arXiv}
+      \field{title}{YOLOv9: Learning What You Want to Learn Using Programmable Gradient Information}
+      \field{year}{2024}
+      \verb{eprint}
+      \verb 2402.13616
+      \endverb
+      \verb{urlraw}
+      \verb https://arxiv.org/abs/2402.13616
+      \endverb
+      \verb{url}
+      \verb https://arxiv.org/abs/2402.13616
+      \endverb
+    \endentry
+    \entry{wang2024yolov10realtimeendtoendobject}{misc}{}{}
+      \name{author}{7}{}{%
+        {{hash=5ad96cdc79afedb1090746b0eb414b5e}{%
+           family={Wang},
+           familyi={W\bibinitperiod},
+           given={Ao},
+           giveni={A\bibinitperiod}}}%
+        {{hash=92f386b2333cf6bddfa01a270cab627d}{%
+           family={Chen},
+           familyi={C\bibinitperiod},
+           given={Hui},
+           giveni={H\bibinitperiod}}}%
+        {{hash=7a6faf4bd9973b4f851f30dd35c074bd}{%
+           family={Liu},
+           familyi={L\bibinitperiod},
+           given={Lihao},
+           giveni={L\bibinitperiod}}}%
+        {{hash=ee3f7d7b96add98106db907e189d6c13}{%
+           family={Chen},
+           familyi={C\bibinitperiod},
+           given={Kai},
+           giveni={K\bibinitperiod}}}%
+        {{hash=adccb9cbf5120207a2a19b1d478c125d}{%
+           family={Lin},
+           familyi={L\bibinitperiod},
+           given={Zijia},
+           giveni={Z\bibinitperiod}}}%
+        {{hash=e0bc4abfcb63924731a1bc3bc0dbb02b}{%
+           family={Han},
+           familyi={H\bibinitperiod},
+           given={Jungong},
+           giveni={J\bibinitperiod}}}%
+        {{hash=1d0a50fb618dfd81312befab2291abf1}{%
+           family={Ding},
+           familyi={D\bibinitperiod},
+           given={Guiguang},
+           giveni={G\bibinitperiod}}}%
+      }
+      \strng{namehash}{f4c3d40b447d6081c16d37684b88f737}
+      \strng{fullhash}{f7b4b2b4d8bcd40d685619bff83d4d68}
+      \strng{fullhashraw}{f7b4b2b4d8bcd40d685619bff83d4d68}
+      \strng{bibnamehash}{f4c3d40b447d6081c16d37684b88f737}
+      \strng{authorbibnamehash}{f4c3d40b447d6081c16d37684b88f737}
+      \strng{authornamehash}{f4c3d40b447d6081c16d37684b88f737}
+      \strng{authorfullhash}{f7b4b2b4d8bcd40d685619bff83d4d68}
+      \strng{authorfullhashraw}{f7b4b2b4d8bcd40d685619bff83d4d68}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{eprintclass}{cs.CV}
+      \field{eprinttype}{arXiv}
+      \field{title}{YOLOv10: Real-Time End-to-End Object Detection}
+      \field{year}{2024}
+      \verb{eprint}
+      \verb 2405.14458
+      \endverb
+      \verb{urlraw}
+      \verb https://arxiv.org/abs/2405.14458
+      \endverb
+      \verb{url}
+      \verb https://arxiv.org/abs/2405.14458
+      \endverb
+    \endentry
+    \entry{Liu_2016}{inbook}{}{}
+      \name{author}{7}{}{%
+        {{hash=c0e0d23e2d09e45e6f51cc2bcea6d9f9}{%
+           family={Liu},
+           familyi={L\bibinitperiod},
+           given={Wei},
+           giveni={W\bibinitperiod}}}%
+        {{hash=c1826f3465579186aff299a9b0e16ed7}{%
+           family={Anguelov},
+           familyi={A\bibinitperiod},
+           given={Dragomir},
+           giveni={D\bibinitperiod}}}%
+        {{hash=8bbc4c5d96f205bada839e74e0202146}{%
+           family={Erhan},
+           familyi={E\bibinitperiod},
+           given={Dumitru},
+           giveni={D\bibinitperiod}}}%
+        {{hash=ed568d9c3bb059e6bf22899fbf170f86}{%
+           family={Szegedy},
+           familyi={S\bibinitperiod},
+           given={Christian},
+           giveni={C\bibinitperiod}}}%
+        {{hash=698ee61a2f3fa29734204496d2d36aef}{%
+           family={Reed},
+           familyi={R\bibinitperiod},
+           given={Scott},
+           giveni={S\bibinitperiod}}}%
+        {{hash=ec820780d594e36d11c6e30c7a2614e0}{%
+           family={Fu},
+           familyi={F\bibinitperiod},
+           given={Cheng-Yang},
+           giveni={C\bibinithyphendelim Y\bibinitperiod}}}%
+        {{hash=963e9b2526a7150c418b4e9e9d19a82f}{%
+           family={Berg},
+           familyi={B\bibinitperiod},
+           given={Alexander\bibnamedelima C.},
+           giveni={A\bibinitperiod\bibinitdelim C\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Springer International Publishing}%
+      }
+      \strng{namehash}{623b50f45b666c1e9b84e5228e255810}
+      \strng{fullhash}{d5e1ac3dfe6687980f91e701611520ad}
+      \strng{fullhashraw}{d5e1ac3dfe6687980f91e701611520ad}
+      \strng{bibnamehash}{623b50f45b666c1e9b84e5228e255810}
+      \strng{authorbibnamehash}{623b50f45b666c1e9b84e5228e255810}
+      \strng{authornamehash}{623b50f45b666c1e9b84e5228e255810}
+      \strng{authorfullhash}{d5e1ac3dfe6687980f91e701611520ad}
+      \strng{authorfullhashraw}{d5e1ac3dfe6687980f91e701611520ad}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Computer Vision – ECCV 2016}
+      \field{isbn}{9783319464480}
+      \field{issn}{1611-3349}
+      \field{title}{SSD: Single Shot MultiBox Detector}
+      \field{year}{2016}
+      \field{pages}{21\bibrangedash 37}
+      \range{pages}{17}
+      \verb{doi}
+      \verb 10.1007/978-3-319-46448-0_2
+      \endverb
+      \verb{urlraw}
+      \verb http://dx.doi.org/10.1007/978-3-319-46448-0_2
+      \endverb
+      \verb{url}
+      \verb http://dx.doi.org/10.1007/978-3-319-46448-0_2
+      \endverb
+    \endentry
+    \entry{lyu2022rtmdetempiricalstudydesigning}{misc}{}{}
+      \name{author}{8}{}{%
+        {{hash=578d10396b06a9217566271713012267}{%
+           family={Lyu},
+           familyi={L\bibinitperiod},
+           given={Chengqi},
+           giveni={C\bibinitperiod}}}%
+        {{hash=b67da13268022cddb59c8f380457c175}{%
+           family={Zhang},
+           familyi={Z\bibinitperiod},
+           given={Wenwei},
+           giveni={W\bibinitperiod}}}%
+        {{hash=b8b8f1f3d8abac80a908b1979a87de10}{%
+           family={Huang},
+           familyi={H\bibinitperiod},
+           given={Haian},
+           giveni={H\bibinitperiod}}}%
+        {{hash=d28cb9bb97e2d212e63c4ffa7ad4e552}{%
+           family={Zhou},
+           familyi={Z\bibinitperiod},
+           given={Yue},
+           giveni={Y\bibinitperiod}}}%
+        {{hash=741b5ebfbcb0e20ad57a36825f1ce0d8}{%
+           family={Wang},
+           familyi={W\bibinitperiod},
+           given={Yudong},
+           giveni={Y\bibinitperiod}}}%
+        {{hash=702210e37e6db59f18d5c61bbe3fe625}{%
+           family={Liu},
+           familyi={L\bibinitperiod},
+           given={Yanyi},
+           giveni={Y\bibinitperiod}}}%
+        {{hash=00c026a80fe30e44d5294896d58628a4}{%
+           family={Zhang},
+           familyi={Z\bibinitperiod},
+           given={Shilong},
+           giveni={S\bibinitperiod}}}%
+        {{hash=ee3f7d7b96add98106db907e189d6c13}{%
+           family={Chen},
+           familyi={C\bibinitperiod},
+           given={Kai},
+           giveni={K\bibinitperiod}}}%
+      }
+      \strng{namehash}{ad19ec6c0923844339c9dff758434c65}
+      \strng{fullhash}{7ebe742da0c5f53ee75229515e8906b1}
+      \strng{fullhashraw}{7ebe742da0c5f53ee75229515e8906b1}
+      \strng{bibnamehash}{ad19ec6c0923844339c9dff758434c65}
+      \strng{authorbibnamehash}{ad19ec6c0923844339c9dff758434c65}
+      \strng{authornamehash}{ad19ec6c0923844339c9dff758434c65}
+      \strng{authorfullhash}{7ebe742da0c5f53ee75229515e8906b1}
+      \strng{authorfullhashraw}{7ebe742da0c5f53ee75229515e8906b1}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{eprintclass}{cs.CV}
+      \field{eprinttype}{arXiv}
+      \field{title}{RTMDet: An Empirical Study of Designing Real-Time Object Detectors}
+      \field{year}{2022}
+      \verb{eprint}
+      \verb 2212.07784
+      \endverb
+      \verb{urlraw}
+      \verb https://arxiv.org/abs/2212.07784
+      \endverb
+      \verb{url}
+      \verb https://arxiv.org/abs/2212.07784
+      \endverb
+    \endentry
+    \entry{berg2011high}{thesis}{}{}
+      \name{author}{1}{}{%
+        {{hash=b139ded6c938c681a8ad23c64f731070}{%
+           family={Berg},
+           familyi={B\bibinitperiod},
+           given={Øyvind\bibnamedelima Raddum},
+           giveni={Ø\bibinitperiod\bibinitdelim R\bibinitperiod}}}%
+      }
+      \list{institution}{1}{%
+        {University of Oslo, Department of Informatics}%
+      }
+      \strng{namehash}{b139ded6c938c681a8ad23c64f731070}
+      \strng{fullhash}{b139ded6c938c681a8ad23c64f731070}
+      \strng{fullhashraw}{b139ded6c938c681a8ad23c64f731070}
+      \strng{bibnamehash}{b139ded6c938c681a8ad23c64f731070}
+      \strng{authorbibnamehash}{b139ded6c938c681a8ad23c64f731070}
+      \strng{authornamehash}{b139ded6c938c681a8ad23c64f731070}
+      \strng{authorfullhash}{b139ded6c938c681a8ad23c64f731070}
+      \strng{authorfullhashraw}{b139ded6c938c681a8ad23c64f731070}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{month}{4}
+      \field{title}{High Precision Text Extraction from {PDF} Documents}
+      \field{type}{Master's thesis}
+      \field{year}{2011}
+      \verb{urlraw}
+      \verb https://core.ac.uk/download/pdf/30827574.pdf
+      \endverb
+      \verb{url}
+      \verb https://core.ac.uk/download/pdf/30827574.pdf
+      \endverb
+    \endentry
+    \entry{schlagenhauf2022textdetectiontechnicaldrawings}{misc}{}{}
+      \name{author}{3}{}{%
+        {{hash=3d97edfa6798df061d0ca841cbdcda4c}{%
+           family={Schlagenhauf},
+           familyi={S\bibinitperiod},
+           given={Tobias},
+           giveni={T\bibinitperiod}}}%
+        {{hash=323cf65cf12a195169de92272c89cbce}{%
+           family={Netzer},
+           familyi={N\bibinitperiod},
+           given={Markus},
+           giveni={M\bibinitperiod}}}%
+        {{hash=68c7f50055d311b2a0e243b873346e4a}{%
+           family={Hillinger},
+           familyi={H\bibinitperiod},
+           given={Jan},
+           giveni={J\bibinitperiod}}}%
+      }
+      \strng{namehash}{294c4b3cb03f40a0b378454648a89a4d}
+      \strng{fullhash}{294c4b3cb03f40a0b378454648a89a4d}
+      \strng{fullhashraw}{294c4b3cb03f40a0b378454648a89a4d}
+      \strng{bibnamehash}{294c4b3cb03f40a0b378454648a89a4d}
+      \strng{authorbibnamehash}{294c4b3cb03f40a0b378454648a89a4d}
+      \strng{authornamehash}{294c4b3cb03f40a0b378454648a89a4d}
+      \strng{authorfullhash}{294c4b3cb03f40a0b378454648a89a4d}
+      \strng{authorfullhashraw}{294c4b3cb03f40a0b378454648a89a4d}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{eprintclass}{cs.CV}
+      \field{eprinttype}{arXiv}
+      \field{title}{Text Detection on Technical Drawings for the Digitization of Brown-field Processes}
+      \field{year}{2022}
+      \verb{eprint}
+      \verb 2205.02659
+      \endverb
+      \verb{urlraw}
+      \verb https://arxiv.org/abs/2205.02659
+      \endverb
+      \verb{url}
+      \verb https://arxiv.org/abs/2205.02659
+      \endverb
+    \endentry
+    \entry{paddleocr}{misc}{}{}
+      \name{author}{1}{}{%
+        {{hash=2669971c5f89abdf1daa13efaed8f50b}{%
+           family={Team},
+           familyi={T\bibinitperiod},
+           given={PaddlePaddle},
+           giveni={P\bibinitperiod}}}%
+      }
+      \strng{namehash}{2669971c5f89abdf1daa13efaed8f50b}
+      \strng{fullhash}{2669971c5f89abdf1daa13efaed8f50b}
+      \strng{fullhashraw}{2669971c5f89abdf1daa13efaed8f50b}
+      \strng{bibnamehash}{2669971c5f89abdf1daa13efaed8f50b}
+      \strng{authorbibnamehash}{2669971c5f89abdf1daa13efaed8f50b}
+      \strng{authornamehash}{2669971c5f89abdf1daa13efaed8f50b}
+      \strng{authorfullhash}{2669971c5f89abdf1daa13efaed8f50b}
+      \strng{authorfullhashraw}{2669971c5f89abdf1daa13efaed8f50b}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{\url{https://www.paddleocr.ai/latest/}}
+      \field{note}{Accessed: 2025-11-21}
+      \field{title}{Paddleocr: Multilingual, Lightweight, and Practical Optical Character Recognition}
+      \field{year}{2023}
+    \endentry
+    \entry{Joshua}{inproceedings}{}{}
+      \name{author}{3}{}{%
+        {{hash=62b94c164c1edc8557eb058397c1174c}{%
+           family={Joshua},
+           familyi={J\bibinitperiod},
+           given={M.\bibnamedelimi Jesher},
+           giveni={M\bibinitperiod\bibinitdelim J\bibinitperiod}}}%
+        {{hash=ea6e471c01073192b9f532e55fa8ec4d}{%
+           family={Ragav},
+           familyi={R\bibinitperiod},
+           given={V.},
+           giveni={V\bibinitperiod}}}%
+        {{hash=25a3cf8234b1a132f4089393ebb794d0}{%
+           family={Ibrahim},
+           familyi={I\bibinitperiod},
+           given={S.\bibnamedelimi P.\bibnamedelimi Syed},
+           giveni={S\bibinitperiod\bibinitdelim P\bibinitperiod\bibinitdelim S\bibinitperiod}}}%
+      }
+      \name{editor}{7}{}{%
+        {{hash=1bff4049a337884450bb2e8fa1830999}{%
+           family={Janmanee},
+           familyi={J\bibinitperiod},
+           given={Pichai},
+           giveni={P\bibinitperiod}}}%
+        {{hash=1078201a2d611a9a418c7e71561be0f9}{%
+           family={Chujuarjeen},
+           familyi={C\bibinitperiod},
+           given={Saichol},
+           giveni={S\bibinitperiod}}}%
+        {{hash=73d9bea33edd8fa26d66e618981ec014}{%
+           family={Butdee},
+           familyi={B\bibinitperiod},
+           given={Suthep},
+           giveni={S\bibinitperiod}}}%
+        {{hash=546726ed16d508b819ec5387c17142d5}{%
+           family={Srikhumsuk},
+           familyi={S\bibinitperiod},
+           given={Phatchani},
+           giveni={P\bibinitperiod}}}%
+        {{hash=034b8b65b9d4dcb53b50a634de247f1d}{%
+           family={Batako},
+           familyi={B\bibinitperiod},
+           given={Andre\bibnamedelimb D.\bibnamedelimi L.},
+           giveni={A\bibinitperiod\bibinitdelim D\bibinitperiod\bibinitdelim L\bibinitperiod}}}%
+        {{hash=75a293c111471a49532f7af9a4a148ad}{%
+           family={Burduk},
+           familyi={B\bibinitperiod},
+           given={Anna},
+           giveni={A\bibinitperiod}}}%
+        {{hash=4049ffba1f8a4a5a04dd3070dd6a5809}{%
+           family={Xavior},
+           familyi={X\bibinitperiod},
+           given={M.\bibnamedelimi Anthony},
+           giveni={M\bibinitperiod\bibinitdelim A\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {Cham}%
+      }
+      \list{publisher}{1}{%
+        {Springer Nature Switzerland}%
+      }
+      \strng{namehash}{099872adf047f11a6521caab64edb37f}
+      \strng{fullhash}{099872adf047f11a6521caab64edb37f}
+      \strng{fullhashraw}{099872adf047f11a6521caab64edb37f}
+      \strng{bibnamehash}{099872adf047f11a6521caab64edb37f}
+      \strng{authorbibnamehash}{099872adf047f11a6521caab64edb37f}
+      \strng{authornamehash}{099872adf047f11a6521caab64edb37f}
+      \strng{authorfullhash}{099872adf047f11a6521caab64edb37f}
+      \strng{authorfullhashraw}{099872adf047f11a6521caab64edb37f}
+      \strng{editorbibnamehash}{bf02d7a634f610b35b1368ad6a48e3ff}
+      \strng{editornamehash}{bf02d7a634f610b35b1368ad6a48e3ff}
+      \strng{editorfullhash}{dc737f1c8a96caad3b47893353654781}
+      \strng{editorfullhashraw}{dc737f1c8a96caad3b47893353654781}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{The maintenance, archiving and usage of the design drawings is cumbersome in physical form in different industries for longer period. It is hard to extract information by simple scanning of drawing sheets. Converting them to their digital formats such as Computer-Aided Design (CAD), with needed knowledge extraction can solve this problem. The conversion of these machine drawings to its digital form is a crucial challenge which requires advanced techniques. This research proposes an innovative methodology utilizing Deep Learning methods. The approach employs object detection model, such as Yolov7, Faster R-CNN, to detect physical drawing objects present in the images followed by, edge detection algorithms such as canny filter to extract and refine the identified lines from the drawing region and curve detection techniques to detect circle. Also ornaments (complex shapes) within the drawings are extracted. To ensure comprehensive conversion, an Optical Character Recognition (OCR) tool is integrated to identify and extract the text elements from the drawings. The extracted data which includes the lines, shapes and text is consolidated and stored in a structured comma separated values (csv) file format. The accuracy and the efficiency of conversion is evaluated. Through this, conversion can be automated to help organizations enhance their productivity, facilitate seamless collaborations and preserve valuable design information in a digital format easily accessible. Overall, this study contributes to the advancement of CAD conversions, providing accurate results from the translating process. Future research can focus on handling diverse drawing types, enhanced accuracy in shape and line detection and extraction.}
+      \field{booktitle}{Advanced in Creative Technology- added Value Innovations in Engineering, Materials and Manufacturing}
+      \field{isbn}{978-3-031-59164-8}
+      \field{title}{Advanced Knowledge Extraction of Physical Design Drawings, Translation and Conversion to CAD Formats Using Deep Learning}
+      \field{year}{2024}
+      \field{pages}{343\bibrangedash 356}
+      \range{pages}{14}
+    \endentry
+    \entry{khan2025drawingsdecisionshybridvisionlanguage}{misc}{}{}
+      \name{author}{6}{}{%
+        {{hash=9e01857e2cf5a1ba4e042c7af05785d1}{%
+           family={Khan},
+           familyi={K\bibinitperiod},
+           given={Muhammad\bibnamedelima Tayyab},
+           giveni={M\bibinitperiod\bibinitdelim T\bibinitperiod}}}%
+        {{hash=450b29a06a741c324cd52ccb41de5a01}{%
+           family={Chen},
+           familyi={C\bibinitperiod},
+           given={Lequn},
+           giveni={L\bibinitperiod}}}%
+        {{hash=f2525e0573cba6d21a73236916ad4315}{%
+           family={Yong},
+           familyi={Y\bibinitperiod},
+           given={Zane},
+           giveni={Z\bibinitperiod}}}%
+        {{hash=1c3721aff8e63220cce5d464b7ca7015}{%
+           family={Tan},
+           familyi={T\bibinitperiod},
+           given={Jun\bibnamedelima Ming},
+           giveni={J\bibinitperiod\bibinitdelim M\bibinitperiod}}}%
+        {{hash=2563c7303caca9c8d8ad61ef6c10a7a0}{%
+           family={Feng},
+           familyi={F\bibinitperiod},
+           given={Wenhe},
+           giveni={W\bibinitperiod}}}%
+        {{hash=f7ceb63f87b559d5a5b3d249880f2e36}{%
+           family={Moon},
+           familyi={M\bibinitperiod},
+           given={Seung\bibnamedelima Ki},
+           giveni={S\bibinitperiod\bibinitdelim K\bibinitperiod}}}%
+      }
+      \strng{namehash}{b5f814c6843cb21c2e7c1c7254b32d1b}
+      \strng{fullhash}{d77dfee2ec3813f06e4001beb2095791}
+      \strng{fullhashraw}{d77dfee2ec3813f06e4001beb2095791}
+      \strng{bibnamehash}{b5f814c6843cb21c2e7c1c7254b32d1b}
+      \strng{authorbibnamehash}{b5f814c6843cb21c2e7c1c7254b32d1b}
+      \strng{authornamehash}{b5f814c6843cb21c2e7c1c7254b32d1b}
+      \strng{authorfullhash}{d77dfee2ec3813f06e4001beb2095791}
+      \strng{authorfullhashraw}{d77dfee2ec3813f06e4001beb2095791}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{eprintclass}{cs.CV}
+      \field{eprinttype}{arXiv}
+      \field{title}{From Drawings to Decisions: A Hybrid Vision-Language Framework for Parsing 2D Engineering Drawings into Structured Manufacturing Knowledge}
+      \field{year}{2025}
+      \verb{eprint}
+      \verb 2506.17374
+      \endverb
+      \verb{urlraw}
+      \verb https://arxiv.org/abs/2506.17374
+      \endverb
+      \verb{url}
+      \verb https://arxiv.org/abs/2506.17374
+      \endverb
+    \endentry
+    \entry{KI-LOK2025}{misc}{}{}
+      \name{author}{3}{}{%
+        {{hash=fc050cbde505ee70a32505adeb0c9e03}{%
+           family={Leuschel},
+           familyi={L\bibinitperiod},
+           given={Michael},
+           giveni={M\bibinitperiod}}}%
+        {{hash=696b8a71058d371c55c0747b7b5d8076}{%
+           family={Gruteser},
+           familyi={G\bibinitperiod},
+           given={Jan},
+           giveni={J\bibinitperiod}}}%
+        {{hash=47f2d99a7074e12aa481e34205d291dc}{%
+           family={Roßbach},
+           familyi={R\bibinitperiod},
+           given={Jan},
+           giveni={J\bibinitperiod}}}%
+      }
+      \list{language}{1}{%
+        {German}%
+      }
+      \strng{namehash}{96475d55401fd0f083e94ee5b09554cf}
+      \strng{fullhash}{96475d55401fd0f083e94ee5b09554cf}
+      \strng{fullhashraw}{96475d55401fd0f083e94ee5b09554cf}
+      \strng{bibnamehash}{96475d55401fd0f083e94ee5b09554cf}
+      \strng{authorbibnamehash}{96475d55401fd0f083e94ee5b09554cf}
+      \strng{authornamehash}{96475d55401fd0f083e94ee5b09554cf}
+      \strng{authorfullhash}{96475d55401fd0f083e94ee5b09554cf}
+      \strng{authorfullhashraw}{96475d55401fd0f083e94ee5b09554cf}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{Abschlussbericht des KI-LOK Forschungsprojekts. Im Projekt wurden Techniken für die Validierung und Verifikation KI-basierter Systeme der Bahntechnik sowie modellbasierte Methoden zum Test von autonomen Zugsystemen erforscht.}
+      \field{howpublished}{\url{https://docserv.uni-duesseldorf.de/servlets/DocumentServlet?id=67987}}
+      \field{note}{URN: \url{urn:nbn:de:hbz:061-20250120-134832-2}}
+      \field{title}{Prüfverfahren für KI-basierte Komponenten im Eisenbahnbetrieb (KI-LOK Abschlussbericht)}
+      \field{year}{2025}
+      \keyw{Formale Methoden,Künstliche Intelligenz,Zugleitsysteme,Zertifizierung}
+    \endentry
+    \entry{Vromans2005ReliabilityOR}{inproceedings}{}{}
+      \name{author}{1}{}{%
+        {{hash=7a6f45341e12a7d07de33e92ce9fe402}{%
+           family={Vromans},
+           familyi={V\bibinitperiod},
+           given={Michiel\bibnamedelimb J.\bibnamedelimi C.\bibnamedelimi M.},
+           giveni={M\bibinitperiod\bibinitdelim J\bibinitperiod\bibinitdelim C\bibinitperiod\bibinitdelim M\bibinitperiod}}}%
+      }
+      \strng{namehash}{7a6f45341e12a7d07de33e92ce9fe402}
+      \strng{fullhash}{7a6f45341e12a7d07de33e92ce9fe402}
+      \strng{fullhashraw}{7a6f45341e12a7d07de33e92ce9fe402}
+      \strng{bibnamehash}{7a6f45341e12a7d07de33e92ce9fe402}
+      \strng{authorbibnamehash}{7a6f45341e12a7d07de33e92ce9fe402}
+      \strng{authornamehash}{7a6f45341e12a7d07de33e92ce9fe402}
+      \strng{authorfullhash}{7a6f45341e12a7d07de33e92ce9fe402}
+      \strng{authorfullhashraw}{7a6f45341e12a7d07de33e92ce9fe402}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Reliability of Railway Systems}
+      \field{year}{2005}
+      \verb{urlraw}
+      \verb https://api.semanticscholar.org/CorpusID:106807787
+      \endverb
+      \verb{url}
+      \verb https://api.semanticscholar.org/CorpusID:106807787
+      \endverb
+    \endentry
+    \entry{Smith2007}{inproceedings}{}{}
+      \name{author}{1}{}{%
+        {{hash=d2951e7c5c746f711dc91173afea88b8}{%
+           family={Smith},
+           familyi={S\bibinitperiod},
+           given={R.},
+           giveni={R\bibinitperiod}}}%
+      }
+      \strng{namehash}{d2951e7c5c746f711dc91173afea88b8}
+      \strng{fullhash}{d2951e7c5c746f711dc91173afea88b8}
+      \strng{fullhashraw}{d2951e7c5c746f711dc91173afea88b8}
+      \strng{bibnamehash}{d2951e7c5c746f711dc91173afea88b8}
+      \strng{authorbibnamehash}{d2951e7c5c746f711dc91173afea88b8}
+      \strng{authornamehash}{d2951e7c5c746f711dc91173afea88b8}
+      \strng{authorfullhash}{d2951e7c5c746f711dc91173afea88b8}
+      \strng{authorfullhashraw}{d2951e7c5c746f711dc91173afea88b8}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Ninth International Conference on Document Analysis and Recognition (ICDAR 2007)}
+      \field{title}{An Overview of the Tesseract OCR Engine}
+      \field{volume}{2}
+      \field{year}{2007}
+      \field{pages}{629\bibrangedash 633}
+      \range{pages}{5}
+      \verb{doi}
+      \verb 10.1109/ICDAR.2007.4376991
+      \endverb
+      \keyw{Optical character recognition software;Search engines;Testing;Open source software;Text recognition;Filters;Prototypes;Independent component analysis;Pipelines;Inspection}
+    \endentry
+    \entry{Patel}{article}{}{}
+      \name{author}{3}{}{%
+        {{hash=e0c1997d2c11b50fd9ebec94135c5750}{%
+           family={Patel},
+           familyi={P\bibinitperiod},
+           given={Chirag},
+           giveni={C\bibinitperiod}}}%
+        {{hash=5c2ccfcd31ee29bdaedcdcc7c175a220}{%
+           family={Patel},
+           familyi={P\bibinitperiod},
+           given={Atul},
+           giveni={A\bibinitperiod}}}%
+        {{hash=563743b0d1b0abd8b2926ebf84cc5250}{%
+           family={Patel},
+           familyi={P\bibinitperiod},
+           given={Dharmendra},
+           giveni={D\bibinitperiod}}}%
+      }
+      \strng{namehash}{7aa1e3073f459aab945ecfa78ce5960d}
+      \strng{fullhash}{7aa1e3073f459aab945ecfa78ce5960d}
+      \strng{fullhashraw}{7aa1e3073f459aab945ecfa78ce5960d}
+      \strng{bibnamehash}{7aa1e3073f459aab945ecfa78ce5960d}
+      \strng{authorbibnamehash}{7aa1e3073f459aab945ecfa78ce5960d}
+      \strng{authornamehash}{7aa1e3073f459aab945ecfa78ce5960d}
+      \strng{authorfullhash}{7aa1e3073f459aab945ecfa78ce5960d}
+      \strng{authorfullhashraw}{7aa1e3073f459aab945ecfa78ce5960d}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{International Journal of Computer Applications}
+      \field{month}{10}
+      \field{title}{Optical Character Recognition by Open source OCR Tool Tesseract: A Case Study}
+      \field{volume}{55}
+      \field{year}{2012}
+      \field{pages}{50\bibrangedash 56}
+      \range{pages}{7}
+      \verb{doi}
+      \verb 10.5120/8794-2784
+      \endverb
+    \endentry
+    \entry{liao2019realtimescenetextdetection}{misc}{}{}
+      \name{author}{5}{}{%
+        {{hash=eaf4021168319e7c768d0bb6f1210cc6}{%
+           family={Liao},
+           familyi={L\bibinitperiod},
+           given={Minghui},
+           giveni={M\bibinitperiod}}}%
+        {{hash=033d2df0ba4323df88f46e6646dc576b}{%
+           family={Wan},
+           familyi={W\bibinitperiod},
+           given={Zhaoyi},
+           giveni={Z\bibinitperiod}}}%
+        {{hash=fa98e8b4e3253aa1f8427ad24381b742}{%
+           family={Yao},
+           familyi={Y\bibinitperiod},
+           given={Cong},
+           giveni={C\bibinitperiod}}}%
+        {{hash=ee3f7d7b96add98106db907e189d6c13}{%
+           family={Chen},
+           familyi={C\bibinitperiod},
+           given={Kai},
+           giveni={K\bibinitperiod}}}%
+        {{hash=68f158f41c42b03be07aa7fb3c8d36de}{%
+           family={Bai},
+           familyi={B\bibinitperiod},
+           given={Xiang},
+           giveni={X\bibinitperiod}}}%
+      }
+      \strng{namehash}{556ef30ea9912b4cc0fdffde487e1e27}
+      \strng{fullhash}{3182e121b2dbdf37bb6c12b7ea58bdcb}
+      \strng{fullhashraw}{3182e121b2dbdf37bb6c12b7ea58bdcb}
+      \strng{bibnamehash}{556ef30ea9912b4cc0fdffde487e1e27}
+      \strng{authorbibnamehash}{556ef30ea9912b4cc0fdffde487e1e27}
+      \strng{authornamehash}{556ef30ea9912b4cc0fdffde487e1e27}
+      \strng{authorfullhash}{3182e121b2dbdf37bb6c12b7ea58bdcb}
+      \strng{authorfullhashraw}{3182e121b2dbdf37bb6c12b7ea58bdcb}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{eprintclass}{cs.CV}
+      \field{eprinttype}{arXiv}
+      \field{title}{Real-time Scene Text Detection with Differentiable Binarization}
+      \field{year}{2019}
+      \verb{eprint}
+      \verb 1911.08947
+      \endverb
+      \verb{urlraw}
+      \verb https://arxiv.org/abs/1911.08947
+      \endverb
+      \verb{url}
+      \verb https://arxiv.org/abs/1911.08947
+      \endverb
+    \endentry
+    \entry{memon2020handwrittenopticalcharacterrecognition}{misc}{}{}
+      \name{author}{3}{}{%
+        {{hash=8d17fc0d96fb6df868e6399e784a6814}{%
+           family={Memon},
+           familyi={M\bibinitperiod},
+           given={Jamshed},
+           giveni={J\bibinitperiod}}}%
+        {{hash=a65b7f504760b5c67d5d7a5995431ffe}{%
+           family={Sami},
+           familyi={S\bibinitperiod},
+           given={Maira},
+           giveni={M\bibinitperiod}}}%
+        {{hash=5fc72826c01bbb5016cec466b61f037e}{%
+           family={Khan},
+           familyi={K\bibinitperiod},
+           given={Rizwan\bibnamedelima Ahmed},
+           giveni={R\bibinitperiod\bibinitdelim A\bibinitperiod}}}%
+      }
+      \strng{namehash}{f6eeb2ee78d8df85c0406693596a2e96}
+      \strng{fullhash}{f6eeb2ee78d8df85c0406693596a2e96}
+      \strng{fullhashraw}{f6eeb2ee78d8df85c0406693596a2e96}
+      \strng{bibnamehash}{f6eeb2ee78d8df85c0406693596a2e96}
+      \strng{authorbibnamehash}{f6eeb2ee78d8df85c0406693596a2e96}
+      \strng{authornamehash}{f6eeb2ee78d8df85c0406693596a2e96}
+      \strng{authorfullhash}{f6eeb2ee78d8df85c0406693596a2e96}
+      \strng{authorfullhashraw}{f6eeb2ee78d8df85c0406693596a2e96}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{eprintclass}{cs.CV}
+      \field{eprinttype}{arXiv}
+      \field{title}{Handwritten Optical Character Recognition (OCR): A Comprehensive Systematic Literature Review (SLR)}
+      \field{year}{2020}
+      \verb{eprint}
+      \verb 2001.00139
+      \endverb
+      \verb{urlraw}
+      \verb https://arxiv.org/abs/2001.00139
+      \endverb
+      \verb{url}
+      \verb https://arxiv.org/abs/2001.00139
+      \endverb
+    \endentry
+    \entry{du2020ppocrpracticalultralightweight}{misc}{}{}
+      \name{author}{11}{}{%
+        {{hash=d44d7994db955a2c2955c9040b76fc85}{%
+           family={Du},
+           familyi={D\bibinitperiod},
+           given={Yuning},
+           giveni={Y\bibinitperiod}}}%
+        {{hash=5d2d5f1cda31630d876974be91a8ec7f}{%
+           family={Li},
+           familyi={L\bibinitperiod},
+           given={Chenxia},
+           giveni={C\bibinitperiod}}}%
+        {{hash=0b7422f1dc234b65424762f58a353672}{%
+           family={Guo},
+           familyi={G\bibinitperiod},
+           given={Ruoyu},
+           giveni={R\bibinitperiod}}}%
+        {{hash=f2ef9bc79ea80e718427c5c700e68ce0}{%
+           family={Yin},
+           familyi={Y\bibinitperiod},
+           given={Xiaoting},
+           giveni={X\bibinitperiod}}}%
+        {{hash=7c31bb22e5fbed815509a73cb068af2e}{%
+           family={Liu},
+           familyi={L\bibinitperiod},
+           given={Weiwei},
+           giveni={W\bibinitperiod}}}%
+        {{hash=21b6969d672728cb4ea4381d1d8706b5}{%
+           family={Zhou},
+           familyi={Z\bibinitperiod},
+           given={Jun},
+           giveni={J\bibinitperiod}}}%
+        {{hash=8159ab1954132fe40e3516396cc557ef}{%
+           family={Bai},
+           familyi={B\bibinitperiod},
+           given={Yifan},
+           giveni={Y\bibinitperiod}}}%
+        {{hash=8bab059cc5533783c07cfc972f405895}{%
+           family={Yu},
+           familyi={Y\bibinitperiod},
+           given={Zilin},
+           giveni={Z\bibinitperiod}}}%
+        {{hash=cd377adf9371f4839295f2c9b403b452}{%
+           family={Yang},
+           familyi={Y\bibinitperiod},
+           given={Yehua},
+           giveni={Y\bibinitperiod}}}%
+        {{hash=2ce95337f93907a139813f02c93ba30b}{%
+           family={Dang},
+           familyi={D\bibinitperiod},
+           given={Qingqing},
+           giveni={Q\bibinitperiod}}}%
+        {{hash=37678b3032d9ac7a2e0c459a11ed97c5}{%
+           family={Wang},
+           familyi={W\bibinitperiod},
+           given={Haoshuang},
+           giveni={H\bibinitperiod}}}%
+      }
+      \strng{namehash}{46aeebf671415826de5d1dfa7e65c874}
+      \strng{fullhash}{6908ab9d9186b45b68907ea7f63ce826}
+      \strng{fullhashraw}{6908ab9d9186b45b68907ea7f63ce826}
+      \strng{bibnamehash}{46aeebf671415826de5d1dfa7e65c874}
+      \strng{authorbibnamehash}{46aeebf671415826de5d1dfa7e65c874}
+      \strng{authornamehash}{46aeebf671415826de5d1dfa7e65c874}
+      \strng{authorfullhash}{6908ab9d9186b45b68907ea7f63ce826}
+      \strng{authorfullhashraw}{6908ab9d9186b45b68907ea7f63ce826}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{eprintclass}{cs.CV}
+      \field{eprinttype}{arXiv}
+      \field{title}{PP-OCR: A Practical Ultra Lightweight OCR System}
+      \field{year}{2020}
+      \verb{eprint}
+      \verb 2009.09941
+      \endverb
+      \verb{urlraw}
+      \verb https://arxiv.org/abs/2009.09941
+      \endverb
+      \verb{url}
+      \verb https://arxiv.org/abs/2009.09941
+      \endverb
+    \endentry
+    \entry{baek2019characterregionawarenesstext}{misc}{}{}
+      \name{author}{5}{}{%
+        {{hash=778de1015d4d7bee0489fc41badc7527}{%
+           family={Baek},
+           familyi={B\bibinitperiod},
+           given={Youngmin},
+           giveni={Y\bibinitperiod}}}%
+        {{hash=45c762dc0e7a36818ccf0ce1d2863e95}{%
+           family={Lee},
+           familyi={L\bibinitperiod},
+           given={Bado},
+           giveni={B\bibinitperiod}}}%
+        {{hash=9d2ac11de77065ae48b1a2661bb6c477}{%
+           family={Han},
+           familyi={H\bibinitperiod},
+           given={Dongyoon},
+           giveni={D\bibinitperiod}}}%
+        {{hash=eb5683d5e1e58ddad99e436c69bb62e9}{%
+           family={Yun},
+           familyi={Y\bibinitperiod},
+           given={Sangdoo},
+           giveni={S\bibinitperiod}}}%
+        {{hash=f08c00bcf176a186203d8e949c591d83}{%
+           family={Lee},
+           familyi={L\bibinitperiod},
+           given={Hwalsuk},
+           giveni={H\bibinitperiod}}}%
+      }
+      \strng{namehash}{45692f298bd1c5b137ec8f8c7984a59e}
+      \strng{fullhash}{b7e4c4842070ce6c29f966c363096e0d}
+      \strng{fullhashraw}{b7e4c4842070ce6c29f966c363096e0d}
+      \strng{bibnamehash}{45692f298bd1c5b137ec8f8c7984a59e}
+      \strng{authorbibnamehash}{45692f298bd1c5b137ec8f8c7984a59e}
+      \strng{authornamehash}{45692f298bd1c5b137ec8f8c7984a59e}
+      \strng{authorfullhash}{b7e4c4842070ce6c29f966c363096e0d}
+      \strng{authorfullhashraw}{b7e4c4842070ce6c29f966c363096e0d}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{eprintclass}{cs.CV}
+      \field{eprinttype}{arXiv}
+      \field{title}{Character Region Awareness for Text Detection}
+      \field{year}{2019}
+      \verb{eprint}
+      \verb 1904.01941
+      \endverb
+      \verb{urlraw}
+      \verb https://arxiv.org/abs/1904.01941
+      \endverb
+      \verb{url}
+      \verb https://arxiv.org/abs/1904.01941
+      \endverb
+    \endentry
+    \entry{long2020scenetextdetectionrecognition}{misc}{}{}
+      \name{author}{3}{}{%
+        {{hash=d52d3e3a9ff87106703fcc606c1b8c76}{%
+           family={Long},
+           familyi={L\bibinitperiod},
+           given={Shangbang},
+           giveni={S\bibinitperiod}}}%
+        {{hash=8c6ba049f603b2bd1a05026dd9c99aac}{%
+           family={He},
+           familyi={H\bibinitperiod},
+           given={Xin},
+           giveni={X\bibinitperiod}}}%
+        {{hash=fa98e8b4e3253aa1f8427ad24381b742}{%
+           family={Yao},
+           familyi={Y\bibinitperiod},
+           given={Cong},
+           giveni={C\bibinitperiod}}}%
+      }
+      \strng{namehash}{e352be46b77c18b66e7cd158b022bd99}
+      \strng{fullhash}{e352be46b77c18b66e7cd158b022bd99}
+      \strng{fullhashraw}{e352be46b77c18b66e7cd158b022bd99}
+      \strng{bibnamehash}{e352be46b77c18b66e7cd158b022bd99}
+      \strng{authorbibnamehash}{e352be46b77c18b66e7cd158b022bd99}
+      \strng{authornamehash}{e352be46b77c18b66e7cd158b022bd99}
+      \strng{authorfullhash}{e352be46b77c18b66e7cd158b022bd99}
+      \strng{authorfullhashraw}{e352be46b77c18b66e7cd158b022bd99}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{eprintclass}{cs.CV}
+      \field{eprinttype}{arXiv}
+      \field{title}{Scene Text Detection and Recognition: The Deep Learning Era}
+      \field{year}{2020}
+      \verb{eprint}
+      \verb 1811.04256
+      \endverb
+      \verb{urlraw}
+      \verb https://arxiv.org/abs/1811.04256
+      \endverb
+      \verb{url}
+      \verb https://arxiv.org/abs/1811.04256
+      \endverb
+    \endentry
+    \entry{García}{article}{}{}
+      \name{author}{3}{}{%
+        {{hash=1d6f22b037f551c699ca395e4d024264}{%
+           family={Moreno-García},
+           familyi={M\bibinithyphendelim G\bibinitperiod},
+           given={Carlos},
+           giveni={C\bibinitperiod}}}%
+        {{hash=8ee870839373bdec087796433d91b98e}{%
+           family={Elyan},
+           familyi={E\bibinitperiod},
+           given={Eyad},
+           giveni={E\bibinitperiod}}}%
+        {{hash=5be1d96df47e9680d491d156aaeaa1c5}{%
+           family={Jayne},
+           familyi={J\bibinitperiod},
+           given={Chrisina},
+           giveni={C\bibinitperiod}}}%
+      }
+      \strng{namehash}{9f07f0a44524e0e369be317edb66cf0e}
+      \strng{fullhash}{9f07f0a44524e0e369be317edb66cf0e}
+      \strng{fullhashraw}{9f07f0a44524e0e369be317edb66cf0e}
+      \strng{bibnamehash}{9f07f0a44524e0e369be317edb66cf0e}
+      \strng{authorbibnamehash}{9f07f0a44524e0e369be317edb66cf0e}
+      \strng{authornamehash}{9f07f0a44524e0e369be317edb66cf0e}
+      \strng{authorfullhash}{9f07f0a44524e0e369be317edb66cf0e}
+      \strng{authorfullhashraw}{9f07f0a44524e0e369be317edb66cf0e}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Neural Computing and Applications}
+      \field{month}{06}
+      \field{title}{New trends on digitisation of complex engineering drawings}
+      \field{volume}{31}
+      \field{year}{2019}
+      \verb{doi}
+      \verb 10.1007/s00521-018-3583-1
+      \endverb
+    \endentry
+    \entry{SAUVOLA2000225}{article}{}{}
+      \name{author}{2}{}{%
+        {{hash=2bb85c674f762602c6a94d0ea7bc9ebe}{%
+           family={Sauvola},
+           familyi={S\bibinitperiod},
+           given={J.},
+           giveni={J\bibinitperiod}}}%
+        {{hash=fe5079bbe40db895a3ad1065d4b9f280}{%
+           family={Pietikäinen},
+           familyi={P\bibinitperiod},
+           given={M.},
+           giveni={M\bibinitperiod}}}%
+      }
+      \strng{namehash}{545d0e5196b5e42383d83182eca9ace3}
+      \strng{fullhash}{545d0e5196b5e42383d83182eca9ace3}
+      \strng{fullhashraw}{545d0e5196b5e42383d83182eca9ace3}
+      \strng{bibnamehash}{545d0e5196b5e42383d83182eca9ace3}
+      \strng{authorbibnamehash}{545d0e5196b5e42383d83182eca9ace3}
+      \strng{authornamehash}{545d0e5196b5e42383d83182eca9ace3}
+      \strng{authorfullhash}{545d0e5196b5e42383d83182eca9ace3}
+      \strng{authorfullhashraw}{545d0e5196b5e42383d83182eca9ace3}
+      \field{sortinit}{5}
+      \field{sortinithash}{20e9b4b0b173788c5dace24730f47d8c}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{A new method is presented for adaptive document image binarization, where the page is considered as a collection of subcomponents such as text, background and picture. The problems caused by noise, illumination and many source type-related degradations are addressed. Two new algorithms are applied to determine a local threshold for each pixel. The performance evaluation of the algorithm utilizes test images with ground-truth, evaluation metrics for binarization of textual and synthetic images, and a weight-based ranking procedure for the final result presentation. The proposed algorithms were tested with images including different types of document components and degradations. The results were compared with a number of known techniques in the literature. The benchmarking results show that the method adapts and performs well in each case qualitatively and quantitatively.}
+      \field{issn}{0031-3203}
+      \field{journaltitle}{Pattern Recognition}
+      \field{number}{2}
+      \field{title}{Adaptive document image binarization}
+      \field{volume}{33}
+      \field{year}{2000}
+      \field{pages}{225\bibrangedash 236}
+      \range{pages}{12}
+      \verb{doi}
+      \verb https://doi.org/10.1016/S0031-3203(99)00055-2
+      \endverb
+      \verb{urlraw}
+      \verb https://www.sciencedirect.com/science/article/pii/S0031320399000552
+      \endverb
+      \verb{url}
+      \verb https://www.sciencedirect.com/science/article/pii/S0031320399000552
+      \endverb
+      \keyw{Adaptive binarization,Soft decision,Document segmentation,Document analysis,Document understanding}
+    \endentry
+    \entry{Tombre}{inproceedings}{}{}
+      \name{author}{5}{}{%
+        {{hash=73f6f49511444d19b966fe957f270dd8}{%
+           family={Tombre},
+           familyi={T\bibinitperiod},
+           given={Karl},
+           giveni={K\bibinitperiod}}}%
+        {{hash=bedb7e17a147e41a49d19efe2e0cf276}{%
+           family={Tabbone},
+           familyi={T\bibinitperiod},
+           given={Salvatore},
+           giveni={S\bibinitperiod}}}%
+        {{hash=39e0340f9fda2a46ff1554a0be05277a}{%
+           family={Pélissier},
+           familyi={P\bibinitperiod},
+           given={Loïc},
+           giveni={L\bibinitperiod}}}%
+        {{hash=4b374f3222cf3a02f2a13a4b8a014a28}{%
+           family={Lamiroy},
+           familyi={L\bibinitperiod},
+           given={Bart},
+           giveni={B\bibinitperiod}}}%
+        {{hash=52b3ad953edb144b03f38f3660b9f173}{%
+           family={Dosch},
+           familyi={D\bibinitperiod},
+           given={Philippe},
+           giveni={P\bibinitperiod}}}%
+      }
+      \name{editor}{3}{}{%
+        {{hash=34198c560747c40d353a4baec6ce891d}{%
+           family={Lopresti},
+           familyi={L\bibinitperiod},
+           given={Daniel},
+           giveni={D\bibinitperiod}}}%
+        {{hash=a2ae78b7ed0610993992ea67e9a968d3}{%
+           family={Hu},
+           familyi={H\bibinitperiod},
+           given={Jianying},
+           giveni={J\bibinitperiod}}}%
+        {{hash=22029630e2f0676f9338f9c773ebcf9b}{%
+           family={Kashi},
+           familyi={K\bibinitperiod},
+           given={Ramanujan},
+           giveni={R\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {Berlin, Heidelberg}%
+      }
+      \list{publisher}{1}{%
+        {Springer Berlin Heidelberg}%
+      }
+      \strng{namehash}{af83e7aef349e518c0e674d38101e3c1}
+      \strng{fullhash}{69e365935ab7e7f9a7035d115c2491a3}
+      \strng{fullhashraw}{69e365935ab7e7f9a7035d115c2491a3}
+      \strng{bibnamehash}{af83e7aef349e518c0e674d38101e3c1}
+      \strng{authorbibnamehash}{af83e7aef349e518c0e674d38101e3c1}
+      \strng{authornamehash}{af83e7aef349e518c0e674d38101e3c1}
+      \strng{authorfullhash}{69e365935ab7e7f9a7035d115c2491a3}
+      \strng{authorfullhashraw}{69e365935ab7e7f9a7035d115c2491a3}
+      \strng{editorbibnamehash}{fbcc305476c0b6c46785b3a5bc59c171}
+      \strng{editornamehash}{fbcc305476c0b6c46785b3a5bc59c171}
+      \strng{editorfullhash}{fbcc305476c0b6c46785b3a5bc59c171}
+      \strng{editorfullhashraw}{fbcc305476c0b6c46785b3a5bc59c171}
+      \field{sortinit}{5}
+      \field{sortinithash}{20e9b4b0b173788c5dace24730f47d8c}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{Text/graphics separation aims at segmenting the document into two layers: a layer assumed to contain text and a layer containing graphical objects. In this paper, we present a consolidation of a method proposed by Fletcher and Kasturi, with a number of improvements to make it more suitable for graphics-rich documents. We discuss the right choice of thresholds for this method, and their stability. We also propose a post-processing step for retrieving text components touching the graphics, through local segmentation of the distance skeleton.}
+      \field{booktitle}{Document Analysis Systems V}
+      \field{isbn}{978-3-540-45869-2}
+      \field{title}{Text/Graphics Separation Revisited}
+      \field{year}{2002}
+      \field{pages}{200\bibrangedash 211}
+      \range{pages}{12}
+    \endentry
+    \entry{Gonzalez}{book}{}{}
+      \name{author}{2}{}{%
+        {{hash=0a0df2ba89d8ec36b2aafd36b130ed41}{%
+           family={Gonzalez},
+           familyi={G\bibinitperiod},
+           given={Rafael},
+           giveni={R\bibinitperiod}}}%
+        {{hash=422408ee02836af6ecaaecf63f1cc91c}{%
+           family={Faisal},
+           familyi={F\bibinitperiod},
+           given={Zahraa},
+           giveni={Z\bibinitperiod}}}%
+      }
+      \strng{namehash}{11e820f91445e7867a5f5940197314be}
+      \strng{fullhash}{11e820f91445e7867a5f5940197314be}
+      \strng{fullhashraw}{11e820f91445e7867a5f5940197314be}
+      \strng{bibnamehash}{11e820f91445e7867a5f5940197314be}
+      \strng{authorbibnamehash}{11e820f91445e7867a5f5940197314be}
+      \strng{authornamehash}{11e820f91445e7867a5f5940197314be}
+      \strng{authorfullhash}{11e820f91445e7867a5f5940197314be}
+      \strng{authorfullhashraw}{11e820f91445e7867a5f5940197314be}
+      \field{sortinit}{5}
+      \field{sortinithash}{20e9b4b0b173788c5dace24730f47d8c}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{month}{06}
+      \field{title}{Digital Image Processing Second Edition}
+      \field{year}{2019}
+    \endentry
+    \entry{Kukich}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=65473b8f3aeb9025b9ccd39c91d07ccf}{%
+           family={Kukich},
+           familyi={K\bibinitperiod},
+           given={Karen},
+           giveni={K\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {New York, NY, USA}%
+      }
+      \list{publisher}{1}{%
+        {Association for Computing Machinery}%
+      }
+      \strng{namehash}{65473b8f3aeb9025b9ccd39c91d07ccf}
+      \strng{fullhash}{65473b8f3aeb9025b9ccd39c91d07ccf}
+      \strng{fullhashraw}{65473b8f3aeb9025b9ccd39c91d07ccf}
+      \strng{bibnamehash}{65473b8f3aeb9025b9ccd39c91d07ccf}
+      \strng{authorbibnamehash}{65473b8f3aeb9025b9ccd39c91d07ccf}
+      \strng{authornamehash}{65473b8f3aeb9025b9ccd39c91d07ccf}
+      \strng{authorfullhash}{65473b8f3aeb9025b9ccd39c91d07ccf}
+      \strng{authorfullhashraw}{65473b8f3aeb9025b9ccd39c91d07ccf}
+      \field{sortinit}{5}
+      \field{sortinithash}{20e9b4b0b173788c5dace24730f47d8c}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{Research aimed at correcting words in text has focused on three progressively more difficult problems:(1) nonword error detection; (2) isolated-word error correction; and (3) context-dependent work correction. In response to the first problem, efficient pattern-matching and n-gram analysis techniques have been developed for detecting strings that do not appear in a given word list. In response to the second problem, a variety of general and application-specific spelling correction techniques have been developed. Some of them were based on detailed studies of spelling error patterns. In response to the third problem, a few experiments using natural-language-processing tools or statistical-language models have been carried out. This article surveys documented findings on spelling error patterns, provides descriptions of various nonword detection and isolated-word error correction techniques, reviews the state of the art of context-dependent word correction techniques, and discusses research issues related to all three areas of automatic error correction in text.}
+      \field{issn}{0360-0300}
+      \field{journaltitle}{ACM Comput. Surv.}
+      \field{month}{12}
+      \field{number}{4}
+      \field{title}{Techniques for automatically correcting words in text}
+      \field{volume}{24}
+      \field{year}{1992}
+      \field{pages}{377\bibrangedash 439}
+      \range{pages}{63}
+      \verb{doi}
+      \verb 10.1145/146370.146380
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1145/146370.146380
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1145/146370.146380
+      \endverb
+      \keyw{n-gram analysis,Optical Character Recognition (OCR),context-dependent spelling correction,grammar checking,natural-language-processing models,neural net classifiers,spell checking,spelling error detection,spelling error patterns,statistical-language models,word recognition and correction}
+    \endentry
+    \entry{Taghva}{article}{}{}
+      \name{author}{2}{}{%
+        {{hash=8ee9db73aeef2920bf2d6f8ad95ebd2c}{%
+           family={Taghva},
+           familyi={T\bibinitperiod},
+           given={Kazem},
+           giveni={K\bibinitperiod}}}%
+        {{hash=dce459c48d584f162dc999cbbcb96263}{%
+           family={Stofsky},
+           familyi={S\bibinitperiod},
+           given={Eric},
+           giveni={E\bibinitperiod}}}%
+      }
+      \strng{namehash}{78d5b7d68a3d525e39b33cdc631f4872}
+      \strng{fullhash}{78d5b7d68a3d525e39b33cdc631f4872}
+      \strng{fullhashraw}{78d5b7d68a3d525e39b33cdc631f4872}
+      \strng{bibnamehash}{78d5b7d68a3d525e39b33cdc631f4872}
+      \strng{authorbibnamehash}{78d5b7d68a3d525e39b33cdc631f4872}
+      \strng{authornamehash}{78d5b7d68a3d525e39b33cdc631f4872}
+      \strng{authorfullhash}{78d5b7d68a3d525e39b33cdc631f4872}
+      \strng{authorfullhashraw}{78d5b7d68a3d525e39b33cdc631f4872}
+      \field{sortinit}{5}
+      \field{sortinithash}{20e9b4b0b173788c5dace24730f47d8c}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{IJDAR}
+      \field{month}{03}
+      \field{title}{OCRSpell: An interactive spelling correction system for OCR errors in text}
+      \field{volume}{3}
+      \field{year}{2001}
+      \field{pages}{125\bibrangedash 137}
+      \range{pages}{13}
+      \verb{doi}
+      \verb 10.1007/PL00013558
+      \endverb
+    \endentry
+    \entry{Binmakhashen}{article}{}{}
+      \name{author}{2}{}{%
+        {{hash=9ec6ca35e2a5496c8ac92823d9ac4c43}{%
+           family={Binmakhashen},
+           familyi={B\bibinitperiod},
+           given={Galal},
+           giveni={G\bibinitperiod}}}%
+        {{hash=f01ab6bf23336745c610526b74af0885}{%
+           family={Mahmoud},
+           familyi={M\bibinitperiod},
+           given={Sabri},
+           giveni={S\bibinitperiod}}}%
+      }
+      \strng{namehash}{94cce95d2adb50d68116dc89b8543478}
+      \strng{fullhash}{94cce95d2adb50d68116dc89b8543478}
+      \strng{fullhashraw}{94cce95d2adb50d68116dc89b8543478}
+      \strng{bibnamehash}{94cce95d2adb50d68116dc89b8543478}
+      \strng{authorbibnamehash}{94cce95d2adb50d68116dc89b8543478}
+      \strng{authornamehash}{94cce95d2adb50d68116dc89b8543478}
+      \strng{authorfullhash}{94cce95d2adb50d68116dc89b8543478}
+      \strng{authorfullhashraw}{94cce95d2adb50d68116dc89b8543478}
+      \field{sortinit}{5}
+      \field{sortinithash}{20e9b4b0b173788c5dace24730f47d8c}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{ACM Computing Surveys}
+      \field{month}{10}
+      \field{title}{Document Layout Analysis: A Comprehensive Survey}
+      \field{volume}{52}
+      \field{year}{2019}
+      \field{pages}{1\bibrangedash 36}
+      \range{pages}{36}
+      \verb{doi}
+      \verb 10.1145/3355610
+      \endverb
+    \endentry
+    \entry{Cohn1997}{inbook}{}{}
+      \name{author}{4}{}{%
+        {{hash=8c6c03ab4edea443dde5127cec2e7aac}{%
+           family={Cohn},
+           familyi={C\bibinitperiod},
+           given={Anthony\bibnamedelima G.},
+           giveni={A\bibinitperiod\bibinitdelim G\bibinitperiod}}}%
+        {{hash=43eacc61e2225a110ee0278921690a66}{%
+           family={Bennett},
+           familyi={B\bibinitperiod},
+           given={Brandon},
+           giveni={B\bibinitperiod}}}%
+        {{hash=ffe37252bcca0bd55393d003860656eb}{%
+           family={Gooday},
+           familyi={G\bibinitperiod},
+           given={John},
+           giveni={J\bibinitperiod}}}%
+        {{hash=424e6bd702a6fff78dc491c8b9490dc8}{%
+           family={Gotts},
+           familyi={G\bibinitperiod},
+           given={Nicholas\bibnamedelima M.},
+           giveni={N\bibinitperiod\bibinitdelim M\bibinitperiod}}}%
+      }
+      \name{editor}{1}{}{%
+        {{hash=bbd168cccf763b0b03073b56e5a541c5}{%
+           family={Stock},
+           familyi={S\bibinitperiod},
+           given={Oliviero},
+           giveni={O\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {Dordrecht}%
+      }
+      \list{publisher}{1}{%
+        {Springer Netherlands}%
+      }
+      \strng{namehash}{5a3f74fe61196271a74c9379774baf42}
+      \strng{fullhash}{3031767954ea365b1108c67473b7cb28}
+      \strng{fullhashraw}{3031767954ea365b1108c67473b7cb28}
+      \strng{bibnamehash}{5a3f74fe61196271a74c9379774baf42}
+      \strng{authorbibnamehash}{5a3f74fe61196271a74c9379774baf42}
+      \strng{authornamehash}{5a3f74fe61196271a74c9379774baf42}
+      \strng{authorfullhash}{3031767954ea365b1108c67473b7cb28}
+      \strng{authorfullhashraw}{3031767954ea365b1108c67473b7cb28}
+      \strng{editorbibnamehash}{bbd168cccf763b0b03073b56e5a541c5}
+      \strng{editornamehash}{bbd168cccf763b0b03073b56e5a541c5}
+      \strng{editorfullhash}{bbd168cccf763b0b03073b56e5a541c5}
+      \strng{editorfullhashraw}{bbd168cccf763b0b03073b56e5a541c5}
+      \field{sortinit}{5}
+      \field{sortinithash}{20e9b4b0b173788c5dace24730f47d8c}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{Qualitative Reasoning (QR) has now become a mature subfield of AI as its tenth annual international workshop, several books (e.g. (Weld and de Kleer, 1990; Faltings and Struss, 1992)) and a wealth of conference and journal publications testify. QR tries to make explicit our everyday commonsense knowledge about the physical world and also the underlying abstractions used by scientists and engineers when they create models. Given this kind of knowledge and appropriate reasoning methods, a computer could make predictions and diagnoses and explain the behavior of physical systems in a qualitative manner, even when a precise quantitative description is not available or is computationally intractable. Note that a representation is not normally deemed to be qualitative by the QR community simply because it is symbolic and utilizes discrete quantity spaces but because the distinctions made in these discretizations are relevant to high-level descriptions of the system or behavior being modeled.}
+      \field{booktitle}{Spatial and Temporal Reasoning}
+      \field{isbn}{978-0-585-28322-7}
+      \field{title}{Representing and Reasoning with Qualitative Spatial Relations About Regions}
+      \field{year}{1997}
+      \field{pages}{97\bibrangedash 134}
+      \range{pages}{38}
+      \verb{doi}
+      \verb 10.1007/978-0-585-28322-7_4
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1007/978-0-585-28322-7_4
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1007/978-0-585-28322-7_4
+      \endverb
+    \endentry
+    \entry{LeeRyu}{article}{}{}
+      \name{author}{2}{}{%
+        {{hash=1a06d15430796bd2519e5e52a8af269f}{%
+           family={Lee},
+           familyi={L\bibinitperiod},
+           given={Seong-Whan},
+           giveni={S\bibinithyphendelim W\bibinitperiod}}}%
+        {{hash=454824f0bed5862eef60f5e4c4f58ab9}{%
+           family={Ryu},
+           familyi={R\bibinitperiod},
+           given={Dae-Seok},
+           giveni={D\bibinithyphendelim S\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {USA}%
+      }
+      \list{publisher}{1}{%
+        {IEEE Computer Society}%
+      }
+      \strng{namehash}{a85a15926905c225e7bd0ca145b559f1}
+      \strng{fullhash}{a85a15926905c225e7bd0ca145b559f1}
+      \strng{fullhashraw}{a85a15926905c225e7bd0ca145b559f1}
+      \strng{bibnamehash}{a85a15926905c225e7bd0ca145b559f1}
+      \strng{authorbibnamehash}{a85a15926905c225e7bd0ca145b559f1}
+      \strng{authornamehash}{a85a15926905c225e7bd0ca145b559f1}
+      \strng{authorfullhash}{a85a15926905c225e7bd0ca145b559f1}
+      \strng{authorfullhashraw}{a85a15926905c225e7bd0ca145b559f1}
+      \field{sortinit}{6}
+      \field{sortinithash}{b33bc299efb3c36abec520a4c896a66d}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{Automatic transformation of paper documents into electronic documents requires geometric document layout analysis at the first stage. However, variations in character font sizes, text line spacing, and document layout structures have made it difficult to design a general-purpose document layout analysis algorithm for many years. The use of some parameters has therefore been unavoidable in previous methods. In this paper, we propose a parameter-free method for segmenting the document images into maximal homogeneous regions and identifying them as texts, images, tables, and ruling lines. A pyramidal quadtree structure is constructed for multiscale analysis and a periodicity measure is suggested to find a periodical attribute of text regions for page segmentation. To obtain robust page segmentation results, a confirmation procedure using texture analysis is applied to only ambiguous regions. Based on the proposed periodicity measure, multiscale analysis, and confirmation procedure, we could develop a robust method for geometric document layout analysis independent of character font sizes, text line spacing, and document layout structures. The proposed method was experimented with the document database from the University of Washington and the MediaTeam Document Database. The results of these tests have shown that the proposed method provides more accurate results than the previous ones.}
+      \field{issn}{0162-8828}
+      \field{journaltitle}{IEEE Trans. Pattern Anal. Mach. Intell.}
+      \field{month}{11}
+      \field{number}{11}
+      \field{title}{Parameter-Free Geometric Document Layout Analysis}
+      \field{volume}{23}
+      \field{year}{2001}
+      \field{pages}{1240\bibrangedash 1256}
+      \range{pages}{17}
+      \verb{doi}
+      \verb 10.1109/34.969115
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1109/34.969115
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1109/34.969115
+      \endverb
+      \keyw{Geometric document layout analysis,multiscale analysis,page segmentation.,parameter-free method,periodicity estimation}
+    \endentry
+    \entry{Simon}{article}{}{}
+      \name{author}{3}{}{%
+        {{hash=35088e878830a98ded66e66672ef657c}{%
+           family={Simon},
+           familyi={S\bibinitperiod},
+           given={Anikó},
+           giveni={A\bibinitperiod}}}%
+        {{hash=90d8d902068f10b494c37bfccfde0f41}{%
+           family={Pret},
+           familyi={P\bibinitperiod},
+           given={Jean-Christophe},
+           giveni={J\bibinithyphendelim C\bibinitperiod}}}%
+        {{hash=7e09994ef8c43249a70f4f0462685cdd}{%
+           family={Johnson},
+           familyi={J\bibinitperiod},
+           given={A.\bibnamedelimi Peter},
+           giveni={A\bibinitperiod\bibinitdelim P\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {USA}%
+      }
+      \list{publisher}{1}{%
+        {IEEE Computer Society}%
+      }
+      \strng{namehash}{511f9ed1589317d98e8d6200850a1bbc}
+      \strng{fullhash}{511f9ed1589317d98e8d6200850a1bbc}
+      \strng{fullhashraw}{511f9ed1589317d98e8d6200850a1bbc}
+      \strng{bibnamehash}{511f9ed1589317d98e8d6200850a1bbc}
+      \strng{authorbibnamehash}{511f9ed1589317d98e8d6200850a1bbc}
+      \strng{authornamehash}{511f9ed1589317d98e8d6200850a1bbc}
+      \strng{authorfullhash}{511f9ed1589317d98e8d6200850a1bbc}
+      \strng{authorfullhashraw}{511f9ed1589317d98e8d6200850a1bbc}
+      \field{sortinit}{6}
+      \field{sortinithash}{b33bc299efb3c36abec520a4c896a66d}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{This paper describes a new bottom-up method for document layout analysis. The algorithm was implemented in the CLiDE (Chemical Literature Data Extraction) system (http://chem.leeds.ac.uk/ICAMS/CLiDE.html), but the method described here is suitable for a broader range of documents. It is based on Kruskal's algorithm and uses a special distance-metric between the components to construct the physical page structure. The method has all the major advantages of bottom-up systems: independence from different text spacing and independence from different block alignments. The algorithms computational complexity is reduced to linear by using heuristics and path-compression.}
+      \field{issn}{0162-8828}
+      \field{journaltitle}{IEEE Trans. Pattern Anal. Mach. Intell.}
+      \field{month}{3}
+      \field{number}{3}
+      \field{title}{A Fast Algorithm for Bottom-Up Document Layout Analysis}
+      \field{volume}{19}
+      \field{year}{1997}
+      \field{pages}{273\bibrangedash 277}
+      \range{pages}{5}
+      \verb{doi}
+      \verb 10.1109/34.584106
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1109/34.584106
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1109/34.584106
+      \endverb
+      \keyw{spanning tree,physical page layout,chemical documents.,bottom-up layout analysis,Kruskal's algorithm,Document analysis}
+    \endentry
+    \entry{Dengel1989ANASTASILAH}{inproceedings}{}{}
+      \name{author}{2}{}{%
+        {{hash=0f3a0b2c5cde6649af286e1f864e13f1}{%
+           family={Dengel},
+           familyi={D\bibinitperiod},
+           given={Andreas\bibnamedelima R.},
+           giveni={A\bibinitperiod\bibinitdelim R\bibinitperiod}}}%
+        {{hash=034f14ea238f2e54f87f49d34bf0cb2c}{%
+           family={Barth},
+           familyi={B\bibinitperiod},
+           given={Gerhard},
+           giveni={G\bibinitperiod}}}%
+      }
+      \strng{namehash}{5bd43ca915dca8347dad3b9f39f19a4a}
+      \strng{fullhash}{5bd43ca915dca8347dad3b9f39f19a4a}
+      \strng{fullhashraw}{5bd43ca915dca8347dad3b9f39f19a4a}
+      \strng{bibnamehash}{5bd43ca915dca8347dad3b9f39f19a4a}
+      \strng{authorbibnamehash}{5bd43ca915dca8347dad3b9f39f19a4a}
+      \strng{authornamehash}{5bd43ca915dca8347dad3b9f39f19a4a}
+      \strng{authorfullhash}{5bd43ca915dca8347dad3b9f39f19a4a}
+      \strng{authorfullhashraw}{5bd43ca915dca8347dad3b9f39f19a4a}
+      \field{sortinit}{6}
+      \field{sortinithash}{b33bc299efb3c36abec520a4c896a66d}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{International Joint Conference on Artificial Intelligence}
+      \field{title}{ANASTASIL: A Hybrid Knowledge-Based System for Document Layout Analysis}
+      \field{year}{1989}
+      \verb{urlraw}
+      \verb https://api.semanticscholar.org/CorpusID:7461436
+      \endverb
+      \verb{url}
+      \verb https://api.semanticscholar.org/CorpusID:7461436
+      \endverb
+    \endentry
+    \entry{chen2017convolutionalneuralnetworkspage}{misc}{}{}
+      \name{author}{2}{}{%
+        {{hash=ee3f7d7b96add98106db907e189d6c13}{%
+           family={Chen},
+           familyi={C\bibinitperiod},
+           given={Kai},
+           giveni={K\bibinitperiod}}}%
+        {{hash=9b2d44b199083bc016f5a1da0107429b}{%
+           family={Seuret},
+           familyi={S\bibinitperiod},
+           given={Mathias},
+           giveni={M\bibinitperiod}}}%
+      }
+      \strng{namehash}{c85f7c627ffbe4d5901bad730affa005}
+      \strng{fullhash}{c85f7c627ffbe4d5901bad730affa005}
+      \strng{fullhashraw}{c85f7c627ffbe4d5901bad730affa005}
+      \strng{bibnamehash}{c85f7c627ffbe4d5901bad730affa005}
+      \strng{authorbibnamehash}{c85f7c627ffbe4d5901bad730affa005}
+      \strng{authornamehash}{c85f7c627ffbe4d5901bad730affa005}
+      \strng{authorfullhash}{c85f7c627ffbe4d5901bad730affa005}
+      \strng{authorfullhashraw}{c85f7c627ffbe4d5901bad730affa005}
+      \field{sortinit}{6}
+      \field{sortinithash}{b33bc299efb3c36abec520a4c896a66d}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{eprintclass}{cs.CV}
+      \field{eprinttype}{arXiv}
+      \field{title}{Convolutional Neural Networks for Page Segmentation of Historical Document Images}
+      \field{year}{2017}
+      \verb{eprint}
+      \verb 1704.01474
+      \endverb
+      \verb{urlraw}
+      \verb https://arxiv.org/abs/1704.01474
+      \endverb
+      \verb{url}
+      \verb https://arxiv.org/abs/1704.01474
+      \endverb
+    \endentry
+    \entry{Pfitzmann_2022}{inproceedings}{}{}
+      \name{author}{5}{}{%
+        {{hash=6f31b739f9298dc364d5f0c346c407b1}{%
+           family={Pfitzmann},
+           familyi={P\bibinitperiod},
+           given={Birgit},
+           giveni={B\bibinitperiod}}}%
+        {{hash=37fb83951ca10956269fce55f021fe29}{%
+           family={Auer},
+           familyi={A\bibinitperiod},
+           given={Christoph},
+           giveni={C\bibinitperiod}}}%
+        {{hash=4ea71d3e96d9f867aafd7c5c619763eb}{%
+           family={Dolfi},
+           familyi={D\bibinitperiod},
+           given={Michele},
+           giveni={M\bibinitperiod}}}%
+        {{hash=90f2eab2288dbe5eed1726fdafe34e7c}{%
+           family={Nassar},
+           familyi={N\bibinitperiod},
+           given={Ahmed\bibnamedelima S.},
+           giveni={A\bibinitperiod\bibinitdelim S\bibinitperiod}}}%
+        {{hash=44080c877961672622815c826dfd215c}{%
+           family={Staar},
+           familyi={S\bibinitperiod},
+           given={Peter},
+           giveni={P\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {ACM}%
+      }
+      \strng{namehash}{4ed13144d95f1e4f0697ba17ef9b90b9}
+      \strng{fullhash}{952a46cadc4d35a2a985455b641529c0}
+      \strng{fullhashraw}{952a46cadc4d35a2a985455b641529c0}
+      \strng{bibnamehash}{4ed13144d95f1e4f0697ba17ef9b90b9}
+      \strng{authorbibnamehash}{4ed13144d95f1e4f0697ba17ef9b90b9}
+      \strng{authornamehash}{4ed13144d95f1e4f0697ba17ef9b90b9}
+      \strng{authorfullhash}{952a46cadc4d35a2a985455b641529c0}
+      \strng{authorfullhashraw}{952a46cadc4d35a2a985455b641529c0}
+      \field{sortinit}{6}
+      \field{sortinithash}{b33bc299efb3c36abec520a4c896a66d}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Proceedings of the 28th ACM SIGKDD Conference on Knowledge Discovery and Data Mining}
+      \field{month}{8}
+      \field{series}{KDD ’22}
+      \field{title}{DocLayNet: A Large Human-Annotated Dataset for Document-Layout Segmentation}
+      \field{year}{2022}
+      \field{pages}{3743\bibrangedash 3751}
+      \range{pages}{9}
+      \verb{doi}
+      \verb 10.1145/3534678.3539043
+      \endverb
+      \verb{urlraw}
+      \verb http://dx.doi.org/10.1145/3534678.3539043
+      \endverb
+      \verb{url}
+      \verb http://dx.doi.org/10.1145/3534678.3539043
+      \endverb
+    \endentry
+    \entry{Nagy}{article}{}{}
+      \name{author}{3}{}{%
+        {{hash=cfae23b0dc3bf404f5e6d82b5f3e227b}{%
+           family={Nagy},
+           familyi={N\bibinitperiod},
+           given={G.},
+           giveni={G\bibinitperiod}}}%
+        {{hash=e226ef6805144488e5a4a384dd20b2af}{%
+           family={Seth},
+           familyi={S\bibinitperiod},
+           given={S.},
+           giveni={S\bibinitperiod}}}%
+        {{hash=b9f5168e8f68f8b38bb5592703a07bd9}{%
+           family={Viswanathan},
+           familyi={V\bibinitperiod},
+           given={M.},
+           giveni={M\bibinitperiod}}}%
+      }
+      \strng{namehash}{f7b12bb75feecbcdc32f54321dc53195}
+      \strng{fullhash}{f7b12bb75feecbcdc32f54321dc53195}
+      \strng{fullhashraw}{f7b12bb75feecbcdc32f54321dc53195}
+      \strng{bibnamehash}{f7b12bb75feecbcdc32f54321dc53195}
+      \strng{authorbibnamehash}{f7b12bb75feecbcdc32f54321dc53195}
+      \strng{authornamehash}{f7b12bb75feecbcdc32f54321dc53195}
+      \strng{authorfullhash}{f7b12bb75feecbcdc32f54321dc53195}
+      \strng{authorfullhashraw}{f7b12bb75feecbcdc32f54321dc53195}
+      \field{sortinit}{6}
+      \field{sortinithash}{b33bc299efb3c36abec520a4c896a66d}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Computer}
+      \field{number}{7}
+      \field{title}{A prototype document image analysis system for technical journals}
+      \field{volume}{25}
+      \field{year}{1992}
+      \field{pages}{10\bibrangedash 22}
+      \range{pages}{13}
+      \verb{doi}
+      \verb 10.1109/2.144436
+      \endverb
+      \keyw{Prototypes;Text analysis;Image analysis;Optical character recognition software;Image converters;Humans;Image storage;Character recognition;Image processing;Tree data structures}
+    \endentry
+    \entry{Kucer}{inproceedings}{}{}
+      \name{author}{4}{}{%
+        {{hash=30ce2f888f4bf49e4eb09df18abf0338}{%
+           family={Kucer},
+           familyi={K\bibinitperiod},
+           given={Michal},
+           giveni={M\bibinitperiod}}}%
+        {{hash=3ae879ce532f07e67b42cc0c8b20ebc1}{%
+           family={Oyen},
+           familyi={O\bibinitperiod},
+           given={Diane},
+           giveni={D\bibinitperiod}}}%
+        {{hash=8d7c8d529680cdee6a450c1306f38a1f}{%
+           family={Castorena},
+           familyi={C\bibinitperiod},
+           given={Juan},
+           giveni={J\bibinitperiod}}}%
+        {{hash=bb371597af3d6d97a656e6f879c0189d}{%
+           family={Wu},
+           familyi={W\bibinitperiod},
+           given={Jian},
+           giveni={J\bibinitperiod}}}%
+      }
+      \strng{namehash}{f091fbdd8fadb204ce5d0d10152ac616}
+      \strng{fullhash}{d9b7b1268f1de14cf48874180ef5942a}
+      \strng{fullhashraw}{d9b7b1268f1de14cf48874180ef5942a}
+      \strng{bibnamehash}{f091fbdd8fadb204ce5d0d10152ac616}
+      \strng{authorbibnamehash}{f091fbdd8fadb204ce5d0d10152ac616}
+      \strng{authornamehash}{f091fbdd8fadb204ce5d0d10152ac616}
+      \strng{authorfullhash}{d9b7b1268f1de14cf48874180ef5942a}
+      \strng{authorfullhashraw}{d9b7b1268f1de14cf48874180ef5942a}
+      \field{sortinit}{6}
+      \field{sortinithash}{b33bc299efb3c36abec520a4c896a66d}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{2022 IEEE/CVF Winter Conference on Applications of Computer Vision (WACV)}
+      \field{title}{DeepPatent: Large scale patent drawing recognition and retrieval}
+      \field{year}{2022}
+      \field{pages}{557\bibrangedash 566}
+      \range{pages}{10}
+      \verb{doi}
+      \verb 10.1109/WACV51458.2022.00063
+      \endverb
+      \keyw{Deep learning;Training;Patents;Computer vision;Computational modeling;Image retrieval;Benchmark testing;Datasets;Evaluation and Comparison of Vision Algorithms Image/Video Indexing and Retrieval}
+    \endentry
+    \entry{futrelle1995efficientanalysiscomplexdiagrams}{misc}{}{}
+      \name{author}{2}{}{%
+        {{hash=bb93ae430a10b397825ca16ae9fe64eb}{%
+           family={Futrelle},
+           familyi={F\bibinitperiod},
+           given={Robert\bibnamedelima P.},
+           giveni={R\bibinitperiod\bibinitdelim P\bibinitperiod}}}%
+        {{hash=2907edec4c44d14f8d7e7ff63991d63e}{%
+           family={Nikolakis},
+           familyi={N\bibinitperiod},
+           given={Nikos},
+           giveni={N\bibinitperiod}}}%
+      }
+      \strng{namehash}{1e78923f518149af518e47c75a8f4263}
+      \strng{fullhash}{1e78923f518149af518e47c75a8f4263}
+      \strng{fullhashraw}{1e78923f518149af518e47c75a8f4263}
+      \strng{bibnamehash}{1e78923f518149af518e47c75a8f4263}
+      \strng{authorbibnamehash}{1e78923f518149af518e47c75a8f4263}
+      \strng{authornamehash}{1e78923f518149af518e47c75a8f4263}
+      \strng{authorfullhash}{1e78923f518149af518e47c75a8f4263}
+      \strng{authorfullhashraw}{1e78923f518149af518e47c75a8f4263}
+      \field{sortinit}{7}
+      \field{sortinithash}{108d0be1b1bee9773a1173443802c0a3}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{eprintclass}{cmp-lg}
+      \field{eprinttype}{arXiv}
+      \field{title}{Efficient Analysis of Complex Diagrams using Constraint-Based Parsing}
+      \field{year}{1995}
+      \verb{eprint}
+      \verb cmp-lg/9505015
+      \endverb
+      \verb{urlraw}
+      \verb https://arxiv.org/abs/cmp-lg/9505015
+      \endverb
+      \verb{url}
+      \verb https://arxiv.org/abs/cmp-lg/9505015
+      \endverb
+    \endentry
+    \entry{DERUYVER2009876}{article}{}{}
+      \name{author}{2}{}{%
+        {{hash=5eb36d57ab6f9150a8763b51f8807cb1}{%
+           family={Deruyver},
+           familyi={D\bibinitperiod},
+           given={Aline},
+           giveni={A\bibinitperiod}}}%
+        {{hash=ee07dc23edde91206de67e4866c5d22c}{%
+           family={Hodé},
+           familyi={H\bibinitperiod},
+           given={Yann},
+           giveni={Y\bibinitperiod}}}%
+      }
+      \strng{namehash}{072cd84b2c6427e2fe2180bced6aaaf6}
+      \strng{fullhash}{072cd84b2c6427e2fe2180bced6aaaf6}
+      \strng{fullhashraw}{072cd84b2c6427e2fe2180bced6aaaf6}
+      \strng{bibnamehash}{072cd84b2c6427e2fe2180bced6aaaf6}
+      \strng{authorbibnamehash}{072cd84b2c6427e2fe2180bced6aaaf6}
+      \strng{authornamehash}{072cd84b2c6427e2fe2180bced6aaaf6}
+      \strng{authorfullhash}{072cd84b2c6427e2fe2180bced6aaaf6}
+      \strng{authorfullhashraw}{072cd84b2c6427e2fe2180bced6aaaf6}
+      \field{sortinit}{7}
+      \field{sortinithash}{108d0be1b1bee9773a1173443802c0a3}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{In this paper, a new way to express complex spatial relations is proposed in order to integrate them in a Constraint Satisfaction Problem with bilevel constraints (CSPBC). The two levels of constraint were introduced to deal with the non bijective matching between segmented regions of an image and the nodes of a conceptual graph describing the semantic content of the image. This new system of spatial relations allows to build conceptual graphs describing more precisely the spatial relations between subparts of a composite object that we look for in an image. For example, it allows to express complex spatial relations such as “is surrounded by”. This approach can be applied to image interpretation and some examples on real images are presented.}
+      \field{issn}{0262-8856}
+      \field{journaltitle}{Image and Vision Computing}
+      \field{note}{7th IAPR-TC15 Workshop on Graph-based Representations (GbR 2007)}
+      \field{number}{7}
+      \field{title}{Qualitative spatial relationships for image interpretation by using a conceptual graph}
+      \field{volume}{27}
+      \field{year}{2009}
+      \field{pages}{876\bibrangedash 886}
+      \range{pages}{11}
+      \verb{doi}
+      \verb https://doi.org/10.1016/j.imavis.2008.10.002
+      \endverb
+      \verb{urlraw}
+      \verb https://www.sciencedirect.com/science/article/pii/S0262885608002138
+      \endverb
+      \verb{url}
+      \verb https://www.sciencedirect.com/science/article/pii/S0262885608002138
+      \endverb
+      \keyw{Image interpretation,Spatial relationships,Conceptual graph,Arc-consistency analysis}
+    \endentry
+    \entry{DINISO9001}{misc}{}{}
+      \list{organization}{1}{%
+        {Deutsches Institut für Normung e. V. (DIN)}%
+      }
+      \field{sortinit}{7}
+      \field{sortinithash}{108d0be1b1bee9773a1173443802c0a3}
+      \field{labeltitlesource}{title}
+      \field{note}{ISO 9001:2015(E)}
+      \field{title}{{DIN EN ISO 9001:2015} Qualitätsmanagementsysteme -- Anforderungen}
+      \field{year}{2015}
+    \endentry
+    \entry{VDI1000}{report}{}{}
+      \list{institution}{1}{%
+        {Verein Deutscher Ingenieure (VDI)}%
+      }
+      \field{sortinit}{7}
+      \field{sortinithash}{108d0be1b1bee9773a1173443802c0a3}
+      \field{labeltitlesource}{title}
+      \field{title}{{VDI 1000:2017-06} VDI-Richtlinienarbeit -- Grundsätze und Anleitungen}
+      \field{type}{VDI-Richtlinie}
+      \field{year}{2017}
+    \endentry
+    \entry{renuka2013change}{thesis}{}{}
+      \name{author}{1}{}{%
+        {{hash=f43c1e394b9bf98db6cad45ba8010e08}{%
+           family={Renuka},
+           familyi={R\bibinitperiod},
+           given={N.},
+           giveni={N\bibinitperiod}}}%
+      }
+      \list{institution}{1}{%
+        {Department of Electrical Engineering, Indian Institute of Technology Madras}%
+      }
+      \strng{namehash}{f43c1e394b9bf98db6cad45ba8010e08}
+      \strng{fullhash}{f43c1e394b9bf98db6cad45ba8010e08}
+      \strng{fullhashraw}{f43c1e394b9bf98db6cad45ba8010e08}
+      \strng{bibnamehash}{f43c1e394b9bf98db6cad45ba8010e08}
+      \strng{authorbibnamehash}{f43c1e394b9bf98db6cad45ba8010e08}
+      \strng{authornamehash}{f43c1e394b9bf98db6cad45ba8010e08}
+      \strng{authorfullhash}{f43c1e394b9bf98db6cad45ba8010e08}
+      \strng{authorfullhashraw}{f43c1e394b9bf98db6cad45ba8010e08}
+      \field{sortinit}{7}
+      \field{sortinithash}{108d0be1b1bee9773a1173443802c0a3}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{month}{5}
+      \field{title}{Automation of Change Detection in Engineering Drawings}
+      \field{type}{Master's Thesis}
+      \field{year}{2013}
+    \endentry
+    \entry{Dohrn2014Finegrained}{article}{}{}
+      \name{author}{2}{}{%
+        {{hash=0cbd2f0ed754b84037f7c21a7c3da6c9}{%
+           family={Dohrn},
+           familyi={D\bibinitperiod},
+           given={Hannes},
+           giveni={H\bibinitperiod}}}%
+        {{hash=0efd81253a3cb4c8fc0f0a82ab059066}{%
+           family={Riehle},
+           familyi={R\bibinitperiod},
+           given={D.},
+           giveni={D\bibinitperiod}}}%
+      }
+      \strng{namehash}{4c869cf95abeabc6a1eb97a1782e3049}
+      \strng{fullhash}{4c869cf95abeabc6a1eb97a1782e3049}
+      \strng{fullhashraw}{4c869cf95abeabc6a1eb97a1782e3049}
+      \strng{bibnamehash}{4c869cf95abeabc6a1eb97a1782e3049}
+      \strng{authorbibnamehash}{4c869cf95abeabc6a1eb97a1782e3049}
+      \strng{authornamehash}{4c869cf95abeabc6a1eb97a1782e3049}
+      \strng{authorfullhash}{4c869cf95abeabc6a1eb97a1782e3049}
+      \strng{authorfullhashraw}{4c869cf95abeabc6a1eb97a1782e3049}
+      \field{sortinit}{7}
+      \field{sortinithash}{108d0be1b1bee9773a1173443802c0a3}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Fine-grained change detection in structured text documents}
+      \field{year}{2014}
+      \field{pages}{87\bibrangedash 96}
+      \range{pages}{10}
+      \verb{doi}
+      \verb 10.1145/2644866.2644880
+      \endverb
+    \endentry
+    \entry{GRUBER1993199}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=afb9b0d3d5b76f30ab451acf45400285}{%
+           family={Gruber},
+           familyi={G\bibinitperiod},
+           given={Thomas\bibnamedelima R.},
+           giveni={T\bibinitperiod\bibinitdelim R\bibinitperiod}}}%
+      }
+      \strng{namehash}{afb9b0d3d5b76f30ab451acf45400285}
+      \strng{fullhash}{afb9b0d3d5b76f30ab451acf45400285}
+      \strng{fullhashraw}{afb9b0d3d5b76f30ab451acf45400285}
+      \strng{bibnamehash}{afb9b0d3d5b76f30ab451acf45400285}
+      \strng{authorbibnamehash}{afb9b0d3d5b76f30ab451acf45400285}
+      \strng{authornamehash}{afb9b0d3d5b76f30ab451acf45400285}
+      \strng{authorfullhash}{afb9b0d3d5b76f30ab451acf45400285}
+      \strng{authorfullhashraw}{afb9b0d3d5b76f30ab451acf45400285}
+      \field{sortinit}{8}
+      \field{sortinithash}{a231b008ebf0ecbe0b4d96dcc159445f}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{To support the sharing and reuse of formally represented knowledge among AI systems, it is useful to define the common vocabulary in which shared knowledge is represented. A specification of a representational vocabulary for a shared domain of discourse—definitions of classes, relations, functions, and other objects—is called an ontology. This paper describes a mechanism for defining ontologies that are portable over representation systems. Definitions written in a standard format for predicate calculus are translated by a system called Ontolingua into specialized representations, including frame-based systems as well as relational languages. This allows researchers to share and reuse ontologies, while retaining the computational benefits of specialized implementations. We discuss how the translation approach to portability addresses several technical problems. One problem is how to accommodate the stylistic and organizational differences among representations while preserving declarative content. Another is how to translate from a very expressive language into restricted languages, remaining system-independent while preserving the computational efficiency of implemented systems. We describe how these problems are addressed by basing Ontolingua itself on an ontology of domain-independent, representational idioms.}
+      \field{issn}{1042-8143}
+      \field{journaltitle}{Knowledge Acquisition}
+      \field{number}{2}
+      \field{title}{A translation approach to portable ontology specifications}
+      \field{volume}{5}
+      \field{year}{1993}
+      \field{pages}{199\bibrangedash 220}
+      \range{pages}{22}
+      \verb{doi}
+      \verb https://doi.org/10.1006/knac.1993.1008
+      \endverb
+      \verb{urlraw}
+      \verb https://www.sciencedirect.com/science/article/pii/S1042814383710083
+      \endverb
+      \verb{url}
+      \verb https://www.sciencedirect.com/science/article/pii/S1042814383710083
+      \endverb
+    \endentry
+    \entry{STUDER1998161}{article}{}{}
+      \name{author}{3}{}{%
+        {{hash=e0c7ea82e283188bb50d580b79aae9e3}{%
+           family={Studer},
+           familyi={S\bibinitperiod},
+           given={Rudi},
+           giveni={R\bibinitperiod}}}%
+        {{hash=d8f37ab4d5ba02ef7b90fd41ad8e6a81}{%
+           family={Benjamins},
+           familyi={B\bibinitperiod},
+           given={V.\bibnamedelimi Richard},
+           giveni={V\bibinitperiod\bibinitdelim R\bibinitperiod}}}%
+        {{hash=ba4603066ec9f23db109035b8d738b0c}{%
+           family={Fensel},
+           familyi={F\bibinitperiod},
+           given={Dieter},
+           giveni={D\bibinitperiod}}}%
+      }
+      \strng{namehash}{4675b4441d3416cb08130a000e8220a8}
+      \strng{fullhash}{4675b4441d3416cb08130a000e8220a8}
+      \strng{fullhashraw}{4675b4441d3416cb08130a000e8220a8}
+      \strng{bibnamehash}{4675b4441d3416cb08130a000e8220a8}
+      \strng{authorbibnamehash}{4675b4441d3416cb08130a000e8220a8}
+      \strng{authornamehash}{4675b4441d3416cb08130a000e8220a8}
+      \strng{authorfullhash}{4675b4441d3416cb08130a000e8220a8}
+      \strng{authorfullhashraw}{4675b4441d3416cb08130a000e8220a8}
+      \field{sortinit}{8}
+      \field{sortinithash}{a231b008ebf0ecbe0b4d96dcc159445f}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{0169-023X}
+      \field{journaltitle}{Data \& Knowledge Engineering}
+      \field{number}{1}
+      \field{title}{Knowledge engineering: Principles and methods}
+      \field{volume}{25}
+      \field{year}{1998}
+      \field{pages}{161\bibrangedash 197}
+      \range{pages}{37}
+      \verb{doi}
+      \verb 10.1016/S0169-023X(97)00056-6
+      \endverb
+      \verb{urlraw}
+      \verb https://www.sciencedirect.com/science/article/pii/S0169023X97000566
+      \endverb
+      \verb{url}
+      \verb https://www.sciencedirect.com/science/article/pii/S0169023X97000566
+      \endverb
+    \endentry
+    \entry{Uschold_Gruninger_1996}{article}{}{}
+      \name{author}{2}{}{%
+        {{hash=43ce48ece7fbfefcc05e550adb670c1d}{%
+           family={Uschold},
+           familyi={U\bibinitperiod},
+           given={Mike},
+           giveni={M\bibinitperiod}}}%
+        {{hash=616604c7891ff52e572ad0cae8d13659}{%
+           family={Gruninger},
+           familyi={G\bibinitperiod},
+           given={Michael},
+           giveni={M\bibinitperiod}}}%
+      }
+      \strng{namehash}{a1df4b6446ee9900f00edd4f51b69bdb}
+      \strng{fullhash}{a1df4b6446ee9900f00edd4f51b69bdb}
+      \strng{fullhashraw}{a1df4b6446ee9900f00edd4f51b69bdb}
+      \strng{bibnamehash}{a1df4b6446ee9900f00edd4f51b69bdb}
+      \strng{authorbibnamehash}{a1df4b6446ee9900f00edd4f51b69bdb}
+      \strng{authornamehash}{a1df4b6446ee9900f00edd4f51b69bdb}
+      \strng{authorfullhash}{a1df4b6446ee9900f00edd4f51b69bdb}
+      \strng{authorfullhashraw}{a1df4b6446ee9900f00edd4f51b69bdb}
+      \field{sortinit}{8}
+      \field{sortinithash}{a231b008ebf0ecbe0b4d96dcc159445f}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{The Knowledge Engineering Review}
+      \field{number}{2}
+      \field{title}{Ontologies: principles, methods and applications}
+      \field{volume}{11}
+      \field{year}{1996}
+      \field{pages}{93\bibrangedash 136}
+      \range{pages}{44}
+      \verb{doi}
+      \verb 10.1017/S0269888900007797
+      \endverb
+    \endentry
+    \entry{Gotel1994AnAO}{article}{}{}
+      \name{author}{2}{}{%
+        {{hash=6da0285fd9caba43fb0e5d4811f82faa}{%
+           family={Gotel},
+           familyi={G\bibinitperiod},
+           given={Olly},
+           giveni={O\bibinitperiod}}}%
+        {{hash=8efbefc6e2e0b644add36af83d4f51e5}{%
+           family={Finkelstein},
+           familyi={F\bibinitperiod},
+           given={A.\bibnamedelimi C.\bibnamedelimi W.},
+           giveni={A\bibinitperiod\bibinitdelim C\bibinitperiod\bibinitdelim W\bibinitperiod}}}%
+      }
+      \strng{namehash}{331e9fe157d17e54620331ec4d97247c}
+      \strng{fullhash}{331e9fe157d17e54620331ec4d97247c}
+      \strng{fullhashraw}{331e9fe157d17e54620331ec4d97247c}
+      \strng{bibnamehash}{331e9fe157d17e54620331ec4d97247c}
+      \strng{authorbibnamehash}{331e9fe157d17e54620331ec4d97247c}
+      \strng{authornamehash}{331e9fe157d17e54620331ec4d97247c}
+      \strng{authorfullhash}{331e9fe157d17e54620331ec4d97247c}
+      \strng{authorfullhashraw}{331e9fe157d17e54620331ec4d97247c}
+      \field{sortinit}{8}
+      \field{sortinithash}{a231b008ebf0ecbe0b4d96dcc159445f}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Proceedings of IEEE International Conference on Requirements Engineering}
+      \field{title}{An analysis of the requirements traceability problem}
+      \field{year}{1994}
+      \field{pages}{94\bibrangedash 101}
+      \range{pages}{8}
+      \verb{urlraw}
+      \verb https://api.semanticscholar.org/CorpusID:5870868
+      \endverb
+      \verb{url}
+      \verb https://api.semanticscholar.org/CorpusID:5870868
+      \endverb
+    \endentry
+    \entry{book}{book}{}{}
+      \name{author}{3}{}{%
+        {{hash=7f39f12f6ce6642514b823ceb237a7bc}{%
+           family={Cleland-Huang},
+           familyi={C\bibinithyphendelim H\bibinitperiod},
+           given={Jane},
+           giveni={J\bibinitperiod}}}%
+        {{hash=aec1be5b4d9a45651894cc8b224632a7}{%
+           family={Zisman},
+           familyi={Z\bibinitperiod},
+           given={A.},
+           giveni={A\bibinitperiod}}}%
+        {{hash=8950f938e24e1007d8ce4db79c318178}{%
+           family={Gotel},
+           familyi={G\bibinitperiod},
+           given={O.},
+           giveni={O\bibinitperiod}}}%
+      }
+      \strng{namehash}{f03763fd1152f0f77cd68b48f2ca3f79}
+      \strng{fullhash}{f03763fd1152f0f77cd68b48f2ca3f79}
+      \strng{fullhashraw}{f03763fd1152f0f77cd68b48f2ca3f79}
+      \strng{bibnamehash}{f03763fd1152f0f77cd68b48f2ca3f79}
+      \strng{authorbibnamehash}{f03763fd1152f0f77cd68b48f2ca3f79}
+      \strng{authornamehash}{f03763fd1152f0f77cd68b48f2ca3f79}
+      \strng{authorfullhash}{f03763fd1152f0f77cd68b48f2ca3f79}
+      \strng{authorfullhashraw}{f03763fd1152f0f77cd68b48f2ca3f79}
+      \field{sortinit}{8}
+      \field{sortinithash}{a231b008ebf0ecbe0b4d96dcc159445f}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{isbn}{978-1-4471-2238-8}
+      \field{month}{10}
+      \field{title}{Software and Systems Traceability}
+      \field{year}{2012}
+      \field{pages}{1\bibrangedash 491}
+      \range{pages}{491}
+      \verb{doi}
+      \verb 10.1007/978-1-4471-2239-5
+      \endverb
+    \endentry
+    \entry{10.5555/2821575}{book}{}{}
+      \name{author}{1}{}{%
+        {{hash=753054f71283d85f82cda8e35daf6bac}{%
+           family={Nielsen},
+           familyi={N\bibinitperiod},
+           given={Jakob},
+           giveni={J\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {San Francisco, CA, USA}%
+      }
+      \list{publisher}{1}{%
+        {Morgan Kaufmann Publishers Inc.}%
+      }
+      \strng{namehash}{753054f71283d85f82cda8e35daf6bac}
+      \strng{fullhash}{753054f71283d85f82cda8e35daf6bac}
+      \strng{fullhashraw}{753054f71283d85f82cda8e35daf6bac}
+      \strng{bibnamehash}{753054f71283d85f82cda8e35daf6bac}
+      \strng{authorbibnamehash}{753054f71283d85f82cda8e35daf6bac}
+      \strng{authornamehash}{753054f71283d85f82cda8e35daf6bac}
+      \strng{authorfullhash}{753054f71283d85f82cda8e35daf6bac}
+      \strng{authorfullhashraw}{753054f71283d85f82cda8e35daf6bac}
+      \field{sortinit}{8}
+      \field{sortinithash}{a231b008ebf0ecbe0b4d96dcc159445f}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{Written by the author of the best-selling HyperText \& HyperMedia, this book is an excellent guide to the methods of usability engineering. The book provides the tools needed to avoid usability surprises and improve product quality. Step-by-step information on which method to use at various stages during the development lifecycle are included, along with detailed information on how to run a usability test and the unique issues relating to international usability. * Emphasizes cost-effective methods that developers can implement immediately * Instructs readers about which methods to use when, throughout the development lifecycle, which ultimately helps in cost-benefit analysis. * Shows readers how to avoid the four most frequently listed reasons for delay in software projects. * Includes detailed information on how to run a usability test. * Covers unique issues of international usability. * Features an extensive bibliography allowing readers to find additional information. * Written by an internationally renowned expert in the field and the author of the best-selling HyperText \& HyperMedia. Table of Contents Executive Summary. What is Usability Generations of User Interfaces. The Usability Engineering Lifecycle. Usability Heuristics. Usability Testing. Usability Assessment Methods Beyond Testing. Interface Standards. International User Interfaces. Future Developments. Appendix A: Exercises. Appendix B: Bibliography. Author Index. Subject Index.}
+      \field{isbn}{9780080520292}
+      \field{title}{Usability Engineering}
+      \field{year}{1994}
+    \endentry
+    \entry{Poppler2024}{misc}{}{}
+      \name{author}{1}{}{%
+        {{hash=a09e917c5d5960c28c55f6cbaa604821}{%
+           family={{Poppler Development Team}},
+           familyi={P\bibinitperiod}}}%
+      }
+      \strng{namehash}{a09e917c5d5960c28c55f6cbaa604821}
+      \strng{fullhash}{a09e917c5d5960c28c55f6cbaa604821}
+      \strng{fullhashraw}{a09e917c5d5960c28c55f6cbaa604821}
+      \strng{bibnamehash}{a09e917c5d5960c28c55f6cbaa604821}
+      \strng{authorbibnamehash}{a09e917c5d5960c28c55f6cbaa604821}
+      \strng{authornamehash}{a09e917c5d5960c28c55f6cbaa604821}
+      \strng{authorfullhash}{a09e917c5d5960c28c55f6cbaa604821}
+      \strng{authorfullhashraw}{a09e917c5d5960c28c55f6cbaa604821}
+      \field{sortinit}{8}
+      \field{sortinithash}{a231b008ebf0ecbe0b4d96dcc159445f}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{\url{https://poppler.freedesktop.org/}}
+      \field{note}{Accessed: 2024-05-20}
+      \field{title}{Poppler PDF rendering library}
+      \field{year}{2024}
+    \endentry
+    \entry{Belval2024}{misc}{}{}
+      \name{author}{1}{}{%
+        {{hash=d940740887ecb00a87095b0ab1736f43}{%
+           family={Belval},
+           familyi={B\bibinitperiod},
+           given={Edouard},
+           giveni={E\bibinitperiod}}}%
+      }
+      \strng{namehash}{d940740887ecb00a87095b0ab1736f43}
+      \strng{fullhash}{d940740887ecb00a87095b0ab1736f43}
+      \strng{fullhashraw}{d940740887ecb00a87095b0ab1736f43}
+      \strng{bibnamehash}{d940740887ecb00a87095b0ab1736f43}
+      \strng{authorbibnamehash}{d940740887ecb00a87095b0ab1736f43}
+      \strng{authornamehash}{d940740887ecb00a87095b0ab1736f43}
+      \strng{authorfullhash}{d940740887ecb00a87095b0ab1736f43}
+      \strng{authorfullhashraw}{d940740887ecb00a87095b0ab1736f43}
+      \field{sortinit}{9}
+      \field{sortinithash}{0a5ebc79d83c96b6579069544c73c7d4}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{\url{https://github.com/Belval/pdf2image}}
+      \field{note}{GitHub repository. Accessed: 2024-05-20}
+      \field{title}{pdf2image: A python wrapper for pdftoppm and pdftocairo}
+      \field{year}{2024}
+    \endentry
+    \entry{Shinyama2022}{misc}{}{}
+      \name{author}{1}{}{%
+        {{hash=a067f5c3103ec68e81810795811b4047}{%
+           family={Shinyama},
+           familyi={S\bibinitperiod},
+           given={Yusuke},
+           giveni={Y\bibinitperiod}}}%
+      }
+      \strng{namehash}{a067f5c3103ec68e81810795811b4047}
+      \strng{fullhash}{a067f5c3103ec68e81810795811b4047}
+      \strng{fullhashraw}{a067f5c3103ec68e81810795811b4047}
+      \strng{bibnamehash}{a067f5c3103ec68e81810795811b4047}
+      \strng{authorbibnamehash}{a067f5c3103ec68e81810795811b4047}
+      \strng{authornamehash}{a067f5c3103ec68e81810795811b4047}
+      \strng{authorfullhash}{a067f5c3103ec68e81810795811b4047}
+      \strng{authorfullhashraw}{a067f5c3103ec68e81810795811b4047}
+      \field{sortinit}{9}
+      \field{sortinithash}{0a5ebc79d83c96b6579069544c73c7d4}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{\url{https://github.com/pdfminer/pdfminer.six}}
+      \field{note}{Version 20221105. Accessed: 2024-05-20}
+      \field{title}{PDFMiner: Python PDF Parser}
+      \field{year}{2022}
+    \endentry
+    \entry{UltralyticsOBB}{misc}{}{}
+      \name{author}{1}{}{%
+        {{hash=88f069848482a556e416f713d2819905}{%
+           family={{Ultralytics}},
+           familyi={U\bibinitperiod}}}%
+      }
+      \strng{namehash}{88f069848482a556e416f713d2819905}
+      \strng{fullhash}{88f069848482a556e416f713d2819905}
+      \strng{fullhashraw}{88f069848482a556e416f713d2819905}
+      \strng{bibnamehash}{88f069848482a556e416f713d2819905}
+      \strng{authorbibnamehash}{88f069848482a556e416f713d2819905}
+      \strng{authornamehash}{88f069848482a556e416f713d2819905}
+      \strng{authorfullhash}{88f069848482a556e416f713d2819905}
+      \strng{authorfullhashraw}{88f069848482a556e416f713d2819905}
+      \field{sortinit}{9}
+      \field{sortinithash}{0a5ebc79d83c96b6579069544c73c7d4}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{\url{https://docs.ultralytics.com/tasks/obb/}}
+      \field{note}{Accessed: 2024-05-20}
+      \field{title}{YOLOv8 Oriented Bounding Boxes (OBB)}
+      \field{year}{2024}
+    \endentry
+    \entry{10204762}{inproceedings}{}{}
+      \name{author}{3}{}{%
+        {{hash=053d491932411950eccf2bb9a1025d11}{%
+           family={Wang},
+           familyi={W\bibinitperiod},
+           given={Chien-Yao},
+           giveni={C\bibinithyphendelim Y\bibinitperiod}}}%
+        {{hash=c0b2fdc20c37a4bd8d817822d374f809}{%
+           family={Bochkovskiy},
+           familyi={B\bibinitperiod},
+           given={Alexey},
+           giveni={A\bibinitperiod}}}%
+        {{hash=c81478c691c1bc1cc01404c44b5bd5bf}{%
+           family={Liao},
+           familyi={L\bibinitperiod},
+           given={Hong-Yuan\bibnamedelima Mark},
+           giveni={H\bibinithyphendelim Y\bibinitperiod\bibinitdelim M\bibinitperiod}}}%
+      }
+      \strng{namehash}{9278ecb881789e377b71403c2cf54d74}
+      \strng{fullhash}{9278ecb881789e377b71403c2cf54d74}
+      \strng{fullhashraw}{9278ecb881789e377b71403c2cf54d74}
+      \strng{bibnamehash}{9278ecb881789e377b71403c2cf54d74}
+      \strng{authorbibnamehash}{9278ecb881789e377b71403c2cf54d74}
+      \strng{authornamehash}{9278ecb881789e377b71403c2cf54d74}
+      \strng{authorfullhash}{9278ecb881789e377b71403c2cf54d74}
+      \strng{authorfullhashraw}{9278ecb881789e377b71403c2cf54d74}
+      \field{sortinit}{9}
+      \field{sortinithash}{0a5ebc79d83c96b6579069544c73c7d4}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{2023 IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)}
+      \field{title}{YOLOv7: Trainable Bag-of-Freebies Sets New State-of-the-Art for Real-Time Object Detectors}
+      \field{year}{2023}
+      \field{pages}{7464\bibrangedash 7475}
+      \range{pages}{12}
+      \verb{doi}
+      \verb 10.1109/CVPR52729.2023.00721
+      \endverb
+      \keyw{Training;Computer vision;Source coding;Object detection;Detectors;Computer architecture;Real-time systems;Recognition: Categorization;detection;retrieval}
+    \endentry
+    \entry{Otsu1979gxi}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=4c9490b4888796e772e507d10bb89b3f}{%
+           family={Otsu},
+           familyi={O\bibinitperiod},
+           given={Nobuyuki},
+           giveni={N\bibinitperiod}}}%
+      }
+      \strng{namehash}{4c9490b4888796e772e507d10bb89b3f}
+      \strng{fullhash}{4c9490b4888796e772e507d10bb89b3f}
+      \strng{fullhashraw}{4c9490b4888796e772e507d10bb89b3f}
+      \strng{bibnamehash}{4c9490b4888796e772e507d10bb89b3f}
+      \strng{authorbibnamehash}{4c9490b4888796e772e507d10bb89b3f}
+      \strng{authornamehash}{4c9490b4888796e772e507d10bb89b3f}
+      \strng{authorfullhash}{4c9490b4888796e772e507d10bb89b3f}
+      \strng{authorfullhashraw}{4c9490b4888796e772e507d10bb89b3f}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{IEEE Trans. Syst. Man Cybern.}
+      \field{number}{1}
+      \field{title}{{A Threshold Selection Method from Gray-Level Histograms}}
+      \field{volume}{9}
+      \field{year}{1979}
+      \field{pages}{62\bibrangedash 66}
+      \range{pages}{5}
+      \verb{doi}
+      \verb 10.1109/tsmc.1979.4310076
+      \endverb
+    \endentry
+    \entry{huang2022layoutlmv3pretrainingdocumentai}{misc}{}{}
+      \name{author}{5}{}{%
+        {{hash=9c947c7a366bf27ebdb27000794a506a}{%
+           family={Huang},
+           familyi={H\bibinitperiod},
+           given={Yupan},
+           giveni={Y\bibinitperiod}}}%
+        {{hash=16c15c1e2b6e3b196fd18ea0415143d4}{%
+           family={Lv},
+           familyi={L\bibinitperiod},
+           given={Tengchao},
+           giveni={T\bibinitperiod}}}%
+        {{hash=d22cf63412f5bb89dcde7965f3514581}{%
+           family={Cui},
+           familyi={C\bibinitperiod},
+           given={Lei},
+           giveni={L\bibinitperiod}}}%
+        {{hash=23de8e31627a3d5a6e8bf5c3c8831fd8}{%
+           family={Lu},
+           familyi={L\bibinitperiod},
+           given={Yutong},
+           giveni={Y\bibinitperiod}}}%
+        {{hash=e5bfd490d91c5d1b935092ce3132a083}{%
+           family={Wei},
+           familyi={W\bibinitperiod},
+           given={Furu},
+           giveni={F\bibinitperiod}}}%
+      }
+      \strng{namehash}{0e4edbac346cfe0b44bdb6a2847951e2}
+      \strng{fullhash}{0d50a5081a811acde22d9f5b12a3304c}
+      \strng{fullhashraw}{0d50a5081a811acde22d9f5b12a3304c}
+      \strng{bibnamehash}{0e4edbac346cfe0b44bdb6a2847951e2}
+      \strng{authorbibnamehash}{0e4edbac346cfe0b44bdb6a2847951e2}
+      \strng{authornamehash}{0e4edbac346cfe0b44bdb6a2847951e2}
+      \strng{authorfullhash}{0d50a5081a811acde22d9f5b12a3304c}
+      \strng{authorfullhashraw}{0d50a5081a811acde22d9f5b12a3304c}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{eprintclass}{cs.CL}
+      \field{eprinttype}{arXiv}
+      \field{title}{LayoutLMv3: Pre-training for Document AI with Unified Text and Image Masking}
+      \field{year}{2022}
+      \verb{eprint}
+      \verb 2204.08387
+      \endverb
+      \verb{urlraw}
+      \verb https://arxiv.org/abs/2204.08387
+      \endverb
+      \verb{url}
+      \verb https://arxiv.org/abs/2204.08387
+      \endverb
+    \endentry
+    \entry{kim2022ocrfreedocumentunderstandingtransformer}{misc}{}{}
+      \name{author}{10}{}{%
+        {{hash=92a16f10aa4f340d3631793399272e43}{%
+           family={Kim},
+           familyi={K\bibinitperiod},
+           given={Geewook},
+           giveni={G\bibinitperiod}}}%
+        {{hash=b215b8dfd7340385e8ed11f73fd3018e}{%
+           family={Hong},
+           familyi={H\bibinitperiod},
+           given={Teakgyu},
+           giveni={T\bibinitperiod}}}%
+        {{hash=184196ac0b59942cd4559d5926883c2f}{%
+           family={Yim},
+           familyi={Y\bibinitperiod},
+           given={Moonbin},
+           giveni={M\bibinitperiod}}}%
+        {{hash=9750fdd8c00ce5fc5e20325f54ccfa30}{%
+           family={Nam},
+           familyi={N\bibinitperiod},
+           given={Jeongyeon},
+           giveni={J\bibinitperiod}}}%
+        {{hash=63811a7020891206896ce3a0afacb75c}{%
+           family={Park},
+           familyi={P\bibinitperiod},
+           given={Jinyoung},
+           giveni={J\bibinitperiod}}}%
+        {{hash=004f623ef7865d52eab2f931af665e3c}{%
+           family={Yim},
+           familyi={Y\bibinitperiod},
+           given={Jinyeong},
+           giveni={J\bibinitperiod}}}%
+        {{hash=0ed7d7c352daa4be473dfb4f526c7714}{%
+           family={Hwang},
+           familyi={H\bibinitperiod},
+           given={Wonseok},
+           giveni={W\bibinitperiod}}}%
+        {{hash=eb5683d5e1e58ddad99e436c69bb62e9}{%
+           family={Yun},
+           familyi={Y\bibinitperiod},
+           given={Sangdoo},
+           giveni={S\bibinitperiod}}}%
+        {{hash=9d2ac11de77065ae48b1a2661bb6c477}{%
+           family={Han},
+           familyi={H\bibinitperiod},
+           given={Dongyoon},
+           giveni={D\bibinitperiod}}}%
+        {{hash=994fb2e116d68bdc24de350954c67b0e}{%
+           family={Park},
+           familyi={P\bibinitperiod},
+           given={Seunghyun},
+           giveni={S\bibinitperiod}}}%
+      }
+      \strng{namehash}{28468e83e55cfccca6e2a3f2448da087}
+      \strng{fullhash}{04f97bd09af6f566e14f80ef7bd34899}
+      \strng{fullhashraw}{04f97bd09af6f566e14f80ef7bd34899}
+      \strng{bibnamehash}{28468e83e55cfccca6e2a3f2448da087}
+      \strng{authorbibnamehash}{28468e83e55cfccca6e2a3f2448da087}
+      \strng{authornamehash}{28468e83e55cfccca6e2a3f2448da087}
+      \strng{authorfullhash}{04f97bd09af6f566e14f80ef7bd34899}
+      \strng{authorfullhashraw}{04f97bd09af6f566e14f80ef7bd34899}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{eprintclass}{cs.LG}
+      \field{eprinttype}{arXiv}
+      \field{title}{OCR-free Document Understanding Transformer}
+      \field{year}{2022}
+      \verb{eprint}
+      \verb 2111.15664
+      \endverb
+      \verb{urlraw}
+      \verb https://arxiv.org/abs/2111.15664
+      \endverb
+      \verb{url}
+      \verb https://arxiv.org/abs/2111.15664
+      \endverb
+    \endentry
+    \entry{li2022trocrtransformerbasedopticalcharacter}{misc}{}{}
+      \name{author}{9}{}{%
+        {{hash=54c3918df39c65be2d07d130c2d4bc6d}{%
+           family={Li},
+           familyi={L\bibinitperiod},
+           given={Minghao},
+           giveni={M\bibinitperiod}}}%
+        {{hash=16c15c1e2b6e3b196fd18ea0415143d4}{%
+           family={Lv},
+           familyi={L\bibinitperiod},
+           given={Tengchao},
+           giveni={T\bibinitperiod}}}%
+        {{hash=67a49f395d547156e1eeb0f575ec23a7}{%
+           family={Chen},
+           familyi={C\bibinitperiod},
+           given={Jingye},
+           giveni={J\bibinitperiod}}}%
+        {{hash=d22cf63412f5bb89dcde7965f3514581}{%
+           family={Cui},
+           familyi={C\bibinitperiod},
+           given={Lei},
+           giveni={L\bibinitperiod}}}%
+        {{hash=251643e5328edc453395a4babee3ac78}{%
+           family={Lu},
+           familyi={L\bibinitperiod},
+           given={Yijuan},
+           giveni={Y\bibinitperiod}}}%
+        {{hash=6c2e0327abbc10ed65f68d90762db88e}{%
+           family={Florencio},
+           familyi={F\bibinitperiod},
+           given={Dinei},
+           giveni={D\bibinitperiod}}}%
+        {{hash=6be2ddbf537bae561864776d40c36220}{%
+           family={Zhang},
+           familyi={Z\bibinitperiod},
+           given={Cha},
+           giveni={C\bibinitperiod}}}%
+        {{hash=5756883fe146f8c0788104bc4fc41e77}{%
+           family={Li},
+           familyi={L\bibinitperiod},
+           given={Zhoujun},
+           giveni={Z\bibinitperiod}}}%
+        {{hash=e5bfd490d91c5d1b935092ce3132a083}{%
+           family={Wei},
+           familyi={W\bibinitperiod},
+           given={Furu},
+           giveni={F\bibinitperiod}}}%
+      }
+      \strng{namehash}{dc366cb7a1733319bef0ae8bc84f0faf}
+      \strng{fullhash}{bbaa981085e707678b7588abff4f89e5}
+      \strng{fullhashraw}{bbaa981085e707678b7588abff4f89e5}
+      \strng{bibnamehash}{dc366cb7a1733319bef0ae8bc84f0faf}
+      \strng{authorbibnamehash}{dc366cb7a1733319bef0ae8bc84f0faf}
+      \strng{authornamehash}{dc366cb7a1733319bef0ae8bc84f0faf}
+      \strng{authorfullhash}{bbaa981085e707678b7588abff4f89e5}
+      \strng{authorfullhashraw}{bbaa981085e707678b7588abff4f89e5}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{eprintclass}{cs.CL}
+      \field{eprinttype}{arXiv}
+      \field{title}{TrOCR: Transformer-based Optical Character Recognition with Pre-trained Models}
+      \field{year}{2022}
+      \verb{eprint}
+      \verb 2109.10282
+      \endverb
+      \verb{urlraw}
+      \verb https://arxiv.org/abs/2109.10282
+      \endverb
+      \verb{url}
+      \verb https://arxiv.org/abs/2109.10282
+      \endverb
+    \endentry
+    \entry{StreamlitSecurity}{misc}{}{}
+      \name{author}{1}{}{%
+        {{hash=0713b5b673632d356a22e9aecbfffd57}{%
+           family={{Streamlit Inc.}},
+           familyi={S\bibinitperiod}}}%
+      }
+      \strng{namehash}{0713b5b673632d356a22e9aecbfffd57}
+      \strng{fullhash}{0713b5b673632d356a22e9aecbfffd57}
+      \strng{fullhashraw}{0713b5b673632d356a22e9aecbfffd57}
+      \strng{bibnamehash}{0713b5b673632d356a22e9aecbfffd57}
+      \strng{authorbibnamehash}{0713b5b673632d356a22e9aecbfffd57}
+      \strng{authornamehash}{0713b5b673632d356a22e9aecbfffd57}
+      \strng{authorfullhash}{0713b5b673632d356a22e9aecbfffd57}
+      \strng{authorfullhashraw}{0713b5b673632d356a22e9aecbfffd57}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{\url{https://docs.streamlit.io/deploy}}
+      \field{note}{Accessed: 2024-05-20}
+      \field{title}{Streamlit Security Best Practices and Deployment}
+      \field{year}{2024}
+    \endentry
+    \entry{SQLiteVsPostgres}{misc}{}{}
+      \name{author}{1}{}{%
+        {{hash=9a9ab6daa89d3a40e1d166986df843e3}{%
+           family={{SQLite Development Team}},
+           familyi={S\bibinitperiod}}}%
+      }
+      \strng{namehash}{9a9ab6daa89d3a40e1d166986df843e3}
+      \strng{fullhash}{9a9ab6daa89d3a40e1d166986df843e3}
+      \strng{fullhashraw}{9a9ab6daa89d3a40e1d166986df843e3}
+      \strng{bibnamehash}{9a9ab6daa89d3a40e1d166986df843e3}
+      \strng{authorbibnamehash}{9a9ab6daa89d3a40e1d166986df843e3}
+      \strng{authornamehash}{9a9ab6daa89d3a40e1d166986df843e3}
+      \strng{authorfullhash}{9a9ab6daa89d3a40e1d166986df843e3}
+      \strng{authorfullhashraw}{9a9ab6daa89d3a40e1d166986df843e3}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{\url{https://sqlite.org/whentouse.html}}
+      \field{note}{Accessed: 2024-05-20}
+      \field{title}{Appropriate Uses For SQLite}
+      \field{year}{2024}
+    \endentry
+    \entry{10613721}{inproceedings}{}{}
+      \name{author}{2}{}{%
+        {{hash=9fb4733f71db8108eb9830be492c3dac}{%
+           family={Klinsrisuk},
+           familyi={K\bibinitperiod},
+           given={Chatbordin},
+           giveni={C\bibinitperiod}}}%
+        {{hash=ce9e8daeb48fde19ac0f3722f078b776}{%
+           family={Witayangkurn},
+           familyi={W\bibinitperiod},
+           given={Apichon},
+           giveni={A\bibinitperiod}}}%
+      }
+      \strng{namehash}{bec01cb543d6656f090aa19ae17f3624}
+      \strng{fullhash}{bec01cb543d6656f090aa19ae17f3624}
+      \strng{fullhashraw}{bec01cb543d6656f090aa19ae17f3624}
+      \strng{bibnamehash}{bec01cb543d6656f090aa19ae17f3624}
+      \strng{authorbibnamehash}{bec01cb543d6656f090aa19ae17f3624}
+      \strng{authornamehash}{bec01cb543d6656f090aa19ae17f3624}
+      \strng{authorfullhash}{bec01cb543d6656f090aa19ae17f3624}
+      \strng{authorfullhashraw}{bec01cb543d6656f090aa19ae17f3624}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{2024 21st International Joint Conference on Computer Science and Software Engineering (JCSSE)}
+      \field{title}{ASDR: Automatic System to Diagnose and Recognize Electrical Drawings}
+      \field{year}{2024}
+      \true{nocite}
+      \field{pages}{118\bibrangedash 125}
+      \range{pages}{8}
+      \verb{doi}
+      \verb 10.1109/JCSSE61278.2024.10613721
+      \endverb
+      \keyw{YOLO;Training;Image segmentation;Accuracy;Substations;Engineering drawings;Transfer learning;Automated System;Metering and Relaying Diagram;Object Detection;YOLOv5;RTM-Det;Faster-RCNN;Machine Learning;Albumentations;Electrical Drawing}
+    \endentry
+    \entry{YOLO}{misc}{}{}
+      \name{author}{1}{}{%
+        {{hash=506b587186b760b2f884e19c703f7ffd}{%
+           family={Hussain},
+           familyi={H\bibinitperiod},
+           given={Muhammad},
+           giveni={M\bibinitperiod}}}%
+      }
+      \strng{namehash}{506b587186b760b2f884e19c703f7ffd}
+      \strng{fullhash}{506b587186b760b2f884e19c703f7ffd}
+      \strng{fullhashraw}{506b587186b760b2f884e19c703f7ffd}
+      \strng{bibnamehash}{506b587186b760b2f884e19c703f7ffd}
+      \strng{authorbibnamehash}{506b587186b760b2f884e19c703f7ffd}
+      \strng{authornamehash}{506b587186b760b2f884e19c703f7ffd}
+      \strng{authorfullhash}{506b587186b760b2f884e19c703f7ffd}
+      \strng{authorfullhashraw}{506b587186b760b2f884e19c703f7ffd}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{month}{07}
+      \field{note}{arXiv:2407.02988}
+      \field{title}{YOLOv5, YOLOv8 and YOLOv10: The Go-To Detectors for Real-time Vision}
+      \field{year}{2024}
+      \true{nocite}
+      \verb{doi}
+      \verb 10.48550/arXiv.2407.02988
+      \endverb
+    \endentry
+    \entry{article}{article}{}{}
+      \name{author}{3}{}{%
+        {{hash=9f093f67015f7b51ff0a2e1e91a030d4}{%
+           family={Jamieson},
+           familyi={J\bibinitperiod},
+           given={Laura},
+           giveni={L\bibinitperiod}}}%
+        {{hash=1d6f22b037f551c699ca395e4d024264}{%
+           family={Moreno-García},
+           familyi={M\bibinithyphendelim G\bibinitperiod},
+           given={Carlos},
+           giveni={C\bibinitperiod}}}%
+        {{hash=8ee870839373bdec087796433d91b98e}{%
+           family={Elyan},
+           familyi={E\bibinitperiod},
+           given={Eyad},
+           giveni={E\bibinitperiod}}}%
+      }
+      \strng{namehash}{8d592fd8efb159919fbd4db033742a86}
+      \strng{fullhash}{8d592fd8efb159919fbd4db033742a86}
+      \strng{fullhashraw}{8d592fd8efb159919fbd4db033742a86}
+      \strng{bibnamehash}{8d592fd8efb159919fbd4db033742a86}
+      \strng{authorbibnamehash}{8d592fd8efb159919fbd4db033742a86}
+      \strng{authornamehash}{8d592fd8efb159919fbd4db033742a86}
+      \strng{authorfullhash}{8d592fd8efb159919fbd4db033742a86}
+      \strng{authorfullhashraw}{8d592fd8efb159919fbd4db033742a86}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Artificial Intelligence Review}
+      \field{month}{05}
+      \field{title}{A review of deep learning methods for digitisation of complex documents and engineering diagrams}
+      \field{volume}{57}
+      \field{year}{2024}
+      \true{nocite}
+      \verb{doi}
+      \verb 10.1007/s10462-024-10779-2
+      \endverb
+    \endentry
+    \entry{Adeli1986AMS}{article}{}{}
+      \name{author}{2}{}{%
+        {{hash=4018f98afd65b2769cc8756e07428bf9}{%
+           family={Adeli},
+           familyi={A\bibinitperiod},
+           given={Hojjat},
+           giveni={H\bibinitperiod}}}%
+        {{hash=7db0c25d684e7dafbf26be87531e8543}{%
+           family={Fiedorek},
+           familyi={F\bibinitperiod},
+           given={James},
+           giveni={J\bibinitperiod}}}%
+      }
+      \strng{namehash}{0af406db1dd44d37dd1f4d31c3599acc}
+      \strng{fullhash}{0af406db1dd44d37dd1f4d31c3599acc}
+      \strng{fullhashraw}{0af406db1dd44d37dd1f4d31c3599acc}
+      \strng{bibnamehash}{0af406db1dd44d37dd1f4d31c3599acc}
+      \strng{authorbibnamehash}{0af406db1dd44d37dd1f4d31c3599acc}
+      \strng{authornamehash}{0af406db1dd44d37dd1f4d31c3599acc}
+      \strng{authorfullhash}{0af406db1dd44d37dd1f4d31c3599acc}
+      \strng{authorfullhashraw}{0af406db1dd44d37dd1f4d31c3599acc}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Computers \& Structures}
+      \field{title}{A MICROCAD system for design of steel connections—I. Program structure and graphic algorithms}
+      \field{volume}{24}
+      \field{year}{1986}
+      \true{nocite}
+      \field{pages}{281\bibrangedash 294}
+      \range{pages}{14}
+      \verb{urlraw}
+      \verb https://api.semanticscholar.org/CorpusID:111080620
+      \endverb
+      \verb{url}
+      \verb https://api.semanticscholar.org/CorpusID:111080620
+      \endverb
+    \endentry
+    \entry{TemplateMatching}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=bf7c2971ab6807484e84a7bbc6175bac}{%
+           family={Brunelli},
+           familyi={B\bibinitperiod},
+           given={Roberto},
+           giveni={R\bibinitperiod}}}%
+      }
+      \strng{namehash}{bf7c2971ab6807484e84a7bbc6175bac}
+      \strng{fullhash}{bf7c2971ab6807484e84a7bbc6175bac}
+      \strng{fullhashraw}{bf7c2971ab6807484e84a7bbc6175bac}
+      \strng{bibnamehash}{bf7c2971ab6807484e84a7bbc6175bac}
+      \strng{authorbibnamehash}{bf7c2971ab6807484e84a7bbc6175bac}
+      \strng{authornamehash}{bf7c2971ab6807484e84a7bbc6175bac}
+      \strng{authorfullhash}{bf7c2971ab6807484e84a7bbc6175bac}
+      \strng{authorfullhashraw}{bf7c2971ab6807484e84a7bbc6175bac}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{month}{09}
+      \field{title}{Template Matching Techniques in Computer Vision}
+      \field{year}{2008}
+      \true{nocite}
+    \endentry
+    \entry{carion2020endtoendobjectdetectiontransformers}{misc}{}{}
+      \name{author}{6}{}{%
+        {{hash=0cb223da593b5653feac6f6eabcbe82d}{%
+           family={Carion},
+           familyi={C\bibinitperiod},
+           given={Nicolas},
+           giveni={N\bibinitperiod}}}%
+        {{hash=e5dfae4582081d649e3a0d5342050016}{%
+           family={Massa},
+           familyi={M\bibinitperiod},
+           given={Francisco},
+           giveni={F\bibinitperiod}}}%
+        {{hash=a345e20a460089c920bb74098ed450db}{%
+           family={Synnaeve},
+           familyi={S\bibinitperiod},
+           given={Gabriel},
+           giveni={G\bibinitperiod}}}%
+        {{hash=26e026be6d5366fce878100ba03d68c1}{%
+           family={Usunier},
+           familyi={U\bibinitperiod},
+           given={Nicolas},
+           giveni={N\bibinitperiod}}}%
+        {{hash=28c5859f568975f174c8668976ed369d}{%
+           family={Kirillov},
+           familyi={K\bibinitperiod},
+           given={Alexander},
+           giveni={A\bibinitperiod}}}%
+        {{hash=23bcbde34947ed4fd04cc55ff956c83e}{%
+           family={Zagoruyko},
+           familyi={Z\bibinitperiod},
+           given={Sergey},
+           giveni={S\bibinitperiod}}}%
+      }
+      \strng{namehash}{4963c2a11ef1b07108a62832acac80e9}
+      \strng{fullhash}{53851df57e601a457251e3876b7dab6a}
+      \strng{fullhashraw}{53851df57e601a457251e3876b7dab6a}
+      \strng{bibnamehash}{4963c2a11ef1b07108a62832acac80e9}
+      \strng{authorbibnamehash}{4963c2a11ef1b07108a62832acac80e9}
+      \strng{authornamehash}{4963c2a11ef1b07108a62832acac80e9}
+      \strng{authorfullhash}{53851df57e601a457251e3876b7dab6a}
+      \strng{authorfullhashraw}{53851df57e601a457251e3876b7dab6a}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{eprintclass}{cs.CV}
+      \field{eprinttype}{arXiv}
+      \field{title}{End-to-End Object Detection with Transformers}
+      \field{year}{2020}
+      \true{nocite}
+      \verb{eprint}
+      \verb 2005.12872
+      \endverb
+      \verb{urlraw}
+      \verb https://arxiv.org/abs/2005.12872
+      \endverb
+      \verb{url}
+      \verb https://arxiv.org/abs/2005.12872
+      \endverb
+    \endentry
+  \enddatalist
+\endrefsection
+\endinput
+

@@ -1,0 +1,293 @@
+\chapter{Anforderungsanalyse}
+Die in Kapitel 3 dargelegten theoretischen und technischen Grundlagen bilden das Fundament für die praktische Umsetzung des Systems. In den nachfolgenden Schritten erfolgt die Konkretisierung der Anforderungen an den zu entwickelnden Prototyp. Die vorliegende Analyse leitet sich aus den funktionalen Zielen des Projektes sowie den nicht-funktionalen Rahmenbedingungen im industriellen Umfeld der Siemens Mobility GmbH ab. Zu diesem Zweck werden die Systemgrenzen, Datenformate sowie potenzielle technische Herausforderungen strukturiert analysiert.
+
+
+
+\section{Funktionale Anforderungen}
+Im Rahmen dieser Arbeit wird ein Prototyp entwickelt, der die automatisierte Extraktion und Interpretation von Informationen aus technischen Gleisplänen ermöglicht. Die funktionalen Anforderungen ergeben sich aus den spezifischen Aufgabenstellungen der Signaltechnik-Planung. Das System soll folgende Kernfunktionen erfüllen:
+
+\subsection{Symbolerkennung und Objektklassifizierung}
+\label{sec:req_symbol}
+Eine zentrale Anforderung ist die zuverlässige Detektion bahntechnischer Symbole in Vektor- oder Rastergrafiken.
+
+\begin{enumerate}
+    \item \textbf{Erkennungsrate:} Das System muss mindestens 90\,\% der definierten 
+    Symbolklassen automatisiert erkennen (gemessen als Recall des YOLO-Modells).
+
+    \item \textbf{Rotationsinvarianz:} Da Symbole in Gleisplänen der Topologie folgend in beliebigen Winkeln angeordnet sein können, muss die Erkennung rotationsinvariant erfolgen. Das System muss in der Lage sein, Objekte unabhängig von ihrer Orientierung ($0^\circ$ bis $360^\circ$) korrekt zu klassifizieren und deren Winkel (Rotation) präzise zu bestimmen.
+    \item \textbf{Zielobjekte:} Basierend auf der Domänenanalyse wurden die in Tabelle \ref{tab:symbole} dargestellten Symbole als primäre Detektionsziele definiert.
+
+        \begin{longtable}{|p{3.5cm}|p{5cm}|p{5cm}|}
+
+        \hline
+
+        \textbf{Bezeichnung} & \multicolumn{2}{c|}{\textbf{Symbole}} \\
+
+        \hline
+
+        \endhead
+
+        
+
+        
+
+        Signale & 
+
+        \parbox[c]{5cm}{\centering
+
+        \includegraphics[width=2cm]{images/symbols/signal1.png}
+
+        } & 
+
+        \parbox[c]{5cm}{\centering
+
+        \includegraphics[width=2cm]{images/symbols/Signal2.png}
+
+        } \vspace{0.5cm} \\ 
+
+        \hline 
+
+        Positionsangabe & 
+
+        \parbox[c]{5cm}{\centering
+
+        \includegraphics[width=2cm]{images/symbols/Position.png}
+
+        } & 
+
+        \parbox[c]{5cm}{\centering
+
+        \vspace{0.5cm}
+
+        \includegraphics[width=0.7cm]{images/symbols/Position2.png}
+
+        } \vspace{0.5cm} \\
+
+        \hline
+
+        Gleiskoppelspulen & 
+
+        \parbox[c]{5cm}{\centering
+
+        \includegraphics[width=2cm]{images/symbols/GKS1.png}
+
+        } & 
+
+        \parbox[c]{5cm}{\centering
+
+        \includegraphics[width=2cm]{images/symbols/GKS2.png}
+
+        } \\
+
+        \hline
+
+        Haltepunkt  & 
+
+        \parbox[c]{5cm}{\centering
+
+        \vspace{0.3cm}
+
+        \includegraphics[width=1cm]{images/symbols/Haltepunkt1.png+.png}
+
+        } & 
+
+        \parbox[c]{5cm}{\centering
+
+        \includegraphics[width=1cm]{images/symbols/Haltepunkt2.png+.png}
+
+        } \\
+
+        \hline
+
+        Weichen   & 
+
+        \parbox[c]{5cm}{\centering
+
+        \includegraphics[width=4cm]{images/symbols/Weiche.png}
+
+        } & 
+
+        \parbox[c]{5cm}{\centering
+
+        \includegraphics[width=2cm]{images/symbols/Weiche2.png}
+
+        } \vspace{0.5cm} \\
+
+        \hline
+
+    \caption{Übersicht der Symbole}
+
+    \label{tab:symbole}
+
+    \end{longtable}
+
+
+
+
+
+\end{enumerate}
+
+\subsection{Texterkennung und OCR-Integration}
+\begin{enumerate}[resume]
+    \item \textbf{OCR-Genauigkeit:} Integration von OCR zur Extraktion von Textinformationen (Signalbezeichnungen, Kilometrierungen). 
+
+    Das System soll eine hohe Texterkennung erreichen, wobei typische OCR-Fehler 
+    (Verwechslungen von O/0, I/1, etc.) durch domänenspezifische Validierung 
+    (Regex-Muster) automatisch erkannt und korrigiert werden können.
+
+    Die tatsächlich erreichte Character Error Rate (CER) wird in Kapitel 7 quantitativ 
+    ermittelt.
+    \item \textbf{Robustheit:} Die Texterkennung muss auch unter erschwerten Bedingungen zuverlässig funktionieren. Dazu zählen:
+    \begin{itemize}
+        \item Niedriger Kontrast oder Artefakte durch Scan-Vorgänge (Bildrauschen).
+        \item Rotierte Beschriftungen in kardinalen Orientierungen ($0^\circ, 90^\circ, 180^\circ, 270^\circ$) sowie Abweichungen bis $\pm 15^\circ$ durch manuelle Platzierung oder Export-Toleranzen.
+        \item Überlagerungen durch Führungslinien oder andere grafische Elemente.
+    \end{itemize}
+    \begin{figure}[h]
+    \centering
+    % Placeholder graphic
+    \includegraphics[width=5cm]{images/Kapitel4/OCRsample.png} 
+    \caption{Beispielhafte Extraktion von Text und Position am Symbol GKS}
+    \label{fig:Ocrsample}
+    \end{figure}
+\end{enumerate}
+
+\subsection{Semantische Verknüpfung und Logik}
+Über die reine Detektion hinaus muss das System logische Zusammenhänge zwischen den erkannten Elementen herstellen (\enquote{Intelligent Linking}):
+
+\begin{enumerate}[resume]
+    \item \textbf{Fahrtrichtungsdetektion:} Basierend auf der geometrischen Orientierung (Rotationswinkel) von Signalen und Weichen muss automatisch die Wirkrichtung (z.\,B. in Richtung steigender oder fallender Kilometrierung) abgeleitet werden.
+    \item \textbf{Gruppierung von Attributen:} Zusammengehörige Informationen, wie z.\,B. ein Haltepunkt-Symbol und die dazugehörige Kilometrierungsangabe (Text), müssen räumlich assoziiert und als ein logisches Objekt gespeichert werden (\enquote{Coordinate Grouping}).
+    \item \textbf{Multi-Koordinaten-Parsing:} Bei komplexen Objekten wie Weichenblöcken muss das System in der Lage sein, mehrere relevante Koordinatenpunkte (z.\,B. Weichenspitze, Herzstück) zu extrahieren und einem einzigen Weichen-Objekt zuzuordnen.
+    \item \textbf{Manuelle Korrektur (Human-in-the-Loop):} Da automatische Heuristiken fehleranfällig sein können, muss das System eine Möglichkeit bieten, automatisch erstellte Verknüpfungen manuell zu überschreiben oder zu korrigieren (\enquote{Linking Override}).
+\end{enumerate}
+
+\subsection{Datenaufbereitung und Export}
+\begin{enumerate}[resume]
+    \item \textbf{Excel-Integration:} Die extrahierten Daten müssen vollautomatisch in vordefinierte Projektierungs- oder Prüftabellen (Excel .xlsx) übertragen werden. Dabei ist essenziell, dass die Daten in die semantisch korrekten Zellen (Zeilen/Spalten) geschrieben werden.
+    \begin{figure}[H]
+    \centering
+    \includegraphics[width=6cm]{images/Kapitel4/excelübertragung.png} 
+    \caption{Schematische Übertragung von erkannten Objektdaten in die Ziel-Tabelle}
+    \label{fig:excelübertragung}
+    \end{figure}
+
+    \item \textbf{Strukturerhalt:} Beim Import in bestehende Dateien darf die vorhandene Struktur (Formatierung, Formeln, Makros) nicht beschädigt werden. Das System darf lediglich Werte (Values) in definierte Bereiche einfügen (Non-destructive Update).
+    
+        \item \textbf{Änderungsverfolgung (Diff-Funktion)}:
+    
+        Automatischer Vergleich zweier Planversionen mit Kategorisierung:
+        \begin{itemize}
+            \item Hinzugefügt: Neue Objekte in Version B
+            \item Entfernt: Objekte aus Version A fehlen in Version B
+            \item Verschoben: Identische Kennung, unterschiedliche Position
+            \item Modifiziert: Gleiche Position, geänderter Text
+        \end{itemize}
+    
+    Export als separates Excel-Sheet mit Spalten: Objektklasse, Kennung, Änderungstyp, Alt-Wert, Neu-Wert, Koordinaten. Visuelle Darstellung: farbkodierte Overlays (grün/rot/orange).
+    \begin{figure}[H]
+    \centering
+    \includegraphics[width=9cm]{images/Kapitel4/änderungsample.png} 
+    \caption{Visualisierung der Änderungsverfolgung zwischen zwei Planversionen}
+    \label{fig:änderungsample}
+    \end{figure}
+
+    \item \textbf{Visuelle Validierung:} Zur manuellen Überprüfung (\enquote{Ground Truthing}) sollen im ausgegebenen Gleisplan (oder einer Overlay-Ansicht) alle erkannten Objekte durch farbige Bounding Boxes markiert werden.
+    \begin{figure}[H]
+    \centering
+    \includegraphics[width=14cm]{images/Kapitel4/gleisplanmarkierung.png} 
+    \caption{Visuelle Validierung durch Bounding-Box-Overlays im Gleisplan \cite{railroadstationdrawing}}
+    \label{fig:gleisplanmarkierung}
+    \end{figure}
+\end{enumerate}
+
+\subsection{Benutzerinteraktion und Konfiguration}
+\begin{enumerate}[resume]
+    \item \textbf{Grafische Benutzeroberfläche (GUI):} Die Bedienung soll über eine intuitive Oberfläche erfolgen, die den Upload von PDF-Dateien, den Start der Analyse sowie den Export ermöglicht, ohne dass Kommandozeilen-Kenntnisse erforderlich sind.
+    \item \textbf{Konfigurierbarkeit:} Kundenspezifische Anpassungen, wie z.\,B. Mappings von Symbolklassen zu internen IDs oder spezifische OCR-Parameter, müssen über externe Konfigurationsdateien (YAML/JSON) anpassbar sein, ohne den Quellcode anpassen zu müssen.
+    \item \textbf{Modularität:} Die Architektur muss so gestaltet sein, dass neue Symboltypen durch ein Nachtraining des Modells integriert werden können (\enquote{Model-as-a-Service}-Ansatz), ohne die Kernlogik der Anwendung zu verändern.
+\end{enumerate}
+
+\section{Nicht-funktionale Anforderungen}
+Ergänzend zu den funktionalen Zielen definieren die nicht-funktionalen Anforderungen die Qualitätsmerkmale und Rahmenbedingungen des Systems.
+
+\subsection{Sicherheit und Datenschutz}
+\begin{enumerate}
+    \item \textbf{On-Premise-Verarbeitung}: Keine Datenübertragung an externe 
+    Cloud-Services. Vollständig lokale Ausführung auf Siemens-Systemen. 
+    Offline-Betrieb gewährleistet.
+    
+    \item \textbf{Lizenzkonformität}: Ausschließlich Open-Source-Bibliotheken mit 
+    genehmigten Lizenzen (Apache 2.0, MIT, BSD). Dokumentation aller Abhängigkeiten.
+\end{enumerate}
+
+\subsection{Qualität und Zuverlässigkeit}
+\begin{enumerate}[resume]
+    \item \textbf{Gesamtsystem-Genauigkeit}: Mindestens 85\,\% aller Objekte müssen 
+    vollständig korrekt extrahiert werden (Detektion + OCR + Linking + Export korrekt). 
+    Verbleibende 15\,\% erfordern manuelle Korrektur. Messung in Kapitel 7 auf 
+    Ground-Truth-Datensatz.
+    
+    \item \textbf{Robustheit}: Resilient gegenüber fehlerhaften Eingaben (korrupte 
+    PDFs, Rauschen). Definierte Fehlermeldungen statt Absturz.
+    
+    \item \textbf{Prüfbarkeit}: Visuelle Validierung aller Ergebnisse (Bounding-Box-Overlay). 
+    Rückverfolgbarkeit: Klick auf Tabellenzeile zeigt Position im Plan.
+\end{enumerate}
+
+\subsection{Effizienz und Wirtschaftlichkeit}
+\begin{enumerate}[resume]
+    \item \textbf{Prozessoptimierung:} Das Hauptziel ist die Reduktion des manuellen Prüfaufwands. Das Tool soll den Prozess vom zeitintensiven \enquote{4-Augen-Prinzip} (zwei Menschen prüfen manuell) hin zu einem KI-gestützten Prozess (\enquote{Mensch prüft KI}) transformieren.
+    \item \textbf{Ressourceneffizienz:} Die Analyse eines durchschnittlichen Bahnhofsplans sollte auf Standard-Hardware in akzeptabler Zeit (wenige Minuten) durchführbar sein.
+\end{enumerate}
+
+\subsection{Wartbarkeit und Erweiterbarkeit}
+\begin{enumerate}[resume]
+    \item \textbf{Erweiterbarkeit:} Der Code ist modular zu strukturieren, um zukünftige Erweiterungen (z.\,B. Anbindung an CAD-Systeme) zu erleichtern.
+    \item \textbf{Update-Fähigkeit:} Neue Symbolvarianten müssen über Konfigurations-Updates oder neue Modell-Gewichte (Weights) einspielbar sein.
+\end{enumerate}
+
+\section{Datenquellen und Formate}
+Die Datengrundlage bilden reale Gleispläne aus dem Bereich \textit{Trainguard MT ZUB} der Siemens Mobility GmbH.
+
+\subsection{Datenquellen}
+\begin{itemize}
+    \item \textbf{Primäre Quelle:} Kundenspezifische Gleispläne im PDF-/Bildformat. Diese enthalten Vektor- oder Rastergrafiken, exportiert aus CAD-Systemen (AutoCAD, LCAD). Die Auflösung beträgt in der Regel $\geq 300$ dpi.
+    \item \textbf{Sekundäre Quellen:} Historische Bestandspläne (Scans) sowie synthetisch erzeugte Testdaten zur Überprüfung der Robustheit.
+\end{itemize}
+
+\subsection{Datenformate}
+Tabelle \ref{tab:formate-prototyp} gibt einen Überblick über die im System verwendeten Dateiformate.
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.4}
+\begin{tabularx}{\textwidth}{|p{2.5cm}|p{2cm}|X|X|}
+\hline
+\textbf{Kategorie} & \textbf{Format} & \textbf{Beschreibung} & \textbf{Einsatz im Prototyp} \\
+\hline
+\textbf{Eingabe} & PDF & Standardformat für Pläne & Primäre Datenquelle \\
+ & PNG/JPG & Rasterisierte Ausschnitte & Input für CNN/YOLO \\
+\hline
+\textbf{Verarbeitung} & JSON & Strukturierte Metadaten & Interner Datenaustausch \\
+ & PostgreSQL & Relationale Datenbank & Persistenz \& Versionierung \\
+\hline
+\textbf{Ausgabe} & XLSX & Excel-Arbeitsmappe & Engineering-Workflow \\
+ & CSV & Textbasiertes Format & Einfacher Datenaustausch \\
+ & JSON & API-Response & Schnittstellenanbindung \\
+\hline
+\end{tabularx}
+\caption{Übersicht der unterstützten Datenformate}
+\label{tab:formate-prototyp}
+\end{table}
+
+\section{Herausforderungen bei der Umsetzung}
+Die Realisierung der Anforderungen sieht sich folgenden technischen Herausforderungen gegenüber:
+
+\begin{enumerate}
+    \item \textbf{Daten-Heterogenität:} Die Varianz in den Eingabedaten (unterschiedliche Export-Einstellungen, Linienstärken, Skalierungen) erschwert eine universelle Regelbildung.
+    \item \textbf{Visuelle Ambivalenz:} Einige Symbole (z.\,B. unterschiedliche Balisen-Typen) unterscheiden sich visuell nur in wenigen Pixeln oder sind nur durch den Kontext (Begleittext) differenzierbar.
+    \item \textbf{OCR-Komplexität:} Technischer Text in Plänen ist oft extrem klein, rotiert und durch Führungslinien durchgestrichen, was klassische OCR-Engines (wie Tesseract) an ihre Grenzen bringt.
+    \item \textbf{Mangel an Trainingsdaten:} Es existiert kein öffentlicher Datensatz für bahntechnische Symbolik. Ein \enquote{Cold Start} ist notwendig, bei dem Trainingsdaten zunächst manuell (z.\,B. via CVAT) annotiert werden müssen.
+    \item \textbf{Semantische Lücke:} Der Schritt von der Erkennung (\enquote{Da ist eine Box}) zur Bedeutung (\enquote{Das ist Weiche 12 in Rechtslage}) erfordert komplexe Heuristiken, insbesondere beim Mapping von Textboxen zu den geometrisch nächsten Symbolen.
+\end{enumerate}
