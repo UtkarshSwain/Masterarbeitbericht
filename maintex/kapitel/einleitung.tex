@@ -1,26 +1,30 @@
 \chapter{Einleitung}
-Die Digitalisierung revolutioniert zunehmend die traditionellen Arbeitsprozesse in der Industrie und eröffnet neue Möglichkeiten zur Steigerung der Effizienz, Verbesserung der Qualität und Senkung der Kosten. Im Bereich der Bahninfrastruktur, insbesondere in der Planung und Dokumentation von Stellwerkanlagen, besteht ein signifikantes Potenzial für digitale Transformationsprozesse. Die vorliegende Masterarbeit, die innerhalb der Siemens Mobility GmbH durchgeführt wurde, thematisiert diese Herausforderung durch die Entwicklung eines KI unterstützten Systems zur automatischen Verarbeitung der Gleispläne.
+Die Digitalisierung revolutioniert zunehmend die traditionellen Arbeitsprozesse in der Industrie und eröffnet neue Möglichkeiten zur Steigerung der Effizienz, Verbesserung der Qualität und Senkung der Kosten. In vielen Bereichen des Ingenieurwesens, vom Maschinenbau über die Verfahrenstechnik bis hin zur Infrastrukturplanung, besteht ein signifikantes Potenzial für digitale Transformationsprozesse, insbesondere bei der Verarbeitung und Interpretation technischer Pläne und Zeichnungen. Die vorliegende Masterarbeit, die innerhalb der Siemens Mobility GmbH im Bereich der Bahninfrastruktur durchgeführt wurde, adressiert diese branchenübergreifende Herausforderung durch die Entwicklung eines KI-unterstützten Systems zur automatischen Verarbeitung technischer Pläne am konkreten Anwendungsfall der Gleispläne.
 \\
 \\
-Stellwerke bilden das Herzstück moderner Schieneninfrastruktur und gewährleisten durch ihre komplexe Steuerungstechnik den sicheren und effizienten Zugverkehr. Die präzise Dokumentation ihrer Komponenten von Signalen über Weichen bis hin zu Gleiskoppelspulen ist dabei von essentieller Bedeutung für Planung, Wartung und Modernisierung. In der gegenwärtigen Praxis erfolgt die Übertragung dieser Informationen von technischen Zeichnungen in strukturierte Datenformate jedoch weitgehend manuell, was sowohl zeit- als auch ressourcenintensiv ist \cite{sym17050674}.
+Im spezifischen Kontext der Schieneninfrastruktur bilden Stellwerke das Herzstück moderner Bahnsysteme und gewährleisten durch ihre komplexe Steuerungstechnik den sicheren und effizienten Zugverkehr. Die präzise Dokumentation ihrer Komponenten, von Signalen über Weichen bis hin zu Gleiskoppelspulen, ist dabei von essentieller Bedeutung für Planung, Wartung und Modernisierung. Ähnlich wie bei Hydraulikschaltplänen im Maschinenbau oder R\&I-Diagrammen in der Verfahrenstechnik erfolgt die Übertragung dieser Informationen von technischen Zeichnungen in strukturierte Datenformate jedoch weitgehend manuell, was sowohl zeit- als auch ressourcenintensiv ist \cite{sym17050674}.
 \\
 \\
 Die fortschreitende Entwicklung in den Bereichen Computer Vision, Machine Learning und Prozessautomatisierung eröffnet jetzt weitere Perspektiven für die Optimierung dieser Arbeitsabläufe. Diese technologischen Möglichkeiten bilden die Grundlage für den in dieser Arbeit verfolgten Ansatz, der darauf abzielt, den Prozess der Datenextraktion und -verwaltung grundlegend zu modernisieren.
 \\
 \\
-Ziel dieser Arbeit ist es, theoretische Konzepte der künstlichen Intelligenz mit den praktischen Anforderungen der Schienenverkehrstechnik zu verknüpfen. Durch die Entwicklung und Validierung eines domänenspezifischen Ansatzes wird demonstriert, wie die Lücke zwischen analogen Planungsunterlagen und digitalen Datenmodellen geschlossen werden kann. Damit leistet die Arbeit einen konkreten Beitrag zur digitalen Transformation in einem sicherheitskritischen Bereich der Infrastrukturplanung.
+Ziel dieser Arbeit ist es, theoretische Konzepte der künstlichen Intelligenz mit den praktischen Anforderungen der technischen Planverarbeitung zu verknüpfen. Durch die Entwicklung und Validierung eines domänenspezifischen Ansatzes am Beispiel der Schienenverkehrstechnik wird demonstriert, wie die Lücke zwischen analogen Planungsunterlagen und digitalen Datenmodellen geschlossen werden kann.
+
 
 \section{Motivation}
-Die Digitalisierung von technischen Planungsprozessen stellt eine zentrale Herausforderung für Unternehmen im Infrastruktursektor und im allgemeinen Maschinenbau dar. Insbesondere im Bereich der Eisenbahnsignaltechnik beruhen viele Arbeitsschritte noch auf der manuellen Auswertung von Gleisplänen, in denen eine Vielzahl von Symbolen, Textbausteinen und kundenindividuellen Darstellungen enthalten ist. Diese manuelle Analyse ist nicht nur zeitaufwendig und fehleranfällig, sondern erschwert auch die systematische Versionierung und Rückverfolgbarkeit von Änderungen über die Lebenszyklen eines Projekts hinweg \cite{Ristic2023AutomatedDO}.
+Die Digitalisierung von technischen Planungsprozessen stellt eine zentrale Herausforderung für Unternehmen im Infrastruktursektor und im allgemeinen Maschinenbau dar. Der Übergang von papierbasierter oder halbdigitaler Dokumentation zu durchgängig digitalen Workflows verspricht erhebliche Effizienzsteigerungen und bildet die Grundlage für moderne Konzepte wie den Digitalen Zwilling oder modellbasierte Systementwicklung.
 \\
 \\
-Über den spezifischen Anwendungsfall der Bahntechnik hinaus besitzt die Fragestellung eine hohe Relevanz für den gesamten Ingenieursbereich. Ähnlich wie bei Hydraulikschaltplänen im Maschinenbau oder R\&I(Rohrleitungs- und Instrumenten) Fließschemata im Anlagenbau liegt hier das Problem vor, dass wertvolle Informationen in unstrukturierten Vektorgrafiken \enquote{gefangen} sind \cite{VogelHeuser2017}. Die Extraktion dieser Informationen ist essenziell für moderne Ansätze wie den \enquote{Digitalen Zwilling}. Ein Verfahren, das komplexe Symboliken in technischen Zeichnungen zuverlässig erkennt und semantisch interpretiert, bietet daher einen universellen Lösungsansatz zur Automatisierung der Bestandsdatenaufnahme.
+Im Bereich der Eisenbahnsignaltechnik beruhen viele Arbeitsschritte noch auf der manuellen Auswertung von Gleisplänen, in denen eine Vielzahl von Symbolen, Textbausteinen und kundenindividuellen Darstellungen enthalten ist. Diese manuelle Analyse ist nicht nur zeitaufwendig und fehleranfällig, sondern erschwert auch die systematische Versionierung und Rückverfolgbarkeit von Änderungen über die Lebenszyklen eines Projekts hinweg \cite{Ristic2023AutomatedDO}.
+\\
+\\
+Über den spezifischen Anwendungsfall der Bahntechnik hinaus besitzt die Fragestellung eine hohe Relevanz für den gesamten Ingenieursbereich: Ob Hydraulikschaltpläne im Maschinenbau, R\&I-Fließschemata im Anlagenbau oder Elektroinstallationspläne in der Gebäudetechnik – in all diesen Domänen müssen technische Zeichnungen regelmäßig in strukturierte Datenformate überführt werden, um sie in nachgelagerten Prozessen wie Simulation, Prüfung oder Wartungsplanung nutzen zu können \cite{VogelHeuser2017}.
 \\
 \\
 Ziel der vorliegenden Masterarbeit ist es daher, eine intelligente und automatisierte Lösung zu entwickeln, die auf Basis aktueller Deep Learning Modelle eine zuverlässige Erkennung und Interpretation von Symbolen und Text in technischen Plänen ermöglicht. In Kombination mit regelbasierter Logik sowie strukturierten Ausgabeformaten entsteht ein skalierbarer Prototyp zur Verarbeitung, Auswertung und semantischen Interpretation von Gleisplänen.
 \\
 \\
-Die Umsetzung einer solchen Lösung verspricht nicht nur eine erhebliche Effizienzsteigerung in der Planungs- und Prüfphase, sondern schafft auch eine fundierte Grundlage für Rückverfolgbarkeit, Änderungsmanagement und automatisierte Konsistenzprüfungen. Damit leistet die Arbeit einen praxisnahen Beitrag zur digitalen Transformation innerhalb der Siemens Mobility GmbH und zeigt exemplarisch auf, wie moderne Verfahren wie Computer Vision konkret auf industrielle Anwendungsfälle im Ingenieurwesen übertragen werden können.
+Die Umsetzung einer solchen Lösung verspricht nicht nur eine erhebliche Effizienzsteigerung in der Planungs- und Prüfphase, sondern schafft auch eine fundierte Grundlage für Rückverfolgbarkeit, Änderungsmanagement und automatisierte Konsistenzprüfungen. Damit leistet die Arbeit einen praxisnahen Beitrag zur digitalen Transformation innerhalb der Siemens Mobility GmbH und zeigt exemplarisch auf, wie moderne Verfahren der Computer Vision konkret auf industrielle Anwendungsfälle im Ingenieurwesen übertragen werden können.
 
 \subsection{Praxisbeispiel: Herausforderungen bei Siemens Mobility}
 
@@ -41,14 +45,22 @@ Mobility GmbH:
 Das Projektziel ist eine Zeitreduktion um $> 80\,\%$ durch KI-gestützte 
 Automatisierung, wodurch Ingenieure nur noch KI-Ergebnisse validieren müssen 
 (2-Augen-Prinzip) statt komplett manuell zu arbeiten.
-
 \section{Problemstellung}
-Im Bereich der Bahninfrastrukturplanung sowie im klassischen Konstruktionswesen werden Pläne häufig als PDF- oder Bilddateien bereitgestellt. Diese Dokumente enthalten eine Vielzahl relevanter Informationen wie Stellwerke, Signale, Weichen, Gleiskoppelspulen und Positionsangaben. Diese grafischen Pläne müssen regelmäßig in strukturierte Datenformate wie Excel, XML oder Datenbanken überführt werden etwa für Prüfroutinen, Dokumentation oder die Weiterverarbeitung in ERP- und Planungssystemen.
+In vielen technischen Disziplinen des Ingenieurwesens werden komplexe Systeme und Anlagen noch immer primär über grafische Pläne dokumentiert und kommuniziert. Ob Hydraulikschaltpläne im Maschinenbau, Rohrleitungs- und Instrumentenfließschemata (R\&I-Diagramme) in der Verfahrenstechnik, elektrische Schaltpläne in der Elektrotechnik oder Gleispläne in der Bahntechnik – in all diesen Fachbereichen liegt wertvolles technisches Wissen in Form unstrukturierter Vektorgrafiken oder PDF-Dokumente vor \cite{VogelHeuser2017}. Diese Pläne enthalten eine Vielzahl semantisch relevanter Informationen: Komponenten werden durch standardisierte oder kundenspezifische Symbole repräsentiert, Verbindungen zwischen Elementen sind grafisch dargestellt, und technische Spezifikationen werden als Textannotationen beigefügt.
 \\
 \\
-Aktuell erfolgt dieser Prozess (\enquote{Medienbruch}) meist manuell, was sowohl 
-zeitaufwendig als auch fehleranfällig ist und mit zunehmender Gleisplankomplexität 
-kaum skalierbar bleibt. \cite{Ristic2023AutomatedDO} Insbesondere fehlt die \textit{Rückverfolgbarkeit (Traceability)} zwischen den extrahierten Daten und ihrer visuellen Repräsentation im Ursprungsdokument. Auch Änderungen in neuen Gleisplanversionen müssen mühsam manuell identifiziert und nachgepflegt werden.
+Für moderne digitale Arbeitsabläufe, etwa für die Erstellung eines Digitalen Zwillings, für automatisierte Konsistenzprüfungen oder für die Integration in Enterprise-Resource-Planning-Systeme (ERP), müssen diese visuell kodierten Informationen jedoch in strukturierte, maschinenlesbare Datenformate überführt werden. Dieser Medienbruch zwischen analoger oder halbdigitaler Plandarstellung und strukturierten Datenmodellen stellt eine zentrale Herausforderung dar, da die manuelle Übertragung nicht nur zeitaufwendig und fehleranfällig ist, sondern auch kaum skalierbar bleibt, wenn die Komplexität der Systeme oder die Anzahl der zu verarbeitenden Pläne zunimmt \cite{Ristic2023AutomatedDO}.
+\\
+\\
+Erschwerend kommt hinzu, dass in der Praxis erhebliche Varianzen in der Darstellung existieren: Unterschiedliche Kunden, Hersteller oder Normen verwenden abweichende Symbolbibliotheken, verschiedene Orientierungen und Skalierungen sowie heterogene Textlayouts. Die korrekte Zuordnung von Textannotationen zu den entsprechenden grafischen Elementen erfolgt oft nach impliziten, nicht formalisierten Konventionen, die von Plan zu Plan variieren können. Zudem fehlt in traditionellen Workflows häufig die \textit{Rückverfolgbarkeit (Traceability)} zwischen den extrahierten Daten und ihrer visuellen Repräsentation im Ursprungsdokument. Änderungen in neuen Planversionen müssen manuell identifiziert, dokumentiert und in die Datenbestände eingepflegt werden, was zusätzlichen Aufwand verursacht und Fehlerquellen eröffnet.
+\\
+\\
+\textbf{Anwendungsfall Bahninfrastrukturplanung}
+\\
+Im konkreten Kontext der vorliegenden Arbeit manifestiert sich diese allgemeine Problemstellung im Bereich der Bahninfrastrukturplanung. Hier werden Gleispläne häufig als PDF- oder Bilddateien bereitgestellt, die Informationen über Stellwerke, Signale, Weichen, Gleiskoppelspulen und Positionsangaben enthalten. Diese grafischen Pläne müssen regelmäßig in strukturierte Datenformate wie Excel, XML oder Datenbanken überführt werden – etwa für Prüfroutinen, Dokumentation oder die Weiterverarbeitung in Planungssystemen.
+\\
+\\
+Aktuell erfolgt dieser Prozess meist manuell, was sowohl zeitaufwendig als auch fehleranfällig ist und mit zunehmender Gleisplankomplexität kaum skalierbar bleibt \cite{Ristic2023AutomatedDO}. Typische Gleispläne enthalten 50-200 verschiedene Objekte, die jeweils mit Positionsangaben, Bezeichnungen und technischen Parametern annotiert sind. Die Fehlerquote bei der manuellen Übertragung ist erheblich: Zahlendreher und Positionsverwechslungen werden oft erst nach kostspieligen Testfahrten erkannt. Zudem fehlt die systematische Rückverfolgbarkeit zwischen extrahierten Daten und ihrer Darstellung im Plan, und Änderungen in neuen Planversionen müssen mühsam manuell identifiziert und nachgepflegt werden.
 \\
 \\
 Ein zusätzlicher Schwierigkeitsfaktor liegt in der Varianz der Daten: Kunden liefern Pläne in unterschiedlich formatierten Varianten mit rotationsabhängigen Symbolen, uneinheitlicher Symbolik sowie unterschiedlichen Textlayouts. Dadurch steigt der Aufwand für die Interpretation und die Anpassung an kundenspezifische Besonderheiten weiter an.
@@ -58,10 +70,11 @@ Die zu lösende Herausforderung besteht darin:
 \begin{itemize}
     \item möglichst viele relevante Informationen automatisiert aus unstrukturierten Plänen zu extrahieren,
     \item diese flexibel in strukturierte Formate wie Excel oder PostgreSQL zu überführen,
-    \item kundenabhängige Symbolbedeutungen über konfigurierbare Mappings zuzuordnen,
+    \item kundenabhängige Symbolbedeutungen über konfigurierbare Mechanismen zuzuordnen,
     \item Rückverfolgbarkeit und Änderungsverfolgung zwischen Layout und Exportdaten zu ermöglichen,
-    \item sowie eine benutzerfreundliche Benutzeroberfläche (UI) für die Ingenieurabteilung bereitzustellen.
+    \item sowie eine benutzerfreundliche Oberfläche für die Validierung und Nachbearbeitung bereitzustellen.
 \end{itemize}
+
 \section{Zielsetzung der Arbeit}
 Ziel dieser Masterarbeit ist die Entwicklung eines skalierbaren Prototyps zur automatisierten Erkennung, Interpretation und strukturierten Verarbeitung von Gleisplänen im PDF Format. Im Fokus steht dabei die Extraktion von symbolischen und textlichen Inhalten aus Plänen mittels moderner Verfahren der Objekt- und Texterkennung. Der Ansatz soll dabei so generisch gestaltet werden, dass er prinzipiell auch auf andere technische Zeichnungen (z.B. im Maschinenbau) übertragbar wäre.
 
@@ -80,10 +93,10 @@ Durch die Umsetzung dieser Ziele soll ein robuster, praxisnaher Demonstrator ent
 Abgeleitet aus der Problemstellung und den Zielsetzungen beschäftigt sich diese Arbeit mit der folgenden zentralen Forschungsfrage:
 \\
 \\
-\textbf{HF: Wie lässt sich der Prozess der Datenextraktion aus heterogenen technischen Gleisplänen durch den Einsatz von Deep Learning und hybriden Verarbeitungsstrategien automatisieren, um eine valide Überführung in strukturierte Datenmodelle zu gewährleisten?}
+\textbf{HF: Wie lässt sich der Prozess der Datenextraktion aus heterogenen technischen Zeichnungen durch den Einsatz von Deep Learning und hybriden Verarbeitungsstrategien automatisieren, um eine valide Überführung in strukturierte Datenmodelle zu gewährleisten?}
 \\
 \\
-Zur Beantwortung dieser Hauptfrage werden folgende Teilforschungsfragen (TF) untersucht:
+Diese Hauptfrage wird in der vorliegenden Arbeit exemplarisch am Anwendungsfall der Gleispläne in der Bahninfrastruktur untersucht. Zur Beantwortung werden folgende Teilforschungsfragen (TF) adressiert:
 \begin{itemize}
     \item \textbf{TF1:} Inwieweit eignen sich aktuelle One Stage Objektdetektoren zur zuverlässigen Erkennung von kleinteiligen, rotierten Symbolen in technischen Zeichnungen und welche Vorverarbeitungsschritte sind notwendig, um die Präzision bei variierenden Layouts zu maximieren?
     \item \textbf{TF2:} Wie können geometrische Informationen und unstrukturierte Textdaten algorithmisch so verknüpft werden, dass eine korrekte semantische Zuordnung (z.\,B. Signalbezeichnung zu Signalsymbol) auch bei hoher Objektdichte erfolgt?
