@@ -65,29 +65,19 @@
 \setlength{\headsep}{1cm}     % Add gap between the header and the text
 % --- ENDE KORRIGIERTE HEADER-HÖHE ---
 
-
-% --- ANGEPASSTES FANCY HEADER SETUP (für twoside) ---
+% --- MINIMALISTISCHER HEADER (nur Text) ---
 \pagestyle{fancy}
-\fancyhf{} % Clear all header and footer fields
-\fancyhead[LO,RE]{% Innerer Header (Links auf ungeraden, Rechts auf geraden)
-    \includegraphics[height=1cm]{images/tu-clausthal-logo.jpg}\\ % Logo (adjust size and path)
-    \nouppercase{\leftmark} % Chapter name below the logo
-}
-\fancyhead[LE,RO]{\thepage} % Äußerer Header: Seitenzahl
-\renewcommand{\headrulewidth}{0.4pt} % Line below the header
+\fancyhf{}
+\fancyhead[LO,RE]{\nouppercase{\leftmark}} % Nur Kapitelname
+\fancyhead[LE,RO]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
 
-% Start header only from the Introduction chapter
 \fancypagestyle{plain}{
-    \fancyhf{} % Clear existing header/footer
-    \fancyhead[LO,RE]{% Innerer Header
-        \includegraphics[height=1cm]{images/tu-clausthal-logo.jpg}\\% Logo
-        \nouppercase{\leftmark} % Chapter name below logo
-    }
-    \fancyhead[LE,RO]{\thepage} % Äußerer Header: Page number
-    \renewcommand{\headrulewidth}{0.4pt} % Header line
+    \fancyhf{}
+    \fancyhead[LO,RE]{\nouppercase{\leftmark}}
+    \fancyhead[LE,RO]{\thepage}
+    \renewcommand{\headrulewidth}{0.4pt}
 }
-% --- ENDE ANGEPASSTES FANCY HEADER ---
-
 % --- NEU HINZUGEFÜGT: Für klickbare Links in Schwarz ---
 % (hyperref MUSS als eines der letzten Pakete geladen werden)
 \usepackage[hidelinks]{hyperref}
