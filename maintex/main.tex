@@ -7,7 +7,7 @@
 \usepackage{geometry}
 \usepackage{longtable} % For tables that may span multiple pages
 \usepackage{array}     % For vertical centering in table cells
-\usepackage{caption}   % For table captions
+\usepackage[labelfont=bf, justification=centering]{caption}   % For table captions
 \usepackage{fancyhdr}  % For header customization
 \usepackage{comment}
 \usepackage{csquotes}
@@ -135,7 +135,78 @@
         \textbf{\today}
     \end{center}
 \end{titlepage}
+% --- PAGE 1: SPERRVERMERK ---
+\clearpage
+\thispagestyle{empty} % No page number on this page
+\vspace*{2cm}
 
+\begin{center}
+    {\Large \textbf{Sperrvermerk Masterarbeit}}
+\end{center}
+
+\vspace{1cm}
+
+\noindent
+Die vorliegende Masterarbeit mit dem Titel
+
+\begin{quote}
+    \textit{\glqq KI-gestützter Prototyp zur automatisierten Erkennung und Interpretation von Symbolen und Daten in PDF-basierten Gleisplänen\grqq}
+\end{quote}
+
+\noindent
+enthält interne vertrauliche Daten der Siemens Mobility GmbH.
+
+\vspace{0.5cm}
+
+\noindent
+Sie ist nur den Erst- und Zweitgutachtern sowie ggf. dem Prüfungsausschussvorsitzenden des Fachbereiches Maschinenbau zugänglich zu machen.
+
+\vspace{0.5cm}
+
+\noindent
+Veröffentlichungen und Vervielfältigungen der Masterarbeit, oder die Weitergabe der Masterarbeit -- im Gesamten oder in Teilen sowie das Anfertigen von Kopien oder Abschriften -- auch in digitaler Form -- sind grundsätzlich untersagt.
+
+\vspace{0.5cm}
+
+\noindent
+Ausnahmen bedürfen der vorherigen schriftlichen Genehmigung der Siemens Mobility GmbH.
+
+% --- PAGE 2: EIDESSTATTLICHE ERKLÄRUNG ---
+\clearpage
+\thispagestyle{empty} % No page number on this page
+\vspace*{2cm}
+
+\begin{center}
+    {\Large \textbf{\underline{Eidesstattliche Erklärung}}}
+\end{center}
+
+\vspace{1cm}
+
+\noindent
+Hiermit erkläre ich an Eides Statt, dass ich die bei der Technischen Universität Clausthal eingereichte Forschungsarbeit selbständig und ohne unerlaubte Hilfe angefertigt habe. Die benutzten Hilfsmittel sind vollständig angegeben.
+
+\vspace{2.5cm}
+
+% Signature Line 1
+\begin{tabular}{@{}p{5cm}@{}}
+    \hrulefill \\
+    Datum und Unterschrift
+\end{tabular}
+
+\vspace{2.5cm}
+
+\noindent
+Des Weiteren erkläre ich mich \textbf{nicht} damit einverstanden, dass meine Forschungsarbeit in der Instituts- und/oder der Universitätsbibliothek ausgelegt und aufbewahrt werden darf.
+
+\vspace{2.5cm}
+
+% Signature Line 2
+\begin{tabular}{@{}p{5cm}@{}}
+    \hrulefill \\
+    Datum und Unterschrift
+\end{tabular}
+
+\clearpage
 % ===== RÖMISCHE SEITENZAHLEN FÜR VORSPANN =====
 \pagenumbering{roman}  % Aktiviert römische Seitenzahlen (i, ii, iii, ...)
 % Table of Contents
