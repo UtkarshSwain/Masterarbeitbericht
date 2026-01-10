@@ -30,7 +30,7 @@
 % --- WICHTIG: Diese Bibliotheken laden ---
 % 'decorations.pathreplacing' brauchst du für die geschweiften Klammern (Option 2)
 % 'arrows.meta' brauchst du für die schönen Pfeilspitzen (>=latex)
-\usetikzlibrary{decorations.pathreplacing, arrows.meta, positioning, shadows,shapes, ,shapes.geometric, calc, fit}
+\usetikzlibrary{decorations.pathreplacing, arrows.meta, positioning, shadows,shapes, patterns,shapes.geometric, calc, fit}
 \usepackage{placeins}
 \usepackage{pgfplots}
 \pgfplotsset{compat=1.18}
@@ -216,6 +216,8 @@ Des Weiteren erkläre ich mich \textbf{nicht} damit einverstanden, dass meine Fo
 
 \input{kapitel/Theorietische und technische Grundlagen.tex}
 \clearpage
+\begin{comment}
+    
 
 \input{kapitel/anforderungsanalyse.tex}
 \clearpage
@@ -236,5 +238,5 @@ Des Weiteren erkläre ich mich \textbf{nicht} damit einverstanden, dass meine Fo
 \clearpage
 \nocite{*}
 \printbibliography[title=Literaturverzeichnis]
-
+\end{comment}
 \end{document}
