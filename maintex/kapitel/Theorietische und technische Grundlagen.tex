@@ -799,134 +799,775 @@ Die konkreten Trainingsparameter und -ergebnisse für den im Rahmen dieser Arbei
 Die beschriebenen OBB-Eigenschaften sind besonders relevant für die automatisierte Analyse von Gleisplänen. Technische Zeichnungen dieses Typs weisen drei charakteristische Merkmale auf, die den Einsatz orientierter Bounding Boxes notwendig machen. Symbole folgen der Topologie der Gleisachsen und können daher in jedem Winkel $\theta \in [0^\circ, 360^\circ)$ vorliegen. In Bahnhöfen und Weichenstraßen treten Symbole räumlich konzentriert auf, wobei AABB-basierte NMS zu Fehlunterdrückungen führen würde. Die vom OBB-Detektor gelieferte Rotation $\theta$ ist für nachgelagerte Prozesse wie die orientierungsabhängige OCR (vgl. Kapitel 6.3) essentiell, da Textlabels entsprechend ihrer Ausrichtung verarbeitet werden müssen.
 
 Die in Kapitel 4 definierten funktionalen Anforderungen an die Symbolerkennung erfordern daher zwingend den Einsatz rotationsinvarianter Detektionsverfahren. Die in Kapitel 6 beschriebene Implementierung nutzt YOLOv8-OBB mit Standard-Konfiguration für die Detektion von 13 domänenspezifischen Symbolklassen (vgl. Tabelle \ref{tab:symbole} in Kapitel 4).
+
 \section{Optical Character Recognition (OCR)}
+\label{sec:ocr}
 
-Die optische Zeichenerkennung bildet in dieser Masterarbeit die verbindende Struktur zwischen der reinen visuellen Symbolerkennung und der semantischen Darstellung der Gleispläne. Zunächst erhalten bekannte Symbole wie Signale, Koppelspulen und Haltetafeln erst anhand zuverlässig extrahierter IDs und Koordinaten ihre technische Bedeutung und können so problemlos lokalisiert, validiert und versioniert werden. Gleispläne stellen daher hohe Anforderungen an die OCR: die Erkennung sehr kleiner alphanumerischer Texte, unterschiedliche Winkelorientierungen sowie die Überlagerung mit Konstruktionslinien. Darüber hinaus werden die Gleispläne entsprechend ihrem jeweiligen Export als Vektor- oder Bild-PDF mit hoher DPI bereitgestellt. Da die Pläne hinsichtlich Größe und Auflösung sehr umfangreich sind, verwendet der Prototyp eine ROI-First-Strategie, bei der aus der OBB-Detektion abgeleitete, winkelerfassende Regionen speziell und klassenabhängig vorbereitet werden. Die OCR selbst folgt einer pragmatischen Architektur mit einer Deep-Learning-Hauptengine und einem schlanken Fallback, der für die musterbasierte Validierung und die nachvollziehbaren Entscheidungen verwendet wird. Der erzeugte Text und die Metadaten fließen direkt in Verknüpfung, Zuordnung und Änderungsmanagement und spielen dort eine zentrale Rolle für die Qualität und Nachvollziehbarkeit der gesamten Pipeline.
+Die optische Zeichenerkennung bildet das verbindende Element zwischen der visuellen Symbolerkennung und der semantischen Interpretation von Gleisplänen. Während die in Abschnitt \ref{sec:objekterkennung} beschriebene Objekterkennung Symbole lokalisiert und klassifiziert, liefert sie zunächst keine Information über die zugehörigen Textinhalte. Erst durch die zuverlässige Extraktion von Signalbezeichnungen (z.\,B. \enquote{AS102}), Kilometerangaben (z.\,B. \enquote{18.1606}) und Balisen-Kennungen (z.\,B. \enquote{1234}) erhalten die erkannten Symbole ihre vollständige technische Bedeutung.
 
-\subsection{Einordnung und Grundlagen}
+Dieser Abschnitt behandelt zunächst die allgemeinen Grundlagen der optischen Zeichenerkennung, bevor die spezifischen Herausforderungen technischer Zeichnungen und die für Gleispläne relevanten Lösungsansätze dargelegt werden. Die Progression folgt dabei dem Muster der vorangegangenen Abschnitte: vom allgemeinen Prinzip über moderne Architekturen bis zur domänenspezifischen Anwendung.
 
-Optische Zeichenerkennung bezeichnet die automatische Erkennung des in Bildern oder gescannten Dokumenten enthaltenen Textes. Moderne OCR-Prozesse werden konzeptionell in drei Hauptschritte unterteilt: die Lokalisierung der Textbereiche, deren Normalisierung und Vorbereitung und daraufhin die Richtungsanpassung sowie die Erkennung von Zahlen und Buchstaben durch statistische oder Deep-Learning-Modelle.\cite{berg2011high}
-\\
-\\
-Klassische Engines wie Tesseract funktionieren sehr gut mit klaren und horizontal ausgerichteten Druckbuchstaben bei hoher Effizienz. Sie stoßen jedoch in Anwendungsbereichen wie technischen Zeichnungen an ihre Grenzen. Dort machen es die kleinen Buchstabenteile, Drehungen, Scherungen und überlappenden Linien und Texte schwer, eine zuverlässige Erkennung zu gewährleisten.\cite{schlagenhauf2022textdetectiontechnicaldrawings}
-\\
-\\
-Deep Learning basierte OCR Pipelines adressieren diese Heterogenität durch integrierte Modelle, die die Texterkennung, Winkelnormalisierung und deren Klassifizierung gemeinsam berücksichtigen. Systeme wie PaddleOCR kombinieren beispielsweise die differentielle Binarisierung (DB) für die robuste Texterkennung mit den konvolutionalen rekurrenten neuronalen Netzen (CRNN) zur Textidentifikation und sind mit einer integrierten Winkelerkennung für die automatische Winkelkorrektur verfügbar.\cite{paddleocr}
-\\
-\\
-In dem oben beschriebenen System wird die grundlegende Architektur durch eine ROI-basierte Verarbeitung erweitert. Die aus der orientierten Objekterkennung gewonnenen Winkel und die Begrenzungen steuern die OCR gezielt auf die relevanten Regionen.Zugleich  werden domänenspezifische Muster wie Signal IDs oder die Koordinaten- bzw. GKS-Formate für die Validierung und Korrektur der erkannten Ergebnisse verwendet. Diese Kombination bildet die methodische Grundlage für den folgenden Abschnitt, der als Single Primary Engine mit Fallback-Architektur bezeichnet wird, sowie für die intelligente klassenabhängige Vorverarbeitung, die die Robustheit und Effizienz des gesamten Systems gewährleistet.
+\subsection{Grundlagen und Entwicklung der OCR-Technologie}
+\label{subsec:ocr_grundlagen}
 
-\subsection{OCR im Bahnumfeld}
-Der Einsatz von OCR in der Bahnumgebung erfordert hohe Anforderungen an Robustheit, Genauigkeit und Rückverfolgbarkeit. Die Gleis- und Signalpläne enthalten meist kleine, dicke und unterschiedlich geneigte Textsegmente, die oft in unmittelbarer Nähe von Symbolen positioniert sind. Diese Textbereiche liegen häufig unregelmäßig, variieren in der Textgröße und befinden sich in komplexer grafischer Umgebung, was eine erhebliche Herausforderung für eine klassische OCR-Engine darstellt.
-\cite{schlagenhauf2022textdetectiontechnicaldrawings}
-\\
-\\
-Darüber hinaus treten Überlappungen durch Konstruktionslinien, Raster, Legenden, andere Symbole und Texte insbesondere bei eingescannten Plänen und aus CAD-Systemen exportierten Plänen auf. Bildbasierte PDF-Formate zeigen zusätzlich Störungen und komprimierte Artefakte, die die Texterkennung und anschließend die Erkennung erschweren können.\cite{Joshua} Die OCR muss dann in der Lage sein, zwischen relevanten Textinhalten und grafischen Elementen zu unterscheiden.
-\\
-\\
-Eine weitere Herausforderung ergibt sich aus den unterschiedlichen Exporttypen der Quelldaten. Während die Vektor-PDFs eine klare Segmentierung der Textobjekte ermöglichen, müssen die Raster-PDFs pixelweise analysiert werden. Unterschiede in der Auflösung (DPI) und den Renderprozessen führen daher zu stark schwankender Textschärfe und Konturen der Zeichen, wodurch eine adaptive Vorverarbeitung durch Kontrastnormalisierung, Glättung der Kanten und geometrische Entzerrung wichtig wird.\cite{paddleocr}
-\\
-In der Eisenbahnumgebung existieren domänenspezifische Muster, die eine regelbasierte Validierung und automatische Fehlerkorrektur erfordern. Dazu gehören alphanumerische Signalidentifikatoren  (z.B. \verb|[A-Z]\{1,2\}\d\{2,3\}|), Ziffernfelder in Kennplatten oder Koordinatendaten in Zahlen mit Komma- oder Dezimalabstand. Solche Formatregularitäten können für die semantische Koordination und Plausibilität der OCR Ergebnisse verwendet werden.\cite{khan2025drawingsdecisionshybridvisionlanguage}
-\\
-\\
-Schließlich müssen die OCR-Ergebnisse deterministisch und nachvollziehbar sein. Für die Anwendung in sicherheitsrelevanten Schienensystemen ist es wichtig, dass alle Transformationen, Scores und Fallback-Entscheidungen dokumentiert und reproduzierbar sind.\cite{KI-LOK2025} Neben dem erkannten Text müssen die Vertrauenswerte, Rotationsparameter sowie die angewendeten Filter und der Validierungsstatus gespeichert werden. Diese Transparenz ist eine Voraussetzung für die Prüfbarkeit und Nachvollziehbarkeit im Rahmen des Qualitätsmanagements und der regelmäßigen Überprüfung.\cite{Vromans2005ReliabilityOR}
+Die optische Zeichenerkennung bezeichnet die automatisierte Umwandlung von Bildern, die Text enthalten, in maschinenlesbaren Text. Diese Aufgabe lässt sich konzeptionell in eine Verarbeitungskette unterteilen, die in Abbildung \ref{fig:ocr_pipeline_konzept} dargestellt ist.
 
-\subsection{Architekturen von OCR}
-Der aktuelle Stand der Technik in OCR ermöglicht in zwei Hauptentwicklungsbereichen erhebliche Fortschritte.
-Erstens gibt es klassische OCR-Engines, wie zum Beispiel Tesseract. Diese Systeme arbeiten hauptsächlich regelbasiert und verwenden spezifische Seitenaufteilungsmodi sowie auch Zeichenlisten.\cite{Smith2007} Während sie bei horizontal ausgerichtetem Text und sauberem Druckbild sehr gut funktionieren, sind sie sehr ineffizient, wenn Rotationen, Bildstörungen oder komplexe Pläne vorliegen.\cite{Patel}
-\\
-\\
-Auf der anderen Seite gibt es Deep-Learning-basierte Pipelines. Diese Lösungen kombinieren fortschrittliche Texterkennungsprozesse wie differentiable Binarization (DB) mit neuronalen Netzwerken zur Erkennung, z.B. wie PaddleOCR oder Transformers. Da Erkennung, geometrische Ausrichtung und eigentliche Zeichenerkennung oft optimiert integriert sind, bewältigen sie erfolgreich die Herausforderungen von schrägen, kleinen oder teilweise verdeckten Texten.\cite{liao2019realtimescenetextdetection}
-\\
-\\
-Basierend auf diesen technologischen Lösungen wird für diese vorliegende Arbeit ein ROI-First-Ansatz gewählt. Hier funktioniert die Objekterkennung mithilfe orientierter Begrenzungsrahmen (Abschnitt 3.2.7) als Vorstufe, um die relevanten OCR-Zonen genau zu definieren und zu extrahieren. Die Begründung für diese Architekturentscheidung, insbesondere die Kombination eines primären Systems mit einem gezielten Fallback, wird in Abschnitt 5.3.3 gezeigt, gefolgt von Implementierungsdetails in Abschnitt 6.3.
-\subsection{Vergleich von OCR Ansätzen für technische Gleispläne}
-Im folgenden Abschnitt werden die relevanten Prozesse erklärt und auch ihre Leistungsfähigkeit für die Art der technischen Zeichenpläne dargestellt.
-\begin{enumerate}
-    \item Klassische OCR Engines - Klassische Ansätze, die durch die Tesseract-Engine prominent vertreten sind, basieren traditionell auf einer Kombination aus heuristischer Layoutanalyse (Seitenaufteilung) und zeichen- sowie wortbasierter Erkennung.
-    \begin{itemize}
-        \item Funktionalität und Stärken - Diese Systeme arbeiten besonders effizient mit horizontal geneigtem Text mit hohem Kontrast. Ein wichtiger Vorteil liegt in der hohen Konfigurierbarkeit. Durch spezifische Segmentierungsmodi und die Begrenzung der Whitelist erfolgt die Erkennung optimiert speziell auf reine Zeichenfolgen oder feste Formate. Darüber hinaus ist dieser Prozess ressourcensparend und zeigt geringere Hardwareabhängigkeiten.\cite{Smith2007}
-        \item Beschränkungen im Zeichungskontext - Die Hauptschwäche klassischer Engines liegt in ihrer Empfindlichkeit gegenüber Rotation und Scherung. Da die Layoutanalyse hauptsächlich von der horizontalen Linienstruktur ausgeht, erfordert die Verarbeitung technischer Layouts aufwändige Vorverarbeitungsschritte wie Deskewing oder iterative Tests in diskreten Winkelstufen (0°, 90°, 180°, 270°). Außerdem führen überlappende Linien oft zu Fehlsegmentierungen, was die Rohleistung ohne umfangreiche Vorfilterung stark einschränkt.\cite{memon2020handwrittenopticalcharacterrecognition}
-    \end{itemize}
-    \item Deep Learning basierte OCR Pipelines- Moderne Ansätze aus dem Bereich der Texterkennung in Szenen basieren tatsächlich meist auf mehrstufigen Deep-Learning-Architekturen.\cite{long2020scenetextdetectionrecognition} Diese Pipelines trennen normalerweise die Texterkennung (zum Beispiel mit Hilfe von Differentiable Binarization, DB/DB++) von der eigentlichen Sequenz-Erkennung (zum Beispiel CRNN- oder Transformer-Modelle).
-    \begin{itemize}
-        \item Funktionalität und Stärken - Durch die Trennung von Erkennung und Identifikation sind diese Prozesse besonders für komplexe und heterogene Zeichnungen geeignet. Die Detektoren sind in der Lage, Textbereiche unabhängig von ihrer Ausrichtung zu lokalisieren. Die nachgelagerten Module zur geometrischen Anpassung (Rectifizierung) oder die integrierte Klassifikation der Ausrichtungen ermöglichen eine hohe Robustheit gegenüber geneigten und verzerrten Schriften. Darüber hinaus liefern diese Modelle Vertrauenswerte und ermöglichen eine effektive Filterung und Validierung der Ergebnisse.\cite{liao2019realtimescenetextdetection}
-        \item Beschränkungen - Der Hauptnachteil liegt im hohen Rechenbedarf, der oft für die hohe Leistung den Einsatz von GPUs erfordert. Es kann auch Anpassungen an sehr spezifische Schriftarten oder Symbole mit Hilfe eines ausgefeilten Nachtrainierens (Fine Tuning) der Modelle geben.\cite{du2020ppocrpracticalultralightweight}
-    \end{itemize}
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}[
+    % Größerer vertikaler Abstand (2.5cm) für die Labels dazwischen
+    node distance=2.5cm and 1.0cm,
+    box/.style={
+        rectangle, 
+        draw, 
+        thick, 
+        minimum width=3.2cm, % Etwas breiter für besseren Textumbruch
+        minimum height=1cm, 
+        align=center, 
+        font=\small, 
+        rounded corners=2pt
+    },
+    arrow/.style={->, >=stealth, thick, rounded corners},
+    annotation/.style={font=\scriptsize, align=center, text=gray!40!black}
+]
 
-    \item Leichtgewichtige Frameworks - Als Unterkategorie haben sich Frameworks wie EasyOCR etabliert, die vorgefertigte Deep-Learning-Modelle mit einer einfachen API bereitstellen.
-    \begin{itemize}
-        \item Eignung- Diese Systeme senken die Einstiegshürde und eignen sich für Prototyping oder Anwendungen mit moderaten Anforderungen. In komplexen Szenarien mit starken Überlappungen, extrem kleinen Schreibstilen oder ungewöhnlichen Winkeln erreichen sie jedoch oft nicht die Stabilität spezialisierter Pipelines und bieten geringere Möglichkeiten zur Feinabstimmung der Parameter.\cite{baek2019characterregionawarenesstext}
-    \end{itemize}
-\end{enumerate}
-
-\subsection{ROI basierte OCR und Orientierungskonzepte}
-Anstelle einer rechenintensiven, ganzseitigen Rasterisierung (vollständiges Seiten-OCR) verwendet diese Arbeit einen fokussierteren und gezielteren Ansatz, der die optische Zeichenerkennung auf definierte ROIs beschränkt. Diese ROIs werden dann aus der zuvor lokalisierten Symbolerkennung abgeleitet.\cite{long2020scenetextdetectionrecognition} Diese methodische Änderung bietet drei wichtige Vorteile:
-
-\begin{itemize}
-    \item \textbf{Effizienz:} Die Reduzierung des Suchbereichs auf relevante Bildabschnitte wird die \\Latenz der Pipeline erheblich verringern und auch verhindern, dass unnötige Bereiche durchsucht werden, in denen irrelevante Daten vorhanden sind.
-    \item \textbf{Präzision:} Durch das Herausfiltern der irrelevanten Hintergrundstruktur (Störungen, Linien) und unnötiger Daten wird die Falsch-Positiv-Rate der Texterkennung minimiert.
-    \item \textbf{Semantik:} Die räumliche Nähe erleichtert die logische Verbindung zwischen Text und Symbol und hält die Verknüpfung präzise und stabil.
-\end{itemize}
-
-Eine besondere Herausforderung in den technischen Bereichen wie Gleisplänen stellt die variable Textausrichtung dar. Der Ansatz integriert daher ein explizites Orientierungsmanagement. Während bei geringen Abweichungen eine diskrete Rotationsnormalisierung ausreicht, erfordern starke Abweichungen oder perspektivische Verzerrungen fortgeschrittene Entzerrungsprozesse (Rektifizierung).\cite{García} Dieser winkelbasierte Extraktionsprozess (winkelbewusstes Zuschneiden) bildet die Grundlage für eine robuste Erkennung in heterogenen Pläne.
-
-\subsection{Bildvorverarbeitung: Kategorien und Ziele}
-
-Die Vorverarbeitung dient als ein wesentlicher Zwischenschritt, um die Varianz der Eingangsdaten zu minimieren und die Regionen von Interesse (ROIs) für die nachgelagerten OCR-Klassifikatoren zu normalisieren. Ziel ist hier die Maximierung der Trennbarkeit zwischen Vordergrund (Text) und Hintergrund. Die Maßnahmen werden dann in drei funktionale Kategorien unterteilt:
-
-\begin{enumerate}
-    \item \textbf{Photometrische Aufbereitung} : \\
-    Um die Lichtschwankungen und den geringeren Kontrast auszugleichen, wird zunächst der Prozess zur Kontraststeigerung angewendet. Für die Trennung von Text und Hintergrund eignen sich adaptive Binarisierungsverfahren. Diese sind außerdem robuster im Vergleich zu globalen Schwellenwerten wie Otsu gegen ungleichmäßige Beleuchtung und unterschiedliche Hintergründe in technischen Plänen.\cite{SAUVOLA2000225}
-    \item \textbf{Artefaktunterdrückung und Strukturrekonstruktion}: \\
-    Technische Zeichnungen zeigen oft spezifische Störungen wie Scanrauschen oder Hilfslinien, die die Textzeichen überlagern. Hier kommen Filter zur Rauschunterdrückung und Algorithmen zur Linienentfernung zum Einsatz, wobei die Erhaltung der Zeichenstämme entscheidend ist, um Informationsverlust zu vermeiden. \cite{Tombre} Zusätzlich werden morphologische Operationen (Dilatation, Closing) verwendet, um fragmentierte Zeichen zu reparieren oder dünne Linien für den Erkenner zu verstärken.\cite{Gonzalez}
-   
-    \item \textbf{Geometrische ROI Optimierung}: \\
-    Da die OCR-Engines oft empfindlich auf fehlenden Kontext oder zu geringe Auflösungen reagieren, ist hier eine geometrische Normalisierung erfolgreich. Diese beinhaltet das Hinzufügen der Randbereiche (Padding), um die Randeffekte bei der Faltung (Convolution) zu vermeiden, sodass die Hochskalierung der kleineren ROIs auf die für die OCR optimale Zielauflösung (typischerweise mindestens 300 DPI) erfolgen kann. Bei mehrzeiligem Text einer ROI ist zunächst eine vertikale Segmentierung der Linien wichtig.\cite{Smith2007} 
+    % --- ZEILE 1 (Nach Rechts) ---
     
-\end{enumerate}
+    % 1. Input
+    \node[box, fill=blue!10] (input) {Eingabebild\\(Dokument/Scan)};
+    
+    % 2. Vorverarbeitung
+    \node[box, right=of input, fill=yellow!20] (preproc) {Vorverarbeitung\\(Binarisierung)};
+    \node[annotation, below=0.1cm of preproc] {Kontrast,\\Rauschen};
+    
+    % 3. Textdetektion
+    \node[box, right=of preproc, fill=orange!20] (detect) {Textdetektion\\(Lokalisierung)};
+    \node[annotation, below=0.1cm of detect] {Bounding\\Boxes};
 
-\subsection{Domänenspezifische Validierung als Qualitätsanker}
+    
+    % --- ZEILE 2 (Nach Links, unter der ersten Zeile) ---
+    
+    % 4. Zeichenerkennung (Unter Detektion)
+    \node[box, below=of detect, fill=green!20] (recog) {Zeichenerkennung\\(Recognition)};
+    \node[annotation, below=0.1cm of recog] {CNN/LSTM\\Decoder};
+    
+    % 5. Nachverarbeitung (Links von Erkennung)
+    \node[box, left=of recog, fill=purple!20] (post) {Nachverarbeitung\\(Validierung)};
+    \node[annotation, below=0.1cm of post] {Regex,\\Korrektur};
+    
+    % 6. Ausgabe (Links von Post)
+    \node[box, left=of post, fill=gray!10] (output) {Ausgabetext\\(String)};
+    
 
-Da reine OCR-Engines keine semantische Prüfung der erkannten Zeichen vornehmen können \cite{Smith2007}, fungieren domänenspezifische Nachbearbeitungsfunktionen als wichtige Qualitätsanker. Spur-Layouts folgen einer strikten Nomenklatur, aus der starke strukturelle Erwartungswerte für den Textinhalt resultieren (wie Kombinationen aus Buchstaben und Zahlen).\cite{Kukich} Dieser Umstand ermöglicht die Nutzung von regulären Ausdrücken (Regex) und Plausibilitätsregeln, um Rohdaten zu validieren und zu filtern.\cite{Taghva} Durch den Vergleich mit dem definierten Muster können typische OCR-Substitutionsfehler, insbesondere bei visuell ähnlichen Zeichen (Homoglyphen) wie O/0, I/1/l oder S/5, automatisch erkannt und korrigiert werden.\cite{Kukich} Ergebnisse, die keinem definierten Schema entsprechen, werden als unsicher markiert, um eine effiziente manuelle Überprüfung (Human in the Loop) zu steuern.
-\subsubsection{Formale Sprachen und reguläre Ausdrücke}
+    % --- PFEILE ---
+    \draw[arrow] (input) -- (preproc);
+    \draw[arrow] (preproc) -- (detect);
+    
+    % Der Pfeil von Zeile 1 zu Zeile 2 (Rechts außen runter)
+    \draw[arrow] (detect.south) -- (recog.north);
+    
+    % Pfeile zurück nach links
+    \draw[arrow] (recog) -- (post);
+    \draw[arrow] (post) -- (output);
 
-Die Validierung extrahierter Texte basiert auf der Theorie formaler Sprachen.\cite{hopcroft2001automata} Ein regulärer Ausdruck (Regex) definiert eine formale Sprache $L$ über einem Alphabet $\Sigma$ durch Musterregeln.
+\end{tikzpicture}
+\caption{Konzeptionelle OCR-Pipeline (Zweizeilige Darstellung)}
+\label{fig:ocr_pipeline_konzept}
+\end{figure}
+Die \textbf{Vorverarbeitung} bereitet das Eingabebild für die nachfolgenden Schritte auf. Typische Operationen umfassen Kontrastverbesserung, Rauschunterdrückung und Binarisierung (Umwandlung in Schwarz-Weiß). Bei technischen Zeichnungen ist zusätzlich die Entfernung störender Linienelemente relevant \cite{Tombre}.
 
-Für Gleisplan-Symbole lassen sich Validierungsregeln wie folgt formalisieren:
+Die \textbf{Textdetektion} lokalisiert Bereiche im Bild, die Text enthalten. Moderne Verfahren verwenden neuronale Netze zur Segmentierung von Textregionen, wobei die Ausgabe typischerweise als Bounding Boxes oder Polygone erfolgt \cite{liao2019realtimescenetextdetection}.
 
-\begin{itemize}
-    \item Signal: $L_{signal} = \{w \in \Sigma^* \mid w \text{ matches } \texttt{[A-Z]\{1,4\}[0-9]\{1,4\}}\}$
-    \item Koordinate: $L_{coord} = \{w \in \Sigma^* \mid w \text{ matches } \texttt{[0-9]+[.,][0-9]+}\}$
-    \item Balise: $L_{balise} = \{w \in \Sigma^* \mid w \text{ matches } \texttt{[0-9]\{4\}}\}$
-\end{itemize}
+Die \textbf{Zeichenerkennung} wandelt die lokalisierten Bildausschnitte in Zeichenfolgen um. Dies ist die eigentliche \enquote{Erkennung} im engeren Sinne und bildet den rechenintensivsten Schritt der Pipeline.
 
-Diese formalen Definitionen ermöglichen die automatische Erkennung von 
-OCR-Fehlern durch Abgleich mit den erwarteten Mustern. Texte, die keinem 
-Muster entsprechen, werden zur manuellen Prüfung markiert.
+Die \textbf{Nachverarbeitung} validiert und korrigiert die erkannten Texte. Für domänenspezifische Anwendungen wie Gleispläne können hier Musterprüfungen (Regular Expressions) und Plausibilitätskontrollen integriert werden.
 
-\subsubsection{Typische OCR-Substitutionsfehler}
+\subsubsection{Historische Entwicklung}
 
-Häufige Verwechslungen bei der optischen Zeichenerkennung:
+Die Entwicklung der OCR-Technologie lässt sich in drei Phasen unterteilen, die in Tabelle \ref{tab:ocr_evolution} zusammengefasst sind.
 
 \begin{table}[H]
 \centering
-\begin{tabular}{|c|c|p{6cm}|}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{|p{2.5cm}|p{3cm}|p{4cm}|p{4cm}|}
 \hline
-\textbf{Korrekt} & \textbf{Fehler} & \textbf{Ursache} \\
+\textbf{Phase} & \textbf{Zeitraum} & \textbf{Methodik} & \textbf{Limitierungen} \\
 \hline
-O & 0 & Ähnliche Form (Kreis) \\
-I & 1, l & Vertikale Linie \\
-S & 5 & Ähnliche Kurvatur \\
-B & 8 & Geschlossene Formen \\
+Regelbasiert & 1950--1980 & Template Matching, Merkmalsdeskriptoren & Nur monospace-Schriften, keine Variabilität \\
+\hline
+Statistisch & 1980--2010 & Hidden Markov Models (HMM), SVM mit HOG-Features & Manuelles Feature-Engineering, begrenzte Robustheit \\
+\hline
+Deep Learning & 2010--heute & CNN + RNN, Transformer, End-to-End-Training & Hoher Datenbedarf, Rechenaufwand \\
 \hline
 \end{tabular}
-\caption{Typische Homoglyphen bei OCR-Fehlern}
+\caption{Evolution der OCR-Technologie über drei methodische Phasen\cite{Mori1999}}
+\label{tab:ocr_evolution}
+\end{table}
+
+Die erste Generation basierte auf expliziten Mustervergleichen: Für jedes zu erkennende Zeichen wurde ein Template definiert, das pixelweise mit dem Eingabebild verglichen wurde \cite{Mori1999}. Diese Ansätze funktionierten nur bei exakt passenden Schriftarten und -größen.
+
+Die zweite Generation führte statistische Modelle ein. Hidden Markov Models (HMM) modellierten die sequenzielle Struktur von Text, während Support Vector Machines (SVM) auf manuell konstruierten Merkmalen (z.\,B. Histogram of Oriented Gradients) operierten \cite{Smith2007}. Diese Verfahren ermöglichten erstmals Robustheit gegenüber moderaten Variationen, erforderten jedoch aufwendiges Feature-Engineering.
+
+Die dritte Generation nutzt Deep Learning für End-to-End-Erkennung. Convolutional Neural Networks (CNN) extrahieren visuelle Merkmale automatisch aus Trainingsbeispielen, während Recurrent Neural Networks (RNN) die sequenzielle Abhängigkeit zwischen Zeichen modellieren \cite{Shi2017_CRNN}. Diese Kombination ermöglicht die Erkennung beliebiger Schriftarten und -stile ohne manuelle Merkmalsdefiniton.
+
+\subsection{Architekturen moderner OCR-Systeme}
+\label{subsec:ocr_architekturen}
+
+Moderne OCR-Systeme basieren auf zwei dominierenden Architekturparadigmen: der CRNN-Architektur (Convolutional Recurrent Neural Network) und Transformer-basierten Ansätzen. Beide werden im Folgenden erläutert.
+
+\subsubsection{CRNN-Architektur}
+
+Die CRNN-Architektur, eingeführt von Shi et al. \cite{Shi2017_CRNN}, kombiniert drei Komponenten zu einem End-to-End-trainierbaren System (Abbildung \ref{fig:crnn_architecture}).
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    scale=0.8,
+    node distance=1.0cm and 0.8cm,
+    layer/.style={rectangle, draw, thick, minimum width=2.2cm, minimum height=0.9cm, align=center, font=\small},
+    arrow/.style={->, >=stealth, thick}
+]
+    % Input
+    \node[layer, fill=gray!20] (input) {Bildausschnitt\\$W \times H \times 1$};
+    
+    % CNN Layers
+    \node[layer, below=of input, fill=blue!20] (cnn1) {Conv + Pool\\$\times 4$};
+    \node[layer, below=of cnn1, fill=blue!30] (cnn2) {Feature Maps\\$\frac{W}{4} \times 1 \times 512$};
+    
+    % Reshape
+    \node[layer, below=of cnn2, fill=yellow!30] (reshape) {Reshape\\Sequenz von $T$ Vektoren};
+    
+    % BiLSTM
+    \node[layer, below=of reshape, fill=orange!30] (lstm) {BiLSTM\\2 Schichten, 256 Hidden};
+    
+    % CTC
+    \node[layer, below=of lstm, fill=green!30] (ctc) {CTC-Decoder\\Alignment + Deduplizierung};
+    
+    % Output
+    \node[layer, below=of ctc, fill=purple!20] (output) {Ausgabetext\\z.\,B. \enquote{AS102}};
+    
+    % Arrows
+    \draw[arrow] (input) -- (cnn1);
+    \draw[arrow] (cnn1) -- (cnn2);
+    \draw[arrow] (cnn2) -- (reshape);
+    \draw[arrow] (reshape) -- (lstm);
+    \draw[arrow] (lstm) -- (ctc);
+    \draw[arrow] (ctc) -- (output);
+    
+    % Side labels
+    \node[right=0.5cm of cnn1, font=\scriptsize, align=left] {Visuelle\\Merkmale};
+    \node[right=0.5cm of lstm, font=\scriptsize, align=left] {Sequenzielle\\Abhängigkeiten};
+    \node[right=0.5cm of ctc, font=\scriptsize, align=left] {Variable\\Längen};
+    
+    % Component brackets
+    \draw[decorate, decoration={brace, amplitude=5pt}, thick] 
+        ([xshift=-0.3cm]cnn1.north west) -- ([xshift=-0.3cm]cnn2.south west) 
+        node[midway, left=8pt, font=\small\bfseries] {CNN};
+    \draw[decorate, decoration={brace, amplitude=5pt}, thick] 
+        ([xshift=-0.3cm]lstm.north west) -- ([xshift=-0.3cm]lstm.south west) 
+        node[midway, left=8pt, font=\small\bfseries] {RNN};
+    \draw[decorate, decoration={brace, amplitude=5pt}, thick] 
+        ([xshift=-0.3cm]ctc.north west) -- ([xshift=-0.3cm]ctc.south west) 
+        node[midway, left=8pt, font=\small\bfseries] {CTC};
+\end{tikzpicture}
+\caption{CRNN-Architektur}
+\label{fig:crnn_architecture}
+\end{figure}
+
+\textbf{CNN-Komponente (Feature Extraction):} Ein Convolutional Neural Network extrahiert visuelle Merkmale aus dem Eingabebild. Durch sukzessive Faltungs- und Pooling-Operationen wird das Bild auf eine Sequenz von Merkmalsvektoren reduziert. Ein Bildausschnitt der Größe $W \times H$ wird typischerweise auf $T = W/4$ Zeitschritte mit je 512 Merkmalskanälen komprimiert\cite{Shi2017_CRNN}.
+
+\textbf{RNN-Komponente (Sequence Modeling):} Ein bidirektionales LSTM (Long Short-Term Memory) \cite{Hochreiter1997_LSTM} verarbeitet die Merkmalssequenz und modelliert kontextuelle Abhängigkeiten zwischen benachbarten Zeichen. Die Bidirektionalität ermöglicht die Berücksichtigung sowohl vergangener als auch zukünftiger Kontextinformation.
+
+\textbf{CTC-Decoder (Transcription):} Die Connectionist Temporal Classification (CTC) \cite{Graves2006_CTC} löst das Problem variabler Ausgabelängen. Da die Anzahl der CNN-Ausgabespalten nicht mit der Anzahl der Textzeichen übereinstimmt, führt CTC ein \enquote{Blank}-Symbol ein und definiert eine Verlustfunktion, die alle möglichen Alignments zwischen Eingabe und Ausgabe marginalisiert:
+
+\begin{equation}
+P(y \mid x) = \sum_{\pi \in \mathcal{B}^{-1}(y)} \prod_{t=1}^{T} P(\pi_t \mid x)
+\label{eq:ctc_loss}
+\end{equation}
+
+wobei $y$ die Zielsequenz, $x$ die Eingabe, $\mathcal{B}^{-1}(y)$ die Menge aller Pfade bezeichnet, die nach Entfernung von Blanks und Deduplizierung $y$ ergeben, und $P(\pi_t \mid x)$ die Wahrscheinlichkeit des Symbols $\pi_t$ zum Zeitpunkt $t$ ist.
+
+Für Maschinenbau-Ingenieure lässt sich die CTC-Funktionsweise anschaulich erklären: Das Netz gibt für jeden Zeitschritt (jede Spalte des Bildes) eine Wahrscheinlichkeitsverteilung über alle möglichen Zeichen aus. Die Ausgabe \enquote{A--S-11-0-2} (wobei \enquote{-} das Blank-Symbol bezeichnet) wird durch Entfernung der Blanks und Zusammenfassung aufeinanderfolgender identischer Zeichen zu \enquote{AS102} dekodiert.
+
+\subsubsection{Transformer-basierte OCR}
+
+Neuere Ansätze ersetzen die RNN-Komponente durch Transformer-Architekturen \cite{Vaswani2017_Attention}. Der TrOCR-Ansatz \cite{li2022trocrtransformerbasedopticalcharacter} verwendet einen Vision Transformer (ViT) als Encoder und einen Text Transformer als Decoder. Vision Transformer ist ein Transformer Modell, das Bilder als Sequenz von Patches verarbeitet\cite{Dosovitskiy2021_ViT} Der zentrale Mechanismus ist die Self-Attention:
+
+\begin{equation}
+\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right) V
+\label{eq:attention}
+\end{equation}
+
+wobei $Q$ (Query), $K$ (Key) und $V$ (Value) lineare Projektionen der Eingabe sind und $d_k$ die Dimensionalität der Keys bezeichnet. Die Division durch $\sqrt{d_k}$ stabilisiert die Gradienten.
+
+Transformer-basierte Ansätze bieten Vorteile bei langen Sequenzen und ermöglichen effizientere Parallelisierung während des Trainings. Für kurze Texte wie Signalbezeichnungen (typischerweise 3--8 Zeichen) sind die Vorteile jedoch marginal, weshalb CRNN-basierte Systeme wie PaddleOCR in der Praxis häufig bevorzugt werden.
+
+\subsubsection{Vergleich der Architekturen}
+
+Tabelle \ref{tab:ocr_arch_comparison} fasst die wesentlichen Unterschiede zwischen CRNN und Transformer-basierten Ansätzen zusammen.
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{|p{3.5cm}|p{5cm}|p{5cm}|}
+\hline
+\textbf{Kriterium} & \textbf{CRNN (z.\,B. PaddleOCR)} & \textbf{Transformer (z.\,B. TrOCR)} \\
+\hline
+Genauigkeit (kurze Texte) & >95\% \cite{du2020ppocrpracticalultralightweight} & >95\% \cite{li2022trocrtransformerbasedopticalcharacter} \\
+\hline
+Inferenzzeit (CPU) & 8--15 ms/Bild \cite{du2020ppocrpracticalultralightweight} & 50--150 ms/Bild\footnotemark \\
+\hline
+Modellgröße & 8--12 MB \cite{du2020ppocrpracticalultralightweight} & 300--500 MB \cite{li2022trocrtransformerbasedopticalcharacter} \\
+\hline
+Trainingsdatenbedarf & Moderat (10k--100k Samples) & Hoch (>1M Samples für Pretraining) \cite{li2022trocrtransformerbasedopticalcharacter} \\
+\hline
+\end{tabular}
+\caption{Vergleich von CRNN- und Transformer-basierten OCR-Architekturen}
+\label{tab:ocr_arch_comparison}
+\end{table}
+\footnotetext{Transformer-basierte Modelle erfordern aufgrund des quadratischen 
+Attention-Mechanismus höhere Inferenzzeiten \cite{Vaswani2017_Attention}.}
+
+\subsection{OCR-Systeme im praktischen Einsatz}
+\label{subsec:ocr_systeme}
+
+Für die praktische Anwendung stehen mehrere etablierte OCR-Frameworks zur Verfügung, die unterschiedliche Stärken aufweisen.
+
+\subsubsection{Tesseract}
+
+Tesseract \cite{Smith2007} ist eine Open-Source-Engine, die ursprünglich von Hewlett-Packard entwickelt und später von Google weiterentwickelt wurde. Seit Version 4.0 verwendet Tesseract ein LSTM-basiertes Erkennungsmodell. Die Konfiguration erfolgt über Page Segmentation Modes (PSM), die das erwartete Dokumentlayout spezifizieren:
+
+\begin{itemize}
+    \item \textbf{PSM 7}: Einzelne Textzeile -- optimal für isolierte Beschriftungen
+    \item \textbf{PSM 8}: Einzelnes Wort -- für kompakte Labels
+    \item \textbf{PSM 13}: Raw Line -- für einzelne Textzeilen ohne Layoutsegmentierung, optimal für isolierte Beschriftungen
+\end{itemize}
+
+Eine Whitelist-Funktionalität ermöglicht die Einschränkung des Zeichensatzes auf erwartete Zeichen (z.\,B. nur Großbuchstaben und Ziffern für Signalbezeichnungen), was die Erkennungsgenauigkeit in domänenspezifischen Anwendungen erhöht.
+
+\subsubsection{PaddleOCR}
+
+PaddleOCR \cite{du2020ppocrpracticalultralightweight} ist ein vom chinesischen Technologiekonzern Baidu entwickeltes Framework, das eine vollständige Pipeline aus Textdetektion, Winkelklassifikation und Texterkennung bereitstellt. Die PP-OCRv3-Architektur besteht aus drei Komponenten:
+
+\begin{enumerate}
+    \item \textbf{DB-Detektor (Differentiable Binarization)}: Lokalisiert Textregionen durch semantische Segmentierung mit differenzierbarer Schwellenwertberechnung \cite{liao2019realtimescenetextdetection}.
+    \item \textbf{Winkelklassifikator}: Bestimmt die Orientierung des Textes (0° oder 180°) zur automatischen Korrektur.
+    \item \textbf{CRNN-Recognizer}: Erkennt die Zeichenfolge basierend auf der in Abschnitt \ref{subsec:ocr_architekturen} beschriebenen Architektur.
+\end{enumerate}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    scale=0.85,
+    node distance=1.5cm,
+    box/.style={rectangle, draw, thick, minimum width=3cm, minimum height=1cm, align=center, font=\small, rounded corners=2pt},
+    arrow/.style={->, >=stealth, thick}
+]
+    % Input
+    \node[box, fill=gray!20] (input) {Eingabebild};
+    
+    % Detection
+    \node[box, below=of input, fill=blue!20] (detect) {DB-Detektor\\(Texterkennung)};
+    
+    % Crop
+    \node[box, below=of detect, fill=yellow!20] (crop) {ROI-Extraktion\\(Bildausschnitte)};
+    
+    % Angle
+    \node[box, below left=1cm and 0.5cm of crop, fill=orange!20] (angle) {Winkel-\\Klassifikator};
+    
+    % Recognition
+    \node[box, below right=1cm and 0.5cm of crop, fill=green!20] (recog) {CRNN-\\Recognizer};
+    
+    % Output
+    \node[box, below=2.5cm of crop, fill=purple!20] (output) {Erkannte Texte\\+ Positionen};
+    
+    % Arrows
+    \draw[arrow] (input) -- (detect);
+    \draw[arrow] (detect) -- (crop);
+    \draw[arrow] (crop) -| (angle);
+    \draw[arrow] (crop) -| (recog);
+    \draw[arrow] (angle) |- (output);
+    \draw[arrow] (recog) |- (output);
+    
+    % Annotations
+    \node[right=0.3cm of detect, font=\scriptsize, align=left] {Polygone/Boxes\\für Textregionen};
+    \node[left=0.3cm of angle, font=\scriptsize, align=right] {0° oder 180°\\Korrektur};
+    \node[right=0.3cm of recog, font=\scriptsize, align=left] {Zeichenfolge\\+ Konfidenz};
+\end{tikzpicture}
+\caption{PaddleOCR-Pipeline: Dreistufige Architektur mit Detektion, Winkelkorrektur und Erkennung.}
+\label{fig:paddleocr_pipeline}
+\end{figure}
+
+\subsubsection{Vergleich der OCR-Systeme}
+
+Tabelle \ref{tab:ocr_systems_comparison} vergleicht die für technische Zeichnungen relevanten OCR-Systeme.
+
+\begin{table}[H]
+\centering
+\small
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{|p{2cm}|p{2.5cm}|p{4.5cm}|p{4.5cm}|}
+\hline
+\textbf{System} & \textbf{Architektur} & \textbf{Stärken} & \textbf{Schwächen} \\
+\hline
+Tesseract & LSTM-basiert & Whitelist-Funktion, geringer Ressourcenbedarf & Empfindlich bei Rotation, langsam bei vielen ROIs \\
+\hline
+PaddleOCR & DB + CRNN & Integrierte Winkelerkennung, schnell, robust & Komplexere Installation, größeres Modell\\
+\hline
+EasyOCR & CRAFT(Character Region Awareness for Text) + CRNN \cite{baek2019characterregionawarenesstext} & Einfache API, gute Winkeltoleranz & Langsamer, weniger konfigurierbar \\
+\hline
+TrOCR & Transformer & State-of-the-Art Genauigkeit & Hoher GPU-Bedarf, langsam\\
+\hline
+\end{tabular}
+\caption{Vergleich etablierter OCR-Systeme für technische Anwendungen}
+\label{tab:ocr_systems_comparison}
+\end{table}
+
+\subsection{Herausforderungen bei technischen Zeichnungen}
+\label{subsec:ocr_challenges}
+
+Technische Zeichnungen wie Gleispläne stellen OCR-Systeme vor spezifische Herausforderungen, die über typische Dokumentenscans hinausgehen. Diese Herausforderungen werden in Abbildung \ref{fig:ocr_challenges_fixed_black} visualisiert.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    % Global settings
+    node distance=0.3cm, 
+    box/.style={
+        rectangle, 
+        draw=black,          % <--- ÄNDERUNG: Schwarzer Rahmen
+        thick, 
+        minimum width=3.6cm, 
+        minimum height=4.5cm, 
+        align=center, 
+        fill=white, 
+        rounded corners=3pt
+        % <--- ÄNDERUNG: drop shadow entfernt
+    },
+    title/.style={
+        font=\bfseries\small,
+        anchor=north,
+        yshift=-0.2cm
+    },
+    footer/.style={
+        font=\scriptsize, 
+        text=black,          % <--- ÄNDERUNG: Schwarzer Text
+        anchor=south,
+        yshift=0.2cm
+    }
+]
+
+    % ==========================================
+    % 1. ROTATION
+    % ==========================================
+    \node[box] (rot) {};
+    \node[title] at (rot.north) {Rotation};
+    
+    % Inhalt vergrößert
+    \begin{scope}[shift={(rot.center)}, yshift=0.1cm]
+        \node[draw=blue!50!black, fill=blue!10, inner sep=2pt, font=\scriptsize, rotate=15] at (0, 0.9) {AS102};
+        \node[draw=blue!50!black, fill=blue!10, inner sep=2pt, font=\scriptsize, rotate=-45] at (-0.7, 0) {BHR01};
+        \node[draw=blue!50!black, fill=blue!10, inner sep=2pt, font=\scriptsize, rotate=90] at (0.9, -0.2) {F3};
+        \node[draw=blue!50!black, fill=blue!10, inner sep=2pt, font=\scriptsize, rotate=-10] at (0, -0.9) {W234};
+        % Pfeil dicker und größer
+        \draw[->, gray, thick] (-0.4,0) arc (180:0:0.4);
+    \end{scope}
+    
+    \node[footer] at (rot.south) {$\theta \in [0^\circ, 360^\circ]$};
+
+
+    % ==========================================
+    % 2. ÜBERLAGERUNGEN
+    % ==========================================
+    \node[box, right=of rot] (overlay) {};
+    \node[title] at (overlay.north) {Überlagerungen};
+    
+    \begin{scope}[shift={(overlay.center)}, yshift=0.2cm]
+        \node[draw=red!30, fill=red!5, inner sep=3pt, font=\bfseries] (txt) at (0,0) {18.456};
+        
+        \draw[very thick, black!70] (-1.4, 0.1) -- (1.4, -0.1); 
+        \draw[very thick, black!70] (-0.6, -1.2) -- (0.6, 1.2); 
+        \draw[thick, black!40] (-1.4, -0.8) -- (1.4, 0.8);  
+    \end{scope}
+    
+    \node[footer] at (overlay.south) {Gleislinien stören};
+
+
+    % ==========================================
+    % 3. KLEINE SCHRIFT
+    % ==========================================
+    \node[box, right=of overlay] (size) {};
+    \node[title] at (size.north) {Kleine Schrift};
+    
+    \begin{scope}[shift={(size.center)}, yshift=0.3cm]
+        % OK (Groß)
+        \node[draw=green!50!black, fill=green!10, inner sep=3pt, font=\small, anchor=west] at (-1.3, 0.9) {1234};
+        \node[font=\scriptsize, anchor=west] at (0.3, 0.9) {\textbf{OK}};
+        
+        % Mittel
+        \node[draw=orange!80!black, fill=orange!10, inner sep=2pt, font=\footnotesize, anchor=west] at (-1.3, 0.2) {1234};
+        \node[font=\scriptsize, anchor=west] at (0.3, 0.2) {25px};
+        
+        % Zu klein
+        \node[draw=red!80!black, fill=red!10, inner sep=1pt, font=\tiny, anchor=west] at (-1.3, -0.5) {1234};
+        \node[font=\scriptsize, anchor=west] at (0.3, -0.5) {\textbf{NO}};
+        
+        % Lupe
+        \draw[gray, thin] (-0.9, -0.5) circle (0.35);
+        \draw[gray, thin] (-0.7, -0.7) -- (-0.5, -0.9);
+    \end{scope}
+    
+    \node[footer] at (size.south) {8--12pt @ 150 DPI};
+
+
+    % ==========================================
+    % 4. KONTRAST
+    % ==========================================
+    \node[box, right=of size] (contrast) {};
+    \node[title] at (contrast.north) {Kontrast};
+    
+    \begin{scope}[shift={(contrast.center)}, yshift=0.3cm]
+        \def\w{1.6cm}
+        \def\h{0.45cm}
+        
+        % Hoch
+        \node[draw=black, fill=white, minimum width=\w, minimum height=\h, font=\scriptsize, anchor=west] at (-1.4, 0.9) {AS102};
+        \node[font=\tiny, anchor=west] at (0.3, 0.9) {hoch};
+        
+        % Mittel
+        \node[draw=gray!50, fill=gray!20, minimum width=\w, minimum height=\h, font=\scriptsize, text=black!70, anchor=west] at (-1.4, 0.2) {AS102};
+        \node[font=\tiny, anchor=west] at (0.3, 0.2) {mittel};
+        
+        % Kritisch
+        \node[draw=gray!30, fill=gray!30, minimum width=\w, minimum height=\h, font=\scriptsize, text=gray!50, anchor=west] at (-1.4, -0.5) {AS102};
+        \node[font=\tiny, anchor=west] at (0.3, -0.5) {kritisch};
+    \end{scope}
+    
+    \node[footer] at (contrast.south) {Scans, Kompression};
+
+\end{tikzpicture}
+\caption{Zentrale Herausforderungen der OCR in technischen Zeichnungen.}
+\label{fig:ocr_challenges_fixed_black}
+\end{figure}
+
+\subsubsection{Variable Textorientierung}
+
+In Gleisplänen folgen Beschriftungen der Topologie der Gleise und können in beliebigen Winkeln $\theta \in [0^\circ, 360^\circ]$ orientiert sein. Standard-OCR-Engines sind primär für horizontalen Text (0°) optimiert und zeigen bei geneigten Texten signifikante Leistungseinbußen \cite{schlagenhauf2022textdetectiontechnicaldrawings}.
+
+Lösungsansätze umfassen:
+\begin{itemize}
+    \item \textbf{Vorrotation}: Transformation des Bildausschnitts basierend auf dem von der Objekterkennung gelieferten Winkel $\theta$
+    \item \textbf{Multi-Winkel-Inferenz}: Sequenzielle Verarbeitung mit 0°, 90°, 180°, 270° Rotation und Auswahl des konfidentesten Ergebnisses
+    \item \textbf{Rotationsinvariante Netze}: Verwendung von Spatial Transformer Networks (STN) \cite{Jaderberg2015_STN} zur lernbasierten Entzerrung
+\end{itemize}
+
+\subsubsection{Grafische Überlagerungen}
+
+Technische Zeichnungen enthalten zahlreiche Linienelemente (Gleise, Bemaßungen, Führungslinien), die Textbereiche durchkreuzen können. Diese Überlagerungen führen zu Segmentierungsfehlern und Fehlerkennungen.
+
+Lösungsansätze umfassen:
+\begin{itemize}
+    \item \textbf{Morphologische Operationen}: Opening-Filter mit linienförmigen 
+          Strukturelementen zur Entfernung dünner Linien \cite{Gonzalez}. 
+          Die Implementierung verwendet orientierte Strukturelemente, die dem 
+          Textwinkel folgen, um schräge Linien gezielt zu entfernen ohne 
+          Textstriche zu beschädigen.
+    \item \textbf{Farbbasierte Filterung}: Separation von Textfarbe 
+          (typischerweise Schwarz) und Linienfarben (oft Grau oder Farbe)
+\end{itemize}
+
+Theoretische Alternativen wie Inpainting \cite{Bertalmio2000_Inpainting} zur 
+Rekonstruktion überlagerter Bereiche wurden evaluiert, jedoch aufgrund des 
+höheren Rechenaufwands und der ausreichenden Wirksamkeit morphologischer 
+Operationen nicht implementiert.
+
+\subsubsection{Kleine Textgrößen}
+
+Beschriftungen in Gleisplänen sind oft nur 8--12 Punkt groß. Bei einer Digitalisierung mit 150 DPI entspricht dies einer Zeichenhöhe von lediglich 17--25 Pixeln. Für zuverlässige OCR werden typischerweise mindestens 30--40 Pixel Zeichenhöhe benötigt \cite{Smith2007, du2020ppocrpracticalultralightweight}.
+
+Die Beziehung zwischen Schriftgröße $s$ (in Punkt), Scanauflösung $r$ (in DPI) und resultierender Pixelhöhe $h_c$ ist:
+
+\begin{equation}
+h_c = s \cdot \frac{r}{72} \cdot k
+\label{eq:char_height}
+\end{equation}
+
+wobei 72 die Referenz-DPI für Punktgrößen und $k \approx 0.7$ der typische Verhältnisfaktor zwischen nomineller Schrifthöhe und tatsächlicher x-Höhe (Höhe des Kleinbuchstabens \enquote{x}) bezeichnet \cite{Gonzalez}.
+
+Lösungsansätze umfassen:
+\begin{itemize}
+    \item \textbf{Erhöhte Scanauflösung}: Digitalisierung mit 300--500 DPI 
+          statt 150 DPI
+    \item \textbf{Interpolationsbasierte Hochskalierung}: Vergrößerung kleiner 
+          Bildausschnitte mittels Lanczos-Interpolation vor der OCR-Verarbeitung. 
+          Dies ist recheneffizienter als neuronale Super-Resolution und für 
+          technische Zeichnungen mit klar definierten Kanten ausreichend.
+    \item \textbf{Multi-Scale-Processing}: Verarbeitung auf mehreren 
+          Skalierungsstufen mit Ergebnisfusion
+\end{itemize}
+
+
+\subsection{Qualitätssicherung und Nachbearbeitung}
+\label{subsec:ocr_quality}
+
+Die Robustheit eines OCR-Systems wird maßgeblich durch die Nachbearbeitungsschritte bestimmt. Für domänenspezifische Anwendungen wie Gleispläne können strukturelle Erwartungen zur Validierung und Korrektur genutzt werden.
+
+\subsubsection{Konfidenzbasierte Filterung}
+
+OCR-Engines liefern typischerweise einen Konfidenzwert $c \in [0, 1]$ für 
+jedes erkannte Ergebnis. Die Implementierung verwendet kontextabhängige 
+Schwellenwerte:
+
+\begin{equation}
+\text{Akzeptanz}(c) = 
+\begin{cases}
+\text{verwerfen} & c < \tau_{\text{min}} \\
+\text{akzeptieren} & c \geq \tau_{\text{final}}
+\end{cases}
+\label{eq:confidence_threshold}
+\end{equation}
+
+Dabei werden drei Stufen unterschieden:
+
+\begin{itemize}
+    \item $\tau_{\text{min}} = 0.4$: Vorfilterung offensichtlich fehlerhafter 
+          Detektionen
+    \item $\tau_{\text{early}} = 0.5$: Early-Exit bei vollständigen, 
+          hochkonfidenten Erkennungen zur Effizienzsteigerung
+    \item $\tau_{\text{final}} = 0.8$: Finale Validierung für 
+          sicherheitsrelevante Ausgaben im Bahnbereich
+\end{itemize}
+
+Diese gestufte Filterung ermöglicht eine effiziente Verarbeitung bei 
+gleichzeitiger Minimierung falsch-positiver Erkennungen.
+\subsubsection{Musterbasierte Validierung}
+
+Gleisplan-Beschriftungen folgen standardisierten Formaten, die durch 
+reguläre Ausdrücke (Regular Expressions) formalisiert werden können. 
+Ein erkannter Text gilt als valide, wenn er dem erwarteten Muster 
+der jeweiligen Klasse entspricht. Tabelle \ref{tab:regex_patterns} 
+definiert die Validierungsmuster für die wichtigsten Textklassen. 
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{|p{3cm}|p{5cm}|p{4cm}|}
+\hline
+\textbf{Klasse} & \textbf{Regex-Pattern} & \textbf{Beispiele} \\
+\hline
+Signal & \verb|^[A-Z]{1,4}\d{1,4}[a-z]?$| & AS102, BHR201, F3a \\
+\hline
+Koordinate & \verb|^\d{1,3}[.,]\d{3,4}$| & 18.1606, 123,456 \\
+\hline
+Balise (GKS) & \verb|^\d{4}$| & 1234, 5678 \\
+\hline
+Weiche & \verb|^W\d{2,4}[a-z]?$| & W12, W234a \\
+\hline
+\end{tabular}
+\caption{Regex-Validierungsmuster für Gleisplan-Textklassen}
+\label{tab:regex_patterns}
+\end{table}
+
+\subsubsection{Homoglyphen-Korrektur}
+
+OCR-Systeme verwechseln häufig visuell ähnliche Zeichen (Homoglyphen). Tabelle \ref{tab:homoglyphs} listet typische Verwechslungen und deren automatische Korrekturfähigkeit.
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{|c|c|p{5cm}|c|}
+\hline
+\textbf{Korrekt} & \textbf{Verwechselt mit} & \textbf{Kontextuelle Korrektur} & \textbf{Automatisierbar} \\
+\hline
+O & 0, Q & Signal-IDs enthalten keine 0; Koordinaten keine O & Ja \\
+\hline
+I & 1, l & Position im Muster (Anfang: Buchstabe, Mitte: Ziffer) & Teilweise \\
+\hline
+S & 5 & Signal-Präfixe sind Buchstaben & Ja \\
+\hline
+B & 8, 3 & Kontextabhängig & Teilweise \\
+\hline
+Z & 2 & Selten in Signalnamen & Ja \\
+\hline
+\end{tabular}
+\caption{Typische OCR-Homoglyphen und deren Korrekturmöglichkeiten}
 \label{tab:homoglyphs}
 \end{table}
 
-Die Kenntnis dieser Fehlerquellen ermöglicht die Implementierung 
-intelligenter Korrekturheuristiken (vgl. Kapitel 6.5).
+\subsubsection{Fuzzy-Matching zur Fehlerkorrektur}
+
+Bei ungültigen OCR-Erkennungen kann ein Abgleich mit einer Referenzliste 
+bekannter korrekter Werte durchgeführt werden. Die Levenshtein-Distanz 
+\cite{levenshtein1966} quantifiziert dabei die Ähnlichkeit zweier 
+Zeichenketten als minimale Anzahl von Einfüge-, Lösch- und 
+Ersetzungsoperationen zur Transformation eines Strings in einen anderen.
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{|c|c|c|l|}
+\hline
+\textbf{OCR-Ergebnis} & \textbf{Referenz} & \textbf{$d_{\text{Lev}}$} & \textbf{Aktion} \\
+\hline
+AS1O2 & AS102 & 1 & Korrektur: O $\rightarrow$ 0 \\
+\hline
+BHR2O1 & BHR201 & 1 & Korrektur: O $\rightarrow$ 0 \\
+\hline
+XYZAB & AS102 & 5 & Keine Korrektur (zu verschieden) \\
+\hline
+\end{tabular}
+\caption{Fuzzy-Matching mittels Levenshtein-Distanz}
+\label{tab:fuzzy_matching}
+\end{table}
+
+Dieses Verfahren wird als \textit{Fuzzy-Matching} bezeichnet, da es 
+unscharfe (approximate) Übereinstimmungen erlaubt. Für sicherheitsrelevante Anwendungen wird ein konservativer Schwellenwert von $d_{\text{Lev}} \leq 2$ 
+gewählt, um Fehlkorrekturen zu vermeiden. Automatische Korrektur erfolgt nur bei $d_{\text{Lev}} \leq 2$, da 
+typische OCR-Fehler (Homoglyphen wie O/0, I/1) einzelne Zeichenersetzungen 
+darstellen. Höhere Distanzen deuten auf grundlegend fehlerhafte Erkennungen 
+hin, bei denen automatische Korrektur das Risiko von Fehlzuordnungen erhöht.
+\subsection{ROI-basierte OCR-Strategien}
+\label{subsec:roi_ocr}
+
+Anstelle einer vollständigen Seitenanalyse (Full-Page OCR) fokussiert der in 
+dieser Arbeit verfolgte Ansatz die OCR auf spezifische Regions of Interest 
+(ROIs), die aus der Objekterkennung abgeleitet werden 
+\cite{long2020scenetextdetectionrecognition}.
+
+\subsubsection{Vorteile der ROI-fokussierten Verarbeitung}
+
+\begin{itemize}
+    \item \textbf{Effizienz}: Reduktion des zu verarbeitenden Bildbereichs. Bei den untersuchten Gleisplänen beträgt die kumulierte ROI-Fläche typischerweise unter 5\% der Gesamtseitenfläche.
+
+    \item \textbf{Kontextspezifische Verarbeitung}: Klassenabhängige 
+          Vorverarbeitungsparameter (z.\,B. Padding, Skalierung)
+    \item \textbf{Reduzierte Falsch-Positive}: Keine Verarbeitung irrelevanter 
+          Textbereiche (Legenden, Titelfelder)
+    \item \textbf{Geometrische Normalisierung}: Nutzung des OBB-Winkels zur 
+          Horizontalausrichtung
+\end{itemize}
+
+\subsubsection{Orientierungsbewusste ROI-Extraktion}
+
+Die Extraktion eines ROI für ein erkanntes Symbol mit orientierter Bounding 
+Box $(c_x, c_y, w, h, \theta)$ erfordert eine geometrische Transformation 
+zur Horizontalausrichtung des Textes. Die Implementierung verwendet einen 
+Dual-Pfad-Ansatz, bei dem die Wahl der Transformationsmethode von der 
+Textorientierung abhängt (Abbildung \ref{fig:roi_extraction_methods}).
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    box/.style={rectangle, draw, thick, minimum width=3.2cm, minimum height=2.8cm, 
+                align=center, rounded corners=2pt},
+    arrow/.style={->, >=stealth, thick},
+    decision/.style={diamond, draw, thick, fill=yellow!20, aspect=2.2, 
+                     minimum width=1.8cm, align=center}
+]
+    % Cardinal path
+    \node[box, fill=green!15] (cardinal) at (0, 0) {
+        \textbf{Kardinal}\\[0.2cm]
+        $|\theta_{\text{norm}}| \leq 15°$\\[0.2cm]
+        \scriptsize Affine Rotation\\
+        \scriptsize \texttt{warpAffine()}
+    };
+    
+    % Angular path
+    \node[box, fill=orange!15, right=2.5cm of cardinal] (angular) {
+        \textbf{Angular}\\[0.2cm]
+        $|\theta_{\text{norm}}| > 15^\circ$\\[0.2cm]
+        \scriptsize Perspektivtransformation\\
+        \scriptsize \texttt{warpPerspective()}
+    };
+    
+    % Input
+    \node[above=2cm of cardinal, xshift=2.75cm] (input) {OBB: $(c_x, c_y, w, h, \theta)$};
+    
+    % Decision
+    \node[decision, below=0.8cm of input] (decision) {$|\theta_{\text{norm}}|$};
+    
+    % Output
+    \node[box, fill=blue!15, below=1.2cm of cardinal, xshift=2.75cm, 
+          minimum height=1.2cm, minimum width=4cm] (output) {Horizontaler Bildausschnitt};
+    
+    % Arrows
+    \draw[arrow] (input) -- (decision);
+    \draw[arrow] (decision) -| node[pos=0.25, above] {\small $\leq 15^\circ$} (cardinal);
+    \draw[arrow] (decision) -| node[pos=0.25, above] {\small $> 15^\circ$} (angular);
+    \draw[arrow] (cardinal) |- (output);
+    \draw[arrow] (angular) |- (output);
+\end{tikzpicture}
+\caption{Dual-Pfad ROI-Extraktion: Kardinale Orientierungen verwenden effiziente 
+         affine Rotation, während schräge Texte eine Perspektivtransformation 
+         erfordern.}
+\label{fig:roi_extraction_methods}
+\end{figure}
+
+\textbf{Kardinale Orientierung} ($|\theta_{\text{norm}}| \leq 15^\circ$): 
+Für nahezu achsenparallele Texte genügt eine affine Rotation um den 
+Mittelpunkt $(c_x, c_y)$. Die Transformation verwendet eine $2 \times 3$ 
+Rotationsmatrix:
+
+\begin{equation}
+\mathbf{M}_{\text{affin}} = 
+\begin{pmatrix} 
+\cos\theta & -\sin\theta & t_x \\ 
+\sin\theta & \cos\theta & t_y 
+\end{pmatrix}
+\label{eq:affine_rotation}
+\end{equation}
+
+wobei $t_x$ und $t_y$ die Translationskomponenten bezeichnen, die sicherstellen, 
+dass die Rotation um den Mittelpunkt $(c_x, c_y)$ erfolgt. Diese Transformation 
+ist recheneffizient und ausreichend für Texte, die bereits nahezu horizontal 
+oder vertikal ausgerichtet sind.
+
+\textbf{Beliebige Orientierung} ($|\theta_{\text{norm}}| > 15^\circ$): 
+Für stark geneigte Texte wird eine perspektivische Transformation 
+(Homographie) verwendet \cite{szeliski2022}. Die vier Eckpunkte $(x_i, y_i)$ 
+der OBB werden zunächst durch Rotation um den Mittelpunkt berechnet:
+
+\begin{equation}
+\begin{pmatrix} x'_i \\ y'_i \end{pmatrix} = 
+\begin{pmatrix} \cos\theta & -\sin\theta \\ \sin\theta & \cos\theta \end{pmatrix}
+\begin{pmatrix} x_i - c_x \\ y_i - c_y \end{pmatrix} +
+\begin{pmatrix} c_x \\ c_y \end{pmatrix}
+\label{eq:obb_corners}
+\end{equation}
+
+Anschließend bildet eine $3 \times 3$ Homographie-Matrix $\mathbf{H}$ diese 
+Eckpunkte auf ein achsenparalleles Zielrechteck ab:
+
+\begin{equation}
+\begin{pmatrix} x''_i \\ y''_i \\ 1 \end{pmatrix} \sim 
+\mathbf{H}
+\begin{pmatrix} x'_i \\ y'_i \\ 1 \end{pmatrix}
+\label{eq:homography}
+\end{equation}
+
+wobei $\sim$ Gleichheit bis auf einen Skalierungsfaktor bezeichnet. Die 
+Matrix $\mathbf{H}$ wird aus den vier korrespondierenden Punktpaaren 
+(Quell-Eckpunkte zu Ziel-Rechteck) berechnet.
+
+Die Entscheidung zwischen beiden Methoden basiert auf dem 
+\textit{normalisierten} Winkel $\theta_{\text{norm}}$, der durch die in 
+Abschnitt \ref{subsec:obb} beschriebene Normalisierung aus dem Rohwinkel 
+gewonnen wird. Der Schwellenwert von $15^\circ$ wurde empirisch bestimmt und 
+bietet einen guten Kompromiss zwischen Recheneffizienz (affine Transformation) und geometrischer Genauigkeit (perspektivische Transformation). Bei größeren Abweichungen führt die affine Rotation zu sichtbaren Verzerrungen an den Texträndern, während kleinere Winkel durch die Multi-Rotations-Inferenz (0°, 90°, 180°, 270°) ausreichend abgedeckt werden.
+\subsection{Relevanz für die Gleisplananalyse}
+\label{subsec:ocr_relevanz}
+
+Die beschriebenen OCR-Konzepte bilden die theoretische Grundlage für die in Kapitel \ref{chap:implementation} (Abschnitt 6.3) beschriebene Implementierung. Die konkrete Umsetzung kombiniert:
+
+\begin{itemize}
+    \item \textbf{Multi-Engine-Kaskadierung}: PaddleOCR als primäre Engine 
+    aufgrund der integrierten Winkelklassifikation und hohen Geschwindigkeit, 
+    mit Tesseract-Fallback für Fälle, in denen PaddleOCR niedrige Konfidenzwerte liefert
+    \item \textbf{Dual-Winkel-Routing}: Unterscheidung zwischen kardinaler Rotation (0°, 90°, 180°, 270°) und beliebigen Winkeln
+    \item \textbf{Klassenspezifische Vorverarbeitung}: Angepasste Padding- und Filterparameter pro Symbolklasse
+    \item \textbf{Dreistufige Validierung}: Syntaktisch (Regex), semantisch (Plausibilität), konfidenzbasiert (Schwellenwerte)
+\end{itemize}
+
+Die Texttypen in Gleisplänen umfassen Signalbezeichnungen (z.\,B. \enquote{AS102}), Kilometerangaben (z.\,B. \enquote{18.1606}), Balisenkennung (z.\,B. \enquote{1234}) und Gleisabschnittsnamen. Jeder Texttyp erfordert spezifische Validierungsregeln und Nachbearbeitungsstrategien, die in der Implementierung detailliert werden.
 \section{Erkennung räumlicher Beziehungen in der Dokumentenanalyse}
 Die automatisierte Extraktion von Informationen aus technischen Zeichnungen erfordert nicht nur die Erkennung einzelner Objekte, sondern auch das Verständnis ihrer räumlichen Beziehungen zueinander. Dieser Abschnitt behandelt die theoretische Grundlagen der Dokumentanalyse und deren Anwendung auf die automatisierte Interpretation von Gleispläne.\cite{Binmakhashen} 
 
