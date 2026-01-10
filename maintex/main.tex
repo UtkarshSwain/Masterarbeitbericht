@@ -31,10 +31,11 @@
 % 'decorations.pathreplacing' brauchst du für die geschweiften Klammern (Option 2)
 % 'arrows.meta' brauchst du für die schönen Pfeilspitzen (>=latex)
 \usetikzlibrary{decorations.pathreplacing, arrows.meta, positioning, shadows,shapes, patterns,shapes.geometric, calc, fit}
+
 \usepackage{placeins}
 \usepackage{pgfplots}
 \pgfplotsset{compat=1.18}
-\usepackage{amssymb} % Für das Checkmark-Symbol
+
 \usetikzlibrary{shapes.multipart}
 % Removes indentation and adds vertical space between paragraphs
 \usepackage{parskip}
@@ -210,14 +211,12 @@ Des Weiteren erkläre ich mich \textbf{nicht} damit einverstanden, dass meine Fo
 % ===== ARABISCHE SEITENZAHLEN AB EINLEITUNG =====
 \pagenumbering{arabic}  % Wechselt zu arabischen Zahlen (1, 2, 3, ...) und setzt Zähler auf 1 zurück
 
-    
+
 \input{kapitel/einleitung.tex}
 \clearpage
 
 \input{kapitel/Theorietische und technische Grundlagen.tex}
 \clearpage
-\begin{comment}
-    
 
 \input{kapitel/anforderungsanalyse.tex}
 \clearpage
@@ -238,5 +237,4 @@ Des Weiteren erkläre ich mich \textbf{nicht} damit einverstanden, dass meine Fo
 \clearpage
 \nocite{*}
 \printbibliography[title=Literaturverzeichnis]
-\end{comment}
 \end{document}
