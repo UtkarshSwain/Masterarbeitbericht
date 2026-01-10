@@ -505,7 +505,7 @@ wobei $N$ die Anzahl der Objektklassen bezeichnet. Üblich ist die Angabe von mA
 Die in diesem Abschnitt dargestellten Verfahren -- von zweistufigen Detektoren wie Faster R-CNN bis zu einstufigen Architekturen wie YOLO -- verwenden achsenparallele Begrenzungsrahmen (Axis-Aligned Bounding Boxes, AABB). Diese Boxen sind durch vier Parameter definiert und ihre Kanten verlaufen stets horizontal und vertikal zum Bildrand. Für viele Anwendungen wie Fußgängererkennung oder Fahrzeugdetektion, bei denen Objekte typischerweise aufrechte oder horizontale Orientierung aufweisen, ist dies ausreichend. Technische Zeichnungen mit beliebig rotierten Symbolen und Textannotationen stellen jedoch besondere Anforderungen, die achsenparallele Boxen nur unzureichend erfüllen. Abschnitt \ref{sec:obb} führt daher orientierte Begrenzungsrahmen (Oriented Bounding Boxes, OBB) ein, die durch einen zusätzlichen Rotationsparameter präzisere Lokalisierung rotierter Objekte ermöglichen.
 \section{Oriented Object Detection für rotierte Objekte}
 
-Die in Abschnitt 3.2 vorgestellten objekterkennenden Modelle basieren überwiegend auf achsenparallelen Bounding Boxes (Axis-Aligned Bounding Boxes, AABB). Bei der Detektion rotierter Objekte, wie sie in technischen Zeichnungen und Gleisplänen vorliegen, stoßen AABB-basierte Ansätze jedoch an fundamentale Grenzen. Oriented Bounding Boxes (OBB) bieten hier eine geometrisch präzisere Alternative, indem sie zusätzlich zum Zentrum und den Abmessungen auch den Rotationswinkel des Objekts modellieren.
+Die in Abschnitt 3.2 vorgestellten objekterkennenden Modelle basieren überwiegend auf achsenparallelen Bounding Boxes (Axis-Aligned Bounding Boxes, AABB)\cite{redmon2016lookonceunifiedrealtime}. Bei der Detektion rotierter Objekte, wie sie in technischen Zeichnungen und Gleisplänen vorliegen, stoßen AABB-basierte Ansätze jedoch an fundamentale Grenzen. Oriented Bounding Boxes (OBB) bieten hier eine geometrisch präzisere Alternative, indem sie zusätzlich zum Zentrum und den Abmessungen auch den Rotationswinkel des Objekts modellieren.
 
 \subsection{Limitierungen achsenparalleler Bounding Boxes}
 
@@ -513,7 +513,7 @@ Achsenparallele Bounding Boxes werden durch vier Parameter definiert: Zentrumsko
 
 \subsubsection{Hintergrundanteil bei Rotation}
 
-Der fundamentale Nachteil von AABB zeigt sich im Verhältnis zwischen der vom Objekt tatsächlich belegten Fläche und der durch die Bounding Box umschlossenen Gesamtfläche. Bei einem um 45° rotierten Textlabel umschließt die achsenparallele Box 41\% irrelevanten Hintergrund, während eine orientierte Box nur 8\% Hintergrund erfasst. Dieser Unterschied ist in Abbildung \ref{fig:aabb_obb_comparison} dargestellt. Die AABB muss alle Ecken des rotierten Objekts umschließen und umfasst dabei große Bereiche außerhalb des eigentlichen Objekts. Die OBB hingegen liegt eng am Objekt an und minimiert den Hintergrundanteil.
+Der fundamentale Nachteil von AABB zeigt sich im Verhältnis zwischen der vom Objekt tatsächlich belegten Fläche und der durch die Bounding Box umschlossenen Gesamtfläche. Bei rotierten Objekten umschließen achsenparallele Bounding Boxes einen erheblichen Anteil irrelevanten Hintergrunds\cite{Ding2019_LearningRoI}. Die AABB muss alle Ecken des rotierten Objekts umschließen und umfasst dabei große Bereiche außerhalb des eigentlichen Objekts. Die OBB hingegen liegt eng am Objekt an und minimiert den Hintergrundanteil. Dieser Unterschied ist in Abbildung \ref{fig:aabb_obb_comparison} für ein um 45° rotiertes Textlabel dargestellt.
 
 \begin{figure}[H]
 \centering
@@ -558,58 +558,18 @@ Der fundamentale Nachteil von AABB zeigt sich im Verhältnis zwischen der vom Ob
 \label{fig:aabb_obb_comparison}
 \end{figure}
 
-Der Hintergrundanteil $r_{\text{bg}}$ einer AABB bei einem rotierten rechteckigen Objekt lässt sich geometrisch herleiten. Für ein Objekt mit Seitenverhältnis $\alpha = \frac{w}{h}$ und Rotationswinkel $\theta$ gilt:
-
-\begin{equation}
-r_{\text{bg}}(\theta, \alpha) = 1 - \frac{wh}{w_{\text{AABB}} \cdot h_{\text{AABB}}}
-\end{equation}
-
-wobei die AABB-Dimensionen gegeben sind durch:
-
-\begin{align}
-w_{\text{AABB}} &= w|\cos\theta| + h|\sin\theta| \\
-h_{\text{AABB}} &= w|\sin\theta| + h|\cos\theta|
-\end{align}
-
-Der Hintergrundanteil erreicht sein Maximum bei $\theta = 45^\circ$. Für ein quadratisches Objekt ($\alpha = 1$) ergibt sich dann $r_{\text{bg}} \approx 50\%$. Die Abhängigkeit des Hintergrundanteils vom Rotationswinkel ist für verschiedene Winkel in Abbildung \ref{fig:rotation_background} visualisiert. Bei 0° Rotation liegt das Objekt perfekt achsenparallel, wodurch sich kein zusätzlicher Hintergrund ergibt. Mit zunehmender Rotation steigt der Hintergrundanteil und erreicht bei 45° sein Maximum von 50\% für quadratische Objekte. Bei 60° nimmt der Hintergrundanteil wieder ab, da sich das Objekt der 90°-Position nähert, bei der es erneut achsenparallel ausgerichtet wäre.
-
-\begin{figure}[H]
-\centering
-\begin{tikzpicture}[scale=0.8]
-    % Four rotation examples: 0°, 30°, 45°, 60°
-    \foreach \angle/\xpos/\bg in {0/0/0, 30/3.5/29, 45/7/50, 60/10.5/29} {
-        \begin{scope}[shift={(\xpos,0)}]
-            % Object (rotated)
-            \begin{scope}[rotate=\angle]
-                \draw[thick, fill=blue!20] (-0.5,-0.3) rectangle (0.5,0.3);
-            \end{scope}
-            
-            % AABB
-            \pgfmathsetmacro{\w}{abs(cos(\angle))*0.5 + abs(sin(\angle))*0.3}
-            \pgfmathsetmacro{\h}{abs(sin(\angle))*0.5 + abs(cos(\angle))*0.3}
-            \draw[thick, red, dashed] (-\w,-\h) rectangle (\w,\h);
-            
-            % Labels
-            \node[below, font=\footnotesize] at (0, -1.3) {$\theta = \angle^\circ$};
-            \node[below, font=\footnotesize, red] at (0, -1.7) {bg: \bg\%};
-        \end{scope}
-    }
-\end{tikzpicture}
-\caption{Hintergrundanteil bei verschiedenen Rotationswinkeln.}
-\label{fig:rotation_background}
-\end{figure}
-
-Dieser hohe Hintergrundanteil hat zwei wesentliche Konsequenzen für die Objekterkennung: Erstens verschlechtert sich das Signal-Rausch-Verhältnis der Eingabedaten für nachgelagerte Verarbeitungsschritte wie OCR. Zweitens steigt die Wahrscheinlichkeit falscher Detektionen, da irrelevante Bildelemente innerhalb der Bounding Box liegen.
+Dieser hohe Hintergrundanteil hat zwei wesentliche Konsequenzen für die Objekterkennung: Erstens verschlechtert sich das Signal-Rausch-Verhältnis der Eingabedaten für nachgelagerte Verarbeitungsschritte wie OCR\cite{Ma2018ArbitraryOrientedST}. Zweitens steigt die Wahrscheinlichkeit falscher Detektionen, da irrelevante Bildelemente innerhalb der Bounding Box liegen\cite{Ding2019_LearningRoI}.
 
 \subsubsection{Non-Maximum Suppression bei dichten Objektgruppen}
 
-Ein weiteres Problem ergibt sich bei der Nachbearbeitung von Detektionen mittels Non-Maximum Suppression (NMS). NMS eliminiert redundante Detektionen durch Unterdrückung überlappender Boxen basierend auf ihrer Intersection over Union (IoU):
+Ein weiteres Problem ergibt sich bei der Nachbearbeitung von Detektionen mittels Non-Maximum Suppression (NMS)\cite{Ren2015_FasterRCNN}. NMS eliminiert redundante Detektionen durch Unterdrückung überlappender Boxen basierend auf ihrer Intersection over Union (IoU):
 
 \begin{equation}
 \text{IoU}(B_1, B_2) = \frac{\text{Area}(B_1 \cap B_2)}{\text{Area}(B_1 \cup B_2)}
 \end{equation}
 
-Bei dicht platzierten rotierten Objekten führen AABB zu hohen IoU-Werten, obwohl die Objekte selbst nicht überlappen. Dies resultiert in fälschlicher Unterdrückung korrekter Detektionen. Abbildung \ref{fig:nms_problem} demonstriert dieses Fehlverhalten anhand zweier nahe beieinanderliegender Textlabels. Die beiden Textobjekte sind um 30° bzw. -30° rotiert und überlappen sich nicht. Ihre achsenparallelen Bounding Boxes hingegen weisen eine signifikante Überlappung mit IoU = 0.42 auf. Bei einem typischen NMS-Schwellenwert von $\tau = 0.4$ würde eine der beiden korrekten Detektionen fälschlicherweise unterdrückt. Im Gegensatz dazu berechnet sich die IoU zwischen den orientierten Bounding Boxes korrekt zu 0.0, da die Objekte tatsächlich nicht überlappen.
+Bei dicht platzierten rotierten Objekten führen AABB zu hohen IoU-Werten, obwohl die Objekte selbst nicht überlappen\cite{Ding2019_LearningRoI}. Dies resultiert in fälschlicher Unterdrückung korrekter Detektionen. Abbildung \ref{fig:nms_problem} demonstriert dieses Fehlverhalten anhand zweier nahe beieinanderliegender Textlabels. Die beiden Textobjekte sind um 30° bzw. -30° rotiert und überlappen sich nicht. Ihre achsenparallelen Bounding Boxes hingegen weisen eine signifikante Überlappung mit IoU = 0.42 auf. Bei einem typischen NMS-Schwellenwert von $\tau = 0.4$\cite{Lin2017_FocalLoss} würde eine der beiden korrekten Detektionen fälschlicherweise unterdrückt. Im Gegensatz dazu berechnet sich die IoU zwischen den orientierten Bounding Boxes korrekt zu 0.0, da die Objekte tatsächlich nicht überlappen.
+
 \begin{figure}[H]
 \centering
 \begin{tikzpicture}[scale=0.9]
@@ -617,25 +577,21 @@ Bei dicht platzierten rotierten Objekten führen AABB zu hohen IoU-Werten, obwoh
 
     % --- Text 1 (30° rotation) ---
     \begin{scope}[rotate around={30:(1.5,2)}]
-        % ÄNDERUNG HIER: Randfarbe auf Grün (green!70!black) und 'very thick' gesetzt
-        % Dies repräsentiert die OBB
         \draw[very thick, green!70!black, fill=blue!20] (0.5,1.5) rectangle (2.5,2.5);
         \node[font=\small, rotate=30] at (1.5,2) {Text 1};
     \end{scope}
 
     % --- Text 2 (-30° rotation) ---
     \begin{scope}[rotate around={-30:(4,2)}]
-        % ÄNDERUNG HIER: Randfarbe auf Grün und 'very thick' gesetzt
-        % Dies repräsentiert die OBB
         \draw[very thick, green!70!black, fill=blue!20] (3,1.5) rectangle (5,2.5);
         \node[font=\small, rotate=-30] at (4,2) {Text 2};
     \end{scope}
 
-    % --- AABBs (bleiben rot und gestrichelt) ---
-    % AABB for Text 1 (red)
+    % --- AABBs (red and dashed) ---
+    % AABB for Text 1
     \draw[thick, red, dashed] (0.232,1.134) rectangle (2.768,2.866);
 
-    % AABB for Text 2 (red)
+    % AABB for Text 2
     \draw[thick, red, dashed] (2.732,1.134) rectangle (5.268,2.866);
 
     % Overlap region (AABB overlap)
@@ -661,7 +617,7 @@ wobei $(c_x, c_y)$ das Zentrum, $w$ und $h$ die Dimensionen entlang der lokalen 
 
 \subsubsection{Vorteile für rotierte Objekte}
 
-Die präzisere geometrische Modellierung durch OBB bietet mehrere Vorteile. Bei perfekter Ausrichtung der OBB mit dem Objekt reduziert sich der Hintergrundanteil $r_{\text{bg}} \rightarrow 0$, während AABB bei 45° Rotation bis zu 50\% Hintergrund umschließen. Die IoU zwischen OBB reflektiert die tatsächliche Objektüberlappung, wodurch Fehlunterdrückungen bei NMS vermieden werden. Dies ist besonders wichtig bei dicht gruppierten Objekten, wo AABB fälschlicherweise hohe Überlappungen anzeigen würden. Zudem kodiert der Parameter $\theta$ explizit die Objektorientierung, was für nachgelagerte Prozesse wie orientierungsabhängige OCR wertvoll ist. Für die Domäne der Gleisplan-Analyse sind diese Eigenschaften besonders relevant, da Symbole entlang der Gleisachsen in beliebigen Winkeln angeordnet sind und oft dicht gruppiert auftreten.
+Die präzisere geometrische Modellierung durch OBB bietet mehrere Vorteile. Bei perfekter Ausrichtung der OBB mit dem Objekt minimiert sich der Hintergrundanteil, während AABB bei starker Rotation erhebliche Hintergrundbereiche umschließen. Die IoU zwischen OBB reflektiert die tatsächliche Objektüberlappung, wodurch Fehlunterdrückungen bei NMS vermieden werden. Dies ist besonders wichtig bei dicht gruppierten Objekten, wo AABB fälschlicherweise hohe Überlappungen anzeigen würden. Zudem kodiert der Parameter $\theta$ explizit die Objektorientierung, was für nachgelagerte Prozesse wie orientierungsabhängige OCR wertvoll ist. Für die Domäne der Gleisplan-Analyse sind diese Eigenschaften besonders relevant, da Symbole entlang der Gleisachsen in beliebigen Winkeln angeordnet sind und oft dicht gruppiert auftreten.
 
 \subsection{Herausforderungen bei der Verwendung von OBB}
 
@@ -738,7 +694,7 @@ wobei $P_1$ und $P_2$ die als Vierecke repräsentierten OBB sind. Die Schnittpun
 
 \subsubsection{Winkel-Periodizität und Trainingsinstabilität}
 
-Der Rotationswinkel $\theta$ weist eine zyklische Periodizität auf: Eine Rotation um 180° (bzw. bei symmetrischen Objekten um 90°) resultiert in einer geometrisch identischen Bounding Box. Dies führt zu Ambiguitäten in der Netzwerk-Ausgabe. Betrachtet man beispielsweise zwei Vorhersagen $\theta_1 = 0^\circ$ und $\theta_2 = 89^\circ$ für dasselbe Objekt, so sind diese geometrisch nur 1° voneinander entfernt, numerisch jedoch 89 Einheiten. Standard-Regressionsverluste (z.B. Smooth L1) behandeln diese Diskrepanz linear, was zu instabilen Gradienten führt.
+Der Rotationswinkel $\theta$ weist eine zyklische Periodizität auf: Eine Rotation um 180° (bzw. bei symmetrischen Objekten um 90°) resultiert in einer geometrisch identischen Bounding Box\cite{Yang2021RSDETR,Zhao2023ABFL}. Dies führt zu Ambiguitäten in der Netzwerk-Ausgabe. Betrachtet man beispielsweise zwei Vorhersagen $\theta_1 = 0^\circ$ und $\theta_2 = 89^\circ$ für dasselbe Objekt, so sind diese geometrisch nur 1° voneinander entfernt, numerisch jedoch 89 Einheiten. Standard-Regressionsverluste (z.B. Smooth L1) behandeln diese Diskrepanz linear, was zu instabilen Gradienten führt.
 
 
 \subsubsection{Erhöhter Trainingsaufwand}
@@ -751,9 +707,7 @@ Die in Kapitel 5 motivierte Wahl von YOLOv8 für die Symbolerkennung basiert auf
 
 \begin{figure}[H]
 \centering
-% --- VERSCHIEBUNG NACH RECHTS ---
 \hspace*{1.5cm} 
-% --------------------------------
 \begin{tikzpicture}[
     scale=0.9,
     node distance=1.2cm and 0.5cm,
@@ -782,19 +736,14 @@ Die in Kapitel 5 motivierte Wahl von YOLOv8 für die Symbolerkennung basiert auf
     \node[module, below=of features, fill=orange!20] (neck) {PANet Neck\\(FPN + PAN)};
     
     % 5. Detection heads
-    % Head P4 (Mitte)
     \node[module, below=1.5cm of neck, fill=red!20, minimum width=2.8cm] (head2) {Head P4\\(Medium)};
-    
-    % Head P3 (Links)
     \node[module, left=0.2cm of head2, fill=red!20, minimum width=2.8cm] (head1) {Head P3\\(Small)};
-    
-    % Head P5 (Rechts)
     \node[module, right=0.2cm of head2, fill=red!20, minimum width=2.8cm] (head3) {Head P5\\(Large)};
     
     % 6. Outputs
     \node[module, below=1.2cm of head2, fill=purple!20, minimum width=8cm] (output) {OBB Predictions\\$(c_x, c_y, w, h, \theta, \text{cls})$};
     
-    % --- ARROWS ---
+    % Arrows
     \draw[arrow] (input) -- (backbone);
     \draw[arrow] (backbone) -- (features);
     \draw[arrow] (features) -- (neck);
@@ -807,7 +756,7 @@ Die in Kapitel 5 motivierte Wahl von YOLOv8 für die Symbolerkennung basiert auf
     \draw[arrow] (head1.south) -- (head1.south |- output.north); 
     \draw[arrow] (head3.south) -- (head3.south |- output.north); 
     
-    % --- ANNOTATIONS ---
+    % Annotations
     \node[right=0.8cm of backbone, font=\footnotesize, align=left] {
         \textbf{Feature Extraction:}\\
         5 Resolution Levels
@@ -828,9 +777,10 @@ Die in Kapitel 5 motivierte Wahl von YOLOv8 für die Symbolerkennung basiert auf
 \caption{YOLOv8-OBB Architektur.}
 \label{fig:yolov8_architecture}
 \end{figure}
+
 \subsubsection{Netzwerkkomponenten}
 
-Die Architektur gliedert sich in drei funktionale Blöcke. Der Backbone extrahiert hierarchische Merkmale aus den Eingabebildern und verwendet eine auf CSPNet basierende Architektur mit Cross Stage Partial Connections\cite{Wang2020_CSPNet}. Die sogenannten C2f-Module (CSP Bottleneck with 2 Convolutions, faster) ersetzen die C3-Module früherer Versionen und bieten eine effizientere Gradientenfluss-Charakteristik bei gleichzeitiger Reduktion der Parameteranzahl. Das Neck-Modul fusioniert Merkmale unterschiedlicher Auflösungsstufen durch eine Kombination aus Top-Down- und Bottom-Up-Pfaden. Die Path Aggregation Network (PANet) Architektur\cite{Liu2018_PANet} ermöglicht eine effektive Informationspropagation zwischen den Skalen, was für die Detektion sowohl kleiner als auch großer Objekte essentiell ist. YOLOv8 folgt einem Anchor-Free-Ansatz, bei dem Objektzentren direkt vorhergesagt werden, anstatt vordefinierte Anker-Boxen zu verwenden. Die Heads sind dezentralisiert (decoupled): Separate Zweige regredieren die Lokalisierung (inklusive $\theta$) und die Klassifikation. Diese Entkopplung verbessert die Konvergenz, da die beiden Aufgaben unterschiedliche Repräsentationen erfordern\cite{Ge2021_YOLOX}.
+Die Architektur gliedert sich in drei funktionale Blöcke. Der Backbone extrahiert hierarchische Merkmale aus den Eingabebildern und verwendet eine auf CSPNet basierende Architektur mit Cross Stage Partial Connections\cite{Wang2020_CSPNet}. Die sogenannten C2f-Module (CSP Bottleneck with 2 Convolutions, faster) ersetzen die C3-Module früherer Versionen und bieten eine effizientere Gradientenfluss-Charakteristik bei gleichzeitiger Reduktion der Parameteranzahl. Das Neck-Modul fusioniert Merkmale unterschiedlicher Auflösungsstufen durch eine Kombination aus Top-Down- und Bottom-Up-Pfaden. Die Path Aggregation Network (PANet) Architektur\cite{Liu2018_PANet} ermöglicht eine effektive Informationspropagation zwischen den Skalen, was für die Detektion sowohl kleiner als auch großer Objekte essentiell ist. YOLOv8 folgt einem Anchor-Free-Ansatz\cite{Tian2019FCOS}, bei dem Objektzentren direkt vorhergesagt werden, anstatt vordefinierte Anker-Boxen zu verwenden. Die Heads sind dezentralisiert (decoupled): Separate Zweige regredieren die Lokalisierung (inklusive $\theta$) und die Klassifikation. Diese Entkopplung verbessert die Konvergenz, da die beiden Aufgaben unterschiedliche Repräsentationen erfordern\cite{Ge2021_YOLOX}.
 
 \subsubsection{Verlustfunktion und Training}
 
@@ -840,7 +790,7 @@ Das Training von YOLOv8-OBB optimiert eine kombinierte Verlustfunktion, die drei
 \mathcal{L}_{\text{total}} = \lambda_{\text{box}} \mathcal{L}_{\text{box}} + \lambda_{\text{cls}} \mathcal{L}_{\text{cls}} + \lambda_{\text{dfl}} \mathcal{L}_{\text{dfl}}
 \end{equation}
 
-Die Box-Loss $\mathcal{L}_{\text{box}}$ quantifiziert die Lokalisierungsgenauigkeit der vorhergesagten OBB gegenüber der Ground Truth. Die Classification-Loss $\mathcal{L}_{\text{cls}}$ verwendet Binary Cross-Entropy für die Klassenzuordnung\cite{Lin2017_FocalLoss}. Die Distribution Focal Loss (DFL) verbessert die Bounding-Box-Regression durch Modellierung der Koordinaten als Verteilungen anstelle von Punktschätzungen.
+Die Box-Loss $\mathcal{L}_{\text{box}}$ quantifiziert die Lokalisierungsgenauigkeit der vorhergesagten OBB gegenüber der Ground Truth. Die Classification-Loss $\mathcal{L}_{\text{cls}}$ verwendet Binary Cross-Entropy für die Klassenzuordnung\cite{Lin2017_FocalLoss}. Die Distribution Focal Loss (DFL)\cite{Li2020GeneralizedFocal} verbessert die Bounding-Box-Regression durch Modellierung der Koordinaten als Verteilungen anstelle von Punktschätzungen.
 
 Die konkreten Trainingsparameter und -ergebnisse für den im Rahmen dieser Arbeit trainierten Detektor werden in Kapitel 6 detailliert dokumentiert. Die Auswahl von YOLOv8-OBB in Kapitel 5 basiert auf der Kombination aus Echtzeitfähigkeit, Rotationsinvarianz und dem Anchor-Free-Design, welches die Adaption an domänenspezifische Symbolklassen erleichtert.
 
@@ -849,7 +799,6 @@ Die konkreten Trainingsparameter und -ergebnisse für den im Rahmen dieser Arbei
 Die beschriebenen OBB-Eigenschaften sind besonders relevant für die automatisierte Analyse von Gleisplänen. Technische Zeichnungen dieses Typs weisen drei charakteristische Merkmale auf, die den Einsatz orientierter Bounding Boxes notwendig machen. Symbole folgen der Topologie der Gleisachsen und können daher in jedem Winkel $\theta \in [0^\circ, 360^\circ)$ vorliegen. In Bahnhöfen und Weichenstraßen treten Symbole räumlich konzentriert auf, wobei AABB-basierte NMS zu Fehlunterdrückungen führen würde. Die vom OBB-Detektor gelieferte Rotation $\theta$ ist für nachgelagerte Prozesse wie die orientierungsabhängige OCR (vgl. Kapitel 6.3) essentiell, da Textlabels entsprechend ihrer Ausrichtung verarbeitet werden müssen.
 
 Die in Kapitel 4 definierten funktionalen Anforderungen an die Symbolerkennung erfordern daher zwingend den Einsatz rotationsinvarianter Detektionsverfahren. Die in Kapitel 6 beschriebene Implementierung nutzt YOLOv8-OBB mit Standard-Konfiguration für die Detektion von 13 domänenspezifischen Symbolklassen (vgl. Tabelle \ref{tab:symbole} in Kapitel 4).
-
 \section{Optical Character Recognition (OCR)}
 
 Die optische Zeichenerkennung bildet in dieser Masterarbeit die verbindende Struktur zwischen der reinen visuellen Symbolerkennung und der semantischen Darstellung der Gleispläne. Zunächst erhalten bekannte Symbole wie Signale, Koppelspulen und Haltetafeln erst anhand zuverlässig extrahierter IDs und Koordinaten ihre technische Bedeutung und können so problemlos lokalisiert, validiert und versioniert werden. Gleispläne stellen daher hohe Anforderungen an die OCR: die Erkennung sehr kleiner alphanumerischer Texte, unterschiedliche Winkelorientierungen sowie die Überlagerung mit Konstruktionslinien. Darüber hinaus werden die Gleispläne entsprechend ihrem jeweiligen Export als Vektor- oder Bild-PDF mit hoher DPI bereitgestellt. Da die Pläne hinsichtlich Größe und Auflösung sehr umfangreich sind, verwendet der Prototyp eine ROI-First-Strategie, bei der aus der OBB-Detektion abgeleitete, winkelerfassende Regionen speziell und klassenabhängig vorbereitet werden. Die OCR selbst folgt einer pragmatischen Architektur mit einer Deep-Learning-Hauptengine und einem schlanken Fallback, der für die musterbasierte Validierung und die nachvollziehbaren Entscheidungen verwendet wird. Der erzeugte Text und die Metadaten fließen direkt in Verknüpfung, Zuordnung und Änderungsmanagement und spielen dort eine zentrale Rolle für die Qualität und Nachvollziehbarkeit der gesamten Pipeline.
