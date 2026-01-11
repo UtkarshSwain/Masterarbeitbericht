@@ -1,4 +1,5 @@
 \chapter{Implementierung}
+\label{chap:implementierung}
 Dieses Kapitel beschreibt die technische Realisierung des Prototyps. Es werden die Implementierungsdetails der in Kapitel 5 konzipierten Architektur dargelegt, von der Datenaufbereitung über das Modelltraining bis zur finalen Datenaggregation.  
 
 \section{Technologiestack und Entwicklungsumgebung}
@@ -148,7 +149,7 @@ Die Daten wurden in eine standardisierte COCO-Verzeichnisstruktur (Abbildung \re
 \end{figure}
 
 \subsection{Modelltraining und Optimierung}
-
+\label{subsec:Modelltraining}
 Das Training des YOLOv8-OBB Modells wurde auf einer cloud-basierten GPU-Instanz mit einer NVIDIA AWS Instance g4dn.xlarge, (16 GB VRAM) durchgeführt. Die Wahl einer externen GPU-Instanz war notwendig, da lokale Entwicklungsmaschinen nicht über ausreichende Rechenleistung verfügten, um das Training in angemessener Zeit abzuschließen.
 
 \subsubsection{Modellarchitektur und Hyperparameter}
@@ -310,7 +311,7 @@ Die Konfusionsmatrix (Abbildung \ref{fig:confusion_matrix}) visualisiert die Kla
 Die Matrix zeigt eine ausgeprägte Diagonalstruktur, was darauf hinweist, dass die meisten Detektionen der korrekten Klasse zugeordnet werden. Vereinzelte Off-Diagonal-Einträge treten hauptsächlich zwischen visuell ähnlichen Symboltypen auf, beispielsweise zwischen \textit{gks\_festkodiert} und \textit{gks\_gesteuert}, was aufgrund ihrer hohen visuellen Ähnlichkeit erwartbar ist. Ebenfalls tritt eine geringe Konfusion zwischen \textit{coordinate} und Hintergrund auf, was bei dicht gruppierten oder schwach lesbaren Koordinatenbeschriftungen zu erwarten ist.
 
 \subsection{Inferenz-Pipeline Implementierung}
-
+\label{Inferenz}
 Nach Abschluss des Trainings wurde das Modell mit den optimalen Gewichten (\texttt{best.pt}) in die produktive Extraktionspipeline integriert. Die Inferenz auf neuen, zuvor ungesehenen Gleisplänen erfolgt in mehreren aufeinander aufbauenden Schritten.
 \begin{figure}[ht]
     \centering
@@ -418,7 +419,7 @@ Der erste Schritt besteht in der Konvertierung der PDF-Gleispläne in hochauflö
 Die resultierende Pixmap wird in ein RGB-Array mit den Dimensionen $H \times W \times 3$ überführt, wobei $H$ und $W$ von der Größe des PDF-Dokuments abhängen. Ein typischer A3-Gleisplan resultiert bei 500 DPI in einem Bild von ca. $8000 \times 6000$ Pixeln.
 
 \subsubsection{Tiling-Strategie}
-
+\label{subsubsec:tiling_strategie}
 Da die resultierenden Bilder mit mehreren Millionen Pixeln die Eingabegröße des YOLO-Modells ($1024 \times 1024$) bei weitem überschreiten, wird das Vollbild in überlappende Kacheln (Tiles) zerlegt. Die Tile-Größe beträgt $T = 2048 \times 2048$ Pixel, was eine Verarbeitung auf gängigen GPUs ermöglicht und gleichzeitig ausreichend Kontext für die Detektion bietet.
 
 \begin{figure}[ht]
@@ -620,7 +621,7 @@ wobei $(c_x, c_y)$ das Zentrum der detektierten Bounding Box bezeichnet.
 \end{figure}
 \FloatBarrier
 \subsubsection{Winkeladaptive Parameterauswahl}
-
+\label{subsubsec:winkelnormalisierung}
 Eine Besonderheit der Implementierung besteht in der winkeladaptiven Anpassung der Bounding-Box-Parameter für jede Detektion. Nach der initialen YOLO-Detektion, die eine OBB in Form von $(c_x, c_y, w, h, \theta)$ liefert, werden die Dimensionen $w$ und $h$ sowie das Padding basierend auf dem Rotationswinkel $\theta$ angepasst.
 
 Zunächst wird der Winkel normalisiert, um eine kanonische Repräsentation zu erhalten. Die Normalisierung erfolgt durch:
@@ -819,7 +820,7 @@ Diese strukturierte Repräsentation dient als Eingabe für die nachfolgende OCR-
 Die durchschnittliche Inferenzzeit pro Tile beträgt ca. 120 ms auf einer Standard-CPU (Intel Core i7 der 10. Generation). Für einen typischen A3-Gleisplan mit ca. 12-16 Tiles ergibt sich eine Gesamtverarbeitungszeit von ca. 15-20 Sekunden für die Objekterkennungsstufe. Diese CPU-basierte Inferenz wurde bewusst gewählt, um die Einsetzbarkeit der Software auf Standard-Workstations ohne dedizierte GPU zu gewährleisten, was die Verbreitung und Nutzung im Produktivumfeld erleichtert.
 
 \section{Orientierungsadaptive OCR-Pipeline}
-
+\label{sec:ocrpipeline}
 Die Texterkennung aus den detektierten Symbolen stellt eine zentrale Herausforderung dar, da die Textregionen beliebig im Gleisplan rotiert sein können. Dieses Kapitel beschreibt die implementierte OCR-Pipeline, die durch Multi-Engine-Kaskadierung, rotationsadaptive Strategien und klassenspezifische Bildvorverarbeitung eine robuste Texterkennung ermöglicht.
 
 \subsection{Multi-Engine Kaskadierung}
@@ -1368,7 +1369,7 @@ Nach der erfolgreichen Detektion von Symbolen durch YOLOv8-OBB und der Extraktio
 Die naive Anwendung rein distanzbasierter Proximity-Algorithmen -- bei denen einfach der nächstgelegene Text einem Symbol zugeordnet wird -- führt bei rotierten Symbolen zu systematischen Fehlzuordnungen. Ein Signal, das beispielsweise um 45° gedreht ist, besitzt eine eigene lokale Orientierung, und der zugehörige Text befindet sich typischerweise \enquote{unterhalb} des Signals in dessen lokaler Ausrichtung, nicht notwendigerweise in globalen Bildkoordinaten. Die Implementierung muss daher rotationsinvariante Algorithmen einsetzen, die geometrische Transformationen nutzen, um die semantische räumliche Beziehung zwischen Symbolen und Texten korrekt zu erfassen.
 
 \subsection{Rotationsinvariante Koordinatentransformation}
-
+\label{sec:Koordinatentransformation}
 \subsubsection{Problemstellung und mathematisches Modell}
 
 Die Herausforderung liegt darin, dass die von YOLO detektierten Symbole beliebige Rotationswinkel $\theta \in [0°, 360°)$ aufweisen können. Die Textpositionen werden in einem globalen kartesischen Koordinatensystem $(x_{\text{global}}, y_{\text{global}})$ angegeben, welches üblicherweise mit der Bildebene übereinstimmt. Für ein rotiertes Symbol ist jedoch die Definition von Richtungen wie \enquote{unterhalb}, \enquote{rechts von} oder \enquote{links von} in globalen Koordinaten nicht mehr sinnvoll.
@@ -1810,13 +1811,13 @@ Die implementierte Symbol-Text-Verknüpfung kombiniert mehrere komplementäre An
 Die Kombination dieser Techniken erreicht eine Linking-Genauigkeit von über 92\% auf den Testdaten (detaillierte Evaluierung in Kapitel 7), wobei die verbleibenden Fehler hauptsächlich auf ambige Fälle zurückzuführen sind, in denen mehrere Texte ähnliche Distanzen zum Symbol aufweisen.
 
 \section{Datenvalidierung und Qualitätssicherung}
-
+\label{sec:validierungundsicherung}
+\label{sec:datenvalidierung}
 Die Validierung extrahierter Daten stellt einen kritischen Schritt zur Sicherstellung der Datenqualität in der gesamten Verarbeitungspipeline dar. Während YOLO-basierte Objekterkennung und OCR-Engines bereits intrinsische Konfidenzwerte liefern, erfordert die Anwendung im Kontext von Gleisplanerkennung zusätzliche domänenspezifische Validierungen, die sowohl syntaktische als auch semantische Korrektheit überprüfen. Das implementierte System kombiniert regelbasierte Validierung mit intelligenten Korrekturvorschlägen, um sowohl offensichtliche Fehler automatisch zu beheben als auch komplexere Inkonsistenzen zur manuellen Prüfung zu kennzeichnen.
 
 \subsection{Validierungsarchitektur}
 
 \subsubsection{Grundstruktur des Validierungsframeworks}
-
 Die Validierungsarchitektur basiert auf einem modularen Framework, das die extrahierten Daten in tabellarischer Form entgegennimmt und eine strukturierte Fehleranalyse durchführt. Das zentrale Validierungsmodul analysiert dabei einen DataFrame, der alle Erkennungen aus der YOLO-Pipeline, die zugehörigen OCR-Texte sowie die durch das Linking-Modul hergestellten Verknüpfungen enthält. Die Ausgabe der Validierung besteht aus einer Liste von Validierungsproblemen, wobei jedes Problem durch mehrere Attribute charakterisiert wird.
 
 Ein Validierungsproblem wird durch folgende Eigenschaften beschrieben. Der Schweregrad klassifiziert das Problem in die Kategorien Fehler, Warnung oder Information, wobei Fehler kritische Inkonsistenzen darstellen, die zwingend einer Korrektur bedürfen, während Warnungen auf potenzielle Probleme hinweisen, die einer Überprüfung bedürfen. Die Kategorie beschreibt die Art des Problems, beispielsweise Formatfehler, Duplikate oder fehlende Daten. Das betroffene Feld identifiziert die spezifische Datenspalte, in der das Problem auftritt. Bei automatisch korrigierbaren Problemen wird zusätzlich ein Korrekturvorschlag mit dem empfohlenen neuen Wert bereitgestellt. Die Konfidenz des Korrekturvorschlags wird als normalisierter Wert im Intervall $[0, 1]$ angegeben, wobei höhere Werte eine größere Zuverlässigkeit der vorgeschlagenen Korrektur indizieren.
@@ -2169,7 +2170,7 @@ Das Validierungssystem kombiniert regelbasierte Prüfungen mit intelligenten Kor
 Neben der Kernfunktionalität der Extraktionspipeline (Objekterkennung, Texterkennung, Symbol-Text-Verknüpfung) wurden mehrere unterstützende Komponenten entwickelt, die für den praktischen Einsatz des Systems in realen Anwendungsszenarien erforderlich sind. Diese Komponenten adressieren die Anforderungen an Versionsverwaltung, Rückverfolgbarkeit und persistente Datenhaltung, welche für den operativen Einsatz in ingenieurwissenschaftlichen Workflows unerlässlich sind.
 
 \subsection{Versionsvergleich und Änderungsdetektion}
-
+\label{subsec:vergleichundänderung}
 Die systematische Identifikation und Dokumentation von Änderungen zwischen verschiedenen Versionen eines Gleisplans stellt eine zentrale Anforderung in der Eisenbahnplanung dar. Zur Realisierung dieser Funktionalität wurde ein Diff-Algorithmus implementiert, der auf der Generierung eindeutiger Identifikatoren und mengentheoretischen Operationen basiert.
 
 \subsubsection{Generierung eindeutiger Identifikatoren}
@@ -2641,7 +2642,7 @@ Die Datenbankinteraktion erfolgt über den PostgreSQL-Adapter \texttt{psycopg2} 
 Die Verwendung von Connection-Pooling über Context Manager optimiert die Performance bei häufigen Datenbankzugriffen während des Extraktionsprozesses und stellt automatisches Rollback bei Fehlern sicher.
 
 \section{Benutzeroberfläche}
-
+\label{sec:benutzeroberfläche}
 Die Benutzeroberfläche dient als interaktive Komponente zur Qualitätskontrolle und manuellen Nachbearbeitung der extrahierten Daten. Obwohl sie nicht zum wissenschaftlichen Kernbeitrag dieser Arbeit gehört, ist sie für die praktische Anwendbarkeit des Systems essentiell. Die Implementierung erfolgte mit einem etablierten GUI Framework für Desktop-Anwendungen und folgt bewährten Designprinzipien der Mensch-Computer-Interaktion.
 
 \subsection{Architektur und Designentscheidungen}

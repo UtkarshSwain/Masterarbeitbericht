@@ -58,7 +58,7 @@ Metadaten & \textbf{Positionsangaben}: Kilometrierung, Lagepunkte.
 \label{tab:symbol_categories}
 \end{table}
 
-Die detaillierte visuelle Darstellung dieser Symbole erfolgt in Abschnitt 4.1.
+Die detaillierte visuelle Darstellung dieser Symbole erfolgt in Tabelle \ref{tab:symbole}
 \section{Objekterkennung in Bildern}
 \label{sec:objekterkennung}
 
@@ -85,128 +85,14 @@ Die Anwendung von Machine Learning auf technische Zeichnungen ist ein aktives Fo
 
 Jamieson et al. \cite{Jamieson2024} liefern eine umfassende Übersicht über Deep-Learning-Methoden für Engineering-Diagramme und identifizieren als zentrale Herausforderungen die hohe Variabilität kundenspezifischer Symbolbibliotheken, den Mangel an annotierten Trainingsdaten sowie die Notwendigkeit rotationsinvarianter Detektionsverfahren. Für den bahntechnischen Bereich existieren bisher hauptsächlich proprietäre Lösungen einzelner Eisenbahnunternehmen ohne publizierte wissenschaftliche Evaluierung. Die vorliegende Arbeit adressiert diese Forschungslücke durch Entwicklung und Evaluation eines prototypischen Systems auf Basis moderner One-Stage-Detektoren.
 
-\subsection{Paradigmen der Objekterkennung}
-\label{subsec:paradigmen}
+\subsection{Entwicklung der Objekterkennung}
 
-Die historische Entwicklung der Objekterkennung lässt sich in drei methodische Hauptströmungen unterteilen, die sich hinsichtlich ihrer theoretischen Fundierung und praktischen Anwendbarkeit signifikant unterscheiden \cite{Zou2019_ObjectDetectionSurvey,Liu2020_DeepLearningDetectionSurvey}. Diese Evolution reflektiert den Übergang von expliziter Programmierung über datengetriebenes Lernen hin zu hierarchischer Merkmalsrepräsentation.
-
-\subsubsection{Regelbasierte Verfahren}
-
-Frühe Ansätze basierten auf der Anwendung manuell entwickelter Algorithmen. Template Matching schiebt ein Referenzmuster pixelweise über das Zielbild und quantifiziert die Ähnlichkeit mittels Korrelationsmetriken \cite{Brunelli2009}. Fortgeschrittenere Varianten wie SIFT (Scale-Invariant Feature Transform) oder SURF (Speeded Up Robust Features) extrahieren lokale Merkmale mit gewisser Robustheit gegenüber Skalierungs- und Beleuchtungsvariationen \cite{Lowe2004,Bay2008}.
-
-Die fundamentale Limitierung liegt in der mangelnden Generalisierungsfähigkeit. Da die Merkmalsdefinition a priori erfolgen muss, versagen diese Ansätze bei unvorhergesehenen Variationen. Für Gleispläne mit mehr als 13 Symbolklassen in beliebigen Rotationszuständen ist eine erschöpfende Enumeration aller Template-Varianten computationell nicht handhabbar. Ein Weichensymbol in 16 Rotationen bei 3 Maßstäben würde bereits 48 Templates erfordern; für 13 Klassen summiert sich dies auf über 600 Varianten. Zudem erfordern kundenspezifische Anpassungen der Symbolbibliothek eine manuelle Neudefinition der Templates.
-
-\subsubsection{Maschinelles Lernen mit konstruierten Merkmalen}
-
-Verfahren wie Support Vector Machines (SVM) \cite{Cortes1995_SVM} in Kombination mit Histogram of Oriented Gradients (HOG) Features \cite{Dalal2005} lernen Erkennungslogik aus Trainingsdaten. Der fundamentale Unterschied zu regelbasierten Ansätzen liegt in der Adaptivität: Das System lernt selbstständig relevante Merkmalskombinationen aus annotierten Beispielen. Dennoch verbleibt die Merkmalsextraktion (Feature Engineering) als manuelle Aufgabe. Ein Ingenieur muss entscheiden, welche Bildcharakteristika -- etwa Gradientenrichtungen, Farbhistogramme oder Texturstatistiken -- für die jeweilige Domäne relevant sind \cite{Lowe2004,Dalal2005}. Die Güte des Gesamtsystems ist direkt an die Qualität dieser handdefinierten Merkmalsrepräsentation gekoppelt. Bei technischen Zeichnungen mit ihrer Kombination aus geometrischer Präzision, variabler Linienstärke und dichtem Layout erreichen diese Verfahren schnell ihre Leistungsgrenzen.
-
-\subsubsection{Deep Learning und End-to-End-Lernen}
-
-Moderne Ansätze basieren auf Convolutional Neural Networks (CNNs), die hierarchische Repräsentationen direkt aus Rohdaten lernen \cite{LeCun1998_GradientBasedLearning,Krizhevsky2012_AlexNet}. Das fundamentale Designprinzip ist die automatische Merkmalsentdeckung: Anstelle expliziter Regeln oder vordefinierter Feature-Deskriptoren extrahiert das Netz Features selbstständig durch wiederholte Anwendung von Faltungsoperationen. 
-
-Die Funktionsweise basiert auf hierarchischer Merkmalskomposition. Die ersten Schichten eines CNN reagieren auf einfache visuelle Muster wie Linien in unterschiedlichen Orientierungen. Diese werden durch kleine Faltungsfilter (typischerweise 3×3 oder 5×5 Pixel) detektiert \cite{Zeiler2014_Visualizing}. Höhere Schichten kombinieren diese Basismuster zu komplexeren Strukturen: aus Linien werden Ecken und Kurven, aus diesen werden geometrische Formen, und schließlich emergieren symbolspezifische Muster wie die charakteristische T-Form einer Weiche oder die kreisförmige Struktur eines Signals. Das Netz lernt diese Hierarchie selbstständig, indem es während des Trainings annotierte Beispiele analysiert und seine internen Parameter (Filtergewichte) so anpasst, dass Vorhersagefehler minimiert werden \cite{LeCun1998_GradientBasedLearning}.
-
-Abbildung \ref{fig:cnn_feature_hierarchy} verdeutlicht diese progressive Abstraktion. Die erste Schicht detektiert lediglich Linienorientierungen mittels kleiner 3×3 Filter. Die zweite Schicht kombiniert diese Basismuster zu geometrischen Elementen wie Ecken, Kurven und Kreisen. In der dritten Schicht entstehen komplexere Formen wie Rechtecke, T-Formen und Pfeile. Schließlich emergieren in der finalen Schicht symbolspezifische Repräsentationen wie Weichen, Signale oder Gleisabschnitte. Diese zunehmende Komplexität der Features wird durch wiederholte Faltungsoperationen erreicht, wobei jede Schicht auf den Ausgaben der vorherigen aufbaut.
-
-\begin{figure}[H]
-\centering
-\begin{tikzpicture}[
-    node distance=0.8cm and 1.2cm,
-    % STYLES
-    layer/.style={
-        rectangle, draw, thick, 
-        minimum width=2.0cm, minimum height=4.0cm, 
-        align=center
-    },
-    feature/.style={
-        rectangle, draw, 
-        minimum width=1.6cm, minimum height=0.6cm, 
-        align=center, font=\tiny,
-        fill=white!90!gray, 
-        drop shadow 
-    },
-    layer_title/.style={font=\bfseries\scriptsize, align=center},
-    layer_sub/.style={font=\tiny, align=center, color=black!70},
-    arrow/.style={->, >=stealth, thick}
-]
-
-    % ==========================
-    % 1. INPUT (Kleiner als die anderen)
-    % ==========================
-    \node[layer, fill=blue!15, minimum height=3cm] (input) {};
-    \node[above=0.2cm of input.center] (in_img) {
-        \tikz{\draw[thick, fill=white] (0,0) rectangle (0.8,0.8); \draw[thick, red] (0.4,0.4) circle (0.2);}
-    };
-    \node[above=0.1cm of in_img, font=\small] {Eingabe};
-    \node[below=0.1cm of in_img, font=\tiny, align=center] {Gleisplan\\1024$\times$1024};
-
-    % ==========================
-    % 2. LAYER 1
-    % ==========================
-    \node[layer, fill=yellow!20, right=of input] (layer1) {};
-    \node[layer_title, below=0.1cm of layer1.north] (t1) {Schicht 1};
-    \node[layer_sub, below=0.0cm of t1] (st1) {Einfache\\Muster};
-    
-    \node[feature, below=0.2cm of st1] (f1) {Horizontal};
-    \node[feature, below=0.1cm of f1] (f2) {Vertikal};
-    \node[feature, below=0.1cm of f2] (f3) {Diagonal};
-
-    % ==========================
-    % 3. LAYER 2
-    % ==========================
-    \node[layer, fill=orange!20, right=of layer1] (layer2) {};
-    \node[layer_title, below=0.1cm of layer2.north] (t2) {Schicht 2};
-    \node[layer_sub, below=0.0cm of t2] (st2) {Geometrie};
-    
-    \node[feature, below=0.2cm of st2] (f4) {Ecken};
-    \node[feature, below=0.1cm of f4] (f5) {Kurven};
-    \node[feature, below=0.1cm of f5] (f6) {Kreise};
-
-    % ==========================
-    % 4. LAYER 3
-    % ==========================
-    \node[layer, fill=red!20, right=of layer2] (layer3) {};
-    \node[layer_title, below=0.1cm of layer3.north] (t3) {Schicht 3};
-    \node[layer_sub, below=0.0cm of t3] (st3) {Formen};
-    
-    \node[feature, below=0.2cm of st3] (f7) {Rechteck};
-    \node[feature, below=0.1cm of f7] (f8) {T-Form};
-    \node[feature, below=0.1cm of f8] (f9) {Pfeil};
-
-    % ==========================
-    % 5. OUTPUT
-    % ==========================
-    \node[layer, fill=green!20, right=of layer3] (output) {};
-    \node[layer_title, below=0.1cm of output.north] (t4) {Ausgabe};
-    \node[layer_sub, below=0.0cm of t4] (st4) {Symbole};
-    
-    \node[feature, below=0.2cm of st4] (s1) {Weiche};
-    \node[feature, below=0.1cm of s1] (s2) {Signal};
-    \node[feature, below=0.1cm of s2] (s3) {Gleis};
-
-    % ==========================
-    % ARROWS & LABELS
-    % ==========================
-    \draw[arrow] (input) -- (layer1);
-    \draw[arrow] (layer1) -- (layer2);
-    \draw[arrow] (layer2) -- (layer3);
-    \draw[arrow] (layer3) -- (output);
-
-    \node[above=0.1cm of layer1, font=\scriptsize] {3$\times$3 Filter};
-    \node[above=0.1cm of layer2, font=\scriptsize] {Kombination};
-    \node[above=0.1cm of layer3, font=\scriptsize] {Abstraktion};
-
-    % --- HIER IST DER FIX ---
-    % Wir nutzen (input |- output.south): X von Input, Y von Output.south
-    \draw[->, >=stealth, very thick, blue!60!black] 
-        ([yshift=-0.5cm] input |- output.south) -- ([yshift=-0.5cm] output.south)
-        node[midway, below, font=\small] {Zunehmende Komplexität der Features};
-
-\end{tikzpicture}
-\caption{Hierarchische Merkmalsextraktion in Convolutional Neural Networks.}
-\label{fig:cnn_feature_hierarchy_straight}
-\end{figure}
-Diese End-to-End-Lernfähigkeit ermöglicht eine Robustheit, die mit konventionellen Verfahren nicht erreichbar ist. Für technische Zeichnungen erweisen sich Deep-Learning-Architekturen als überlegen, da sie sowohl exakte Lokalisierung als auch semantische Klassifikation integriert durchführen können, ohne dass ein Ingenieur domänenspezifische Features manuell definieren muss \cite{Girshick2014_RCNN,Ren2015_FasterRCNN}.
+Die Objekterkennung hat sich von regelbasierten Verfahren über klassisches 
+maschinelles Lernen zu Deep-Learning-Ansätzen entwickelt 
+\cite{Zou2019_ObjectDetectionSurvey}. Für die vorliegende Arbeit werden 
+ausschließlich CNN-basierte Detektoren eingesetzt, da diese bei technischen 
+Zeichnungen signifikant höhere Erkennungsraten erreichen als klassische 
+Verfahren (vgl. Kapitel~\ref{chap:konzeption}, Tabelle~\ref{tab:Alternative_Detection}).
 
 \subsection{Architekturen für Deep-Learning-basierte Objekterkennung}
 \label{subsec:dl_architekturen}
@@ -217,12 +103,11 @@ Die Implementierung von CNN-basierten Objektdetektoren lässt sich in zwei Archi
 
 Zweistufige Detektoren wie Faster R-CNN \cite{Ren2015_FasterRCNN} separieren den Erkennungsprozess konzeptionell in zwei aufeinanderfolgende Phasen. Zunächst generiert ein Region Proposal Network (RPN) zwischen 100 und 300 Kandidatenregionen, die potenziell Objekte enthalten könnten. Diese Regionen werden anschließend durch ein separates Klassifikationsnetzwerk evaluiert, das sowohl die Objektklasse bestimmt als auch die Bounding-Box-Koordinaten verfeinert. Der Vorteil liegt in hoher Detektionspräzision, insbesondere bei kleinen oder teilweise verdeckten Objekten. Die sequenzielle Verarbeitung hunderter Kandidatenregionen führt jedoch zu Bildraten von lediglich 5 bis 10 Bildern pro Sekunde (Frames Per Second, FPS) auf moderner GPU-Hardware (Graphics Processing Unit).
 
-Für die Gleisplananalyse erweist sich diese Geschwindigkeit als kritisch. Ein durchschnittlicher Plan umfasst nach der Kachelungsstrategie (siehe Abschnitt \ref{subsec:tiling_strategie}) zwischen 150 und 300 Bildausschnitte. Während YOLO-Modelle typischerweise mit Eingangsgrößen von 640×640 oder 1024×1024 Pixeln arbeiten, werden für die Gleisplananalyse aufgrund der sehr kleinen Symbolgrößen Kacheln von 2048×2048 Pixeln verwendet (Details zur Kachelungsstrategie in Abschnitt \ref{subsec:tiling_strategie}). Bei einer Verarbeitungszeit von 100 bis 200 Millisekunden pro Kachel würde die Gesamtanalyse zwischen 15 Sekunden und 4 Minuten dauern. Dies widerspricht der in Kapitel \ref{chap:anforderungen} definierten Anforderung einer interaktiven Benutzeroberfläche, die Analyseergebnisse innerhalb von maximal 10 Sekunden präsentieren soll.
+Für die Gleisplananalyse erweist sich diese Geschwindigkeit als kritisch. Ein durchschnittlicher Plan umfasst nach der Kachelungsstrategie (siehe Abschnitt \ref{subsubsec:tiling_strategie}) zwischen 150 und 300 Bildausschnitte. Während YOLO-Modelle typischerweise mit Eingangsgrößen von 640×640 oder 1024×1024 Pixeln arbeiten, werden für die Gleisplananalyse aufgrund der sehr kleinen Symbolgrößen Kacheln von 2048×2048 Pixeln verwendet (Details zur Kachelungsstrategie in Abschnitt \ref{subsubsec:tiling_strategie}). Bei einer Verarbeitungszeit von 100 bis 200 Millisekunden pro Kachel würde die Gesamtanalyse zwischen 15 Sekunden und 4 Minuten dauern. 
 
 Einstufige Detektoren wie YOLO (You Only Look Once) \cite{redmon2016lookonceunifiedrealtime} adressieren diese Geschwindigkeitsproblematik durch eine fundamental andere Strategie. YOLO unterteilt das Eingabebild in ein regelmäßiges Raster von Zellen (beispielsweise 13×13 oder 26×26 Zellen bei kleineren Eingabegrößen, bzw. entsprechend größere Raster bei höheren Auflösungen). Für jede Zelle sagt das Netz in einem einzigen Vorwärtsdurchlauf direkt mehrere Aspekte voraus: Liegt in dieser Zelle ein Objekt? Wenn ja, welcher Objektklasse gehört es an? Wie hoch ist die Konfidenz dieser Vorhersage? Und wo genau innerhalb der Zelle befindet sich das Objekt? Diese parallele Verarbeitung aller Bildbereiche ermöglicht Inferenzgeschwindigkeiten von 40 bis über 100 Bildern pro Sekunde \cite{yolov8_ultralytics}. Moderne Varianten wie YOLOv8 erreichen durch architektonische Verbesserungen -- insbesondere Feature Pyramid Networks (FPN) \cite{Lin2017_FPN} für Multi-Scale-Detektion und verbesserte Loss-Funktionen -- vergleichbare oder sogar überlegene Präzision gegenüber zweistufigen Detektoren bei Beibehaltung der Echtzeitfähigkeit.
 
-Die Abwägung zwischen beiden Paradigmen muss im Kontext der Anwendungsanforderungen erfolgen. Für technische Gleispläne mit gut sichtbaren, scharf gerenderten Symbolen rechtfertigt die hohe Verarbeitungsgeschwindigkeit marginale Genauigkeitseinbußen. Einstufige Architekturen können bei technischen Zeichnungen vergleichbare 
-Präzision erreichen (die konkrete Evaluation erfolgt in Kapitel~\ref{chap:evaluation}).
+Die Abwägung zwischen beiden Paradigmen muss im Kontext der Anwendungsanforderungen erfolgen. Für technische Gleispläne mit gut sichtbaren, scharf gerenderten Symbolen rechtfertigt die hohe Verarbeitungsgeschwindigkeit marginale Genauigkeitseinbußen. Einstufige Architekturen können bei technischen Zeichnungen vergleichbare Präzision erreichen (die konkrete Evaluation erfolgt in Kapitel~\ref{chap:evaluation}).
 
 Abbildung \ref{fig:two_stage_vs_one_stage} illustriert den fundamentalen Unterschied zwischen beiden Architekturparadigmen. Faster R-CNN generiert zunächst mehrere hundert Kandidatenregionen mittels RPN, die anschließend sequenziell klassifiziert werden müssen. YOLO hingegen sagt in einem einzigen Vorwärtsdurchlauf direkt die Bounding Boxes und Klassen voraus, was zu einer Beschleunigung um den Faktor 5 führt. Für die Analyse eines typischen Gleisplans mit 200 gekachelten Bildausschnitten (je 2048×2048 Pixel) reduziert sich die Gesamtverarbeitungszeit von etwa 4 Minuten (Faster R-CNN) auf unter 5 Sekunden (YOLO).
 
@@ -268,170 +153,11 @@ Abbildung \ref{fig:two_stage_vs_one_stage} illustriert den fundamentalen Untersc
 \label{fig:two_stage_vs_one_stage}
 \end{figure}
 
-\subsection{Training und Optimierung}
-\label{subsec:training_optimization}
+\subsection{Modelltraining}
 
-Die Leistungsfähigkeit neuronaler Netze hängt kritisch vom Trainingsprozess ab, durch den die internen Parameter (Gewichte) des Netzes aus annotierten Beispieldaten gelernt werden. Dieser Abschnitt erläutert die fundamentalen Mechanismen des Trainings und deren Implikationen für die Gleisplanerkennung.
-
-\subsubsection{Supervised Learning und Loss-Funktionen}
-
-Das Training erfolgt im Supervised-Learning-Paradigma \cite{Goodfellow2016_DeepLearning}: Dem Netz werden Eingabebilder zusammen mit korrekten Annotationen (Ground Truth) präsentiert. Für Objektdetektion umfassen diese Annotationen sowohl die Bounding-Box-Koordinaten als auch die Klassenbezeichnung jedes Objekts. Das Netz generiert Vorhersagen, die mit der Ground Truth verglichen werden. Die Diskrepanz wird durch eine Loss-Funktion quantifiziert, die typischerweise mehrere Komponenten kombiniert:
-
-Der Klassifikations-Loss misst, wie gut die vorhergesagte Objektklasse mit der tatsächlichen Klasse übereinstimmt. Üblich ist die Cross-Entropy-Loss \cite{Goodfellow2016_DeepLearning}, die hohe Konfidenz für korrekte Klassen belohnt und niedrige Konfidenz für falsche Klassen fordert. Die Lokalisierungs-Loss quantifiziert die Abweichung zwischen vorhergesagter und tatsächlicher Bounding Box, häufig implementiert als Smooth L1-Loss über die Box-Koordinaten \cite{Ren2015_FasterRCNN}. Moderne Detektoren wie YOLOv8 verwenden zusätzlich IoU-basierte Loss-Komponenten \cite{Rezatofighi2019_GIoU}, die direkt den Überlappungsgrad optimieren anstatt nur Koordinatenabweichungen zu minimieren.
-
-Der Trainingsprozess iteriert über den Datensatz in kleinen Batches (typischerweise 8 bis 32 Bilder). Für jedes Batch wird der Loss berechnet und mittels Backpropagation \cite{Rumelhart1986_Backpropagation} -- einem effizienten Algorithmus zur Berechnung von Gradienten -- ermittelt, wie jedes Gewicht im Netz angepasst werden muss, um den Loss zu reduzieren. Ein Optimierer wie SGD (Stochastic Gradient Descent) \cite{Robbins1951_SGD} oder Adam \cite{Kingma2015_Adam} führt diese Gewichtsanpassungen durch. Die Lernrate steuert die Schrittgröße dieser Anpassungen; typische Werte liegen zwischen 0.001 und 0.01. Das Training erstreckt sich über mehrere hundert Epochen, wobei eine Epoche einen vollständigen Durchlauf durch alle Trainingsdaten bezeichnet.
-
-Abbildung \ref{fig:training_loop} visualisiert diesen iterativen Prozess. Ein Batch von Trainingsbildern wird zunächst durch das Netz propagiert (Forward Pass), wobei für jedes Bild Vorhersagen generiert werden. Diese Vorhersagen werden mit den korrekten Annotationen verglichen, und die Diskrepanz wird als Loss quantifiziert. Mittels Backpropagation werden anschließend die Gradienten für alle Gewichte berechnet. Der Optimizer nutzt diese Gradienten, um die Gewichte schrittweise anzupassen. Dieser Zyklus wiederholt sich für jeden Batch im Datensatz. Nach einem vollständigen Durchlauf durch alle Trainingsdaten (eine Epoche) beginnt die nächste Epoche. Das Training konvergiert typischerweise nach mehreren hundert Epochen, wobei der Loss kontinuierlich abnimmt.
-
-% ABBILDUNG 3.4: Training Loop
-\begin{figure}[H]
-\centering
-\begin{tikzpicture}[
-    node distance=1.2cm,
-    box/.style={rectangle, draw, thick, minimum width=3cm, minimum height=1cm, align=center, font=\small},
-    roundbox/.style={rectangle, rounded corners, draw, thick, minimum width=3cm, minimum height=1cm, align=center, font=\small},
-    arrow/.style={->, >=stealth, thick}
-]
-    % Training Data
-    \node[box, fill=blue!15] (data) {Trainingsdaten\\Bilder + Annotationen};
-    
-    % Forward Pass
-    \node[box, fill=yellow!20, below=of data] (forward) {Forward Pass\\Vorhersagen generieren};
-    
-    % Loss Calculation
-    \node[box, fill=orange!20, below=of forward] (loss) {Loss-Berechnung\\Fehler quantifizieren};
-    
-    % Backpropagation
-    \node[roundbox, fill=red!20, below=of loss] (backprop) {Backpropagation\\Gradienten berechnen};
-    
-    % Weight Update
-    \node[roundbox, fill=green!20, below=of backprop] (update) {Gewichte anpassen\\Optimizer (SGD/Adam)};
-    
-    % Arrows
-    \draw[arrow] (data) -- (forward);
-    \draw[arrow] (forward) -- (loss);
-    \draw[arrow] (loss) -- (backprop);
-    \draw[arrow] (backprop) -- (update);
-    
-    % Loop back
-    \draw[arrow, dashed, thick, blue!60!black] (update.east) -- ++(1.5,0) |- (forward.east)
-        node[midway, right, align=left, font=\scriptsize] {Nächster\\Batch};
-    
-    % Side annotations
-    \node[left=0.8cm of forward, align=right, font=\scriptsize, text width=2.5cm] 
-        {CNN generiert\\Bounding Boxes\\+ Klassen};
-    \node[left=0.8cm of loss, align=right, font=\scriptsize, text width=2.5cm] 
-        {Vergleich mit\\Ground Truth\\$\mathcal{L} = \mathcal{L}_{\text{cls}} + \mathcal{L}_{\text{loc}}$};
-    \node[left=0.8cm of backprop, align=right, font=\scriptsize, text width=2.5cm] 
-        {$\frac{\partial \mathcal{L}}{\partial w_i}$\\für alle Gewichte};
-    \node[left=0.8cm of update, align=right, font=\scriptsize, text width=2.5cm] 
-        {$w_i \leftarrow w_i - \eta \frac{\partial \mathcal{L}}{\partial w_i}$};
-    
-    % Epoch indicator
-    \node[below=1.5cm of update, font=\small, align=center] 
-        {Wiederholung über mehrere hundert Epochen\\bis Konvergenz};
-\end{tikzpicture}
-\caption{Trainingszyklus eines CNN-basierten Objektdetektors.}
-\label{fig:training_loop}
-\end{figure}
-
-\subsubsection{Data Augmentation und Generalisierung}
-
-Eine zentrale Herausforderung beim Training neuronaler Netze ist Overfitting \cite{Goodfellow2016_DeepLearning}: Das Netz memoriert die Trainingsbeispiele anstatt generalisierbare Muster zu lernen. Datenerweiterung (Data Augmentation) \cite{dataugmentation} adressiert dieses Problem durch künstliche Erhöhung der Datensatzvielfalt. Während des Trainings werden Bilder on-the-fly transformiert durch Operationen wie horizontales Spiegeln, Rotation, Skalierung, Helligkeitsanpassung oder Hinzufügen von Rauschen. Für Gleispläne ist insbesondere Rotation essenziell, da Symbole in beliebigen Orientierungen auftreten können. Mosaic Augmentation \cite{Bochkovskiy2020_YOLOv4}, eine Technik, die vier Trainingsbilder zu einem zusammenfügt, erhöht zusätzlich die Robustheit gegenüber variablen Objektdichten.
-
-Abbildung \ref{fig:data_augmentation} zeigt typische Augmentation-Techniken im Überblick. Ein Originalbild wird während des Trainings zufällig transformiert. Rotation um ±30° simuliert die beliebige Orientierung von Symbolen in Gleisplänen. Horizontale Spiegelung verdoppelt effektiv die Datensatzgröße ohne zusätzliche Annotation. Skalierung zwischen 0.8× und 1.2× erhöht die Robustheit gegenüber variierenden Symbolgrößen. Helligkeitsanpassung um ±20\% kompensiert unterschiedliche Scan- oder Digitalisierungsqualitäten. Mosaic Augmentation kombiniert vier Trainingsbilder zu einem einzigen Bild und erhöht die Exposition gegenüber hohen Objektdichten -- besonders relevant für Gleispläne mit bis zu 100 Symbolen pro Bildausschnitt. Diese Transformationen werden on-the-fly während des Trainings angewendet, sodass das Netz in jeder Epoche leicht unterschiedliche Versionen derselben Trainingsbilder sieht.
-
-\begin{figure}[H]
-\centering
-\begin{tikzpicture}[
-    node distance=0.8cm and 0.4cm,
-    imgbox/.style={
-        rectangle, 
-        draw, 
-        thick, 
-        minimum width=3.2cm, 
-        minimum height=2.8cm, 
-        align=center, 
-        font=\scriptsize
-    },
-    % HIER IST DIE ÄNDERUNG: \boldmath hinzugefügt
-    label/.style={font=\scriptsize\bfseries\boldmath}
-]
-
-    % --- REIHE 1 ---
-
-    % 1. Original
-    \node[imgbox, fill=blue!10] (orig) {Original\\[0.2cm]
-    \begin{tikzpicture}[scale=0.5]
-        \draw[very thick, fill=white] (0,0) rectangle (2,1);
-        \draw[very thick, red] (0.5,0.5) circle (0.3);
-        \draw[thick] (1.5, 0.2) -- (1.5, 0.8);
-    \end{tikzpicture}};
-    \node[label, below=0.1cm of orig] (l_orig) {Original};
-    
-    % 2. Rotation
-    \node[imgbox, fill=yellow!15, right=of orig] (rot) {Rotation\\[0.2cm]
-    \begin{tikzpicture}[scale=0.5, rotate=30]
-        \draw[very thick, fill=white] (0,0) rectangle (2,1);
-        \draw[very thick, red] (0.5,0.5) circle (0.3);
-        \draw[thick] (1.5, 0.2) -- (1.5, 0.8);
-    \end{tikzpicture}};
-    % Jetzt fett durch \boldmath im Style
-    \node[label, below=0.1cm of rot] (l_rot) {$\pm 30^\circ$};
-    
-    % 3. Spiegelung
-    \node[imgbox, fill=green!15, right=of rot] (flip) {Spiegelung\\[0.2cm]
-    \begin{tikzpicture}[scale=0.5]
-        \draw[very thick, fill=white] (0,0) rectangle (2,1);
-        \draw[very thick, red] (1.5,0.5) circle (0.3);
-        \draw[thick] (0.5, 0.2) -- (0.5, 0.8);
-    \end{tikzpicture}};
-    \node[label, below=0.1cm of flip] (l_flip) {Horizontal};
-    
-    
-    % --- REIHE 2 ---
-    
-    % 4. Skalierung
-    \node[imgbox, fill=orange!15, below=of l_orig] (scale) {Skalierung\\[0.2cm]
-    \begin{tikzpicture}[scale=0.3]
-        \draw[very thick, fill=white] (0,0) rectangle (2,1);
-        \draw[very thick, red] (0.5,0.5) circle (0.3);
-        \draw[thick] (1.5, 0.2) -- (1.5, 0.8);
-    \end{tikzpicture}};
-    \node[label, below=0.1cm of scale] (l_scale) {0.5--1.5$\times$};
-    
-    % 5. Helligkeit
-    \node[imgbox, fill=purple!15, right=of scale] (bright) {Helligkeit\\[0.2cm]
-    \begin{tikzpicture}[scale=0.5]
-        \draw[very thick, black!60, fill=gray!40] (0,0) rectangle (2,1);
-        \draw[very thick, red!60] (0.5,0.5) circle (0.3);
-        \draw[thick, black!60] (1.5, 0.2) -- (1.5, 0.8);
-    \end{tikzpicture}};
-    % Jetzt fett durch \boldmath im Style
-    \node[label, below=0.1cm of bright] (l_bright) {$\pm 20\%$};
-    
-    % 6. Mosaic
-    \node[imgbox, fill=red!15, right=of bright] (mosaic) {Mosaic\\[0.2cm]
-    \begin{tikzpicture}[scale=0.22]
-        \foreach \x/\y in {0/0, 2.2/0, 0/2.2, 2.2/2.2} {
-            \draw[fill=white] (\x,\y) rectangle ++(2,1);
-            \draw[red] (\x+0.5,\y+0.5) circle (0.3);
-        }
-    \end{tikzpicture}};
-    \node[label, below=0.1cm of mosaic] (l_mosaic) {4 Bilder};
-    
-    
-    % --- PFEIL ---
-    \draw[->, >=stealth, very thick, blue!60!black] 
-        ([yshift=-0.3cm]l_scale.south west) -- ([yshift=-0.3cm]l_mosaic.south east)
-        node[midway, below, font=\small] {Data Augmentation während Training};
-
-\end{tikzpicture}
-\caption{Data Augmentation-Strategien: Vergrößerte Darstellung mit fetten Beschriftungen.}
-\label{fig:data_augmentation_bold}
-\end{figure}
-
-Transfer Learning \cite{transferlearning} ist eine weitere Strategie zur Verbesserung der Generalisierung. Anstatt ein Netz von Grund auf zu trainieren, wird ein auf einem großen Datensatz (etwa ImageNet \cite{Deng2009_ImageNet} oder COCO \cite{Lin2014_COCO}) vortrainiertes Modell als Startpunkt verwendet. Die unteren Schichten, die generische Features wie Kanten und Texturen gelernt haben, werden beibehalten; lediglich die oberen Schichten werden auf die spezifische Domäne (Gleispläne) angepasst. Dies reduziert den Bedarf an domänenspezifischen Trainingsdaten signifikant \cite{NIPS2014_532a2f85}. Für die in Kapitel \ref{chap:implementation} beschriebene Implementierung wird YOLOv8 mit auf COCO vortrainierten Gewichten initialisiert und anschließend auf bahntechnischen Daten fine-tuned.
+Das Training erfolgt supervised mit annotierten Bounding Boxes. Die konkreten 
+Trainingsparameter und Augmentationsstrategien werden in 
+Kapitel~\ref{chap:implementierung}, Abschnitt \ref{subsec:Modelltraining} dokumentiert.
 
 \subsection{Evaluationsmetriken}
 \label{subsec:evaluationsmetriken}
@@ -493,7 +219,7 @@ Basierend auf der IoU-Schwelle werden Detektionen klassifiziert: True Positives 
 
 Die Precision gibt an, welcher Anteil der vom Detektor gemeldeten Objekte tatsächlich korrekt ist. Ein hoher Precision-Wert bedeutet wenige Fehlalarme. Der Recall misst, welcher Anteil der im Bild tatsächlich vorhandenen Objekte vom Detektor gefunden wurde. Ein hoher Recall-Wert bedeutet, dass wenige Objekte übersehen werden. Beide Metriken stehen typischerweise in einem Trade-off: Durch Erhöhung der Konfidenzschwelle kann Precision verbessert werden, jedoch auf Kosten des Recalls.
 
-Für Gleisplanerkennung ist insbesondere der Recall kritisch. Ein übersehenes Signal oder eine fehlende Weichenkennzeichnung kann zu gravierenden Fehlern in der nachfolgenden Planung führen -- etwa falsche Berechnung von Gleiskapazitäten oder Sicherheitsrisiken. Falschdetektionen (niedrige Precision) sind weniger kritisch, da sie in der Validierungsphase (siehe Abschnitt \ref{sec:validation}) durch regelbasierte Filter und Plausibilitätsprüfungen eliminiert werden können. Ein falsch detektiertes Signal an einer unmöglichen Position (etwa mitten auf einem Gleis ohne Haltemöglichkeit) wird durch die semantische Validierung verworfen.
+Für Gleisplanerkennung ist insbesondere der Recall kritisch. Ein übersehenes Signal oder eine fehlende Weichenkennzeichnung kann zu gravierenden Fehlern in der nachfolgenden Planung führen -- etwa falsche Berechnung von Gleiskapazitäten oder Sicherheitsrisiken. Falschdetektionen (niedrige Precision) sind weniger kritisch, da sie in der Validierungsphase (siehe Abschnitt \ref{sec:datenvalidierung}) durch regelbasierte Filter und Plausibilitätsprüfungen eliminiert werden können. Ein falsch detektiertes Signal an einer unmöglichen Position (etwa mitten auf einem Gleis ohne Haltemöglichkeit) wird durch die semantische Validierung verworfen.
 
 Die Mean Average Precision (mAP) \cite{Everingham2010_PascalVOC,Lin2014_COCO} aggregiert die Erkennungsgüte über alle Objektklassen und verschiedene Konfidenzschwellen. Für jede Klasse wird zunächst die Average Precision (AP) als Fläche unter der Precision-Recall-Kurve berechnet. Diese Kurve entsteht, indem die Konfidenzschwelle variiert wird: Bei niedriger Schwelle werden viele Objekte detektiert (hoher Recall, niedrige Precision), bei hoher Schwelle nur sehr sichere Detektionen (niedriger Recall, hohe Precision). Die mAP ist der Mittelwert über alle Klassen:
 
@@ -505,8 +231,9 @@ wobei $N$ die Anzahl der Objektklassen bezeichnet. Üblich ist die Angabe von mA
 
 Die in diesem Abschnitt dargestellten Verfahren -- von zweistufigen Detektoren wie Faster R-CNN bis zu einstufigen Architekturen wie YOLO -- verwenden achsenparallele Begrenzungsrahmen (Axis-Aligned Bounding Boxes, AABB). Diese Boxen sind durch vier Parameter definiert und ihre Kanten verlaufen stets horizontal und vertikal zum Bildrand. Für viele Anwendungen wie Fußgängererkennung oder Fahrzeugdetektion, bei denen Objekte typischerweise aufrechte oder horizontale Orientierung aufweisen, ist dies ausreichend. Technische Zeichnungen mit beliebig rotierten Symbolen und Textannotationen stellen jedoch besondere Anforderungen, die achsenparallele Boxen nur unzureichend erfüllen. Abschnitt \ref{sec:obb} führt daher orientierte Begrenzungsrahmen (Oriented Bounding Boxes, OBB) ein, die durch einen zusätzlichen Rotationsparameter präzisere Lokalisierung rotierter Objekte ermöglichen.
 \section{Oriented Object Detection für rotierte Objekte}
+\label{sec:obb}
 
-Die in Abschnitt 3.2 vorgestellten objekterkennenden Modelle basieren überwiegend auf achsenparallelen Bounding Boxes (Axis-Aligned Bounding Boxes, AABB)\cite{redmon2016lookonceunifiedrealtime}. Bei der Detektion rotierter Objekte, wie sie in technischen Zeichnungen und Gleisplänen vorliegen, stoßen AABB-basierte Ansätze jedoch an fundamentale Grenzen. Oriented Bounding Boxes (OBB) bieten hier eine geometrisch präzisere Alternative, indem sie zusätzlich zum Zentrum und den Abmessungen auch den Rotationswinkel des Objekts modellieren.
+Die in Abschnitt \ref{sec:objekterkennung} vorgestellten objekterkennenden Modelle basieren überwiegend auf achsenparallelen Bounding Boxes (Axis-Aligned Bounding Boxes, AABB)\cite{redmon2016lookonceunifiedrealtime}. Bei der Detektion rotierter Objekte, wie sie in technischen Zeichnungen und Gleisplänen vorliegen, stoßen AABB-basierte Ansätze jedoch an fundamentale Grenzen. Oriented Bounding Boxes (OBB) bieten hier eine geometrisch präzisere Alternative, indem sie zusätzlich zum Zentrum und den Abmessungen auch den Rotationswinkel des Objekts modellieren.
 
 \subsection{Limitierungen achsenparalleler Bounding Boxes}
 
@@ -1552,13 +1279,13 @@ Matrix $\mathbf{H}$ wird aus den vier korrespondierenden Punktpaaren
 
 Die Entscheidung zwischen beiden Methoden basiert auf dem 
 \textit{normalisierten} Winkel $\theta_{\text{norm}}$, der durch die in 
-Abschnitt \ref{subsec:obb} beschriebene Normalisierung aus dem Rohwinkel 
+Abschnitt \ref{subsubsec:winkelnormalisierung} beschriebene Normalisierung aus dem Rohwinkel 
 gewonnen wird. Der Schwellenwert von $15^\circ$ wurde empirisch bestimmt und 
 bietet einen guten Kompromiss zwischen Recheneffizienz (affine Transformation) und geometrischer Genauigkeit (perspektivische Transformation). Bei größeren Abweichungen führt die affine Rotation zu sichtbaren Verzerrungen an den Texträndern, während kleinere Winkel durch die Multi-Rotations-Inferenz (0°, 90°, 180°, 270°) ausreichend abgedeckt werden.
 \subsection{Relevanz für die Gleisplananalyse}
 \label{subsec:ocr_relevanz}
 
-Die beschriebenen OCR-Konzepte bilden die theoretische Grundlage für die in Kapitel \ref{chap:implementation} (Abschnitt 6.3) beschriebene Implementierung. Die konkrete Umsetzung kombiniert:
+Die beschriebenen OCR-Konzepte bilden die theoretische Grundlage für die in Kapitel \ref{chap:implementierung} (Abschnitt \ref{sec:ocrpipeline}) beschriebene Implementierung. Die konkrete Umsetzung kombiniert:
 
 \begin{itemize}
     \item \textbf{Multi-Engine-Kaskadierung}: PaddleOCR als primäre Engine 
@@ -1628,7 +1355,7 @@ Dieses psychologische Prinzip wird in der Dokumentenanalyse algorithmisch umgese
 
 \subsection{Analogie zur Stücklistenzuordnung}
 
-Für Ingenieure des Maschinenbaus ist das Konzept aus der Arbeit mit technischen Zeichnungen vertraut. Bei einer Explosionsdarstellung mit Positionsnummern ist die Zuordnung zwischen Bauteil und Nummer intuitiv klar: Die Nummer gehört zu dem Bauteil, auf das der Hinweispfeil zeigt zu dem räumlich nächsten Element. Bei einer Explosionsdarstellung mit Positionsnummern ist die Zuordnung zwischen Bauteil und Nummer intuitiv klar: Die Nummer gehört zu dem Bauteil, auf das der Hinweispfeil zeigt zu dem räumlich nächsten Element (Abbildung~\ref{fig:parts_list_analogy}). Dieselbe Logik liegt der automatischen Symbol-Text-Verknüpfung zugrunde.
+Für Ingenieure des Maschinenbaus ist das Konzept aus der Arbeit mit technischen Zeichnungen vertraut. Bei einer Explosionsdarstellung mit Positionsnummern ist die Zuordnung zwischen Bauteil und Nummer intuitiv klar: Die Nummer gehört zu dem Bauteil, auf das der Hinweispfeil zeigt oder das sich in räumlicher Nähe befindet (vgl. Abbildung~\ref{fig:parts_list_analogy}). Dieselbe Logik liegt der automatischen Symbol-Text-Verknüpfung zugrunde.
 
 \begin{figure}[H]
 \centering
@@ -1824,7 +1551,7 @@ Dieses Konzept ist Ingenieuren aus verschiedenen Bereichen vertraut:
 
 
 Wie in Abbildung~\ref{fig:local_coordinates_clear} dargestellt, werden durch die Transformation ins lokale System Richtungsbeziehungen wieder eindeutig: Der Begriff \enquote{oberhalb} bezieht sich nun auf die positive $y_{\text{lokal}}$-Achse, unabhängig von der globalen Orientierung des Symbols.
-Die mathematische Umsetzung dieser Transformation, eine Rotation des Koordinatensystems um den Winkel des Symbols, wird in Kapitel~\ref{chap:implementierung}, Abschnitt 6.4.1 detailliert beschrieben.
+Die mathematische Umsetzung dieser Transformation, eine Rotation des Koordinatensystems um den Winkel des Symbols, wird in Kapitel~\ref{chap:implementierung}, Abschnitt \ref{sec:Koordinatentransformation} detailliert beschrieben.
 
 \subsection{Klassenspezifische Suchstrategien}
 
@@ -1848,7 +1575,7 @@ Weiche & Variable Positionen & Komplexe Geometrie erfordert flexible Platzierung
 \label{tab:text_position_conventions}
 \end{table}
 
-Diese Konventionen werden als \textbf{Domänenwissen} in das System integriert und ermöglichen eine gezieltere Suche nach zusammengehörigen Elementen. Derartige domänenspezifische Layoutregeln sind charakteristisch für technische Dokumentationen und folgen etablierten Zeichnungsnormen \cite{DIN_ISO_128, Hoischen2022}. Die konkrete Parametrisierung erfolgt über Konfigurationsdateien (siehe Kapitel~\ref{chap:konzeption}, Abschnitt 5.3).
+Diese Konventionen werden als \textbf{Domänenwissen} in das System integriert und ermöglichen eine gezieltere Suche nach zusammengehörigen Elementen. Derartige domänenspezifische Layoutregeln sind charakteristisch für technische Dokumentationen und folgen etablierten Zeichnungsnormen \cite{DIN_ISO_128, Hoischen2022}. 
 
 
 %==============================================================================
@@ -1867,7 +1594,7 @@ In der industriellen Praxis folgt die Dokumentenlenkung definierten Prozessen ge
     \item \textbf{Freigegeben} werden (Wer hat die Änderung geprüft?)
 \end{itemize}
 
-Die manuelle Identifikation von Änderungen zwischen zwei Planversionen, das sogenannte \enquote{Rödeln},  ist zeitaufwändig und fehleranfällig, insbesondere bei umfangreichen Dokumenten mit hunderten von Elementen.
+Die manuelle Identifikation von Änderungen zwischen zwei Planversionen, das sogenannte \enquote{Rödeln} ist zeitaufwändig und fehleranfällig, insbesondere bei umfangreichen Dokumenten mit hunderten von Elementen.
 
 \subsection{Analogie: Stücklistenvergleich}
 
@@ -2012,8 +1739,8 @@ Mit eindeutigen Identifikatoren lässt sich die Änderungserkennung konzeptionel
 \caption{Änderungserkennung als Mengenvergleich zweier Dokumentversionen}
 \label{fig:set_comparison_concept}
 \end{figure}
-Die Schnittmenge enthält Objekte, die in beiden Versionen existieren. Diese können unverändert oder modifiziert sein und erfordern einen zusätzlichen Attributvergleich.
-Für Elemente in der Schnittmenge (gleiche Kennung in beiden Versionen) muss zusätzlich geprüft werden, ob sich ihre Attribute geändert haben. Die algorithmische Umsetzung dieser Konzepte wird in Kapitel~\ref{chap:implementierung}, Abschnitt 6.6.1 beschrieben.
+
+Für Elemente in der Schnittmenge (gleiche Kennung in beiden Versionen) muss zusätzlich geprüft werden, ob sich ihre Attribute geändert haben. Die algorithmische Umsetzung dieser Konzepte wird in Kapitel~\ref{chap:implementierung}, Abschnitt \ref{subsec:vergleichundänderung} beschrieben.
 
 
 %==============================================================================
@@ -2385,7 +2112,7 @@ Das System sollte daher:
     \item \textit{Korrekturmöglichkeiten} bieten, ohne den Gesamtprozess neu starten zu müssen
 \end{itemize}
 
-Die konkrete Implementierung der Validierungslogik und der Benutzerinteraktion wird in Kapitel~\ref{chap:implementierung}, Abschnitte 6.5 und 6.7 beschrieben.
+Die konkrete Implementierung der Validierungslogik und der Benutzerinteraktion wird in Kapitel~\ref{chap:implementierung}, Abschnitte \ref{sec:validierungundsicherung} und \ref{sec:benutzeroberfläche} beschrieben.
 
 \subsection{Zusammenfassung: Theoretische Grundlagen}
 
@@ -2400,4 +2127,4 @@ Die in diesem Kapitel dargestellten theoretischen Konzepte bilden das Fundament 
     \item \textbf{Qualitätssicherung} (Abschnitt \ref{sec:traceability_qa}): Rückverfolgbarkeit und mehrstufige Validierung
 \end{itemize}
 
-Die folgenden Kapitel konkretisieren diese theoretischen Grundlagen: Kapitel 4 definiert die funktionalen und nicht-funktionalen Anforderungen, Kapitel 5 beschreibt die Architekturentscheidungen und Kapitel 6 dokumentiert die Implementierung.
+Die folgenden Kapitel konkretisieren diese theoretischen Grundlagen: Kapitel \ref{chap:anforderungen} definiert die funktionalen und nicht-funktionalen Anforderungen, Kapitel \ref{chap:konzeption} beschreibt die Architekturentscheidungen und Kapitel \ref{chap:implementierung} dokumentiert die Implementierung.
