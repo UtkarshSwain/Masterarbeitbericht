@@ -1,4 +1,5 @@
 \chapter{Einleitung}
+\label{chap:einleitung}
 Die Digitalisierung revolutioniert zunehmend die traditionellen Arbeitsprozesse in der Industrie und eröffnet neue Möglichkeiten zur Steigerung der Effizienz, Verbesserung der Qualität und Senkung der Kosten. In vielen Bereichen des Ingenieurwesens, vom Maschinenbau über die Verfahrenstechnik bis hin zur Infrastrukturplanung, besteht ein signifikantes Potenzial für digitale Transformationsprozesse, insbesondere bei der Verarbeitung und Interpretation technischer Pläne und Zeichnungen. Die vorliegende Masterarbeit, die innerhalb der Siemens Mobility GmbH im Bereich der Bahninfrastruktur durchgeführt wurde, adressiert diese branchenübergreifende Herausforderung durch die Entwicklung eines KI-unterstützten Systems zur automatischen Verarbeitung technischer Pläne am konkreten Anwendungsfall der Gleispläne.
 \\
 \\
@@ -49,10 +50,10 @@ Automatisierung, wodurch Ingenieure nur noch KI-Ergebnisse validieren müssen
 In vielen technischen Disziplinen des Ingenieurwesens werden komplexe Systeme und Anlagen noch immer primär über grafische Pläne dokumentiert und kommuniziert. Ob Hydraulikschaltpläne im Maschinenbau, Rohrleitungs- und Instrumentenfließschemata (R\&I-Diagramme) in der Verfahrenstechnik, elektrische Schaltpläne in der Elektrotechnik oder Gleispläne in der Bahntechnik – in all diesen Fachbereichen liegt wertvolles technisches Wissen in Form unstrukturierter Vektorgrafiken oder PDF-Dokumente vor \cite{VogelHeuser2017}. Diese Pläne enthalten eine Vielzahl semantisch relevanter Informationen: Komponenten werden durch standardisierte oder kundenspezifische Symbole repräsentiert, Verbindungen zwischen Elementen sind grafisch dargestellt, und technische Spezifikationen werden als Textannotationen beigefügt.
 \\
 \\
-Für moderne digitale Arbeitsabläufe, etwa für die Erstellung eines Digitalen Zwillings, für automatisierte Konsistenzprüfungen oder für die Integration in Enterprise-Resource-Planning-Systeme (ERP), müssen diese visuell kodierten Informationen jedoch in strukturierte, maschinenlesbare Datenformate überführt werden. Dieser Medienbruch zwischen analoger oder halbdigitaler Plandarstellung und strukturierten Datenmodellen stellt eine zentrale Herausforderung dar, da die manuelle Übertragung nicht nur zeitaufwendig und fehleranfällig ist, sondern auch kaum skalierbar bleibt, wenn die Komplexität der Systeme oder die Anzahl der zu verarbeitenden Pläne zunimmt \cite{Ristic2023AutomatedDO}.
+Für moderne digitale Arbeitsabläufe, etwa für die Erstellung eines Digitalen Zwillings, für automatisierte Konsistenzprüfungen oder für die Integration in Enterprise-Resource-Planning-Systeme (ERP, eine betriebswirtschaftliche Softwaresysteme zur integrierten Planung und Steuerung von Ressourcen, Prozessen und Daten über alle Unternehmensbereiche hinweg), müssen diese visuell kodierten Informationen jedoch in strukturierte, maschinenlesbare Datenformate überführt werden. Dieser Medienbruch zwischen analoger oder halbdigitaler Plandarstellung und strukturierten Datenmodellen stellt eine zentrale Herausforderung dar, da die manuelle Übertragung nicht nur zeitaufwendig und fehleranfällig ist, sondern auch kaum skalierbar bleibt, wenn die Komplexität der Systeme oder die Anzahl der zu verarbeitenden Pläne zunimmt \cite{Ristic2023AutomatedDO}.
 \\
 \\
-Erschwerend kommt hinzu, dass in der Praxis erhebliche Varianzen in der Darstellung existieren: Unterschiedliche Kunden, Hersteller oder Normen verwenden abweichende Symbolbibliotheken, verschiedene Orientierungen und Skalierungen sowie heterogene Textlayouts. Die korrekte Zuordnung von Textannotationen zu den entsprechenden grafischen Elementen erfolgt oft nach impliziten, nicht formalisierten Konventionen, die von Plan zu Plan variieren können. Zudem fehlt in traditionellen Workflows häufig die \textit{Rückverfolgbarkeit (Traceability)} zwischen den extrahierten Daten und ihrer visuellen Repräsentation im Ursprungsdokument. Änderungen in neuen Planversionen müssen manuell identifiziert, dokumentiert und in die Datenbestände eingepflegt werden, was zusätzlichen Aufwand verursacht und Fehlerquellen eröffnet.
+Erschwerend kommt hinzu, dass in der Praxis erhebliche Varianzen in der Darstellung existieren: Unterschiedliche Kunden, Hersteller oder Normen verwenden abweichende Symbolbibliotheken, verschiedene Orientierungen und Skalierungen sowie heterogene Textlayouts. Die korrekte Zuordnung von Textannotationen zu den entsprechenden grafischen Elementen erfolgt oft nach impliziten, nicht formalisierten Konventionen, die von Plan zu Plan variieren können. Zudem fehlt in traditionellen Workflows die bidirektionale Verknüpfung zwischen strukturierten Daten und ihrer visuellen Repräsentation im Ursprungsdokument: Wenn in einer Excel-Tabelle beispielsweise die Kilometerangabe \enquote{18.456}  für Signal AS102 eingetragen ist, existiert keine direkte Möglichkeit, die exakte Position dieser Information im Ursprungsplan aufzurufen. Diese fehlende \textit{Rückverfolgbarkeit} erschwert die Validierung und Fehlersuche erheblich, da Ingenieure bei Unklarheiten oder vermuteten Fehlern manuell im Dokument suchen müssen, was ein zeitaufwändiger Prozess bei Plänen mit hunderten von Einträgen ist. Änderungen in neuen Planversionen müssen manuell identifiziert, dokumentiert und in mehrere Zielsysteme wie in Prüftabellen (Excel), Planungsdatenbanken (z.\,B. PostgreSQL) und ERP-Systeme nachgepflegt werden. Dieser Mehrfachaufwand ist nicht nur zeitintensiv, sondern eröffnet auch Fehlerquellen durch inkonsistente oder unvollständige Datenaktualisierung.
 \\
 \\
 \textbf{Anwendungsfall Bahninfrastrukturplanung}
@@ -61,9 +62,6 @@ Im konkreten Kontext der vorliegenden Arbeit manifestiert sich diese allgemeine 
 \\
 \\
 Aktuell erfolgt dieser Prozess meist manuell, was sowohl zeitaufwendig als auch fehleranfällig ist und mit zunehmender Gleisplankomplexität kaum skalierbar bleibt \cite{Ristic2023AutomatedDO}. Typische Gleispläne enthalten 50-200 verschiedene Objekte, die jeweils mit Positionsangaben, Bezeichnungen und technischen Parametern annotiert sind. Die Fehlerquote bei der manuellen Übertragung ist erheblich: Zahlendreher und Positionsverwechslungen werden oft erst nach kostspieligen Testfahrten erkannt. Zudem fehlt die systematische Rückverfolgbarkeit zwischen extrahierten Daten und ihrer Darstellung im Plan, und Änderungen in neuen Planversionen müssen mühsam manuell identifiziert und nachgepflegt werden.
-\\
-\\
-Ein zusätzlicher Schwierigkeitsfaktor liegt in der Varianz der Daten: Kunden liefern Pläne in unterschiedlich formatierten Varianten mit rotationsabhängigen Symbolen, uneinheitlicher Symbolik sowie unterschiedlichen Textlayouts. Dadurch steigt der Aufwand für die Interpretation und die Anpassung an kundenspezifische Besonderheiten weiter an.
 \\
 \\
 Die zu lösende Herausforderung besteht darin:
@@ -107,12 +105,19 @@ Diese Hauptfrage wird in der vorliegenden Arbeit exemplarisch am Anwendungsfall 
 \section{Aufbau der Arbeit}
 Die vorliegende Arbeit gliedert sich in acht Hauptkapitel:
 \begin{itemize}
-    \item \textbf{Kapitel 1 (Abstract)} liefert eine kurze Zusammenfassung der Zielsetzung, Methodik und zentralen Ergebnisse der Arbeit.
-    \item \textbf{Kapitel 2 (Einleitung)} führt in das Thema ein, erläutert die Motivation, beschreibt die zugrunde liegende Problemstellung sowie das Ziel der Arbeit.
-    \item \textbf{Kapitel 3 (Theoretische und technische Grundlagen)} stellt die relevanten Konzepte aus dem Bereich der grafischen Gleispläne, der Symbolik sowie der objekterkennenden Verfahren mit Deep Learning vor.
-    \item \textbf{Kapitel 4 (Anforderungsanalyse)} identifiziert die funktionalen und nicht-funktionalen Anforderungen an das System und beschreibt die Herausforderungen in der praktischen Umsetzung.
-    \item \textbf{Kapitel 5 (Konzeption des Prototyps)} erläutert die Architektur und den geplanten Workflow des Systems von der PDF-Konvertierung bis zur strukturierten Ausgabe.
-    \item \textbf{Kapitel 6 (Implementierung)} beschreibt die technische Realisierung der Komponenten, inklusive des Trainings von Detektionsmodellen, der Texterkennung, des Mappings sowie der Versionierung und Rückverfolgbarkeit.
-    \item \textbf{Kapitel 7 (Evaluation)} bewertet das System anhand verschiedener Testmethoden und diskutiert die Ergebnisse und Validierungen mit Siemens-internen Daten.
-    \item \textbf{Kapitel 8 (Fazit)} fasst die wichtigsten Erkenntnisse zusammen, reflektiert kritisch den Entwicklungsprozess und gibt einen Ausblick auf mögliche Weiterentwicklungen.
+    \item \hyperref[chap:abstract]{\textbf{Kapitel 1 (Abstract)}} liefert eine kurze Zusammenfassung der Zielsetzung, Methodik und zentralen Ergebnisse der Arbeit.
+    
+    \item \hyperref[chap:einleitung]{\textbf{Kapitel 2 (Einleitung)}} führt in das Thema ein, erläutert die Motivation, beschreibt die zugrunde liegende Problemstellung sowie das Ziel der Arbeit.
+    
+    \item \hyperref[chap:theoretischeundtechnischegrundlagen]{\textbf{Kapitel 3 (Theoretische und technische Grundlagen)}} stellt die relevanten Konzepte aus dem Bereich der grafischen Gleispläne, der Symbolik sowie der objekterkennenden Verfahren mit Deep Learning vor.
+    
+    \item \hyperref[chap:anforderungen]{\textbf{Kapitel 4 (Anforderungsanalyse)}} identifiziert die funktionalen und nicht-funktionalen Anforderungen an das System und beschreibt die Herausforderungen in der praktischen Umsetzung.
+    
+    \item \hyperref[chap:konzeption]{\textbf{Kapitel 5 (Konzeption des Prototyps)}} erläutert die Architektur und den geplanten Workflow des Systems von der PDF-Konvertierung bis zur strukturierten Ausgabe.
+    
+    \item \hyperref[chap:implementierung]{\textbf{Kapitel 6 (Implementierung)}} beschreibt die technische Realisierung der Komponenten, inklusive des Trainings von Detektionsmodellen, der Texterkennung, des Mappings sowie der Versionierung und Rückverfolgbarkeit.
+    
+    \item \hyperref[chap:evaluation]{\textbf{Kapitel 7 (Evaluation)}} bewertet das System anhand verschiedener Testmethoden und diskutiert die Ergebnisse und Validierungen mit Siemens-internen Daten.
+    
+    \item \hyperref[chap:fazit]{\textbf{Kapitel 8 (Fazit)}} fasst die wichtigsten Erkenntnisse zusammen, reflektiert kritisch den Entwicklungsprozess und gibt einen Ausblick auf mögliche Weiterentwicklungen.
 \end{itemize}

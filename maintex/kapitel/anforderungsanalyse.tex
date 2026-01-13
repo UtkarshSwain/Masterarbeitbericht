@@ -18,109 +18,60 @@ Eine zentrale Anforderung ist die zuverlässige Detektion bahntechnischer Symbol
     \item \textbf{Rotationsinvarianz:} Da Symbole in Gleisplänen der Topologie folgend in beliebigen Winkeln angeordnet sein können, muss die Erkennung rotationsinvariant erfolgen. Das System muss in der Lage sein, Objekte unabhängig von ihrer Orientierung ($0^\circ$ bis $360^\circ$) korrekt zu klassifizieren und deren Winkel (Rotation) präzise zu bestimmen.
     \item \textbf{Zielobjekte:} Basierend auf der Domänenanalyse wurden die in Tabelle \ref{tab:symbole} dargestellten Symbole als primäre Detektionsziele definiert.
 
-        \begin{longtable}{|p{3.5cm}|p{5cm}|p{5cm}|}
+\begin{longtable}{|p{4cm}|p{8cm}|}
+    \hline
+    \textbf{Bezeichnung} & \centering\textbf{Symbol} \tabularnewline
+    \hline
+    \endhead
 
-        \hline
-
-        \textbf{Bezeichnung} & \multicolumn{2}{c|}{\textbf{Symbole}} \\
-
-        \hline
-
-        \endhead
-
-        
-
-        
-
-        Signale & 
-
-        \parbox[c]{5cm}{\centering
-
-        \includegraphics[width=2cm]{images/symbols/signal1.png}
-
-        } & 
-
-        \parbox[c]{5cm}{\centering
-
+    % Row 1: Signale (Removed 1st, Kept 2nd)
+    Signale & 
+    \parbox[c]{8cm}{\centering
+        \vspace{0.2cm}
         \includegraphics[width=2cm]{images/symbols/Signal2.png}
+        \vspace{0.2cm}
+    } \\ 
+    \hline 
 
-        } \vspace{0.5cm} \\ 
-
-        \hline 
-
-        Positionsangabe & 
-
-        \parbox[c]{5cm}{\centering
-
+    % Row 2: Positionsangabe (Kept 1st, Removed 2nd)
+    Positionsangabe & 
+    \parbox[c]{8cm}{\centering
+        \vspace{0.2cm}
         \includegraphics[width=2cm]{images/symbols/Position.png}
+        \vspace{0.2cm}
+    } \\
+    \hline
 
-        } & 
-
-        \parbox[c]{5cm}{\centering
-
-        \vspace{0.5cm}
-
-        \includegraphics[width=0.7cm]{images/symbols/Position2.png}
-
-        } \vspace{0.5cm} \\
-
-        \hline
-
-        Gleiskoppelspulen & 
-
-        \parbox[c]{5cm}{\centering
-
+    % Row 3: Gleiskoppelspulen (Kept 1st, Removed 2nd)
+    Gleiskoppelspulen & 
+    \parbox[c]{8cm}{\centering
+        \vspace{0.2cm}
         \includegraphics[width=2cm]{images/symbols/GKS1.png}
+        \vspace{0.2cm}
+    } \\
+    \hline
 
-        } & 
-
-        \parbox[c]{5cm}{\centering
-
-        \includegraphics[width=2cm]{images/symbols/GKS2.png}
-
-        } \\
-
-        \hline
-
-        Haltepunkt  & 
-
-        \parbox[c]{5cm}{\centering
-
-        \vspace{0.3cm}
-
-        \includegraphics[width=1cm]{images/symbols/Haltepunkt1.png+.png}
-
-        } & 
-
-        \parbox[c]{5cm}{\centering
-
+    % Row 4: Haltepunkt (Removed 1st, Kept 2nd)
+    Haltepunkt & 
+    \parbox[c]{8cm}{\centering
+        \vspace{0.2cm}
         \includegraphics[width=1cm]{images/symbols/Haltepunkt2.png+.png}
+        \vspace{0.2cm}
+    } \\
+    \hline
 
-        } \\
-
-        \hline
-
-        Weichen   & 
-
-        \parbox[c]{5cm}{\centering
-
-        \includegraphics[width=4cm]{images/symbols/Weiche.png}
-
-        } & 
-
-        \parbox[c]{5cm}{\centering
-
+    % Row 5: Weichen (Removed 1st, Kept 2nd)
+    Weichen & 
+    \parbox[c]{8cm}{\centering
+        \vspace{0.2cm}
         \includegraphics[width=2cm]{images/symbols/Weiche2.png}
-
-        } \vspace{0.5cm} \\
-
-        \hline
+        \vspace{0.2cm}
+    } \\
+    \hline
 
     \caption{Übersicht der Symbole}
-
     \label{tab:symbole}
-
-    \end{longtable}
+\end{longtable}
 
 
 

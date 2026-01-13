@@ -1,11 +1,8 @@
 \chapter{Theoretische und technische Grundlagen}
-
+\label{chap:theoretischeundtechnischegrundlagen}
 Im Rahmen dieses Kapitels werden die maßgeblichen Technologien und Konzepte dargelegt, auf denen das entwickelte Modell basiert. Der Fokus liegt auf der automatisierten Objekterkennung, Textextraktion und strukturierten Informationsverarbeitung aus Gleisplänen.
 \section{Grafische Gleispläne im Bahnkontext}
-Die Modellierung eines Bahnhofs stellt eine komplexe Aufgabe dar, da ein solcher in der Regel aus Hunderten von Gleisen und Weichen sowie zahlreichen Signalen besteht. 
-Die manuelle Erstellung eines Bahnhofsmodells, das den physischen Details eines Bahnhofs entspricht, erfordert in der Regel mehrere Wochen Arbeit. Dies hat signifikante 
-Auswirkungen auf die Anwendbarkeit und den Umfang vieler Methoden.\cite{railroadstationdrawing}
-
+Die Modellierung einer Bahnanlage stellt eine komplexe Aufgabe dar, da diese typischerweise aus einer Vielzahl von Gleisabschnitten, Weichen und Signalen besteht. Die manuelle Erstellung eines Modells, das den physischen Details der Anlage entspricht, erfordert üblicherweise mehrere Wochen Arbeit. Dies hat signifikante Auswirkungen auf die Anwendbarkeit und den Umfang vieler Methoden.\cite{railroadstationdrawing}
 
 Diese zeitintensive manuelle Arbeit motiviert den Einsatz automatisierter Verfahren zur Datenextraktion. Die folgenden Abschnitte legen die theoretischen Grundlagen dar, auf denen eine solche Automatisierung aufbauen kann.
 
@@ -23,7 +20,7 @@ Kilometrierung). Jedes Element trägt eindeutige Labels zur Identifikation.
 
 Obwohl diese Pläne in der heutigen Ingenieurspraxis mittels CAD-Systemen (Computer Aided Design) erstellt werden, liegt die primäre Herausforderung für eine automatisierte Auswertung nicht im Dateiformat, sondern in der korrekten semantischen Interpretation dieser abstrahierten Symbolik und ihrer logischen Verknüpfung \cite{Pachl}.
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \includegraphics[width=1\textwidth]{images/gleisplandrawio.png} 
     \caption{Ausschnitt eines schematischen Gleisplans mit Darstellung von Signalen, Weichen und Gleisbezeichnungen (Beispielhafte Darstellung) aus Quelle \cite{railroadstationdrawing}}
@@ -38,29 +35,32 @@ Kategorien (siehe Tabelle \ref{tab:symbol_categories}):
 
 \begin{table}[h]
 \centering
-\begin{tabular}{|p{3cm}|p{12cm}|}
+\begin{tabular}{|p{3.5cm}|p{11.5cm}|}
 \hline
 \textbf{Kategorie} & \textbf{Elemente und Funktion} \\
 \hline
-Infrastruktur & \textbf{Signale}: Fahrterlaubnis und Geschwindigkeitsvorgabe. 
-\textbf{Weichen}: Fahrwegverzweigungen. \textbf{Isolierstöße}: Elektrische 
-Gleistrennung. \textbf{Achszähler}: Belegungserkennung. \\
+Infrastruktur & \textbf{Signale}: Fahrterlaubnis und Geschwindigkeitsvorgabe\cite{Pachl}. 
+\textbf{Weichen}: Fahrwegverzweigungen\cite{Pachl}. \\
 \hline
-Zugbeeinflussung & \textbf{Balisen}: Punktförmige Datenübertragung an Zug. 
-\textbf{Gleismagnete}: Induktive Informationsübertragung. \textbf{Gleiskoppelspulen}: 
-Elektromagnetische Kopplung. \\
+Zugbeeinflussung & \textbf{Balisen}: Übertragung von Fahrt-/Haltinformationen, 
+Geschwindigkeitsinformationen und weiteren Daten des Stellwerkes an den Zug\cite{Pachl}. 
+\textbf{Gleismagnete}: Übertragung von Fahrt-/Haltinformationen, 
+Geschwindigkeitsinformationen und weiteren Daten des Stellwerkes an den Zug\cite{Pachl}. 
+\textbf{Gleiskoppelspulen}: Übertragung von Fahrt-/Haltinformationen, 
+Geschwindigkeitsinformationen und weiteren Daten des Stellwerkes an den Zug\cite{Pachl}. \\
 \hline
-Metadaten & \textbf{Positionsangaben}: Kilometrierung, Lagepunkte. 
-\textbf{Gleisabschnittsnamen}: Eindeutige Gleisidentifikation. \\
+Belegungserkennung & \textbf{Isolierstöße}: Elektrische Gleistrennung zur 
+Definition von Gleisstromkreisen für die Belegungserkennung\cite{Pachl}. 
+\textbf{Achszähler}: Zählpunktbasierte Belegungserkennung durch Erfassung 
+ein- und ausfahrender Achsen\cite{Pachl}. \\
+\hline
+Metadaten & \textbf{Positionsangaben}: Kilometrierung, Lagepunkte\cite{DB2008Regelwerk}. 
+\textbf{Gleisabschnittsnamen}: Eindeutige Gleisidentifikation\cite{DB2008Regelwerk}. \\
 \hline
 \end{tabular}
 \caption{Klassifikation bahntechnischer Symbole}
 \label{tab:symbol_categories}
 \end{table}
-
-Die detaillierte visuelle Darstellung dieser Symbole erfolgt in Tabelle \ref{tab:symbole}
-\section{Objekterkennung in Bildern}
-\label{sec:objekterkennung}
 
 Die automatisierte Analyse visueller Informationen bildet das Fundament zahlreicher technischer Anwendungen von der Qualitätskontrolle in der industriellen Fertigung über die medizinische Bildanalyse bis hin zur autonomen Navigation. Während Menschen mühelos in der Lage sind, Objekte in Bildern zu identifizieren und zu lokalisieren, erfordert die Replikation dieser Fähigkeit in Maschinen die Lösung komplexer Teilprobleme. Historisch wurde diese Aufgabe durch explizite Programmierung von Erkennungsregeln adressiert. Der konzeptionelle Durchbruch gelang durch maschinelles Lernen, insbesondere durch tiefe neuronale Netze, die relevante Merkmale selbstständig aus Trainingsdaten extrahieren können \cite{LeCun1998_GradientBasedLearning,Krizhevsky2012_AlexNet}.
 
