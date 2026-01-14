@@ -7,7 +7,7 @@ Die Architektur des Prototyps folgt dem Prinzip der Modularität und Separation 
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=15cm]{images/Kapitel5/Moduldiagramm.png} 
+    \includegraphics[width=15cm]{images/Kapitel5/Moduldiagrammv2.png} 
     \caption{Modulare Systemarchitektur des Gleisplanextraktors}
     \label{fig:Systemarchitektur}
 \end{figure}
@@ -93,7 +93,7 @@ Das Exportmodul transformiert die interne Datenrepräsentation in kundengerechte
 Der zu entwickelnde Prototyp basiert auf einer klaren Struktur eines Swimlane-Diagramms mit drei Ebenen, wodurch eine saubere Trennung zwischen Benutzeroberfläche, Datenverarbeitung und Datenspeicherung gewährleistet wird. Das folgende Flussdiagramm \ref{fig:Workflowdiagramm} veranschaulicht den gesamten Prozess von der ersten Benutzereingabe bis zum endgültigen Datenexport. 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=16cm]{images/Kapitel5/Prototyp flowchar v01.png} 
+    \includegraphics[width=16cm]{images/Kapitel5/Prototyp flowchar v02.png} 
     \caption{Workflowdiagramm des Prototyps}
     \label{fig:Workflowdiagramm}
 \end{figure}
@@ -110,28 +110,45 @@ Die Frontend-Ebene bildet die Schnittstelle zwischen Anwender und System. Der ko
 \end{enumerate}
 Designprinzip: Der Workflow folgt einem linearen Assistenten-Modell (Wizard Pattern), das den Benutzer schrittweise durch den Prozess führt.
 
-\subsection{2. Ebene - Backend/Verarbeitung(Kernlogik)}
+\subsection{2. Ebene - Backend/Verarbeitung (Kernlogik)}
 Das Backend orchestriert die automatisierte Analysepipeline. Die Prozessschritte sind:
+
 \begin{enumerate}
     \item \textbf{Rasterisierung:} Konvertierung der PDF-Seiten in Pixelbilder hoher Auflösung
+    
     \item \textbf{Tiling:} Segmentierung in überlappende Bildausschnitte für effiziente Verarbeitung
+    
     \item \textbf{Objekterkennung:} Detektion relevanter Symbole mittels Deep Learning Modell
+    
     \item \textbf{OCR:} Extraktion von Textinformationen aus identifizierten Symbolbereichen
-    \item \textbf{Nachbearbeitung:} Zusammenführung der Tile Ergebnisse, Bereinigung und semantisches Mapping
-    \item \textbf{Versionsspeicherung:} Persistierung der Ergebnisse mit Versionsmetadaten
-    \item \textbf{Differenzanalyse:} Vergleich mit vorheriger Version bei wiederholter Analyse
-    \item \textbf{Exportvorbereitung:} Transformation in Zielformat
+    
+    \item \textbf{Postprocessing \& Merge:} Zusammenführung der Tile-Ergebnisse zu einem Gesamtbild und Eliminierung von Duplikaten in Überlappungsbereichen durch Non-Maximum-Suppression (NMS). Rohe OCR-Ergebnisse werden durch regelbasierte Filter bereinigt.
+    
+    \item \textbf{Linking \& Semantisches Mapping:} Verknüpfung erkannter Symbole mit zugehörigen Texten (IDs, Koordinaten) zu logischen Einheiten. Beispielsweise wird ein detektiertes Symbol der Klasse \enquote{Signal} mit dem dazugehörigen OCR-Text zu einer semantisch interpretierbaren Entität verbunden. Die konzeptionellen Strategien hierfür werden in Abschnitt \ref{sec:linkingassociationmodul} detailliert beschrieben.
+    
+    \item \textbf{Validierung \& Qualitätskontrolle:} Automatisierte dreistufige Plausibilitätsprüfung der Erkennungsergebnisse auf Symbol-, OCR- und Linking-Ebene. Fehlgeschlagene Validierungen werden zur manuellen Überprüfung markiert (Human-in-the-Loop). Das vollständige Validierungskonzept ist in Abschnitt \ref{sec:validierungundqualitätssicherung} dargelegt.
+    
+    \item \textbf{Versionsspeicherung:} Persistierung der Ergebnisse mit Versionsmetadaten in der Datenbank. Jede Analyse erhält eine eindeutige Versions-ID, um spätere Vergleiche zu ermöglichen.
+    
+    \item \textbf{Exportvorbereitung:} Transformation der internen Datenrepräsentation in das gewünschte Ausgabeformat
 \end{enumerate}
-Designprinzip: Die Pipeline folgt dem Pipes-and-Filters Architekturmuster, bei dem jede Komponente eine spezifische Transformation durchführt und das Ergebnis an die nächste Stufe weiterreicht
 
-\subsection{3. Ebene Speicher und Export(Datenverwaltung)}
-Die unterste Ebene verwaltet die Daten des gesamten Systems, die in statischen und dynamischen Daten unterteilt sind - 
+Designprinzip: Die Pipeline folgt dem Pipes-and-Filters Architekturmuster, bei dem jede Komponente eine spezifische Transformation durchführt und das Ergebnis an die nächste Stufe weiterreicht.
+
+\textbf{Optionaler Versionsvergleich:} Unabhängig von der automatischen Verarbeitungspipeline kann der Benutzer über die Benutzeroberfläche einen manuellen Vergleich zwischen zwei Versionen desselben Gleisplans initiieren. Hierzu werden beide Planversionen in separaten Ansichten (Tabs) geladen. Durch Betätigung einer Vergleichsfunktion analysiert das System beide Datensätze und identifiziert Änderungen (hinzugefügte, entfernte oder modifizierte Objekte). Die konzeptionelle Vergleichsstrategie basiert auf dem in Abschnitt \ref{sec:änderungsverfolgung} beschriebenen hybriden Matching-Ansatz. Die Ergebnisse werden visuell hervorgehoben dargestellt, sodass der Benutzer Planänderungen nachvollziehen kann. Die technische Implementierung wird in Kapitel 6 beschrieben.
+
+\subsection{3. Ebene - Speicher und Export (Datenverwaltung)}
+Die unterste Ebene verwaltet die Daten des gesamten Systems, die in statischen und dynamischen Daten unterteilt sind:
 
 \begin{itemize}
-    \item \textbf{Die statischen Daten} umfassen die Basiskonfigurationsdaten (im YAML- und JSON-Format), die die Regeln für das Mapping definieren, sowie die trainierten Gewichte des YOLO-Modells. Diese Daten dienen als feste Eingabeparameter für die Verarbeitung im Backend. 
-    \item \textbf{Die dynamischen Daten} werden während des Prozesses generiert. Zu diesem Zweck ist eine zentrale Datenbank (beispielsweise PostgreSQL) für die dauerhafte Speicherung der Ergebnisse erforderlich. Darüber hinaus werden temporäre Daten, wie die Anzeigebilder und Overlays, sowie die endgültigen Exportdaten in Formaten wie Excel (.xlsx), CSV oder JSON benötigt, die für den Nutzer bereitgestellt werden. 
+    \item \textbf{Statische Daten} umfassen die Basiskonfigurationsdaten, die die Regeln für das Mapping und die Verarbeitungsparameter definieren, sowie die trainierten Gewichte des Erkennungsmodells. Diese Daten dienen als feste Eingabeparameter für die Verarbeitung im Backend und ändern sich während der Laufzeit nicht.
+    
+    \item \textbf{Dynamische Daten} werden während des Verarbeitungsprozesses generiert. Zu diesem Zweck ist eine zentrale Datenbank für die dauerhafte Speicherung der Analyseergebnisse und Versionsstände erforderlich. Darüber hinaus werden temporäre Dateien wie Anzeigebilder und Overlays zwischengespeichert. Die aufbereiteten Daten werden schließlich in Form von Exportdateien bereitgestellt, die dem Nutzer zum Download zur Verfügung stehen.
 \end{itemize}
+
 Designprinzip: Die Trennung zwischen statischen und dynamischen Daten folgt dem Konzept der Immutability für Konfigurationen, während Analyseergebnisse in einem transaktionalen Datenbanksystem versioniert gespeichert werden.
+
+\textit{Hinweis:} Die konkrete technologische Umsetzung (Datenbankschema, Dateiformate, Speicherorganisation) wird in Kapitel 6 detailliert beschrieben.
 
 \section{Designentscheidungen}
 Die Entwicklung des Prototyps erforderte fundamentale Entscheidungen bezüglich der eingesetzten Technologien und Architekturansätze. Die nachfolgenden Abschnitte dokumentieren diese Designentscheidungen mit technischer Begründung und Abgrenzung zu alternativen Lösungsansätzen.
@@ -174,7 +191,7 @@ Die Auswahl wurde gegen populäre Alternativen validiert. Die folgende Tabelle f
 \end{table}
 
 Die konkrete Wahl der Rendering-Parameter (DPI-Auflösung, Farbtiefe, 
-Anti-Aliasing) und die Implementierung der Pipeline wird in Abschnitt 6.2.1 
+Anti-Aliasing) und die Implementierung der Pipeline wird in Abschnitt \ref{Inferenz}
 (Preprocessing und Rasterisierung) beschrieben.
 \subsection{Objekterkennung: Einsatz von YOLOv8 OBB}
 Zur Identifizierung der schematischen Symbole (Signale, Weichen, Gleiselemente) wurde das Modell \textbf{YOLOv8} (You Only Look Once) in der spezialisierten Konfiguration für rotierte Bounding Boxes (OBB) implementiert. Diese Wahl stellt eine Abkehr von klassischen Detektoren dar und wird durch die spezifische Topologie von Gleisplänen begründet.
@@ -374,7 +391,7 @@ Die Entscheidung für diesen Ansatz stützt sich auf drei zentrale Gründe:
 
 \end{enumerate}
 Die Implementierung der Export-Pipeline, einschließlich der Tabellenformatierung, 
-bedingten Formatierung und Formelintegration, wird in Abschnitt 6.6.2 
+bedingten Formatierung und Formelintegration, wird in Abschnitt \ref{subsec:exportfunktionlität}
 (Excel-Export-Modul) beschrieben.
 \subsection{Rückverfolgbarkeit: Koordinaten + Bildausschnitte}
 Die gewählte Lösung für die Rückverfolgbarkeit ist ein hybrider Ansatz mit Koordinaten in Excel und optionaler Miniaturbildgenerierung. Und für die UI-Interaktion wurde eine einfache Methode verwendet: Wird die Tabellenzeile in der Benutzeroberfläche angeklickt, so wird dem Benutzer ein vergrößerter Bereich von $2048 \times 2048$ px im Layout angezeigt, wobei die entsprechenden Datenüberlagerungen in leuchtendem Rot hervorgehoben sind.\\
@@ -404,7 +421,7 @@ Andere Alternative
 \label{tab:Alternative5}
 \end{table}
 \subsection{Änderungsverfolgung: Konzeptioneller Ansatz}
-
+\label{sec:änderungsverfolgung}
 Das System unterstützt die Versionierung von Gleisplänen, um Änderungen zwischen 
 verschiedenen Planständen nachvollziehbar zu machen.
 
@@ -443,7 +460,7 @@ Die Ergebnisse werden als strukturierter Änderungsbericht exportiert, der die A
 Änderung, die betroffenen Attribute und die Positionen dokumentiert.
 
 Die technische Implementierung dieser Strategie, einschließlich der mathematischen 
-Formulierung und der Algorithmen, wird in Abschnitt 6.6 detailliert beschrieben.
+Formulierung und der Algorithmen, wird in Abschnitt \ref{subsec:vergleichundänderung} detailliert beschrieben.
 
 \subsection{Benutzeroberfläche: PyQt5}
 Für die Benutzeroberfläche wurde das Framework PyQt5 aus der Python-Bibliothek ausgewählt. Die Gründe für diese Wahl werden nachfolgend dargelegt\cite{pyqt5}:
@@ -505,7 +522,7 @@ Für die dauerhafte Speicherung der Analyseergebnisse und Gleisplandaten wurde d
 \end{enumerate}
 
 \section{Linking- \& Assoziationsmodul}
-
+\label{sec:linkingassociationmodul}
 Die semantische Interpretation der Gleispläne erfordert die korrekte Verknüpfung 
 zwischen erkannten Symbolen (Ankerobjekten) und den zugehörigen Texten (IDs, Koordinaten).
 
@@ -526,7 +543,7 @@ Das Linking-Modul basiert auf drei Kernprinzipien:
   
   \item \textbf{Adaptive Mustererkennung}: 
   Das System lernt wiederkehrende Layoutmuster aus erfolgreichen Verknüpfungen und 
-  nutzt diese zur Verbesserung zukünftiger Zuordnungen (vgl. Abschnitt 6.4.3).
+  nutzt diese zur Verbesserung zukünftiger Zuordnungen (vgl. Abschnitt \ref{subsec:adaptivelearningmechanism}).
 \end{enumerate}
 
 \subsection{Verknüpfungsstrategien}
@@ -557,7 +574,7 @@ Die mathematische Formulierung und algorithmischen Details werden in Kapitel 6.4
 dargelegt.
 
 \section{Validierung und Qualitätssicherung}
-
+\label{sec:validierungundqualitätssicherung}
 Das Validierungskonzept gliedert sich in drei Ebenen:
 
 \begin{enumerate}

@@ -1,6 +1,6 @@
 \chapter{Implementierung}
 \label{chap:implementierung}
-Dieses Kapitel beschreibt die technische Realisierung des Prototyps. Es werden die Implementierungsdetails der in Kapitel 5 konzipierten Architektur dargelegt, von der Datenaufbereitung über das Modelltraining bis zur finalen Datenaggregation.  
+Dieses Kapitel beschreibt die technische Realisierung des Prototyps. Es werden die Implementierungsdetails der in Kapitel \ref{chap:konzeption} konzipierten Architektur dargelegt, von der Datenaufbereitung über das Modelltraining bis zur finalen Datenaggregation.  
 
 \section{Technologiestack und Entwicklungsumgebung}
 
@@ -79,7 +79,7 @@ Die Implementierung folgt einer modularen Architektur mit klarer Trennung der Ve
 Die Modularität ermöglicht eine unabhängige Weiterentwicklung einzelner Komponenten sowie eine einfache Integration neuer Funktionen oder OCR-Engines.
 
 \section{Objekterkennung mit YOLOv8-OBB}
-
+\label{sec:objekterkennungmityolov8obb}
 Die Objekterkennung bildet die erste und fundamentale Stufe der Extraktionspipeline. Ihre Aufgabe besteht darin, alle relevanten Symbole in den Gleisplänen zu lokalisieren und zu klassifizieren. Die Qualität dieser Detektionen bestimmt maßgeblich die Leistungsfähigkeit der nachfolgenden OCR- und Verknüpfungsmodule. Die Wahl fiel auf YOLOv8 in der Oriented Bounding Box (OBB) Variante, da diese Architektur speziell für die Detektion rotierter Objekte konzipiert wurde und somit optimal für technische Zeichnungen mit beliebig orientierten Symbolen geeignet ist.
 
 \subsection{Datensatzerstellung und Annotation}
@@ -96,7 +96,7 @@ Nach der Rasterisierung wurden die hochauflösenden Bilder in kleinere, überlap
 
 Die Beschriftung erfolgte mittels CVAT \cite{cvat} in lokaler Docker-Umgebung. 
 Jedes Symbol wurde mit einer Oriented Bounding Box (OBB) annotiert (vgl. 
-Abschnitt 3.3.2), repräsentiert durch Zentrum $(c_x, c_y)$, Dimensionen 
+Abschnitt \ref{sec:orientedboundingboxesalslösung}), repräsentiert durch Zentrum $(c_x, c_y)$, Dimensionen 
 $(w, h)$ und Rotationswinkel $\theta$:
 
 $$\text{OBB} = (c_x, c_y, w, h, \theta)$$
@@ -1363,7 +1363,7 @@ Das finale Ergebnis der gesamten OCR-Pipeline ist eine Liste von Tupeln. Jedes T
 
 
 \section{Intelligente Symbol-Text Verknüpfung}
-
+\label{sec:intelligentesymboltextverknüpfung}
 Nach der erfolgreichen Detektion von Symbolen durch YOLOv8-OBB und der Extraktion von Textinhalten mittels der orientierungsadaptiven OCR-Pipeline besteht die zentrale Herausforderung in der korrekten Zuordnung der extrahierten Texte zu ihren zugehörigen Symbolen. Diese Verknüpfung ist essenziell für die Generierung semantisch korrekter Datensätze aus den Gleisplänen.
 
 Die naive Anwendung rein distanzbasierter Proximity-Algorithmen -- bei denen einfach der nächstgelegene Text einem Symbol zugeordnet wird -- führt bei rotierten Symbolen zu systematischen Fehlzuordnungen. Ein Signal, das beispielsweise um 45° gedreht ist, besitzt eine eigene lokale Orientierung, und der zugehörige Text befindet sich typischerweise \enquote{unterhalb} des Signals in dessen lokaler Ausrichtung, nicht notwendigerweise in globalen Bildkoordinaten. Die Implementierung muss daher rotationsinvariante Algorithmen einsetzen, die geometrische Transformationen nutzen, um die semantische räumliche Beziehung zwischen Symbolen und Texten korrekt zu erfassen.
@@ -1557,7 +1557,7 @@ Aus der Menge der gültigen Kandidaten wird derjenige mit der geringsten euklidi
 Falls für ein Symbol keine Textkandidaten die Filterkriterien erfüllen, bleibt das Symbol zunächst ohne Textzuordnung. In diesem Fall kann im nächsten Schritt der adaptive Lernmechanismus aktiviert werden, um eine Zuordnung basierend auf statistischen Mustern zu versuchen. Symbole, für die auch nach allen Verknüpfungsversuchen kein Text zugeordnet werden konnte, werden im Validierungsdialog der Benutzeroberfläche zur manuellen Überprüfung gekennzeichnet.
 
 \subsection{Adaptive Learning Mechanismus}
-
+\label{subsec:adaptivelearningmechanism}
 \subsubsection{Motivation und Konzept}
 
 Obwohl technische Zeichnungen üblicherweise Konventionen folgen, existieren in der Praxis Variationen zwischen verschiedenen Planversionen, Zeichnern oder historischen Perioden. Ein statisches Regelwerk mit festen Suchradien und Richtungen kann in solchen Fällen suboptimal sein. Aus diesem Grund implementiert das System einen adaptiven Lernmechanismus, der erfolgreiche Verknüpfungen analysiert und statistische Muster extrahiert, um die Linking-Parameter dynamisch anzupassen.
@@ -1686,7 +1686,7 @@ In Gleisplänen ist die Fahrtrichtung eines Signals ein kritisches Attribut, das
 
 Anstatt die Fahrtrichtung als separate Klassifikationsaufgabe zu behandeln, wird sie im implementierten System durch geometrische Analyse der räumlichen Beziehung zwischen Signal und zugeordneter Balise bestimmt. Diese Methode nutzt die in Gleisplänen übliche Konvention, dass die relative Position der Balise zum Signal die Fahrtrichtung kodiert.
 
-Die Fahrtrichtung wird durch die Vorzeichenbetrachtung der lokalen y-Koordinate der Balise relativ zum Signal bestimmt. Hierbei wird die in Abschnitt 6.4.1 beschriebene Koordinatentransformation angewendet, um die Position der Balise im lokalen Koordinatensystem des Signals zu ermitteln. Die Entscheidungsregel lautet:
+Die Fahrtrichtung wird durch die Vorzeichenbetrachtung der lokalen y-Koordinate der Balise relativ zum Signal bestimmt. Hierbei wird die in Abschnitt \ref{sec:Koordinatentransformation} beschriebene Koordinatentransformation angewendet, um die Position der Balise im lokalen Koordinatensystem des Signals zu ermitteln. Die Entscheidungsregel lautet:
 
 \begin{equation}
 \text{Fahrtrichtung} = \begin{cases} 
@@ -1808,11 +1808,11 @@ Die implementierte Symbol-Text-Verknüpfung kombiniert mehrere komplementäre An
     \item \textbf{Komplexe Relationserkennung}: Spezielle Algorithmen für Fahrtrichtungsdetektion und Haltepunkt-Gruppierung behandeln semantisch reiche Objektbeziehungen.
 \end{enumerate}
 
-Die Kombination dieser Techniken erreicht eine Linking-Genauigkeit von über 92\% auf den Testdaten (detaillierte Evaluierung in Kapitel 7), wobei die verbleibenden Fehler hauptsächlich auf ambige Fälle zurückzuführen sind, in denen mehrere Texte ähnliche Distanzen zum Symbol aufweisen.
+Die Kombination dieser Techniken erreicht eine Linking-Genauigkeit von über 92\% auf den Testdaten (detaillierte Evaluierung in Kapitel \ref{chap:evaluation}), wobei die verbleibenden Fehler hauptsächlich auf ambige Fälle zurückzuführen sind, in denen mehrere Texte ähnliche Distanzen zum Symbol aufweisen.
 
 \section{Datenvalidierung und Qualitätssicherung}
 \label{sec:validierungundsicherung}
-\label{sec:datenvalidierung}
+
 Die Validierung extrahierter Daten stellt einen kritischen Schritt zur Sicherstellung der Datenqualität in der gesamten Verarbeitungspipeline dar. Während YOLO-basierte Objekterkennung und OCR-Engines bereits intrinsische Konfidenzwerte liefern, erfordert die Anwendung im Kontext von Gleisplanerkennung zusätzliche domänenspezifische Validierungen, die sowohl syntaktische als auch semantische Korrektheit überprüfen. Das implementierte System kombiniert regelbasierte Validierung mit intelligenten Korrekturvorschlägen, um sowohl offensichtliche Fehler automatisch zu beheben als auch komplexere Inkonsistenzen zur manuellen Prüfung zu kennzeichnen.
 
 \subsection{Validierungsarchitektur}
@@ -2166,12 +2166,12 @@ Die Implementierung der Datenbankpersistierung nutzt prepared statements und par
 Das Validierungssystem kombiniert regelbasierte Prüfungen mit intelligenten Korrekturvorschlägen und bietet eine benutzerfreundliche UI zur Qualitätssicherung. Durch Persistierung der Ergebnisse in PostgreSQL werden langfristige Qualitätsanalysen und iterative Modellverbesserungen ermöglicht. Korrekturen mit niedriger Konfidenz oder mehrdeutigen Fällen werden dem Benutzer zur manuellen Prüfung vorgelegt.
 
 \section{Unterstützende Komponenten}
-
+\label{sec:unterstützendekomponente}
 Neben der Kernfunktionalität der Extraktionspipeline (Objekterkennung, Texterkennung, Symbol-Text-Verknüpfung) wurden mehrere unterstützende Komponenten entwickelt, die für den praktischen Einsatz des Systems in realen Anwendungsszenarien erforderlich sind. Diese Komponenten adressieren die Anforderungen an Versionsverwaltung, Rückverfolgbarkeit und persistente Datenhaltung, welche für den operativen Einsatz in ingenieurwissenschaftlichen Workflows unerlässlich sind.
 
 \subsection{Versionsvergleich und Änderungsdetektion}
 \label{subsec:vergleichundänderung}
-Die systematische Identifikation und Dokumentation von Änderungen zwischen verschiedenen Versionen eines Gleisplans stellt eine zentrale Anforderung in der Eisenbahnplanung dar. Zur Realisierung dieser Funktionalität wurde ein Diff-Algorithmus implementiert, der auf der Generierung eindeutiger Identifikatoren und mengentheoretischen Operationen basiert.
+Die systematische Identifikation und Dokumentation von Änderungen zwischen verschiedenen Versionen eines Gleisplans stellt eine zentrale Anforderung in der Eisenbahnplanung dar. Diese Funktionalität wird vom Benutzer manuell über die Benutzeroberfläche initiiert, nicht als Teil der automatischen Verarbeitungspipeline. Zur Realisierung dieser Funktionalität wurde ein Diff-Algorithmus implementiert, der auf der Generierung eindeutiger Identifikatoren und mengentheoretischen Operationen basiert.
 
 \subsubsection{Generierung eindeutiger Identifikatoren}
 
@@ -2823,7 +2823,7 @@ s_B = s_A \cdot \frac{h_B}{h_A}
 wobei $s_A$ die Scrollposition in Viewer A, $h_A$ dessen Gesamthöhe und entsprechend für Viewer B. Dies gewährleistet proportionale Navigation bei unterschiedlichen Seitengrößen.
 
 \subsection{Export-Funktionalität}
-
+\label{subsec:exportfunktionlität}
 \subsubsection{Excel-Export}
 
 Der Excel-Export erzeugt strukturierte Arbeitsblätter mit automatischer Spaltenformatierung. Jede Objektklasse erhält ein eigenes Tabellenblatt mit klassenspezifischen Spalten. Die Farbcodierung übernimmt die UI-Farbschemata zur konsistenten visuellen Darstellung:
@@ -2881,24 +2881,24 @@ Dieses Kapitel stellte die technische Realisierung der automatisierten Datenextr
 
 Die Extraktionspipeline besteht aus folgenden Hauptmodulen:
 
-\textbf{Objekterkennung (Kapitel 6.2):}
+\textbf{Objekterkennung (Abschnitt \ref{sec:objekterkennungmityolov8obb}):}
 Das YOLOv8-OBB Modell wurde auf einem selbst erstellten Datensatz trainiert und ermöglicht die rotationsinvariante Detektion von Bahnelementen in hochauflösenden PDF-Plänen. Die Inferenz erfolgt mittels einer Tiling-Strategie, die große Dokumente in überlappende Bildkacheln unterteilt und anschließend die Detektionen in das Gesamtkoordinatensystem rücktransformiert.
 
-\textbf{OCR-Pipeline (Kapitel 6.3):}
+\textbf{OCR-Pipeline (Abschnitt \ref{sec:ocrpipeline}):}
 Die orientierungsadaptive OCR-Pipeline bildet das Herzstück der Textextraktion. Durch die Kaskadierung dreier OCR-Engines (PaddleOCR, Tesseract, EasyOCR) wird eine hohe Erkennungsrobustheit erreicht. Das Dual-Winkel-Routing-System behandelt sowohl achsenparallele als auch beliebig rotierte Texte mittels unterschiedlicher Transformationsstrategien. Klassenspezifische Vorverarbeitungspipelines passen die Bildaufbereitung an die jeweiligen Charakteristika der Symbole an (z.B. adaptive Padding für Signale, morphologische Filterung für Balisenplatten). Die Validierung erfolgt durch regex-basierte Pattern-Matching-Verfahren mit konfidenzgewichteten Scoring-Mechanismen.
 
-\textbf{Symbol-Text-Verknüpfung (Kapitel 6.4):}
+\textbf{Symbol-Text-Verknüpfung (Abschnitt \ref{sec:intelligentesymboltextverknüpfung}):}
 Die intelligente Linking-Komponente ordnet extrahierte Texte ihren zugehörigen Symbolen zu. Die rotationsinvariante Koordinatentransformation ermöglicht eine geometrisch konsistente Richtungsbeziehung unabhängig von der Symbolorientierung. Der proximity-basierte Algorithmus nutzt klassenspezifische Suchradien und berücksichtigt erwartete räumliche Relationen. Ein adaptiver Lernmechanismus erfasst wiederkehrende Layoutmuster und optimiert die Verknüpfung durch probabilistische Fenstersuche. Speziallogiken behandeln komplexe Fälle wie die geometrische Ableitung der Fahrtrichtung aus der Balisen-Signal-Relation oder die Gruppierung von Haltepunkt-Tripeln.
 
 \subsection{Unterstützende Systeme}
 
-\textbf{Validierung und Qualitätssicherung (Kapitel 6.5):}
+\textbf{Validierung und Qualitätssicherung (Abschnitt \ref{sec:validierungundsicherung}):}
 Ein mehrstufiges Validierungsframework prüft extrahierte Daten syntaktisch (regex-basiert), semantisch (Plausibilitätsbereiche) und referentiell (Vollständigkeit von Relationen). Automatische Korrekturen behandeln häufige OCR-Fehler, während fehlerhafte Einträge zur manuellen Überprüfung gekennzeichnet werden. Die Integration mit der UI ermöglicht einen interaktiven Validierungsworkflow.
 
-\textbf{Versionsvergleich und Rückverfolgbarkeit (Kapitel 6.6):}
+\textbf{Versionsvergleich und Rückverfolgbarkeit (Abschnitt \ref{sec:unterstützendekomponente}):}
 Die Versionsvergleichskomponente nutzt UID-basierte Identifikation zur Detektion von Änderungen, Hinzufügungen und Entfernungen zwischen Planrevisionen. Mengenoperationen auf den extrahierten Objekten ermöglichen eine effiziente Differenzberechnung. Das Rückverfolgbarkeitssystem persistiert für jedes extrahierte Element die Quellkoordinaten und PDF-Metadaten, wodurch eine bidirektionale Navigation zwischen Datenansicht und Plandarstellung ermöglicht wird.
 
-\textbf{Benutzeroberfläche (Kapitel 6.7):}
+\textbf{Benutzeroberfläche (Abschnitt \ref{sec:benutzeroberfläche}):}
 Die PyQt5-basierte Benutzeroberfläche integriert die Pipeline-Komponenten in einem interaktiven Workflow. Der PDF-Viewer visualisiert Detektionen mittels farbcodierter Overlays und unterstützt Click-to-Highlight-Navigation. Die Ergebnistabelle bietet Sortier- und Filterfunktionen sowie Inline-Editing für Korrekturen. Der Validierungsdialog strukturiert fehlerhafte Einträge nach Fehlertyp und ermöglicht Batch-Operationen. Die Vergleichsansicht stellt Änderungen zwischen Planversionen side-by-side dar.
 
 \subsection{Implementierungsumfang}
@@ -2926,7 +2926,7 @@ UI-Komponenten & \textasciitilde2.100 \\
 \label{tab:implementation_scope}
 \end{table}
 
-Die Architektur folgt einer modularen Struktur, die eine klare Trennung der Verarbeitungsstufen gewährleistet. Zentrale Design-Entscheidungen (vgl. Kapitel 5) wurden konsequent umgesetzt:
+Die Architektur folgt einer modularen Struktur, die eine klare Trennung der Verarbeitungsstufen gewährleistet. Zentrale Design-Entscheidungen (vgl. Kapitel \ref{chap:konzeption}) wurden konsequent umgesetzt:
 
 \begin{itemize}
     \item \textbf{Kaskadierte Fehlerbehandlung}: Jede Verarbeitungsstufe implementiert Fallback-Mechanismen zur Behandlung von Randfällen.
@@ -2945,7 +2945,7 @@ Die gesamte Verarbeitungszeit für einen typischen Gleisplan variiert je nach Ko
 T_{total} = T_{YOLO} + \sum_{i=1}^{N} T_{OCR_i} + T_{linking} + T_{validation}
 \end{equation}
 
-wobei $N$ die Anzahl der detektierten Objekte bezeichnet und $T_{OCR_i}$ die klassenspezifische OCR-Dauer für Objekt $i$ repräsentiert. Eine detaillierte Performanz-Analyse mit konkreten Zeitmessungen erfolgt in Kapitel 7 (Evaluation).
+wobei $N$ die Anzahl der detektierten Objekte bezeichnet und $T_{OCR_i}$ die klassenspezifische OCR-Dauer für Objekt $i$ repräsentiert. Eine detaillierte Performanz-Analyse mit konkreten Zeitmessungen erfolgt in Kapitel \ref{chap:evaluation}.
 
 \subsection{Schnittstellen und Erweiterbarkeit}
 
@@ -2964,4 +2964,4 @@ Diese Modularität ermöglicht die zukünftige Integration alternativer Modelle 
 
 Die vorgestellte Implementierung realisiert eine vollständige Pipeline von der PDF-Eingabe bis zum strukturierten Datenexport. Die Kombination aus lernbasierten Komponenten (YOLO, neuronale OCR-Engines), algorithmischen Verfahren (Koordinatentransformation, Proximity-Search) und regelbasierten Validierungen schafft ein robustes System für die Extraktion von Bahnanlagendaten aus technischen Zeichnungen.
 
-Die technische Evaluation der implementierten Komponenten, einschließlich Genauigkeitsmetriken, Fehleranalysen und Performanzmessungen, wird im folgenden Kapitel 7 präsentiert.
+Die technische Evaluation der implementierten Komponenten, einschließlich Genauigkeitsmetriken, Fehleranalysen und Performanzmessungen, wird im folgenden Kapitel \ref{chap:evaluation} präsentiert.
