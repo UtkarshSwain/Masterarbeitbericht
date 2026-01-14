@@ -2,29 +2,27 @@
 \label{chap:anforderungen}
 Die in Kapitel 3 dargelegten theoretischen und technischen Grundlagen bilden das Fundament für die praktische Umsetzung des Systems. In den nachfolgenden Schritten erfolgt die Konkretisierung der Anforderungen an den zu entwickelnden Prototyp. Die vorliegende Analyse leitet sich aus den funktionalen Zielen des Projektes sowie den nicht-funktionalen Rahmenbedingungen im industriellen Umfeld der Siemens Mobility GmbH ab. Zu diesem Zweck werden die Systemgrenzen, Datenformate sowie potenzielle technische Herausforderungen strukturiert analysiert.
 
-
-
 \section{Funktionale Anforderungen}
+\label{sec:funktionaleanforderungen}
 Im Rahmen dieser Arbeit wird ein Prototyp entwickelt, der die automatisierte Extraktion und Interpretation von Informationen aus technischen Gleisplänen ermöglicht. Die funktionalen Anforderungen ergeben sich aus den spezifischen Aufgabenstellungen der Signaltechnik-Planung. Das System soll folgende Kernfunktionen erfüllen:
 
 \subsection{Symbolerkennung und Objektklassifizierung}
-\label{sec:req_symbol}
+\label{subsec:req_symbol}
 Eine zentrale Anforderung ist die zuverlässige Detektion bahntechnischer Symbole in Vektor- oder Rastergrafiken.
 
-\begin{enumerate}
-    \item \textbf{Erkennungsrate:} Das System muss mindestens 90\,\% der definierten 
-    Symbolklassen automatisiert erkennen (gemessen als Recall des YOLO-Modells).
+\begin{itemize}
+    \item \textbf{FA-001}\label{req:FA-001} \textbf{Erkennungsrate:} Das System muss mindestens 90\,\% der definierten Symbolklassen automatisiert erkennen (gemessen als Recall des YOLO-Modells).
 
-    \item \textbf{Rotationsinvarianz:} Da Symbole in Gleisplänen der Topologie folgend in beliebigen Winkeln angeordnet sein können, muss die Erkennung rotationsinvariant erfolgen. Das System muss in der Lage sein, Objekte unabhängig von ihrer Orientierung ($0^\circ$ bis $360^\circ$) korrekt zu klassifizieren und deren Winkel (Rotation) präzise zu bestimmen.
-    \item \textbf{Zielobjekte:} Basierend auf der Domänenanalyse wurden die in Tabelle \ref{tab:symbole} dargestellten Symbole als primäre Detektionsziele definiert.
+    \item \textbf{FA-002}\label{req:FA-002} \textbf{Rotationsinvarianz:} Da Symbole in Gleisplänen der Topologie folgend in beliebigen Winkeln angeordnet sein können, muss die Erkennung rotationsinvariant erfolgen. Das System muss in der Lage sein, Objekte unabhängig von ihrer Orientierung ($0^\circ$ bis $360^\circ$) korrekt zu klassifizieren und deren Winkel (Rotation) präzise zu bestimmen.
+    
+    \item \textbf{FA-003}\label{req:FA-003} \textbf{Zielobjekte:} Basierend auf der Domänenanalyse wurden die in Tabelle \ref{tab:objekte} dargestellten Objekte als primäre Detektionsziele definiert.
 
 \begin{longtable}{|p{4cm}|p{8cm}|}
     \hline
-    \textbf{Bezeichnung} & \centering\textbf{Symbol} \tabularnewline
+    \textbf{Objektklasse} & \centering\textbf{Symbol} \tabularnewline
     \hline
     \endhead
 
-    % Row 1: Signale (Removed 1st, Kept 2nd)
     Signale & 
     \parbox[c]{8cm}{\centering
         \vspace{0.2cm}
@@ -33,7 +31,6 @@ Eine zentrale Anforderung ist die zuverlässige Detektion bahntechnischer Symbol
     } \\ 
     \hline 
 
-    % Row 2: Positionsangabe (Kept 1st, Removed 2nd)
     Positionsangabe & 
     \parbox[c]{8cm}{\centering
         \vspace{0.2cm}
@@ -42,7 +39,6 @@ Eine zentrale Anforderung ist die zuverlässige Detektion bahntechnischer Symbol
     } \\
     \hline
 
-    % Row 3: Gleiskoppelspulen (Kept 1st, Removed 2nd)
     Gleiskoppelspulen & 
     \parbox[c]{8cm}{\centering
         \vspace{0.2cm}
@@ -51,7 +47,6 @@ Eine zentrale Anforderung ist die zuverlässige Detektion bahntechnischer Symbol
     } \\
     \hline
 
-    % Row 4: Haltepunkt (Removed 1st, Kept 2nd)
     Haltepunkt & 
     \parbox[c]{8cm}{\centering
         \vspace{0.2cm}
@@ -60,7 +55,6 @@ Eine zentrale Anforderung ist die zuverlässige Detektion bahntechnischer Symbol
     } \\
     \hline
 
-    % Row 5: Weichen (Removed 1st, Kept 2nd)
     Weichen & 
     \parbox[c]{8cm}{\centering
         \vspace{0.2cm}
@@ -69,27 +63,17 @@ Eine zentrale Anforderung ist die zuverlässige Detektion bahntechnischer Symbol
     } \\
     \hline
 
-    \caption{Übersicht der Symbole}
-    \label{tab:symbole}
+    \caption{Übersicht der Objekte}
+    \label{tab:objekte}
 \end{longtable}
 
-
-
-
-
-\end{enumerate}
+\end{itemize}
 
 \subsection{Texterkennung und OCR-Integration}
-\begin{enumerate}[resume]
-    \item \textbf{OCR-Genauigkeit:} Integration von OCR zur Extraktion von Textinformationen (Signalbezeichnungen, Kilometrierungen). 
-
-    Das System soll eine hohe Texterkennung erreichen, wobei typische OCR-Fehler 
-    (Verwechslungen von O/0, I/1, etc.) durch domänenspezifische Validierung 
-    (Regex-Muster) automatisch erkannt und korrigiert werden können.
-
-    Die tatsächlich erreichte Character Error Rate (CER) wird in Kapitel 7 quantitativ 
-    ermittelt.
-    \item \textbf{Robustheit:} Die Texterkennung muss auch unter erschwerten Bedingungen zuverlässig funktionieren. Dazu zählen:
+\begin{itemize}
+    \item \textbf{FA-004}\label{req:FA-004} \textbf{OCR-Genauigkeit:} Integration von OCR zur Extraktion von Textinformationen (Signalbezeichnungen, Kilometrierungen). Das System soll eine hohe Texterkennung erreichen, wobei typische OCR-Fehler (Verwechslungen von O/0, I/1, etc.) durch domänenspezifische Validierung (Regex-Muster) automatisch erkannt und korrigiert werden können. Die tatsächlich erreichte Character Error Rate (CER) wird in Kapitel 7 quantitativ ermittelt.
+    
+    \item \textbf{FA-005}\label{req:FA-005} \textbf{Robustheit:} Die Texterkennung muss auch unter erschwerten Bedingungen zuverlässig funktionieren. Dazu zählen:
     \begin{itemize}
         \item Niedriger Kontrast oder Artefakte durch Scan-Vorgänge (Bildrauschen).
         \item Rotierte Beschriftungen in kardinalen Orientierungen ($0^\circ, 90^\circ, 180^\circ, 270^\circ$) sowie Abweichungen bis $\pm 15^\circ$ durch manuelle Platzierung oder Export-Toleranzen.
@@ -97,26 +81,28 @@ Eine zentrale Anforderung ist die zuverlässige Detektion bahntechnischer Symbol
     \end{itemize}
     \begin{figure}[h]
     \centering
-    % Placeholder graphic
     \includegraphics[width=5cm]{images/Kapitel4/OCRsample.png} 
     \caption{Beispielhafte Extraktion von Text und Position am Symbol GKS}
     \label{fig:Ocrsample}
     \end{figure}
-\end{enumerate}
+\end{itemize}
 
 \subsection{Semantische Verknüpfung und Logik}
 Über die reine Detektion hinaus muss das System logische Zusammenhänge zwischen den erkannten Elementen herstellen (\enquote{Intelligent Linking}):
 
-\begin{enumerate}[resume]
-    \item \textbf{Fahrtrichtungsdetektion:} Basierend auf der geometrischen Orientierung (Rotationswinkel) von Signalen und Weichen muss automatisch die Wirkrichtung (z.\,B. in Richtung steigender oder fallender Kilometrierung) abgeleitet werden.
-    \item \textbf{Gruppierung von Attributen:} Zusammengehörige Informationen, wie z.\,B. ein Haltepunkt-Symbol und die dazugehörige Kilometrierungsangabe (Text), müssen räumlich assoziiert und als ein logisches Objekt gespeichert werden (\enquote{Coordinate Grouping}).
-    \item \textbf{Multi-Koordinaten-Parsing:} Bei komplexen Objekten wie Weichenblöcken muss das System in der Lage sein, mehrere relevante Koordinatenpunkte (z.\,B. Weichenspitze, Herzstück) zu extrahieren und einem einzigen Weichen-Objekt zuzuordnen.
-    \item \textbf{Manuelle Korrektur (Human-in-the-Loop):} Da automatische Heuristiken fehleranfällig sein können, muss das System eine Möglichkeit bieten, automatisch erstellte Verknüpfungen manuell zu überschreiben oder zu korrigieren (\enquote{Linking Override}).
-\end{enumerate}
+\begin{itemize}
+    \item \textbf{FA-006}\label{req:FA-006} \textbf{Fahrtrichtungsdetektion:} Basierend auf der geometrischen Orientierung (Rotationswinkel) von Signalen und Weichen muss automatisch die Wirkrichtung (z.\,B. in Richtung steigender oder fallender Kilometrierung) abgeleitet werden.
+    
+    \item \textbf{FA-007}\label{req:FA-007} \textbf{Gruppierung von Attributen:} Zusammengehörige Informationen, wie z.\,B. ein Haltepunkt-Symbol und die dazugehörige Kilometrierungsangabe (Text), müssen räumlich assoziiert und als ein logisches Objekt gespeichert werden (\enquote{Coordinate Grouping}).
+    
+    \item \textbf{FA-008}\label{req:FA-008} \textbf{Multi-Koordinaten-Parsing:} Bei komplexen Objekten wie Weichenblöcken muss das System in der Lage sein, mehrere relevante Koordinatenpunkte (z.\,B. Weichenspitze, Herzstück) zu extrahieren und einem einzigen Weichen-Objekt zuzuordnen.
+    
+    \item \textbf{FA-009}\label{req:FA-009} \textbf{Manuelle Korrektur (Human-in-the-Loop):} Da automatische Heuristiken fehleranfällig sein können, muss das System eine Möglichkeit bieten, automatisch erstellte Verknüpfungen manuell zu überschreiben oder zu korrigieren (\enquote{Linking Override}).
+\end{itemize}
 
 \subsection{Datenaufbereitung und Export}
-\begin{enumerate}[resume]
-    \item \textbf{Excel-Integration:} Die extrahierten Daten müssen vollautomatisch in vordefinierte Projektierungs- oder Prüftabellen (Excel .xlsx) übertragen werden. Dabei ist essenziell, dass die Daten in die semantisch korrekten Zellen (Zeilen/Spalten) geschrieben werden.
+\begin{itemize}
+    \item \textbf{FA-010}\label{req:FA-010} \textbf{Excel-Integration:} Die extrahierten Daten müssen vollautomatisch in vordefinierte Projektierungs- oder Prüftabellen (Excel .xlsx) übertragen werden. Dabei ist essenziell, dass die Daten in die semantisch korrekten Zellen (Zeilen/Spalten) geschrieben werden.
     \begin{figure}[H]
     \centering
     \includegraphics[width=6cm]{images/Kapitel4/excelübertragung.png} 
@@ -124,18 +110,15 @@ Eine zentrale Anforderung ist die zuverlässige Detektion bahntechnischer Symbol
     \label{fig:excelübertragung}
     \end{figure}
 
-    \item \textbf{Strukturerhalt:} Beim Import in bestehende Dateien darf die vorhandene Struktur (Formatierung, Formeln, Makros) nicht beschädigt werden. Das System darf lediglich Werte (Values) in definierte Bereiche einfügen (Non-destructive Update).
+    \item \textbf{FA-011}\label{req:FA-011} \textbf{Strukturerhalt:} Beim Import in bestehende Dateien darf die vorhandene Struktur (Formatierung, Formeln, Makros) nicht beschädigt werden. Das System darf lediglich Werte (Values) in definierte Bereiche einfügen (Non-destructive Update).
     
-        \item \textbf{Änderungsverfolgung (Diff-Funktion)}:
-    
-        Automatischer Vergleich zweier Planversionen mit Kategorisierung:
+    \item \textbf{FA-012}\label{req:FA-012} \textbf{Änderungsverfolgung (Diff-Funktion):} Automatischer Vergleich zweier Planversionen mit Kategorisierung:
         \begin{itemize}
             \item Hinzugefügt: Neue Objekte in Version B
             \item Entfernt: Objekte aus Version A fehlen in Version B
             \item Verschoben: Identische Kennung, unterschiedliche Position
             \item Modifiziert: Gleiche Position, geänderter Text
         \end{itemize}
-    
     Export als separates Excel-Sheet mit Spalten: Objektklasse, Kennung, Änderungstyp, Alt-Wert, Neu-Wert, Koordinaten. Visuelle Darstellung: farbkodierte Overlays (grün/rot/orange).
     \begin{figure}[H]
     \centering
@@ -144,72 +127,84 @@ Eine zentrale Anforderung ist die zuverlässige Detektion bahntechnischer Symbol
     \label{fig:änderungsample}
     \end{figure}
 
-    \item \textbf{Visuelle Validierung:} Zur manuellen Überprüfung (\enquote{Ground Truthing}) sollen im ausgegebenen Gleisplan (oder einer Overlay-Ansicht) alle erkannten Objekte durch farbige Bounding Boxes markiert werden.
+    \item \textbf{FA-013}\label{req:FA-013} \textbf{Visuelle Validierung:} Zur manuellen Überprüfung (\enquote{Ground Truthing}) sollen im ausgegebenen Gleisplan (oder einer Overlay-Ansicht) alle erkannten Objekte durch farbige Bounding Boxes markiert werden.
     \begin{figure}[H]
     \centering
     \includegraphics[width=14cm]{images/Kapitel4/gleisplanmarkierung.png} 
     \caption{Visuelle Validierung durch Bounding-Box-Overlays im Gleisplan \cite{railroadstationdrawing}}
     \label{fig:gleisplanmarkierung}
     \end{figure}
-\end{enumerate}
+\end{itemize}
 
 \subsection{Benutzerinteraktion und Konfiguration}
-\begin{enumerate}[resume]
-    \item \textbf{Grafische Benutzeroberfläche (GUI):} Die Bedienung soll über eine intuitive Oberfläche erfolgen, die den Upload von PDF-Dateien, den Start der Analyse sowie den Export ermöglicht, ohne dass Kommandozeilen-Kenntnisse erforderlich sind.
-    \item \textbf{Konfigurierbarkeit:} Kundenspezifische Anpassungen, wie z.\,B. Mappings von Symbolklassen zu internen IDs oder spezifische OCR-Parameter, müssen über externe Konfigurationsdateien (YAML/JSON) anpassbar sein, ohne den Quellcode anpassen zu müssen.
-    \item \textbf{Modularität:} Die Architektur muss so gestaltet sein, dass neue Symboltypen durch ein Nachtraining des Modells integriert werden können (\enquote{Model-as-a-Service}-Ansatz), ohne die Kernlogik der Anwendung zu verändern.
-\end{enumerate}
+\begin{itemize}
+    \item \textbf{FA-014}\label{req:FA-014} \textbf{Grafische Benutzeroberfläche (GUI):} Die Bedienung soll über eine intuitive Oberfläche erfolgen, die den Upload von PDF-Dateien, den Start der Analyse sowie den Export ermöglicht, ohne dass Kommandozeilen-Kenntnisse erforderlich sind.
+    
+    \item \textbf{FA-015}\label{req:FA-015} \textbf{Konfigurierbarkeit:} Kundenspezifische Anpassungen, wie z.\,B. Mappings von Symbolklassen zu internen IDs oder spezifische OCR-Parameter, müssen über externe Konfigurationsdateien (YAML/JSON) anpassbar sein, ohne den Quellcode anpassen zu müssen.
+    
+    \item \textbf{FA-016}\label{req:FA-016} \textbf{Modularität:} Die Architektur muss so gestaltet sein, dass neue Symboltypen durch ein Nachtraining des Modells integriert werden können (\enquote{Model-as-a-Service}-Ansatz), ohne die Kernlogik der Anwendung zu verändern.
+\end{itemize}
 
 \section{Nicht-funktionale Anforderungen}
+\label{sec:nichtfunktionaleanforderungen}
 Ergänzend zu den funktionalen Zielen definieren die nicht-funktionalen Anforderungen die Qualitätsmerkmale und Rahmenbedingungen des Systems.
 
 \subsection{Sicherheit und Datenschutz}
-\begin{enumerate}
-    \item \textbf{On-Premise-Verarbeitung}: Keine Datenübertragung an externe 
-    Cloud-Services. Vollständig lokale Ausführung auf Siemens-Systemen. 
-    Offline-Betrieb gewährleistet.
-    
-    \item \textbf{Lizenzkonformität}: Ausschließlich Open-Source-Bibliotheken mit 
-    genehmigten Lizenzen (Apache 2.0, MIT, BSD). Dokumentation aller Abhängigkeiten.
-\end{enumerate}
-
-\subsection{Qualität und Zuverlässigkeit}
-\begin{enumerate}[resume]
-    \item \textbf{Gesamtsystem-Genauigkeit}: Mindestens 85\,\% aller Objekte müssen 
-    vollständig korrekt extrahiert werden (Detektion + OCR + Linking + Export korrekt). 
-    Verbleibende 15\,\% erfordern manuelle Korrektur. Messung in Kapitel 7 auf 
-    Ground-Truth-Datensatz.
-    
-    \item \textbf{Robustheit}: Resilient gegenüber fehlerhaften Eingaben (korrupte 
-    PDFs, Rauschen). Definierte Fehlermeldungen statt Absturz.
-    
-    \item \textbf{Prüfbarkeit}: Visuelle Validierung aller Ergebnisse (Bounding-Box-Overlay). 
-    Rückverfolgbarkeit: Klick auf Tabellenzeile zeigt Position im Plan.
-\end{enumerate}
-
-\subsection{Effizienz und Wirtschaftlichkeit}
-\begin{enumerate}[resume]
-    \item \textbf{Prozessoptimierung:} Das Hauptziel ist die Reduktion des manuellen Prüfaufwands. Das Tool soll den Prozess vom zeitintensiven \enquote{4-Augen-Prinzip} (zwei Menschen prüfen manuell) hin zu einem KI-gestützten Prozess (\enquote{Mensch prüft KI}) transformieren.
-    \item \textbf{Ressourceneffizienz:} Die Analyse eines durchschnittlichen Bahnhofsplans sollte auf Standard-Hardware in akzeptabler Zeit (wenige Minuten) durchführbar sein.
-\end{enumerate}
-
-\subsection{Wartbarkeit und Erweiterbarkeit}
-\begin{enumerate}[resume]
-    \item \textbf{Erweiterbarkeit:} Der Code ist modular zu strukturieren, um zukünftige Erweiterungen (z.\,B. Anbindung an CAD-Systeme) zu erleichtern.
-    \item \textbf{Update-Fähigkeit:} Neue Symbolvarianten müssen über Konfigurations-Updates oder neue Modell-Gewichte (Weights) einspielbar sein.
-\end{enumerate}
-
-\section{Datenquellen und Formate}
-Die Datengrundlage bilden reale Gleispläne aus dem Bereich \textit{Trainguard MT ZUB} der Siemens Mobility GmbH.
-
-\subsection{Datenquellen}
 \begin{itemize}
-    \item \textbf{Primäre Quelle:} Kundenspezifische Gleispläne im PDF-/Bildformat. Diese enthalten Vektor- oder Rastergrafiken, exportiert aus CAD-Systemen (AutoCAD, LCAD). Die Auflösung beträgt in der Regel $\geq 300$ dpi.
-    \item \textbf{Sekundäre Quellen:} Historische Bestandspläne (Scans) sowie synthetisch erzeugte Testdaten zur Überprüfung der Robustheit.
+    \item \textbf{NFA-001}\label{req:NFA-001} \textbf{On-Premise-Verarbeitung:} Keine Datenübertragung an externe Cloud-Services. Vollständig lokale Ausführung auf Siemens-Systemen. Offline-Betrieb gewährleistet.
+    
+    \item \textbf{NFA-002}\label{req:NFA-002} \textbf{Lizenzkonformität:} Ausschließlich Open-Source-Bibliotheken mit genehmigten Lizenzen (Apache 2.0, MIT, BSD). Dokumentation aller Abhängigkeiten.
 \end{itemize}
 
-\subsection{Datenformate}
-Tabelle \ref{tab:formate-prototyp} gibt einen Überblick über die im System verwendeten Dateiformate.
+\subsection{Qualität und Zuverlässigkeit}
+\begin{itemize}
+    \item \textbf{NFA-003}\label{req:NFA-003} \textbf{Gesamtsystem-Genauigkeit:} Mindestens 85\,\% aller Objekte müssen vollständig korrekt extrahiert werden (Detektion + OCR + Linking + Export korrekt). Verbleibende 15\,\% erfordern manuelle Korrektur. Messung in Kapitel 7 auf Ground-Truth-Datensatz.
+    
+    \item \textbf{NFA-004}\label{req:NFA-004} \textbf{Robustheit:} Resilient gegenüber fehlerhaften Eingaben (korrupte PDFs, Rauschen). Definierte Fehlermeldungen statt Absturz.
+    
+    \item \textbf{NFA-005}\label{req:NFA-005} \textbf{Prüfbarkeit:} Visuelle Validierung aller Ergebnisse (Bounding-Box-Overlay). Rückverfolgbarkeit: Klick auf Tabellenzeile zeigt Position im Plan.
+\end{itemize}
+
+\subsection{Effizienz und Wirtschaftlichkeit}
+\begin{itemize}
+    \item \textbf{NFA-006}\label{req:NFA-006} \textbf{Prozessoptimierung:} Das Hauptziel ist die Reduktion des manuellen Prüfaufwands. Das Tool soll den Prozess vom zeitintensiven \enquote{4-Augen-Prinzip} (zwei Menschen prüfen manuell) hin zu einem KI-gestützten Prozess (\enquote{Mensch prüft KI}) transformieren.
+    
+    \item \textbf{NFA-007}\label{req:NFA-007} \textbf{Ressourceneffizienz:} Die Analyse eines durchschnittlichen Bahnhofsplans sollte auf Standard-Hardware in akzeptabler Zeit (wenige Minuten) durchführbar sein.
+\end{itemize}
+
+\subsection{Wartbarkeit und Erweiterbarkeit}
+\begin{itemize}
+    \item \textbf{NFA-008}\label{req:NFA-008} \textbf{Erweiterbarkeit:} Der Code ist modular zu strukturieren, um zukünftige Erweiterungen (z.\,B. Anbindung an CAD-Systeme) zu erleichtern.
+    
+    \item \textbf{NFA-009}\label{req:NFA-009} \textbf{Update-Fähigkeit:} Neue Symbolvarianten müssen über Konfigurations-Updates oder neue Modell-Gewichte (Weights) einspielbar sein.
+\end{itemize}
+
+\subsection{Datenformate und Schnittstellen}
+\label{subsec:datenformate}
+Die Datengrundlage bilden reale Gleispläne aus dem Bereich \textit{Trainguard MT ZUB} der Siemens Mobility GmbH. Das System muss mit verschiedenen Eingabeformaten und Datenquellen kompatibel sein.
+
+\begin{itemize}
+    \item \textbf{NFA-010}\label{req:NFA-010} \textbf{Eingabeformate:} Das System muss folgende Eingabeformate verarbeiten können:
+    \begin{itemize}
+        \item PDF-Dateien (Vektor- und Rastergrafiken)
+        \item Bilddateien (PNG, JPG) mit Mindestauflösung $\geq 300$ dpi
+    \end{itemize}
+    
+    \item \textbf{NFA-011}\label{req:NFA-011} \textbf{Datenquellen:} Das System muss mit folgenden Datenquellen kompatibel sein:
+    \begin{itemize}
+        \item \textbf{Primäre Quelle:} Kundenspezifische Gleispläne im PDF-/Bildformat. Diese enthalten Vektor- oder Rastergrafiken, exportiert aus technischen Zeichnungs- und Planungssystemen (z.\,B. AutoCAD, LCAD).
+        \item \textbf{Sekundäre Quellen:} Historische Bestandspläne (Scans mit potentiell niedrigerer Qualität) sowie synthetisch erzeugte Testdaten zur Überprüfung der Robustheit.
+    \end{itemize}
+    
+    \item \textbf{NFA-012}\label{req:NFA-012} \textbf{Ausgabeformate:} Das System muss Ergebnisse in folgenden Formaten exportieren können:
+    \begin{itemize}
+        \item Excel-Arbeitsmappe (.xlsx) für Engineering-Workflows
+        \item CSV für einfachen Datenaustausch
+        \item JSON für API-Schnittstellen
+    \end{itemize}
+\end{itemize}
+
+Tabelle \ref{tab:formate-prototyp} gibt einen detaillierten Überblick über die im System verwendeten Dateiformate und deren Einsatz in der Verarbeitungspipeline.
 
 \begin{table}[H]
 \centering
@@ -229,12 +224,12 @@ Tabelle \ref{tab:formate-prototyp} gibt einen Überblick über die im System ver
  & JSON & API-Response & Schnittstellenanbindung \\
 \hline
 \end{tabularx}
-\caption{Übersicht der unterstützten Datenformate}
+\caption{Übersicht der unterstützten Datenformate (siehe \ref{req:NFA-010} bis \ref{req:NFA-012})}
 \label{tab:formate-prototyp}
 \end{table}
 
 \section{Herausforderungen bei der Umsetzung}
-Die Realisierung der Anforderungen sieht sich folgenden technischen Herausforderungen gegenüber:
+Die Realisierung der in den Abschnitten \ref{subsec:req_symbol} bis \ref{subsec:datenformate} definierten Anforderungen sieht sich folgenden technischen Herausforderungen gegenüber:
 
 \begin{enumerate}
     \item \textbf{Daten-Heterogenität:} Die Varianz in den Eingabedaten (unterschiedliche Export-Einstellungen, Linienstärken, Skalierungen) erschwert eine universelle Regelbildung.
