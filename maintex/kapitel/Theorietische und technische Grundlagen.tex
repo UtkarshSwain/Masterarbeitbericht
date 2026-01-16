@@ -233,7 +233,7 @@ Die in diesem Abschnitt dargestellten Verfahren -- von zweistufigen Detektoren w
 \section{Oriented Object Detection für rotierte Objekte}
 \label{sec:obb}
 
-Die in Abschnitt \ref{sec:objekterkennung} vorgestellten objekterkennenden Modelle basieren überwiegend auf achsenparallelen Bounding Boxes (Axis-Aligned Bounding Boxes, AABB)\cite{redmon2016lookonceunifiedrealtime}. Bei der Detektion rotierter Objekte, wie sie in technischen Zeichnungen und Gleisplänen vorliegen, stoßen AABB-basierte Ansätze jedoch an fundamentale Grenzen. Oriented Bounding Boxes (OBB) bieten hier eine geometrisch präzisere Alternative, indem sie zusätzlich zum Zentrum und den Abmessungen auch den Rotationswinkel des Objekts modellieren.
+Die in Abschnitt \ref{sec:objekterkennungmityolov8obb} vorgestellten objekterkennenden Modelle basieren überwiegend auf achsenparallelen Bounding Boxes (Axis-Aligned Bounding Boxes, AABB)\cite{redmon2016lookonceunifiedrealtime}. Bei der Detektion rotierter Objekte, wie sie in technischen Zeichnungen und Gleisplänen vorliegen, stoßen AABB-basierte Ansätze jedoch an fundamentale Grenzen. Oriented Bounding Boxes (OBB) bieten hier eine geometrisch präzisere Alternative, indem sie zusätzlich zum Zentrum und den Abmessungen auch den Rotationswinkel des Objekts modellieren.
 
 \subsection{Limitierungen achsenparalleler Bounding Boxes}
 
@@ -850,6 +850,108 @@ TrOCR & Transformer & State-of-the-Art Genauigkeit & Hoher GPU-Bedarf, langsam\\
 \caption{Vergleich etablierter OCR-Systeme für technische Anwendungen}
 \label{tab:ocr_systems_comparison}
 \end{table}
+\subsection{Evaluationsmetriken für Texterkennung}
+\label{subsec:ocr_metriken}
+
+Analog zu den Evaluationsmetriken für die Objekterkennung (Abschnitt \ref{subsec:evaluationsmetriken}) erfordert die Bewertung von OCR-Systemen standardisierte Metriken, die Erkennungsfehler auf verschiedenen Granularitätsebenen quantifizieren. Diese Metriken basieren auf der Levenshtein-Distanz \cite{levenshtein1966}, welche die minimale Anzahl von Editieroperationen (Einfügungen, Löschungen, Ersetzungen) misst, die erforderlich sind, um eine Zeichenkette in eine andere zu transformieren.
+
+\subsubsection{Character Error Rate}
+
+Die \textbf{Character Error Rate (CER)} ist die fundamentale Metrik zur Bewertung von OCR-Systemen und quantifiziert den Anteil fehlerhafter Zeichen im erkannten Text relativ zur Ground Truth \cite{Rice1996_OCRAccuracy}:
+
+\begin{equation}
+\text{CER} = \frac{S + D + I}{N}
+\label{eq:cer}
+\end{equation}
+
+wobei $S$ die Anzahl der Substitutionen (falsch erkannte Zeichen), $D$ die Anzahl der Deletionen (fehlende Zeichen), $I$ die Anzahl der Insertionen (zusätzlich eingefügte Zeichen) und $N$ die Gesamtanzahl der Zeichen in der Ground Truth bezeichnet. Ein CER-Wert von 0 bedeutet perfekte Erkennung, während Werte über 1 theoretisch möglich sind, wenn die Anzahl der Fehler die Anzahl der Referenzzeichen übersteigt.
+
+Die Berechnung der einzelnen Fehlerkomponenten erfolgt mittels dynamischer Programmierung durch den Wagner-Fischer-Algorithmus \cite{Wagner1974_StringCorrection}, der die optimale Alignment-Sequenz zwischen Ground Truth und OCR-Ausgabe ermittelt.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[scale=0.95]
+    % Ground Truth
+    \node[font=\bfseries, anchor=east] at (-0.5, 3) {Ground Truth:};
+    \foreach \char [count=\i] in {A,S,1,0,2} {
+        \node[draw, minimum width=0.9cm, minimum height=0.9cm, fill=green!15, font=\ttfamily] 
+            at (\i*1.1, 3) {\char};
+    }
+    
+    % OCR Output
+    \node[font=\bfseries, anchor=east] at (-0.5, 0.5) {OCR-Ausgabe:};
+    \node[draw, minimum width=0.9cm, minimum height=0.9cm, fill=green!15, font=\ttfamily] at (1.1, 0.5) {A};
+    \node[draw, minimum width=0.9cm, minimum height=0.9cm, fill=red!25, font=\ttfamily] at (2.2, 0.5) {5};
+    \node[draw, minimum width=0.9cm, minimum height=0.9cm, fill=green!15, font=\ttfamily] at (3.3, 0.5) {1};
+    \node[draw, minimum width=0.9cm, minimum height=0.9cm, fill=green!15, font=\ttfamily] at (4.4, 0.5) {0};
+    \node[draw, minimum width=0.9cm, minimum height=0.9cm, fill=green!15, font=\ttfamily] at (5.5, 0.5) {2};
+    
+    % Error indicator
+    \draw[->, thick, red!70!black] (2.2, 1.4) -- (2.2, 1.05);
+    \node[red!70!black, font=\footnotesize] at (2.2, 1.7) {Substitution (S$\rightarrow$5)};
+    
+    % Calculation
+    \node[align=center, font=\small] at (3.3, -0.7) {
+        $S=1, \quad D=0, \quad I=0, \quad N=5$\\[0.2em]
+        $\text{CER} = \frac{1+0+0}{5} = 0.20$ (20\%)
+    };
+\end{tikzpicture}
+\caption{Visualisierung der CER-Berechnung: Die Substitution des Buchstabens \enquote{S} durch die Ziffer \enquote{5} resultiert in einer Character Error Rate von 20\%.}
+\label{fig:cer_example}
+\end{figure}
+
+\subsubsection{Word Error Rate}
+
+Die \textbf{Word Error Rate (WER)} operiert auf Wortebene und wendet dieselbe Editierdistanz-Logik auf Wortsequenzen statt auf Zeichensequenzen an \cite{Morris2004_WER}:
+
+\begin{equation}
+\text{WER} = \frac{S_w + D_w + I_w}{N_w}
+\label{eq:wer}
+\end{equation}
+
+wobei $S_w$, $D_w$, $I_w$ die Substitutionen, Deletionen und Insertionen auf Wortebene und $N_w$ die Gesamtanzahl der Wörter in der Referenz bezeichnen. Für Gleispläne mit überwiegend einwortigen Bezeichnern (z.\,B. \enquote{AS102}, \enquote{W234}) konvergiert die WER zur nachfolgend beschriebenen Feldgenauigkeit.
+
+\subsubsection{Feldgenauigkeit}
+
+Die \textbf{Feldgenauigkeit} (engl. \textit{Field Accuracy} oder \textit{Word Accuracy}) bewertet auf der Ebene vollständiger Textfelder und gibt den Anteil der exakt korrekt erkannten Labels an \cite{Rice1996_OCRAccuracy}:
+
+\begin{equation}
+\text{Field Accuracy} = \frac{N_{\text{korrekt}}}{N_{\text{gesamt}}} = 1 - \text{Field Error Rate}
+\label{eq:field_accuracy}
+\end{equation}
+
+wobei $N_{\text{korrekt}}$ die Anzahl der Felder mit exakter Übereinstimmung zwischen OCR-Ausgabe und Ground Truth bezeichnet. Diese Metrik ist strenger als CER, da bereits ein einziger Zeichenfehler das gesamte Feld als inkorrekt klassifiziert.
+
+\subsubsection{Vergleich und Anwendungsbereiche}
+
+Tabelle \ref{tab:ocr_metrics_comparison} fasst die OCR-Metriken und ihre jeweiligen Anwendungsbereiche zusammen.
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{|p{2.8cm}|p{2.2cm}|p{4.5cm}|p{3.5cm}|}
+\hline
+\textbf{Metrik} & \textbf{Granularität} & \textbf{Anwendungsfall} & \textbf{Wertebereich} \\
+\hline
+Character Error Rate (CER) & Zeichen & Analyse systematischer Fehler, Homoglyphen-Verwechslungen & $[0, \infty)$, ideal: 0 \\
+\hline
+Word Error Rate (WER) & Wort & Mehrteilige Beschriftungen, Fließtext & $[0, \infty)$, ideal: 0 \\
+\hline
+Feldgenauigkeit & Feld/Label & Identifikatoren, exakte Übereinstimmung erforderlich & $[0, 1]$, ideal: 1 \\
+\hline
+\end{tabular}
+\caption{Vergleich der OCR-Evaluationsmetriken nach Granularität und Anwendungsbereich}
+\label{tab:ocr_metrics_comparison}
+\end{table}
+
+\subsubsection{Relevanz für die Gleisplanerkennung}
+
+Für die domänenspezifische Anwendung der Gleisplanerkennung ist die \textbf{Feldgenauigkeit die primäre Evaluationsmetrik}. Die extrahierten Texte -- Signalbezeichnungen, Kilometrierungen, Balisen-IDs -- dienen als eindeutige Identifikatoren für technische Objekte. Eine Signalbezeichnung \enquote{A5102} statt \enquote{AS102} referenziert ein anderes Signal; partielle Korrektheit ist daher funktional äquivalent zu vollständiger Fehlidentifikation.
+
+Die CER dient ergänzend zur Diagnose systematischer OCR-Fehler. Eine hohe Feldfehlerzahl bei gleichzeitig niedriger CER deutet auf konsistente Einzelzeichenfehler hin (z.\,B. systematische Homoglyphen-Verwechslungen wie O$\leftrightarrow$0 oder S$\leftrightarrow$5), die durch gezielte Nachbearbeitung korrigiert werden können (vgl. Abschnitt \ref{subsec:ocr_quality}, Tabelle \ref{tab:homoglyphs}).
+
+Die in Kapitel \ref{chap:evaluation} präsentierte Evaluation verwendet beide Metriken: Die Feldgenauigkeit quantifiziert die End-to-End-Systemleistung, während die CER-Analyse die Optimierung der OCR-Pipeline (Vorverarbeitung, Engine-Auswahl, Nachkorrektur) informiert.
+
 
 \subsection{Herausforderungen bei technischen Zeichnungen}
 \label{subsec:ocr_challenges}

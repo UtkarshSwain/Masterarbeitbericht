@@ -14,9 +14,9 @@ Die Architektur des Prototyps folgt dem Prinzip der Modularität und Separation 
 
 \subsection{Dateneingabe}
 
-Das System akzeptiert Gleispläne in PDF Format als primär Eingabe. PDF wurde als Standardformat gewählt, da es in der Praxis neben Bildformat am häufigsten für den Export technischer Zeichnungen verwendet wird. Funktionale Anforderungen an das Eingabemodul:
+Das System akzeptiert Gleispläne in PDF Format als primäre Eingabe. PDF wurde als Standardformat gewählt, da es in der Praxis neben Bildformaten am häufigsten für den Export technischer Zeichnungen verwendet wird. Funktionale Anforderungen an das Eingabemodul:
 \begin{itemize}
-    \item Hochladen von einzelner oder mehrerer PDF Dateien
+    \item Hochladen einzelner oder mehrerer PDF Dateien
     \item Validierung des Dateiformats und der Dateiintegrität
     \item Extraktion grundlegender Metadaten (Seitenanzahl,Auflösung,Name des Plans)
 \end{itemize}
@@ -40,10 +40,10 @@ Dieses Modul bildet das technologische Herzstück des Systems und kombiniert zwe
     \item \textbf{Objekterkennung} - Ein trainiertes Deep Learning Modell der YOLO Familie analysiert die vorverarbeiteten Bildausschnitte und identifiziert relevante Symbole (Signale, Weichen, Balisen, etc.). Für jedes erkannte Objekt liefert das Modell:
     \begin{itemize}
         \item Die Klasse (z.B. \enquote{Signal},\enquote{Weiche})
-        \item Die Bounding Box(räumliche Position im Bild)
+        \item Die Bounding Box (räumliche Position im Bild)
         \item Einen Konfidenzwert (0-1), der die Sicherheit der Erkennung ergibt.
     \end{itemize}
-    Die Verwendung von Oriented Bounding Boxes(OBB) ist konzeptionell vorgesehen, um rotierte Symbole präziser zu erfassen, was eine häufige Herausforderung in technischen Zeichnungen ist. 
+    Die Verwendung von Oriented Bounding Boxes (OBB) ist konzeptionell vorgesehen, um rotierte Symbole präziser zu erfassen, was eine häufige Herausforderung in technischen Zeichnungen ist. 
     \item \textbf{Texterkennung} - OCR Verfahren extrahieren textuelle Informationen aus den erkannten Symbolbereichen. Die Texterkennung erfolgt räumlich fokussiert innerhalb oder in definierter Nähe der durch die Objekterkennung identifizierten Bounding Boxes. Dieser zielgerichtete Ansatz reduziert Fehler durch irrelevante Textfragmente im Gleisplan.\\
     \textbf{Konzeptionelle Herausforderung:} Text in technischen Zeichnungen kann in verschiedenen Orientierungen vorliegen. Das Konzept sieht daher eine orientierungsbewusste OCR Strategie vor, bei der Textregionen vor Erkennung normalisiert werden. 
 
@@ -52,7 +52,7 @@ Dieses Modul bildet das technologische Herzstück des Systems und kombiniert zwe
 \subsection{Nachbearbeitung und Mapping}
 Die Rohausgaben der Erkennungsmodule erfordern weitere Verarbeitungsschritte, um strukturierte und semantisch korrekte Daten zu erzeugen:
 \begin{enumerate}
-    \item \textbf{Datenbereinigung:} Rohe OCR Ergebnisse enthalten häufig Artefakte, Formatierungsfehler oder unerwünschte Zeichen. Regelbasierte Filter (z.B. mittels parametrische Beziehungen) normalisieren die extrahierten Texte gemäß erwarteten Mustern.
+    \item \textbf{Datenbereinigung:} Rohe OCR Ergebnisse enthalten häufig Artefakte, Formatierungsfehler oder unerwünschte Zeichen. Regelbasierte Filter (z.B. mittels parametrischer Beziehungen) normalisieren die extrahierten Texte gemäß erwarteten Mustern.
     \item \textbf{Zusammenführung:} Die im Schritt erzeugten überlappenden Kacheln müssen wieder zu einem Gesamtbild zusammengefügt werden. Dabei werden Duplikate in den Überlappungsbereichen durch Non Maximum Suppression(NMS) eliminiert. 
     \item \textbf{Semantisches Mapping:} Die erkannten Symbole und Texte werden in einen semantischen Kontext überführt. Beispielsweise wird ein detektiertes Symbol der Klasse \enquote{Signal} mit dem dazugehörigen OCR Text zu einer logischen Einheit verknüpft.
 \end{enumerate}
@@ -61,8 +61,8 @@ Alle extrahierten und verarbeiteten Daten werden in einem strukturierten Persist
 \textbf{Konzeptionelle Anforderungen:}
 \begin{itemize}
     \item \textbf{Versionierung:} Jede Analyse eines Gleisplans erhält eine eindeutige Versions ID, um spätere Vergleiche zu ermöglichen.
-    \item \textbf{Nachverfolbarkeit:} Jedem Datensatz werden Metadaten zugeordnet(Quelldokument, Seitennummer, Koordinaten), um die Rückverfolgbarkeit zur Originalquelle zu gewährleisten.
-    \item \textbf{Flexibles Schema:} Verwendung eines Datenbanksystems, das sowohl strukturierte als auch semi strukturierte Daten effizient speichern kann(z.B. PostgreSQL mit JSONb-Support)
+    \item \textbf{Nachverfolgbarkeit:} Jedem Datensatz werden Metadaten zugeordnet(Quelldokument, Seitennummer, Koordinaten), um die Rückverfolgbarkeit zur Originalquelle zu gewährleisten.
+    \item \textbf{Flexibles Schema:} Verwendung eines Datenbanksystems, das sowohl strukturierte als auch semi strukturierte Daten effizient speichern kann(z.B. PostgreSQL mit JSONB-Support)
 \end{itemize}
 
 \subsection{Benutzeroberfläche}
@@ -72,7 +72,7 @@ Die UI dient als Kontrollzentrum für alle Systemfunktionen und ermöglicht die 
     \item \textbf{Prozessvisualisierung:} Anzeige des Verarbeitungsfortschritts in Echtzeit.
     \item \textbf{Ergebnisvalidierung:} Visuelle Darstellung der erkannten Objekte überlagert auf dem Original Gleisplan.
     \item \textbf{Konfigurationszugriff:} Bearbeitung von Systemparametern über intuitive Eingabemasken
-    \item \textbf{Fehlerbehandlung:} Klare Fehlermeldungen und Hilfstellungen bei Problemen
+    \item \textbf{Fehlerbehandlung:} Klare Fehlermeldungen und Hilfestellungen bei Problemen
 \end{itemize}
 
 \subsection{Export}
@@ -104,7 +104,7 @@ Die Frontend-Ebene bildet die Schnittstelle zwischen Anwender und System. Der ko
 \begin{enumerate}
     \item \textbf{Dateiauswahl:} Der Benutzer wählt eine PDF-Datei sowie optional eine Konfigurationsdatei aus
     \item \textbf{Parametereinstellung:} Konfiguration von Verarbeitungsoptionen (z.B. zu analysierende Seiten, Erkennungsmodell, OCR Engine)
-    \item \textbf{Prozessinitiierung:} Start der automatisierten Analyse durch Betätigung einer \enquote{Ausführen }Schaltfläche
+    \item \textbf{Prozessinitiierung:} Start der automatisierten Analyse durch Betätigung einer \enquote{Ausführen}-Schaltfläche
     \item \textbf{Ergebnisanzeige:} Darstellung der Erkennungsergebnisse zur manuellen Überprüfung
     \item \textbf{Export:} Finalisierung und Download der aufbereiteten Daten im gewünschten Format
 \end{enumerate}
@@ -493,7 +493,7 @@ Für die Benutzeroberfläche wurde das Framework PyQt5 aus der Python-Bibliothek
 \subsection{Datenpersistenz und Speicherschicht: PostgreSQL}
 Für die dauerhafte Speicherung der Analyseergebnisse und Gleisplandaten wurde das objekt-relationale Datenbanksystem (ORDBMS) PostgreSQL gewählt. Die Implementierung verfolgt einen hybriden Ansatz (\enquote{Relational + Document Store}), der die Transaktionssicherheit einer SQL-Datenbank mit der Flexibilität einer dokumentenorientierten Speicherung (via JSONB) kombiniert.\cite{postgresql_docs}
 \begin{enumerate}
-    \item Schema-Design und Datenspeicherung: Das zentrale Speicherelement ist die Tabelle \textit{workspaces}. Anstatt für jede erkannte Objektklasse (Signale, Weichen, Texte) separate relationale Tabellen anzulegen, werden die heterogenen Analyseergebnisse in einem semi-strukturierten Format aggregiert. Diese Entwurf adressiert zwei spezifische Anforderungen der Gleisplananalyse:
+    \item Schema-Design und Datenspeicherung: Das zentrale Speicherelement ist die Tabelle \textit{workspaces}. Anstatt für jede erkannte Objektklasse (Signale, Weichen, Texte) separate relationale Tabellen anzulegen, werden die heterogenen Analyseergebnisse in einem semi-strukturierten Format aggregiert. Dieser Entwurf adressiert zwei spezifische Anforderungen der Gleisplananalyse:
     \begin{itemize}
         \item Semi strukturierte Metadaten(JSONB): Die Ergebnisse der Objekterkennung (Bounding Boxes, Klassenwahrscheinlichkeiten, OCR-Texte) variieren stark in ihrer Struktur. Das JSONB-Format (Binary JSON) erlaubt es, diese hierarchischen Daten effizient zu speichern, ohne das Datenbankschema bei jeder Änderung der YOLO-Klassen anpassen zu müssen (Schema Evolution). Der GIN-Index (Generalized Inverted Index) ermöglicht dabei Abfragen auf tief verschachtelte Attribute (z. B. \enquote{Finde alle Pläne mit Signalen vom Typ AH}) in logarithmischer Zeit, vergleichbar mit klassischen Spaltenindizes.
         \item Binäre Topologie-Daten (BYTEA): Das extrahierte Gleisskelett (der Graph der Fahrwege) liegt zur Laufzeit als speicheroptimiertes NumPy-Array vor. Die Konvertierung in Textform (JSON/CSV) wäre ineffizient und würde Präzision kosten. Daher wird dieses Array direkt als binäres Objekt (BYTEA) persistiert, was Ladezeiten minimiert und die exakte Repräsentation der Gleisgeometrie wahrt.
@@ -570,8 +570,7 @@ Für komplexe Entitäten wurden spezialisierte Verknüpfungsalgorithmen entwicke
         Haltepunkt-Symbol, Signal und Koordinate
 \end{itemize}
 
-Die mathematische Formulierung und algorithmischen Details werden in Kapitel 6.4 
-dargelegt.
+Die mathematische Formulierung und algorithmischen Details werden im Abschnitt \ref{sec:intelligentesymboltextverknüpfung} dargelegt.
 
 \section{Validierung und Qualitätssicherung}
 \label{sec:validierungundqualitätssicherung}

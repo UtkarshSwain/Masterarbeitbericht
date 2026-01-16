@@ -233,7 +233,7 @@ Die Realisierung der in den Abschnitten \ref{subsec:req_symbol} bis \ref{subsec:
 
 \begin{enumerate}
     \item \textbf{Daten-Heterogenität:} Die Varianz in den Eingabedaten (unterschiedliche Export-Einstellungen, Linienstärken, Skalierungen) erschwert eine universelle Regelbildung.
-    \item \textbf{Visuelle Ambivalenz:} Einige Symbole (z.\,B. unterschiedliche Balisen-Typen) unterscheiden sich visuell nur in wenigen Pixeln oder sind nur durch den Kontext (Begleittext) differenzierbar.
+    \item \textbf{Visuelle Ambiguität:} Einige Symbole (z.\,B. unterschiedliche Balisen-Typen) unterscheiden sich visuell nur in wenigen Pixeln oder sind nur durch den Kontext (Begleittext) differenzierbar.
     \item \textbf{OCR-Komplexität:} Technischer Text in Plänen ist oft extrem klein, rotiert und durch Führungslinien durchgestrichen, was klassische OCR-Engines (wie Tesseract) an ihre Grenzen bringt.
     \item \textbf{Mangel an Trainingsdaten:} Es existiert kein öffentlicher Datensatz für bahntechnische Symbolik. Ein \enquote{Cold Start} ist notwendig, bei dem Trainingsdaten zunächst manuell (z.\,B. via CVAT) annotiert werden müssen.
     \item \textbf{Semantische Lücke:} Der Schritt von der Erkennung (\enquote{Da ist eine Box}) zur Bedeutung (\enquote{Das ist Weiche 12 in Rechtslage}) erfordert komplexe Heuristiken, insbesondere beim Mapping von Textboxen zu den geometrisch nächsten Symbolen.

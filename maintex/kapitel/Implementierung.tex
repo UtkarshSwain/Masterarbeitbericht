@@ -22,7 +22,7 @@ Die gesamte Implementierung erfolgte in \textbf{Python 3.9}, da diese Sprache ei
 Deep Learning & PyTorch & 2.0.1 & Framework für neuronale Netze \\
 Objekterkennung & Ultralytics & 8.0.196 & YOLOv8 Implementierung \\
 OCR (primär) & PaddleOCR & 2.7.0 & Hauptengine für Texterkennung \\
-OCR (Fallback 1) & Tesseract & 5.3.0 & Fallback für pixelige Texte \\
+OCR (Fallback 1) & Tesseract & 5.3.0 & Fallback für niedrig aufgelöste oder verrauschte Texte \\
 OCR (Fallback 2) & EasyOCR & 1.7.0 & Optionale dritte Engine \\
 \hline
 \multicolumn{4}{|c|}{\textit{Bildverarbeitung}} \\
@@ -90,7 +90,7 @@ Die Leistungsfähigkeit eines objekterkennenden Modells hängt direkt von der Qu
 
 Die initialen Gleispläne lagen im PDF-Format vor und mussten zunächst in ein für die Annotation geeignetes Bildformat überführt werden. Hierzu wurde die Python-Bibliothek PyMuPDF eingesetzt, welche eine zuverlässige Rasterisierung von PDF-Dokumenten ermöglicht. Die Konvertierung erfolgte mit einer Auflösung von 500 DPI (dots per inch), was einem Skalierungsfaktor von $\frac{500}{72} \approx 6.94$ gegenüber der Standard-PDF-Auflösung entspricht. Diese hohe Auflösung wurde gewählt, um auch kleine Symbole wie Balisenplatten oder Isolierstöße mit ausreichender Detailgenauigkeit darzustellen.
 
-Nach der Rasterisierung wurden die hochauflösenden Bilder in kleinere, überlappende Bildausschnitte segmentiert. Die gewählte Segmentgröße betrug $1024 \times 1024$ Pixel. Diese Dimensionierung stellt einen Kompromiss dar zwischen ausreichendem Kontext für die Objekterkennung und der Verarbeitbarkeit auf GPU-Systemen mit begrenztem Videospeicher. Größere Tiles würden zwar mehr Kontext bieten, jedoch den verfügbaren VRAM der Trainings-GPU (NVIDIA, AWS Instance g4dn.xlarge, 16 GB VRAM) überschreiten und damit das Training unmöglich machen oder die Batch-Größe unzulässig reduzieren.
+Nach der Rasterisierung wurden die hochauflösenden Bilder in kleinere, überlappende Bildausschnitte segmentiert. Die gewählte Segmentgröße betrug $1024 \times 1024$ Pixel. Diese Dimensionierung stellt einen Kompromiss dar zwischen ausreichendem Kontext für die Objekterkennung und der effizienten Verarbeitung auf GPU-Systemen mit begrenztem Videospeicher. Größere Tiles würden zwar mehr Kontext bieten, jedoch den verfügbaren VRAM der Trainings-GPU (NVIDIA, AWS Instance g4dn.xlarge, 16 GB VRAM) überschreiten und damit das Training unmöglich machen oder die Batch-Größe unzulässig reduzieren.
 
 \subsubsection{Annotationsprozess}
 
@@ -137,7 +137,7 @@ weichengruppeende & 9 & 9 \\
 \label{tab:dataset_distribution}
 \end{table}
 
-Es ist ersichtlich, dass die Klassenverteilung unausgeglichen ist, mit Koordinaten und Signalen als dominierende Klassen. Diese Verteilung spiegelt die reale Häufigkeit der Symbole in Gleisplänen wider. Um ein Overfitting auf häufige Klassen zu vermeiden, wurde während des Trainings eine klassengewichtete Verlustfunktion in Betracht gezogen, letztendlich jedoch zugunsten einer robusten Datenaugmentation verworfen.
+Es ist ersichtlich, dass die Klassenverteilung unausgeglichen ist, mit Koordinaten und Signalen als dominierende Klassen. Diese Verteilung spiegelt die reale Häufigkeit der Symbole in Gleisplänen wider. Um ein Overfitting auf häufige Klassen zu vermeiden, wurde während des Trainings eine klassengewichtete Verlustfunktion zwar in Betracht gezogen, letztendlich jedoch zugunsten einer robusten Datenaugmentation verworfen.
 
 Die Daten wurden in eine standardisierte COCO-Verzeichnisstruktur (Abbildung \ref{fig:COCODatenset}) überführt, welche die Organisation von Trainings- und Validierungsdaten sowie die zugehörigen Annotationen in separaten Verzeichnissen vorsieht.
 
@@ -150,7 +150,7 @@ Die Daten wurden in eine standardisierte COCO-Verzeichnisstruktur (Abbildung \re
 
 \subsection{Modelltraining und Optimierung}
 \label{subsec:Modelltraining}
-Das Training des YOLOv8-OBB Modells wurde auf einer cloud-basierten GPU-Instanz mit einer NVIDIA AWS Instance g4dn.xlarge, (16 GB VRAM) durchgeführt. Die Wahl einer externen GPU-Instanz war notwendig, da lokale Entwicklungsmaschinen nicht über ausreichende Rechenleistung verfügten, um das Training in angemessener Zeit abzuschließen.
+Das Training des YOLOv8-OBB Modells wurde auf einer cloud-basierten GPU-Instanz mit einer NVIDIA AWS Instance g4dn.xlarge, (16 GB VRAM) durchgeführt. Die Wahl einer externen GPU-Instanz war notwendig, da lokale Entwicklungsmaschinen nicht über ausreichende Rechenleistung verfügen, um das Training in angemessener Zeit abzuschließen.
 
 \subsubsection{Modellarchitektur und Hyperparameter}
 
@@ -171,7 +171,7 @@ Batch Size & 6 & Maximal mögliche Größe bei 16 GB VRAM der T4 GPU \\
 Optimizer & SGD & Momentum = 0.937, Weight Decay = 0.0005 \\
 Learning Rate & 0.01 & Initiale LR mit Cosine Annealing Scheduler \\
 Warmup Epochs & 3 & Graduelle Erhöhung der LR zu Trainingsbeginn \\
-Workers & 2 & Moderat gewählt zur Vermeidung von Dataloader-OOM \\
+Workers & 2 & Moderat gewählt zur Vermeidung von Speicherüberläufen (Out of Memory) im Dataloader \\
 Cache & Disk & Disk-Caching für deterministische Reproduzierbarkeit \\
 Seed & 0 & Fixierter Seed für vollständige Reproduzierbarkeit \\
 \hline
@@ -217,102 +217,40 @@ Die Mosaic-Augmentation kombiniert vier zufällig ausgewählte Trainingsbilder z
 
 Die Trainingsdauer betrug insgesamt ca. 8 Stunden bei kontinuierlicher GPU-Auslastung von nahezu 100\%.
 
-\subsubsection{Trainingsergebnisse und Metriken}
+\subsubsection{Trainingsergebnisse}
 
-Das trainierte Modell erreichte hervorragende Detektionsleistungen über alle Symbolklassen hinweg. Tabelle \ref{tab:yolo_class_metrics} zeigt die klassenspezifischen Metriken:
-
-\begin{table}[h]
-\centering
-\small
-\begin{tabular}{|l|r|r|r|r|}
-\hline
-\textbf{Klasse} & \textbf{Precision} & \textbf{Recall} & \textbf{mAP@0.5} & \textbf{mAP@0.5:0.95} \\
-\hline
-signal & 1.000 & 0.985 & 0.995 & 0.915 \\
-gm\_block & 0.909 & 1.000 & 0.989 & 0.886 \\
-gks\_festkodiert & 0.976 & 0.983 & 0.988 & 0.974 \\
-gks\_gesteuert & 0.941 & 1.000 & 0.958 & 0.931 \\
-weichen\_block & 0.963 & 0.974 & 0.990 & 0.914 \\
-isolierstoß & 0.988 & 1.000 & 0.995 & 0.967 \\
-haltepunkt & 0.921 & 0.991 & 0.968 & 0.867 \\
-sverbinder & 0.928 & 1.000 & 0.979 & 0.932 \\
-coordinate & 0.971 & 0.968 & 0.989 & 0.926 \\
-prellblock & 1.000 & 1.000 & 0.995 & 0.901 \\
-haltetafel & 0.964 & 0.818 & 0.959 & 0.919 \\
-endeweichen & 0.909 & 1.000 & 0.995 & 0.904 \\
-weichengruppeende & 0.966 & 1.000 & 0.995 & 0.966 \\
-\hline
-\textbf{Durchschnitt} & \textbf{0.957} & \textbf{0.979} & \textbf{0.984} & \textbf{0.923} \\
-\hline
-\end{tabular}
-\caption{Klassenspezifische Detektionsmetriken auf dem Validierungssatz}
-\label{tab:yolo_class_metrics}
-\end{table}
-
-Die Precision gibt an, welcher Anteil der vom Modell vorhergesagten Detektionen korrekt ist:
-
-\begin{equation}
-\text{Precision} = \frac{TP}{TP + FP}
-\end{equation}
-
-wobei $TP$ (True Positives) die Anzahl korrekter Detektionen und $FP$ (False Positives) die Anzahl fälschlicherweise detektierter Objekte bezeichnet.
-
-Der Recall misst, welcher Anteil der tatsächlich vorhandenen Objekte vom Modell erkannt wurde:
-
-\begin{equation}
-\text{Recall} = \frac{TP}{TP + FN}
-\end{equation}
-
-mit $FN$ (False Negatives) als Anzahl der übersehenen Objekte.
-
-Die durchschnittliche Precision von 95.7\% zeigt, dass das Modell äußerst wenige Falschdetektionen produziert. Der noch höhere Recall von 97.9\% belegt, dass nahezu alle vorhandenen Symbole erkannt werden. Die Kombination dieser beiden Werte deutet auf ein ausgewogenes Modell hin, das weder zu aggressiv (hoher Recall, niedrige Precision) noch zu konservativ (hohe Precision, niedriger Recall) detektiert.
-
-Der mean Average Precision (mAP) ist eine aggregierte Metrik, die die Precision über verschiedene Recall-Stufen mittelt und zusätzlich über alle Klassen aggregiert. Der mAP@0.5 von 98.4\% bezieht sich auf eine IoU-Schwelle (Intersection over Union) von 50\%, während der mAP@0.5:0.95 den Durchschnitt über IoU-Schwellen von 50\% bis 95\% in 5\%-Schritten bildet. Der Unterschied zwischen diesen beiden Werten (98.4\% vs. 92.3\%) deutet darauf hin, dass die Bounding-Box-Lokalisierung bei sehr hohen IoU-Anforderungen ($>$ 0.75) leicht abnimmt, was für die praktische Anwendung jedoch unkritisch ist, da bereits eine IoU von 0.5 als ausreichend präzise gilt.
-
-\subsubsection{Konvergenzverhalten}
-
-Die Trainingsverläufe (Abbildung \ref{fig:yolo_training_curves}) illustrieren die Entwicklung der Verlustfunktionen und Metriken über die 120 Epochen:
+Das Training wurde über 120 Epochen durchgeführt und erreichte eine stabile Konvergenz 
+ohne Anzeichen von Overfitting. Die Trainingsverläufe (Abbildung \ref{fig:yolo_training_curves}) 
+illustrieren die Entwicklung der Verlustfunktionen über den Trainingsverlauf.
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth]{images/Kapitel6/results.png}
-\caption{Trainings- und Validierungsmetriken über 120 Epochen. Die Kurven zeigen eine stabile Konvergenz ohne Anzeichen von Overfitting.}
+\caption{Trainings- und Validierungsmetriken über 120 Epochen. Die Kurven zeigen eine 
+stabile Konvergenz ohne Anzeichen von Overfitting.}
 \label{fig:yolo_training_curves}
-\end{figure} 
-
-
+\end{figure}
 
 Folgende Beobachtungen lassen sich aus den Kurven ableiten:
 
 \begin{itemize}
-    \item Die Box-Loss-Kurve, welche die Lokalisierungsgenauigkeit der Bounding Boxes quantifiziert, fällt kontinuierlich und stabilisiert sich nach ca. 80 Epochen auf einem niedrigen Niveau. Dies indiziert, dass das Modell gelernt hat, Objekte präzise zu lokalisieren.
+    \item Die Box-Loss-Kurve fällt kontinuierlich und stabilisiert sich nach ca. 80 Epochen 
+    auf einem niedrigen Niveau, was auf eine erfolgreiche Lokalisierungsoptimierung hindeutet.
     
-    \item Die Classification-Loss-Kurve zeigt einen ähnlichen Verlauf, was darauf hindeutet, dass die Klassifikation der detektierten Objekte ebenfalls erfolgreich konvergiert.
+    \item Die Classification-Loss-Kurve zeigt einen ähnlichen Verlauf, was die erfolgreiche 
+    Konvergenz der Klassifikation belegt.
     
-    \item Precision und Recall erreichen bereits nach ca. 50 Epochen Plateaus bei 95-97\% und verbessern sich danach nur noch marginal. Dies zeigt, dass das Modell die wesentlichen Muster früh im Training lernt und die verbleibenden Epochen zur Feinabstimmung dienen.
-    
-    \item Der Distribution Focal Loss (DFL), eine spezialisierte Verlustfunktion für die Regression der Bounding-Box-Koordinaten in YOLO, zeigt eine stabile Konvergenz ohne Oszillationen.
-    
-    \item Kritisch ist die Beobachtung, dass zwischen Trainings- und Validierungskurven kein signifikanter Gap existiert. Dies belegt, dass das Modell gut generalisiert und nicht auf den Trainingsdaten overfittet. Wäre dies der Fall, würde die Trainingskurve deutlich bessere Werte aufweisen als die Validierungskurve.
+    \item Kritisch ist die Beobachtung, dass zwischen Trainings- und Validierungskurven 
+    kein signifikanter Gap existiert. Dies belegt, dass das Modell gut generalisiert und 
+    nicht auf den Trainingsdaten overfittet.
 \end{itemize}
 
-Die Konfusionsmatrix (Abbildung \ref{fig:confusion_matrix}) visualisiert die Klassifikationsgenauigkeit und offenbart, zwischen welchen Klassen das Modell gelegentlich verwechselt:
-
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=0.95\textwidth]{images/Kapitel6/confusion_matrix.png}
-\caption{Konfusionsmatrix des trainierten YOLOv8-OBB Modells. Die diagonale Dominanz zeigt hohe Klassifikationsgenauigkeit; Off-Diagonal-Einträge deuten auf gelegentliche Verwechslungen hin.}
-\label{fig:confusion_matrix}
-\end{figure}
-
-
-
-Die Matrix zeigt eine ausgeprägte Diagonalstruktur, was darauf hinweist, dass die meisten Detektionen der korrekten Klasse zugeordnet werden. Vereinzelte Off-Diagonal-Einträge treten hauptsächlich zwischen visuell ähnlichen Symboltypen auf, beispielsweise zwischen \textit{gks\_festkodiert} und \textit{gks\_gesteuert}, was aufgrund ihrer hohen visuellen Ähnlichkeit erwartbar ist. Ebenfalls tritt eine geringe Konfusion zwischen \textit{coordinate} und Hintergrund auf, was bei dicht gruppierten oder schwach lesbaren Koordinatenbeschriftungen zu erwarten ist.
+Die detaillierte quantitative Auswertung der Detektionsleistung sowie die Analyse der 
+Konfusionsmatrix erfolgen in Kapitel \ref{chap:evaluation}.
 
 \subsection{Inferenz-Pipeline Implementierung}
 \label{Inferenz}
-Nach Abschluss des Trainings wurde das Modell mit den optimalen Gewichten (\texttt{best.pt}) in die produktive Extraktionspipeline integriert. Die Inferenz auf neuen, zuvor ungesehenen Gleisplänen erfolgt in mehreren aufeinander aufbauenden Schritten.
+Nach Abschluss des Trainings wurde das Modell mit den optimalen Gewichten (\texttt{best.pt}) in die produktive Extraktionspipeline integriert. Die Inferenz auf neuen, zuvor ungesehenen Gleisplänen erfolgt in mehreren aufeinander aufbauenden Schritten. Abbildung \ref{fig:pipeline_flowchart} zeigt den vollständigen Ablauf der Inferenz-Pipeline von der PDF-Eingabe über das Tiling bis zur Rücktransformation der globalen Koordinaten.
 \begin{figure}[ht]
     \centering
     \begin{tikzpicture}[
@@ -397,7 +335,7 @@ Nach Abschluss des Trainings wurde das Modell mit den optimalen Gewichten (\text
     \draw[dashed, gray] (tile) -- (tilingparams);
 
     \end{tikzpicture}
-    \caption{Ablauf der Inferenz-Pipeline: Von der PDF-Eingabe über das Tiling bis zur Rücktransformation der globalen Koordinaten.}
+    \caption{Ablauf der Inferenz-Pipeline}
     \label{fig:pipeline_flowchart}
 \end{figure}
 
@@ -539,7 +477,7 @@ Da die resultierenden Bilder mit mehreren Millionen Pixeln die Eingabegröße de
     \node[red!80!black, font=\footnotesize, align=right] at (-1.6, 3.9) {Overlap Y};
 
     \end{tikzpicture}
-    \caption{2D-Tiling-Strategie mit quadratischen Kacheln ($H=W$). Durch die identische Schrittweite (Stride) in X- und Y-Richtung wird eine gleichmäßige Abdeckung mit definiertem Überlappungsbereich gewährleistet.}
+    \caption{2D-Tiling-Strategie mit quadratischen Kacheln}
     \label{fig:grid_overlap_square}
 \end{figure}
 
@@ -548,7 +486,7 @@ Die Überlappung zwischen benachbarten Tiles beträgt $O = 12.5\%$, was einer ab
 \begin{equation}
 S = T \cdot (1 - O) = 2048 \cdot 0.875 = 1792 \text{ Pixel}
 \end{equation}
-
+Abbildung \ref{fig:grid_overlap_square} illustriert diese Strategie, bei der durch die identische Schrittweite in X- und Y-Richtung eine gleichmäßige Abdeckung mit definiertem Überlappungsbereich gewährleistet wird.
 Die Überlappung ist essenziell, um zu verhindern, dass Symbole, die nahe an Tile-Grenzen liegen, durch die Segmentierung geteilt werden und somit nicht oder nur unvollständig detektiert werden können. Ein Symbol, das im Überlappungsbereich liegt, wird von mindestens zwei benachbarten Tiles erfasst und hat somit eine hohe Chance, in mindestens einem der Tiles vollständig sichtbar zu sein.
 
 Die Berechnung der Tile-Positionen erfolgt durch Iteration über die Koordinaten:
@@ -562,7 +500,7 @@ Y &= \{y \mid y \in \{0, S, 2S, \ldots\} \land y + T \leq H\} \cup \{H - T\}
 
 Die Ergänzung der Mengen um $\{W - T\}$ bzw. $\{H - T\}$ stellt sicher, dass auch der rechte und untere Bildrand vollständig abgedeckt werden, selbst wenn sie nicht durch reguläre Schritte erreichbar sind.
 
-Zusätzlich zur Überlappung wird ein sogenannter Halo um jede Tile herum hinzugefügt. Der sogenannte Halo bezeichnet einen zusätzlichen Randbereich von $H_{\text{halo}} = 128$ Pixeln, der bei der Bildextraktion mitgeladen wird:
+Zusätzlich zur Überlappung wird ein sogenannter Halo um jedes Tile herum hinzugefügt. Der sogenannte Halo bezeichnet einen zusätzlichen Randbereich von $H_{\text{halo}} = 128$ Pixeln, der bei der Bildextraktion mitgeladen wird:
 
 \begin{equation}
 \text{Tile}_{\text{mit Halo}} = \text{Bild}[y - H_{\text{halo}} : y + T + H_{\text{halo}}, \; x - H_{\text{halo}} : x + T + H_{\text{halo}}]
@@ -575,7 +513,7 @@ Der Halo stellt zusätzlichen Kontext für Symbole am Tile-Rand bereit, wird jed
 \end{equation}
 
 wobei $(c_x, c_y)$ das Zentrum der detektierten Bounding Box bezeichnet.
-
+Abbildung \ref{fig:halo_tiling} veranschaulicht dieses Prinzip: Das neuronale Netz (YOLO) erhält einen erweiterten Bildausschnitt (grau dargestellt), um angeschnittene Objekte am Rand korrekt zu erkennen. Gewertet werden jedoch nur Detektionen, deren Zentrum im inneren Bereich (grün dargestellt) liegt.
 \begin{figure}[ht]
     \centering
     \begin{tikzpicture}[
@@ -616,7 +554,7 @@ wobei $(c_x, c_y)$ das Zentrum der detektierten Bounding Box bezeichnet.
     \node[font=\footnotesize, align=center] at (3, 0.35) {Halo / Padding\\(wird nach Inferenz verworfen)};
 
     \end{tikzpicture}
-    \caption{Visualisierung der Halo-Strategie: Das neuronale Netz erhält einen erweiterten Bildausschnitt (Grau), um angeschnittene Objekte am Rand (S) korrekt zu erkennen. Gewertet werden jedoch nur Detektionen, deren Zentrum im inneren Bereich (Grün) liegt.}
+    \caption{Visualisierung der Halo-Strategie}
     \label{fig:halo_tiling}
 \end{figure}
 \FloatBarrier
@@ -748,10 +686,10 @@ Diese Anpassung ist kritisch für die nachfolgende OCR, da bei horizontal orient
     \end{scope}
 
     \end{tikzpicture}
-    \caption{Adaptive Expansion der Region of Interest (ROI). Im dritten Fall (rechts) ist zu sehen, dass die Expansion entlang der rotierten Objektachsen erfolgt.}
+    \caption{Adaptive Expansion der Region of Interest (ROI)}
     \label{fig:adaptive_padding}
 \end{figure}
-
+Abbildung \ref{fig:adaptive_padding} visualisiert diese Anpassung für die drei Orientierungskategorien. Im Fall angular orientierter Objekte (rechts) erfolgt die Expansion entlang der rotierten Objektachsen.
 \subsubsection{Post-Processing und Duplikatentfernung}
 
 Nach der Inferenz auf allen Tiles müssen die Detektionen aggregiert und Duplikate entfernt werden. Die Koordinaten-Rücktransformation erfolgt durch Addition der Tile-Offsets:
@@ -829,7 +767,7 @@ Das System implementiert eine kaskadierende Architektur mit drei OCR-Engines: Pa
 
 \subsubsection{Funktionsweise der Kaskadierung}
 
-Die Kaskadierung funktioniert nach einem sequentiellen Prinzip. Zunächst wird PaddleOCR auf dem Bildausschnitt ausgeführt, und zwar viermal mit unterschiedlichen Rotationswinkeln: 0°, 90°, 180° und 270°. Der Grund für diese vier Rotationen ist, dass PaddleOCR am besten mit horizontal ausgerichtetem Text funktioniert. Durch das Ausprobieren aller vier Hauptrichtungen wird sichergestellt, dass mindestens eine Rotation den Text horizontal ausrichtet.
+Die Kaskadierung funktioniert nach einem sequenziellen Prinzip. Zunächst wird PaddleOCR auf dem Bildausschnitt ausgeführt, und zwar viermal mit unterschiedlichen Rotationswinkeln: 0°, 90°, 180° und 270°. Der Grund für diese vier Rotationen ist, dass PaddleOCR am besten mit horizontal ausgerichtetem Text funktioniert. Durch das Ausprobieren aller vier Hauptrichtungen wird sichergestellt, dass mindestens eine Rotation den Text horizontal ausrichtet.
 
 Für jede dieser Rotationen wird das OCR-Ergebnis durch eine klassenspezifische Validierungsfunktion geprüft. Diese Validierung überprüft, ob der erkannte Text dem erwarteten Muster der jeweiligen Symbolklasse entspricht. Beispielsweise muss ein Signal-Text mit einem Großbuchstaben beginnen, gefolgt von 1-3 Ziffern (wie \enquote{A12} oder \enquote{B234}). Zusätzlich zur Mustererkennung wird der Konfidenz-Wert (Vertrauenswert) des OCR-Ergebnisses überprüft.
 
@@ -1024,8 +962,8 @@ Obwohl diese Methode rechenintensiver ist (etwa 2-3 Mal langsamer als eine einfa
     \draw[box, rotate=35] (-1, -0.5) rectangle (1, 0.5);
     
     % Labels sitzen nun perfekt unter dem Kasten
-    \node[below=0.7cm] at (0,0) {Original};
-    \node[below=1.1cm] at (0,0) {$\theta = 35^\circ$};
+    \node[below=0.9cm] at (0,0) {Original};
+    \node[below=1.3cm] at (0,0) {$\theta = 35^\circ$};
 
     % Pfeil
     \draw[arrow] (2, 0) -- (3.5, 0) node[midway, above] {Perspektive};
@@ -1033,8 +971,8 @@ Obwohl diese Methode rechenintensiver ist (etwa 2-3 Mal langsamer als eine einfa
     % Ergebnis
     \draw[result] (4.5, -0.5) rectangle (6.5, 0.5);
     \node at (5.5, 0) {Text};
-    \node[below=0.7cm] at (5.5,0) {Transformiert};
-    \node[below=1.1cm] at (5.5,0) {Ausgerichtet};
+    \node[below=0.9cm] at (5.5,0) {Transformiert};
+    \node[below=1.3cm] at (5.5,0) {Ausgerichtet};
 \end{scope}
 
 \end{tikzpicture}
@@ -1218,7 +1156,7 @@ Die Länge von 25 Pixeln für die strukturierenden Elemente wurde so gewählt, d
 
 CLAHE ist ein adaptiver Kontrast-Verbesserungsalgorithmus, der besonders bei Bildern mit ungleichmäßiger Beleuchtung effektiv ist. Viele Gleispläne sind alte Scans oder Fotografien mit Schatten, Verfärbungen oder ungleichmäßiger Belichtung. In solchen Fällen kann einfache Histogramm-Entzerrung zu übermäßigem Rauschen führen.
 
-CLAHE arbeitet anders als globale Histogram-Entzerrung: Das Bild wird in ein Raster von 8×8 Kacheln (Tiles) aufgeteilt. Für jede Kachel wird separat eine Histogram-Entzerrung durchgeführt, die dunkle Bereiche aufhellt und helle Bereiche abdunkelt. Der entscheidende Unterschied: Für jede Kachel wird der Kontrast \textit{lokal} optimiert, nicht global.
+CLAHE arbeitet anders als globale Histogrammentzerrung: Das Bild wird in ein Raster von 8×8 Kacheln (Tiles) aufgeteilt. Für jede Kachel wird separat eine Histogrammentzerrung durchgeführt, die dunkle Bereiche aufhellt und helle Bereiche abdunkelt. Der entscheidende Unterschied: Für jede Kachel wird der Kontrast \textit{lokal} optimiert, nicht global.
 
 Der Parameter \enquote{Clip Limit} (hier: 2.0) begrenzt die maximale Verstärkung des Kontrasts. Ohne diese Begrenzung würde CLAHE in homogenen Bereichen (wie einem gleichmäßigen Hintergrund) minimales Rauschen extrem verstärken. Der Wert 2.0 bedeutet, dass die Histogramm-Verstärkung auf das Doppelte des Durchschnitts begrenzt wird.
 
@@ -1359,7 +1297,7 @@ Die gesamte OCR-Pipeline wird als modulare Funktion implementiert, die eine List
     \item \textbf{Fehlerbehandlung}: Bei ungültigen Ergebnissen wird Fuzzy-Matching mit bekannten Werten versucht. Falls dies fehlschlägt, wird ein entsprechender Platzhalter (INVALID\_ oder UNREADABLE\_) generiert.
 \end{enumerate}
 
-Das finale Ergebnis der gesamten OCR-Pipeline ist eine Liste von Tupeln. Jedes Tupel enthält die ursprüngliche YOLO-Detektion, den erkannten Text und die zugehörige Konfidenz. Diese Liste wird an die nachfolgende Komponente weitergereicht - die Symbol-Text-Verknüpfung, die in Abschnitt 6.4 beschrieben wird.
+Das finale Ergebnis der gesamten OCR-Pipeline ist eine Liste von Tupeln. Jedes Tupel enthält die ursprüngliche YOLO-Detektion, den erkannten Text und die zugehörige Konfidenz. Diese Liste wird an die nachfolgende Komponente weitergereicht - die Symbol-Text-Verknüpfung, die in Abschnitt \ref{sec:intelligentesymboltextverknüpfung} beschrieben wird.
 
 
 \section{Intelligente Symbol-Text Verknüpfung}
@@ -1372,7 +1310,7 @@ Die naive Anwendung rein distanzbasierter Proximity-Algorithmen -- bei denen ein
 \label{sec:Koordinatentransformation}
 \subsubsection{Problemstellung und mathematisches Modell}
 
-Die Herausforderung liegt darin, dass die von YOLO detektierten Symbole beliebige Rotationswinkel $\theta \in [0°, 360°)$ aufweisen können. Die Textpositionen werden in einem globalen kartesischen Koordinatensystem $(x_{\text{global}}, y_{\text{global}})$ angegeben, welches üblicherweise mit der Bildebene übereinstimmt. Für ein rotiertes Symbol ist jedoch die Definition von Richtungen wie \enquote{unterhalb}, \enquote{rechts von} oder \enquote{links von} in globalen Koordinaten nicht mehr sinnvoll.
+Die Herausforderung liegt darin, dass die von YOLO detektierten Symbole beliebige Rotationswinkel $\theta \in [0^\circ, 360^\circ)$ aufweisen können. Die Textpositionen werden in einem globalen kartesischen Koordinatensystem $(x_{\text{global}}, y_{\text{global}})$ angegeben, welches üblicherweise mit der Bildebene übereinstimmt. Für ein rotiertes Symbol ist jedoch die Definition von Richtungen wie \enquote{unterhalb}, \enquote{rechts von} oder \enquote{links von} in globalen Koordinaten nicht mehr sinnvoll.
 
 Zur Lösung dieses Problems wird für jedes Symbol $A$ ein lokales Koordinatensystem eingeführt, dessen Achsen mit der Orientierung des Symbols übereinstimmen. In diesem lokalen System wird die y-Achse parallel zur Längsrichtung des Symbols definiert, sodass die Begriffe \enquote{oberhalb} und \enquote{unterhalb} relativ zur Symbolausrichtung eindeutig werden.
 
@@ -1423,7 +1361,7 @@ d_{\text{local}} = \sqrt{dx_{\text{local}}^2 + dy_{\text{local}}^2} = \sqrt{dx^2
 
 \subsubsection{Praktische Berechnung der Koordinatentransformation}
 
-Die Implementierung der Koordinatentransformation erfolgt für jedes Symbol-Text-Paar einzeln. Zunächst werden die globalen Koordinaten des Symbols $(x_A, y_A)$ und des Textkandidaten $(x_C, y_C)$ aus den YOLO- bzw. OCR-Ergebnissen extrahiert. Der Rotationswinkel $\theta_A$ des Symbols liegt ebenfalls aus der YOLO-Detektion vor und muss von Gradmaß in Bogenmaß konvertiert werden. Die Berechnung der lokalen Koordinaten erfolgt dann durch direkte Anwendung der Transformationsgleichung (6.3), wobei die trigonometrischen Funktionen numerisch ausgewertet werden.
+Die Implementierung der Koordinatentransformation erfolgt für jedes Symbol-Text-Paar einzeln. Zunächst werden die globalen Koordinaten des Symbols $(x_A, y_A)$ und des Textkandidaten $(x_C, y_C)$ aus den YOLO- bzw. OCR-Ergebnissen extrahiert. Der Rotationswinkel $\theta_A$ des Symbols liegt ebenfalls aus der YOLO-Detektion vor und muss von Gradmaß in Bogenmaß konvertiert werden. Die Berechnung der lokalen Koordinaten erfolgt dann durch direkte Anwendung der Transformationsgleichung (6.3), wobei die trigonometrischen Funktionen numerisch ausgewertet werden. 
 
 
 \begin{figure}[h]
@@ -1499,7 +1437,7 @@ Die Implementierung der Koordinatentransformation erfolgt für jedes Symbol-Text
     \end{scope}
     
 \end{tikzpicture}
-\caption{Prinzip der rotationsinvarianten Koordinatentransformation. Links: Im globalen System ist die Zuordnung zwischen einer rotierten Balise und der zugehörigen Koordinatenangabe geometrisch komplex. Rechts: Nach der Transformation in das lokale System der Balise ist die relative Position trivial bestimmbar ($dy > 0$ bedeutet eindeutig ``oberhalb'').}
+\caption{Prinzip der rotationsinvarianten Koordinatentransformation}
 \label{fig:coordinate_transformation}
 \end{figure}
 
@@ -1614,7 +1552,7 @@ Um die erwartete Position herum wird ein achsenparalleles Suchfenster definiert,
 \end{equation}
 
 Alle Textkandidaten, deren Positionen innerhalb dieses Fensters liegen, werden als potenzielle Zuordnungen betrachtet. Aus dieser gefilterten Menge wird der zur erwarteten Position $\vec{C}_{\text{expected}}$ nächstgelegene Kandidat ausgewählt. Die Distanz wird dabei als euklidische Distanz zur erwarteten Position berechnet, nicht zur Symbolposition, da die erwartete Position die durch das Lernen verfeinerte beste Schätzung der Textlage darstellt.
-
+Abbildung \ref{fig:adaptive_window} illustriert dieses Verfahren: Ausgehend vom Signal wird die erwartete Textposition durch den mittleren gelernten Offset bestimmt (roter Punkt). Das Suchfenster (rot gestrichelt) umfasst einen $2\sigma$ Bereich um diese Position. Nur Textkandidaten innerhalb dieses Fensters (grün) werden für die Zuordnung berücksichtigt, während außenliegende Kandidaten (schwarz) ignoriert werden
 Die probabilistische Fenstersuche wird nur dann aktiviert, wenn mindestens 10 validierte Links für die entsprechende Symbolklasse vorliegen. Dies stellt sicher, dass die statistischen Schätzer eine ausreichende Präzision besitzen. Für seltene Symbolklassen oder zu Beginn der Verarbeitung, wenn noch wenige Links validiert wurden, greift das System auf die konventionelle Proximity-Suche zurück.
 
 \begin{figure}[h]
@@ -1672,7 +1610,7 @@ Die probabilistische Fenstersuche wird nur dann aktiviert, wenn mindestens 10 va
     \node[black, font=\small, anchor=east] at (0.5,3.2) {Außerhalb: ignoriert};
     
 \end{tikzpicture}
-\caption{Probabilistische Fenstersuche basierend auf gelernten Offset-Patterns. Ausgehend vom Signal wird die erwartete Textposition (roter Punkt) durch den mittleren gelernten Offset bestimmt. Das Suchfenster (rot gestrichelt) umfasst einen $2\sigma$-Bereich um diese Position. Nur Textkandidaten innerhalb dieses Fensters (grün) werden für die Zuordnung berücksichtigt, während außenliegende Kandidaten (schwarz) ignoriert werden.}
+\caption{Probabilistische Fenstersuche basierend auf gelernten Offset-Patterns}
 \label{fig:adaptive_window}
 \end{figure}
 
@@ -1695,8 +1633,8 @@ Die Fahrtrichtung wird durch die Vorzeichenbetrachtung der lokalen y-Koordinate 
 \end{cases}
 \end{equation}
 
-Eine negative lokale y-Koordinate bedeutet, dass die Balise sich oberhalb des Signals in dessen lokaler Orientierung befindet, was nach Konvention der Fahrtrichtung A entspricht. Eine positive lokale y-Koordinate indiziert, dass die Balise unterhalb des Signals liegt, was der Fahrtrichtung B zugeordnet wird.
-\begin{figure}[h]
+Eine negative lokale y-Koordinate bedeutet, dass die Balise sich oberhalb des Signals in dessen lokaler Orientierung befindet, was nach Konvention der Fahrtrichtung A entspricht. Eine positive lokale y-Koordinate indiziert, dass die Balise unterhalb des Signals liegt, was der Fahrtrichtung B zugeordnet wird. Abbildung~\ref{fig:signal_direction} veranschaulicht diese Bestimmung durch die relative Position der zugeordneten Balise im lokalen Koordinatensystem. Die Koordinatenangabe befindet sich zwischen Signal und Balise. Links ist der Fall $dy_{\text{local}} < 0$ (Balise oberhalb) dargestellt, was Fahrtrichtung~A entspricht; rechts der Fall $dy_{\text{local}} > 0$ (Balise unterhalb), entsprechend Fahrtrichtung~B.
+\begin{figure}[H]
 \centering
 \begin{tikzpicture}[scale=1.3]
     % --- LINKE SEITE (Fahrtrichtung A) ---
@@ -1770,7 +1708,7 @@ Eine negative lokale y-Koordinate bedeutet, dass die Balise sich oberhalb des Si
     \end{scope}
     
 \end{tikzpicture}
-\caption{Geometrische Bestimmung der Fahrtrichtung eines Signals durch die relative Position der zugeordneten Balise im lokalen Koordinatensystem. Die Koordinatenangabe befindet sich zwischen Signal und Balise. Links: Balise befindet sich oberhalb des Signals ($dy_{\text{local}} < 0$) → Fahrtrichtung A. Rechts: Balise befindet sich unterhalb des Signals ($dy_{\text{local}} > 0$) → Fahrtrichtung B.}
+\caption{Geometrische Bestimmung der Fahrtrichtung eines Signals}
 \label{fig:signal_direction}
 \end{figure}
 
@@ -1914,7 +1852,7 @@ Basierend auf der Analyse häufiger OCR-Fehler in der Gleisplanerkennung wurden 
 
 Ein häufiger Fehler betrifft die Groß- und Kleinschreibung bei alphanumerischen Codes. OCR-Engines tendieren dazu, Großbuchstaben als Kleinbuchstaben zu interpretieren, insbesondere bei geringer Schriftgröße oder suboptimaler Bildqualität. Die Korrektur erfolgt durch systematische Umwandlung aller Kleinbuchstaben in Großbuchstaben für Signalbezeichnungen und ähnliche Codes, da die standardisierte Notation ausschließlich Großbuchstaben vorsieht. Diese Transformation wird mit einer Konfidenz von 0.95 bewertet, da die Regel nahezu ausnahmslos anwendbar ist.
 
-Whitespace-Fehler entstehen, wenn OCR-Engines fälschlicherweise Leerzeichen in zusammenhängende Zeichenketten einfügen. Dies tritt besonders bei Signalbezeichnungen auf, wo beispielsweise A101 als A 101 erkannt werden kann. Die Korrektur besteht in der Entfernung aller Leerzeichen aus alphanumerischen Codes. Diese Operation wird mit einer Konfidenz von 0.80 bewertet, da in seltenen Fällen legitime Leerzeichen existieren können, die jedoch im Kontext der Gleisplanerkennung unüblich sind.
+Leerzeichenfehler (Whitespace-Fehler) entstehen, wenn OCR-Engines fälschlicherweise Leerzeichen in zusammenhängende Zeichenketten einfügen. Dies tritt besonders bei Signalbezeichnungen auf, wo beispielsweise A101 als A 101 erkannt werden kann. Die Korrektur besteht in der Entfernung aller Leerzeichen aus alphanumerischen Codes. Diese Operation wird mit einer Konfidenz von 0.80 bewertet, da in seltenen Fällen legitime Leerzeichen existieren können, die jedoch im Kontext der Gleisplanerkennung unüblich sind.
 
 Die Normalisierung der Fahrtrichtungsangaben adressiert das Problem, dass OCR-Engines die vorgeschriebenen Großbuchstaben A und B gelegentlich als Kleinbuchstaben a und b interpretieren. Die Korrektur erfolgt durch Konversion zu Großbuchstaben, sofern der erkannte Text genau einem Zeichen entspricht und entweder a oder b ist. Diese hochspezifische Regel erreicht eine Konfidenz von 0.90.
 
@@ -1968,7 +1906,7 @@ Die Anwendung automatischer Korrekturen erfolgt nicht undifferenziert, sondern w
     \node[below=0.3cm of low, font=\normalsize, text=black] {Niedrige Konfidenz};
 
 \end{tikzpicture}
-\caption{Konfidenzbasierte Entscheidungslogik (Größe skaliert, Schrift angepasst).}
+\caption{Konfidenzbasierte Entscheidungslogik für Korrekturvorschläge}
 \label{fig:confidence_decision_readable}
 \end{figure}
 
@@ -2037,7 +1975,7 @@ Eine wesentliche Herausforderung bei der manuellen Validierung besteht in der ef
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=1.0\textwidth]{images/Kapitel6/Validierungsdialog2.png} 
-\caption{Bidirektionale Navigation: Jump-to-Detection Workflow zwischen Validierungsdialog und Gleisplan-Ansicht}
+\caption{Jump-to-Detection Workflow zwischen Validierungsdialog und Gleisplan-Ansicht}
 \label{fig:jump_to_detection}
 \end{figure}
 
@@ -2069,11 +2007,9 @@ Der tabellarische CSV-Export repräsentiert die Validierungsergebnisse in einer 
 
 \subsubsection{Datenbankbasierte Persistierung}
 
-Zur langfristigen Speicherung und Nachverfolgbarkeit werden Validierungsergebnisse in einer PostgreSQL-Datenbank persistiert. Das Datenbankschema umfasst drei spezialisierte Tabellen, die unterschiedliche Aspekte der Validierung und Qualitätssicherung abbilden.
+Zur langfristigen Speicherung und Nachverfolgbarkeit werden Validierungsergebnisse in einer PostgreSQL-Datenbank persistiert. Das Datenbankschema (Abbildung~\ref{fig:validation_db_schema}) umfasst drei spezialisierte Tabellen für Validierungsprotokolle, Qualitätsmetriken und manuelle Korrekturen.
 
-
-Die Tabelle für Validierungsprotokolle speichert detaillierte Informationen zu jedem identifizierten Problem. Die Struktur umfasst eine eindeutige Identifikation des Protokolleintrags, eine Referenz zum zugehörigen Gleisplan, die Klassifikation des Validierungstyps, den Schweregrad als standardisierte Kategorie (ERROR, WARNING, INFO), eine textuelle Problembeschreibung, eine optionale Referenz zur betroffenen Zeile im extrahierten Datensatz, ein JSON-Feld für zusätzliche kontextuelle Informationen sowie einen Zeitstempel der Protokollierung. Diese Struktur ermöglicht sowohl die Rekonstruktion des Validierungszustands zu einem bestimmten Zeitpunkt als auch die Analyse von Fehlertrends über mehrere Extraktionsdurchläufe hinweg.
-\begin{figure}[htbp]
+\begin{figure}[H]
 \centering
 \begin{tikzpicture}[
     node distance=3cm,
@@ -2149,13 +2085,21 @@ Die Tabelle für Validierungsprotokolle speichert detaillierte Informationen zu 
     {severity $\in$ \{ERROR, WARNING, INFO\}};
 
 \end{tikzpicture}
-\caption{PostgreSQL Datenbankschema für Validierungspersistierung mit drei spezialisierten Tabellen für Validierungsprotokolle, Qualitätsmetriken und manuelle Korrekturen}
+\caption{PostgreSQL Datenbankschema für Validierungspersistierung}
 \label{fig:validation_db_schema}
 \end{figure}
 
-Die Qualitätsmetriken-Tabelle aggregiert quantitative Kennzahlen zur Bewertung der Extraktionsqualität. Gespeichert werden der Name der Metrik als Identifikator, ein numerischer Wert für quantitative Metriken, ein JSON-Feld für strukturierte Metrikdaten sowie ein Zeitstempel der Berechnung. Typische Metriken umfassen die durchschnittliche YOLO-Konfidenz aggregiert über alle Klassen sowie klassenspezifisch, die OCR-Erfolgsrate für Koordinaten und Signalbezeichnungen als Quotient erfolgreich erkannter Texte zur Gesamtzahl der Objekte, die Linking-Erfolgsrate als Anteil der Objekte mit korrekt verknüpften Koordinaten, sowie die Anzahl niedrig-konfidenter Erkennungen differenziert nach Objektklasse. Diese Metriken ermöglichen eine quantitative Bewertung der Systemleistung und unterstützen die Identifikation von Optimierungspotenzialen.
 
-Die dritte Tabelle protokolliert manuelle Korrekturen, die durch den Benutzer nach Abschluss der automatischen Validierung vorgenommen werden. Für jede Korrektur werden die Zeilenidentifikation, der Name der modifizierten Spalte, der ursprüngliche Wert vor Korrektur, der neue Wert nach Korrektur, eine Typisierung der Korrektur zur Kategorisierung, die Identifikation des korrigierenden Benutzers, eine optionale textuelle Begründung sowie ein Zeitstempel gespeichert. Diese Daten dienen mehreren Zwecken: Sie ermöglichen eine vollständige Nachvollziehbarkeit aller Datenmodifikationen, unterstützen die Analyse häufiger Korrekturmuster zur Identifikation systematischer Fehler in der Extraktionspipeline, und liefern wertvolle Trainingsdaten für die iterative Verbesserung der zugrundeliegenden Modelle.
+Die Tabelle für Validierungsprotokolle (validation\_log) speichert detaillierte Informationen zu jedem identifizierten Problem. Die Struktur umfasst eine eindeutige Identifikation des Protokolleintrags, eine Referenz zum zugehörigen Gleisplan, die Klassifikation des Validierungstyps, den Schweregrad als standardisierte Kategorie (ERROR, WARNING, INFO), eine textuelle Problembeschreibung, eine optionale Referenz zur betroffenen Zeile im extrahierten Datensatz, ein JSON-Feld für zusätzliche kontextuelle Informationen sowie einen Zeitstempel der Protokollierung. Diese Struktur ermöglicht sowohl die Rekonstruktion des Validierungszustands zu einem bestimmten Zeitpunkt als auch die Analyse von Fehlertrends über mehrere Extraktionsdurchläufe hinweg.
+
+
+
+
+
+
+Die Qualitätsmetriken-Tabelle (quality)aggregiert quantitative Kennzahlen zur Bewertung der Extraktionsqualität. Gespeichert werden der Name der Metrik als Identifikator, ein numerischer Wert für quantitative Metriken, ein JSON-Feld für strukturierte Metrikdaten sowie ein Zeitstempel der Berechnung. Typische Metriken umfassen die durchschnittliche YOLO-Konfidenz aggregiert über alle Klassen sowie klassenspezifisch, die OCR-Erfolgsrate für Koordinaten und Signalbezeichnungen als Quotient erfolgreich erkannter Texte zur Gesamtzahl der Objekte, die Linking-Erfolgsrate als Anteil der Objekte mit korrekt verknüpften Koordinaten, sowie die Anzahl niedrig-konfidenter Erkennungen differenziert nach Objektklasse. Diese Metriken ermöglichen eine quantitative Bewertung der Systemleistung und unterstützen die Identifikation von Optimierungspotenzialen.
+
+Die dritte Tabelle (manual\_corrections)protokolliert manuelle Korrekturen, die durch den Benutzer nach Abschluss der automatischen Validierung vorgenommen werden. Für jede Korrektur werden die Zeilenidentifikation, der Name der modifizierten Spalte, der ursprüngliche Wert vor Korrektur, der neue Wert nach Korrektur, eine Typisierung der Korrektur zur Kategorisierung, die Identifikation des korrigierenden Benutzers, eine optionale textuelle Begründung sowie ein Zeitstempel gespeichert. Diese Daten dienen mehreren Zwecken: Sie ermöglichen eine vollständige Nachvollziehbarkeit aller Datenmodifikationen, unterstützen die Analyse häufiger Korrekturmuster zur Identifikation systematischer Fehler in der Extraktionspipeline, und liefern wertvolle Trainingsdaten für die iterative Verbesserung der zugrundeliegenden Modelle.
 
 Zur Unterstützung statistischer Analysen wurde eine Datenbankansicht implementiert, die Korrekturstatistiken aggregiert. Diese Ansicht fasst Korrekturen nach Gleisplan und Spaltenname zusammen und berechnet die Gesamtanzahl der Korrekturen, die Anzahl betroffener unterschiedlicher Zeilen sowie den Zeitraum der ersten und letzten Korrektur. Diese aggregierten Daten ermöglichen die Identifikation besonders fehleranfälliger Datenfelder und unterstützen die Priorisierung von Verbesserungsmaßnahmen.
 
@@ -2639,7 +2583,7 @@ Die Datenbankinteraktion erfolgt über den PostgreSQL-Adapter \texttt{psycopg2} 
     Analysiert Korrekturmuster zur Identifikation systematischer Fehler
 \end{itemize}
 
-Die Verwendung von Connection-Pooling über Context Manager optimiert die Performance bei häufigen Datenbankzugriffen während des Extraktionsprozesses und stellt automatisches Rollback bei Fehlern sicher.
+Die Verwendung von Connection-Pooling mittels Context Manager optimiert die Performance bei häufigen Datenbankzugriffen während des Extraktionsprozesses und stellt automatisches Rollback bei Fehlern sicher.
 
 \section{Benutzeroberfläche}
 \label{sec:benutzeroberfläche}
@@ -2671,8 +2615,8 @@ Das PDF-Rendering erfolgt in zwei Schritten: Zunächst wird jede PDF-Seite bei h
 w_{\text{display}} = w_{\text{page}} \times \frac{r}{72} \times z
 \end{equation}
 
-wobei 72 die Standard-DPI-Referenz für PDF-Dokumente darstellt. Der Zoomfaktor $z$ ist im Bereich $[0.25, 4.0]$ steuerbar, was eine 16-fache Vergrößerungsspanne ermöglicht.
-\begin{figure}[htbp]
+wobei 72 die Standard-DPI-Referenz für PDF-Dokumente darstellt. Der Zoomfaktor $z$ ist im Bereich $[0.25, 4.0]$ steuerbar, was eine 16-fache Vergrößerungsspanne ermöglicht. Zur Performance-Optimierung wird ein Viewport-basiertes Culling implementiert (Abbildung~\ref{fig:viewport_culling}), das die Anzahl zu rendernder Overlays auf die im aktuellen Sichtbereich befindlichen Objekte reduziert. Dies verbessert die Darstellungsgeschwindigkeit bei großformatigen Plänen erheblich.
+\begin{figure}[H]
 \centering
 \begin{tikzpicture}[scale=0.8]
 
@@ -2704,7 +2648,7 @@ wobei 72 die Standard-DPI-Referenz für PDF-Dokumente darstellt. Der Zoomfaktor 
 };
 
 \end{tikzpicture}
-\caption{Viewport-basiertes Culling reduziert die Anzahl zu rendernder Overlays auf die im aktuellen Sichtbereich befindlichen Objekte. Dies verbessert die Performance bei großformatigen Plänen erheblich.}
+\caption{Viewport-basiertes Culling zur Performance-Optimierung}
 \label{fig:viewport_culling}
 \end{figure}
 \subsubsection{Overlay-Darstellung}
@@ -2718,7 +2662,7 @@ wobei 72 die Standard-DPI-Referenz für PDF-Dokumente darstellt. Der Zoomfaktor 
     \item Koordinate: Magenta (\texttt{RGB}(255, 0, 255))
 \end{itemize}
 
-\subsection{Interaktive Ergebnis-Tabelle}
+\subsection{Interaktive Ergebnistabelle}
 
 \subsubsection{Hierarchische Datenstruktur}
 
@@ -2867,7 +2811,7 @@ Der JSON-Export folgt einem hierarchischen Schema mit vollständigen Geometrieda
 
 Diese Struktur ermöglicht die vollständige Rekonstruktion der Extraktionsergebnisse und eignet sich für Weiterverarbeitung in anderen Systemen.
 
-\subsubsection{Diff-Report-Export}
+\subsubsection{Export des Differenzberichts}
 
 Für Versionsvergleiche wird ein dediziertes Excel-Sheet mit den Spalten [\textit{UID, Status, Alte Werte, Neue Werte, Position Alt, Position Neu}] generiert. Dies ermöglicht eine nachvollziehbare Änderungshistorie zwischen Planversionen.
 
