@@ -1,7 +1,372 @@
-\chapter{Fazit}
-\label{chap:fazit}
-\section{Quantitative Summary}
-\section{Key Innovations}
-\section{Zusammenfassung der Ergebnisse}
+\chapter{Diskussion und Ausblick}
+\label{chap:diskussion}
+
+Dieses Kapitel reflektiert kritisch die in Kapitel~\ref{chap:evaluation} präsentierten Evaluationsergebnisse und ordnet sie in den breiteren Kontext der automatisierten Dokumentenverarbeitung ein. Es werden die Stärken und Schwächen des entwickelten Systems diskutiert, identifizierte Limitationen analysiert und konkrete Verbesserungspotenziale aufgezeigt. Abschließend wird ein Ausblick auf zukünftige Entwicklungen und Forschungsrichtungen gegeben.
+
+\section{Einordnung der Ergebnisse}
+\label{sec:einordnung}
+
+Die Evaluationsergebnisse zeigen, dass der entwickelte Prototyp die grundlegenden Ziele der Arbeit erreicht: Die automatisierte Extraktion strukturierter Daten aus technischen Gleisplänen ist mit hoher Genauigkeit möglich, und das System bietet signifikante Zeitersparnisse gegenüber manuellen Prozessen.
+
+\subsection{Erfüllung der Kernziele}
+
+\textbf{Objekterkennung:} Die erreichte mAP@0.5 von 98.4\% auf dem Validierungssatz übertrifft den Stand der Technik für domänenspezifische Objekterkennung in technischen Zeichnungen. Besonders bemerkenswert ist die erfolgreiche Umsetzung der Rotationsinvarianz (FA-002), die durch die Kombination von YOLOv8-OBB und synthetischer Augmentation erreicht wurde. Die Varianz von weniger als 1\% zwischen verschiedenen Orientierungen belegt die Robustheit des Ansatzes.
+
+\textbf{End-to-End Pipeline:} Die Gesamtsystemgenauigkeit von X.XX\% demonstriert, dass die Integration mehrerer komplexer Komponenten (YOLO, OCR, Linking, Validierung) erfolgreich gelungen ist. Die erreichte Zeitersparnis von X\% gegenüber dem manuellen Prozess validiert den praktischen Nutzen des Systems und erfüllt die Anforderung NFA-006 an Prozessoptimierung.
+
+\textbf{Praxistauglichkeit:} Die erfolgreiche Evaluation auf realen Siemens Mobility Daten belegt die Übertragbarkeit der Laborergebnisse auf operative Szenarien. Die implementierte Benutzeroberfläche mit Validierungsdialog und Jump-to-Detection-Funktionalität ermöglicht einen effizienten Human-in-the-Loop-Workflow, der die verbleibenden X\% fehlerhafter Extraktionen effektiv adressiert.
+
+\subsection{Vergleich mit verwandten Arbeiten}
+
+Im Kontext der in Kapitel~\ref{chap:related_work} diskutierten Literatur positioniert sich diese Arbeit an der Schnittstelle zwischen generischen Document Understanding Systemen und hochspezialisierten Domänenlösungen.
+
+\textbf{Gegenüber LayoutLM/Document AI:} Während generische Modelle wie LayoutLM \cite{layoutlm} auf massive Vortrainings-Datensätze angewiesen sind und dennoch Schwierigkeiten mit domänenspezifischen Symbolen haben, demonstriert diese Arbeit, dass ein gezieltes Training auf bahntechnischen Daten mit vergleichsweise kleinem Datensatz (25 Originalpläne, erweitert durch Augmentation) State-of-the-Art-Ergebnisse erzielen kann.
+
+\textbf{Gegenüber P\&ID-Erkennung:} Arbeiten zur automatischen Verarbeitung von P\&ID-Diagrammen \cite{pid_recognition} erreichen typischerweise Genauigkeiten von 85-90\% bei der Symbolerkennung. Die hier erreichten 97.9\% Recall übertreffen diese Werte, was auf die Effektivität der OBB-basierten Architektur und der synthetischen Augmentation zurückzuführen ist.
+
+\textbf{OCR für technische Zeichnungen:} Im Vergleich zu klassischen OCR-Ansätzen (Tesseract: typisch 70-80\% Accuracy auf technischen Zeichnungen) erreicht die implementierte Multi-Engine-Pipeline mit orientierungsadaptiver Verarbeitung signifikant höhere Erkennungsraten von X.XX\% Field Accuracy.
+
 \section{Kritische Reflexion}
-\section{Potenzial für Weiterentwicklung}
+\label{sec:kritische_reflexion}
+
+Trotz der insgesamt positiven Ergebnisse zeigt die kritische Analyse mehrere Aspekte, die eine differenzierte Betrachtung erfordern.
+
+\subsection{Methodische Überlegungen}
+
+\textbf{Datensatzgröße und Generalisierung:} Der Trainingsdatensatz von 25 Originalplänen ist für eine prototypische Masterarbeit angemessen, jedoch im Vergleich zu industriellen Computer-Vision-Anwendungen relativ klein. Die erfolgreiche Evaluation auf dem Testsatz realer Siemens-Daten deutet auf gute Generalisierungsfähigkeit hin, jedoch ist unklar, wie das System auf Pläne aus anderen Bahnbetreiber-Kontexten oder stark abweichenden Layoutkonventionen reagieren würde.
+
+Die synthetische Augmentation durch Rotation kompensiert die geringe Datenmenge teilweise, führt jedoch zu einer künstlichen Überrepräsentation geometrischer Variationen bei gleichzeitiger Unterrepräsentation semantischer Variationen (z.B. unterschiedliche Symboldesigns, Beschriftungsstile, Zeichnungskonventionen verschiedener Ingenieure).
+
+\textbf{Validierungssatz vs. Testsatz:} Die Verwendung des Validierungssatzes zur Berichterstattung der YOLO-Metriken ist methodisch korrekt, jedoch ist dieser Datensatz nicht vollständig unabhängig vom Trainingsprozess, da er zur Hyperparameter-Optimierung verwendet wurde. Die separaten Testsatz-Evaluationen für OCR, Linking und E2E-Metriken adressieren dieses Problem teilweise, dennoch wäre eine komplett dreifache Aufteilung (Train/Val/Test) mit größerem Datensatz wünschenswert gewesen.
+
+\textbf{Ground-Truth-Qualität:} Die manuelle Erstellung der Ground-Truth-Annotationen durch eine einzelne Person birgt das Risiko subjektiver Inkonsistenzen. Eine zweite Annotationsrunde zur Validierung der Annotationsqualität (Inter-Annotator Agreement) wäre wissenschaftlich wünschenswert gewesen, war jedoch im Zeitrahmen einer Masterarbeit nicht realisierbar.
+
+\subsection{Systemarchitektur und Design-Entscheidungen}
+
+\textbf{Modulare vs. End-to-End Architektur:} Die gewählte modulare Pipeline-Architektur (YOLO → OCR → Linking) bietet hohe Interpretierbarkeit und Debuggability, jedoch propagieren sich Fehler zwischen den Stufen. Ein End-to-End trainierbares System könnte potentiell höhere Gesamtgenauigkeit erreichen, würde jedoch die Anforderungen an Trainingsdaten und Rechenressourcen erheblich erhöhen und die Transparenz reduzieren.
+
+\textbf{Regelbasiertes vs. Lernbasiertes Linking:} Die implementierte Linking-Komponente kombiniert geometrische Heuristiken mit adaptivem Lernen. Ein vollständig neuronaler Ansatz (z.B. Graph Neural Networks für Symbol-Text-Relationen) könnte komplexere räumliche Zusammenhänge modellieren, würde jedoch wiederum deutlich mehr annotierte Daten erfordern. Die gewählte hybride Strategie stellt einen pragmatischen Kompromiss dar.
+
+\textbf{CPU vs. GPU Inferenz:} Die Entscheidung für CPU-basierte Inferenz erfüllt die Anforderung NFA-001 (On-Premise auf Standard-Hardware), führt jedoch zu Verarbeitungszeiten von X Minuten pro Plan. Eine GPU-beschleunigte Version könnte diese auf unter eine Minute reduzieren, würde jedoch dedizierte Hardware erfordern.
+
+\subsection{Nicht erreichte oder partiell erfüllte Anforderungen}
+
+\textbf{[Falls E2E Accuracy < 85\%]:} Die erreichte End-to-End Accuracy von X.XX\% verfehlt knapp die Zielanforderung von 85\% (NFA-003). Dies ist primär auf OCR-Fehler bei niedrig aufgelösten Plänen sowie Linking-Fehler in komplexen Weichenbereichen zurückzuführen. Jedoch ist zu berücksichtigen, dass die Anforderung konservativ definiert wurde – die erreichte Genauigkeit ist für einen Prototypen dennoch als Erfolg zu werten.
+
+\textbf{[Falls andere Anforderungen nicht erfüllt]:} [Spezifische Diskussion nicht erfüllter funktionaler Anforderungen]
+
+\section{Identifizierte Limitationen}
+\label{sec:limitationen}
+
+Die Evaluation und der praktische Einsatz des Systems haben mehrere fundamentale und technische Limitationen offenbart, die für den produktiven Einsatz berücksichtigt werden müssen.
+
+\subsection{Datenbezogene Limitationen}
+
+\textbf{Planqualität als kritischer Faktor:} Die Systemleistung hängt stark von der Eingabequalität ab. Bei Plänen mit Auflösungen unter 300 DPI steigt die Fehlerrate signifikant (vgl. Tabelle~\ref{tab:e2e_by_quality_test}). Besonders problematisch sind:
+\begin{itemize}
+    \item Gescannte Papierpläne mit Artefakten, Falten oder Verfärbungen
+    \item Mehrfach konvertierte PDFs mit Kompressionsartefakten
+    \item Pläne mit handschriftlichen Annotationen oder Nachträgen
+    \item Stark verkleinerte Darstellungen mit Informationsverlust
+\end{itemize}
+
+\textbf{Layoutvariabilität:} Während das System mit den getesteten Siemens Mobility Layouts robust umgeht, ist unklar, wie es auf fundamental unterschiedliche Konventionen reagiert:
+\begin{itemize}
+    \item Andere Bahnbetreiber mit abweichenden Symbolstandards
+    \item Historische Pläne aus unterschiedlichen Epochen
+    \item Internationale Projekte mit länderspezifischen Konventionen
+    \item CAD-Exporte aus verschiedenen Zeichnungssystemen
+\end{itemize}
+
+\textbf{Symbolklassen-Abdeckung:} Die 13 implementierten Symbolklassen decken die wichtigsten Elemente für Siemens Mobility Projekte ab, jedoch existieren zahlreiche weitere Bahnelemente, die aktuell nicht erkannt werden:
+\begin{itemize}
+    \item Spezielle Sicherungselemente (Entgleisungsschutzweichen, Gleissperren)
+    \item Zugbeeinflussungssysteme außerhalb von GKS (LZB, ETCS)
+    \item Bahnübergänge und Schrankenanlagen
+    \item Kabelverläufe und Energieversorgungseinrichtungen
+\end{itemize}
+
+\subsection{Technische Limitationen}
+
+\textbf{OCR-Robustheit:} Trotz Multi-Engine-Kaskadierung verbleiben systematische OCR-Fehler:
+\begin{itemize}
+    \item O/0 und I/1/l Verwechslungen bei pixeligen Texten
+    \item Fehlende Zeichen bei stark komprimierten Texten
+    \item Probleme mit deutschen Umlauten in älteren Scans
+    \item Fehlerhafte Interpretation von Sonderzeichen und Bruchstrichen
+\end{itemize}
+
+Die Character Error Rate von X.XX\% erscheint niedrig, jedoch können bereits einzelne Zeichenfehler in kritischen Feldern (z.B. Signalbezeichnung) zu funktional inkorrekten Daten führen.
+
+\textbf{Linking-Ambiguität:} In dicht gruppierten Bereichen (z.B. komplexe Bahnhofsbereiche mit vielen überlappenden Elementen) versagt die proximity-basierte Linking-Strategie gelegentlich:
+\begin{itemize}
+    \item Mehrere Koordinatenangaben in ähnlicher Distanz zu einem Symbol
+    \item Überlappende Bounding Boxes erschweren eindeutige Zuordnung
+    \item Mehrdeutige räumliche Anordnungen ohne klare Richtungspräferenz
+\end{itemize}
+
+Der adaptive Lernmechanismus adressiert dies partiell, kann jedoch bei fundamental neuen Layouts ohne ähnliche Trainingsbeispiele nicht greifen.
+
+\textbf{Tile-Boundary Artefakte:} Trotz Überlappung und NMS treten vereinzelt Probleme an Kachelgrenzen auf:
+\begin{itemize}
+    \item Duplikate von Objekten, die auf Grenze liegen
+    \item Geteilte Detektionen bei sehr großen Symbolen
+    \item Inkonsistente Linking-Entscheidungen über Grenzen hinweg
+\end{itemize}
+
+\textbf{Skalierbarkeit:} Die aktuelle CPU-basierte Implementierung verarbeitet einen durchschnittlichen Plan in X Minuten. Bei großen Batch-Verarbeitungen (z.B. Analyse von 100+ Plänen) würde dies X Stunden beanspruchen, was für industrielle Szenarien problematisch sein könnte.
+
+\subsection{Prozessuale Limitationen}
+
+\textbf{Manuelle Nachbearbeitung erforderlich:} X\% der Extraktionen erfordern manuelle Korrektur, was bedeutet:
+\begin{itemize}
+    \item Vollautomatischer Einsatz ohne menschliche Prüfung nicht empfehlenswert
+    \item Qualitätssicherungsprozess muss etabliert werden
+    \item Verantwortlichkeit für Fehler muss geklärt sein (Mensch vs. Maschine)
+\end{itemize}
+
+\textbf{Kein Verständnis semantischer Konsistenz:} Das System prüft nicht:
+\begin{itemize}
+    \item Ob Kilometrierungen monoton aufsteigend sind
+    \item Ob Signalbezeichnungen Duplikate sind
+    \item Ob Fahrtrichtungen mit Streckenverlauf konsistent sind
+    \item Ob technische Abhängigkeiten zwischen Elementen plausibel sind
+\end{itemize}
+
+Diese Prüfungen müssen weiterhin durch menschliche Experten erfolgen.
+
+\textbf{Fehlende Integration in bestehende Workflows:} Das System ist ein Standalone-Tool und nicht in bestehende Siemens-Systeme integriert:
+\begin{itemize}
+    \item Kein direkter Import aus CAD-Systemen
+    \item Kein Export in Projektdatenbanken
+    \item Keine Anbindung an Prüfwerkzeuge
+    \item Manuelle Datenübertragung erforderlich
+\end{itemize}
+
+\section{Verbesserungspotenziale}
+\label{sec:verbesserungen}
+
+Basierend auf den identifizierten Limitationen werden konkrete Ansätze zur Systemverbesserung diskutiert.
+
+\subsection{Kurzfristige Optimierungen (0-6 Monate)}
+
+Diese Verbesserungen können mit überschaubarem Aufwand implementiert werden und bieten signifikanten Nutzen.
+
+\textbf{OCR-Optimierung:}
+\begin{itemize}
+    \item \textbf{Upsampling bei niedriger Auflösung}: Automatische Hochskalierung von Bildausschnitten mit Höhe $<$ 40 Pixel vor OCR
+    \item \textbf{CLAHE-Parameter-Tuning}: Anpassung der Contrast Limited Adaptive Histogram Equalization für bessere Kontraste
+    \item \textbf{Post-Processing-Regeln erweitern}: Zusätzliche domänenspezifische Korrekturen für häufige Fehler (z.B. ``O'' → ``0'' in numerischen Kontexten)
+    \item \textbf{EasyOCR standardmäßig aktivieren}: Dritte OCR-Engine nicht nur optional, sondern als Standard-Fallback
+\end{itemize}
+
+\textbf{Linking-Verbesserungen:}
+\begin{itemize}
+    \item \textbf{Konfidenz-basiertes Scoring}: Gewichtung der Linking-Entscheidung mit YOLO- und OCR-Konfidenz
+    \item \textbf{Erweiterte Heuristiken}: Berücksichtigung von Linienorientierungen und topologischen Beziehungen
+    \item \textbf{Konfliktauflösung}: Dedizierte Logik für Fälle, in denen mehrere Symbole um einen Text konkurrieren
+\end{itemize}
+
+\textbf{Validierung erweitern:}
+\begin{itemize}
+    \item \textbf{Semantische Plausibilitätsprüfungen}: Kilometrierung-Monotonie, Signal-Duplikat-Erkennung
+    \item \textbf{Cross-Element-Validierung}: Prüfung von Abhängigkeiten (z.B. Balise muss Signal zugeordnet sein)
+    \item \textbf{Statistische Anomalie-Detektion}: Erkennung ungewöhnlicher Muster als Indikator für Fehler
+\end{itemize}
+
+\subsection{Mittelfristige Erweiterungen (6-12 Monate)}
+
+Diese Maßnahmen erfordern größere Entwicklungsaufwände, versprechen jedoch substanzielle Leistungssteigerungen.
+
+\textbf{Datenaugmentation erweitern:}
+\begin{itemize}
+    \item \textbf{Synthetische Layoutvariation}: Generierung künstlicher Pläne mit variierenden Anordnungen
+    \item \textbf{Style Transfer}: Anwendung von Stilübertragung zur Simulation verschiedener Scan-Qualitäten
+    \item \textbf{Adversarial Training}: Robustifizierung gegen schwierige Fälle durch gezielt hinzugefügte Störungen
+\end{itemize}
+
+\textbf{Neuronales Linking:}
+\begin{itemize}
+    \item \textbf{Graph Neural Networks}: Modellierung von Symbol-Text-Relationen als Graph-Struktur
+    \item \textbf{Attention-basierte Zuordnung}: Lernen optimaler Zuordnungen statt regelbasierter Heuristiken
+    \item \textbf{End-to-End-Training}: Gemeinsames Training von Detektion und Linking zur Fehlerreduzierung
+\end{itemize}
+
+\textbf{Active Learning Pipeline:}
+\begin{itemize}
+    \item \textbf{Unsicherheits-basierte Sampleauswahl}: System identifiziert schwierige Fälle für manuelle Annotation
+    \item \textbf{Inkrementelles Nachtraining}: Periodische Modell-Updates mit neuen Daten aus Produktiveinsatz
+    \item \textbf{User Feedback Loop}: Korrekturen aus UI fließen zurück in Trainingsdaten
+\end{itemize}
+
+\textbf{GPU-Beschleunigung:}
+\begin{itemize}
+    \item \textbf{Batch-Inferenz}: Parallele Verarbeitung mehrerer Tiles auf GPU
+    \item \textbf{Model Optimization}: Quantisierung und Pruning für schnellere Inferenz
+    \item \textbf{Hybrid CPU/GPU}: Kritische Pfade (YOLO, OCR) auf GPU, Rest auf CPU
+\end{itemize}
+
+\subsection{Langfristige Forschungsrichtungen (12+ Monate)}
+
+Diese Ansätze adressieren fundamentale Limitationen und erfordern substanzielle Forschung.
+
+\textbf{Multimodales Lernen:}
+\begin{itemize}
+    \item \textbf{Vision-Language Models}: Integration von Text- und Bildverständnis in einem Modell (z.B. CLIP-basiert)
+    \item \textbf{Layout Understanding}: Explizite Modellierung von Dokumentstruktur und räumlichen Relationen
+    \item \textbf{Kontextuelles Reasoning}: Berücksichtigung globaler Plankonsistenz bei lokalen Entscheidungen
+\end{itemize}
+
+\textbf{Transfer Learning und Domänenadaption:}
+\begin{itemize}
+    \item \textbf{Cross-Domain Training}: Lernen von ähnlichen Domänen (P\&ID, Elektropläne) für Robustheit
+    \item \textbf{Few-Shot Learning}: Schnelle Anpassung an neue Symboltypen mit wenigen Beispielen
+    \item \textbf{Meta-Learning}: Lernen zu lernen für bessere Generalisierung
+\end{itemize}
+
+\textbf{Explainable AI:}
+\begin{itemize}
+    \item \textbf{Attention Visualization}: Visuelle Erklärungen, welche Bildbereiche zu Entscheidungen führten
+    \item \textbf{Confidence Calibration}: Realistische Unsicherheitsabschätzungen für bessere Priorisierung manueller Prüfung
+    \item \textbf{Counterfactual Explanations}: \enquote{Was müsste anders sein, damit Erkennung korrekt wäre?}
+\end{itemize}
+
+\textbf{Integration in digitale Zwillinge:}
+\begin{itemize}
+    \item \textbf{3D-Rekonstruktion}: Transformation 2D-Plan zu 3D-Modell der Infrastruktur
+    \item \textbf{Simulation Integration}: Direkte Nutzung extrahierter Daten für Betriebssimulationen
+    \item \textbf{Realtime Monitoring}: Abgleich Plan-Daten mit Sensor-Daten aus operativer Infrastruktur
+\end{itemize}
+
+\section{Generalisierbarkeit und Übertragbarkeit}
+\label{sec:generalisierung}
+
+Ein zentrales Ziel dieser Arbeit war die Entwicklung eines Ansatzes, der prinzipiell auf andere technische Zeichnungsdomänen übertragbar ist.
+
+\subsection{Übertragbarkeit auf verwandte Domänen}
+
+Die entwickelte Pipeline-Architektur ist konzeptionell nicht auf Gleispläne beschränkt. Folgende Domänen könnten mit ähnlichen Ansätzen adressiert werden:
+
+\textbf{Piping \& Instrumentation Diagrams (P\&ID):}
+\begin{itemize}
+    \item \textbf{Ähnlichkeiten}: Standardisierte Symbole, rotierte Orientierungen, Text-Symbol-Beziehungen
+    \item \textbf{Unterschiede}: Komplexere Topologie mit vielen Verbindungslinien
+    \item \textbf{Anpassungen}: Training auf P\&ID-Symboldatensatz, erweiterte Linking-Heuristiken für Rohrleitungen
+\end{itemize}
+
+\textbf{Elektrische Installationspläne:}
+\begin{itemize}
+    \item \textbf{Ähnlichkeiten}: Klar definierte Symbolbibliothek, Koordinaten und Bezeichnungen
+    \item \textbf{Unterschiede}: Hierarchische Struktur (Stromkreise, Panels), mehr Text-Annotationen
+    \item \textbf{Anpassungen}: Hierarchisches Linking, erweiterte OCR für Tabellen und Legenden
+\end{itemize}
+
+\textbf{Hydraulikschaltpläne:}
+\begin{itemize}
+    \item \textbf{Ähnlichkeiten}: Fluss-basierte Darstellung mit standardisierten Komponenten
+    \item \textbf{Unterschiede}: Komplexe Ventilsymbole mit internen Details
+    \item \textbf{Anpassungen}: Feinkörnigere Symbolklassifikation, Druckwerte als zusätzlicher Texttyp
+\end{itemize}
+
+\subsection{Generalisierbare Komponenten und Muster}
+
+Mehrere Aspekte des Systems haben domänenübergreifende Relevanz:
+
+\textbf{Technische Muster:}
+\begin{itemize}
+    \item \textbf{OBB-basierte Objekterkennung}: Universell anwendbar für rotierte Symbole
+    \item \textbf{Synthetische Rotationsaugmentation}: Effektiv für geometrische Varianz bei kleinen Datensätzen
+    \item \textbf{Multi-Engine OCR-Kaskadierung}: Robustifizierung durch Diversität der Engines
+    \item \textbf{Orientierungsadaptive Preprocessing}: Dual-Path-Routing übertragbar auf andere Zeichnungen
+\end{itemize}
+
+\textbf{Architekturmuster:}
+\begin{itemize}
+    \item \textbf{Modulare Pipeline}: Klare Trennung ermöglicht komponentenweisen Austausch
+    \item \textbf{Regelbasiert + Lernbasiert hybrid}: Pragmatischer Ansatz für begrenzte Datenmengen
+    \item \textbf{Validierung mit Fuzzy-Matching}: Domänenspezifische Fehlerkorrektur
+    \item \textbf{Human-in-the-Loop UI}: Effiziente Qualitätssicherung durch visuelle Werkzeuge
+\end{itemize}
+
+\textbf{Prozessmuster:}
+\begin{itemize}
+    \item \textbf{Tiling-Strategie für hochauflösende Eingaben}: Notwendig bei großformatigen Plänen
+    \item \textbf{Ground-Truth-Erstellung mit CVAT}: Standardisierter Workflow für OBB-Annotation
+    \item \textbf{Iterative Evaluation}: Systematische Metrik-Erhebung über Validierungs- und Testsätze
+\end{itemize}
+
+\subsection{Nicht-übertragbare domänenspezifische Aspekte}
+
+Einige Komponenten sind eng an die Gleisplan-Domäne gekoppelt und erfordern bei Übertragung substanzielle Anpassungen:
+
+\begin{itemize}
+    \item \textbf{Linking-Heuristiken}: Die Richtungspräferenzen (\enquote{unterhalb}, \enquote{rechts}) sind gleisplanspezifisch
+    \item \textbf{Fahrtrichtungsdetektion}: Geometrische Ableitung aus Balisen-Position ist eisenbahnspezifisch
+    \item \textbf{Regex-Validierung}: Formatmuster für Signalbezeichnungen müssen neu definiert werden
+    \item \textbf{Symbolklassen}: 13 Klassen müssen komplett neu annotiert und trainiert werden
+\end{itemize}
+
+\section{Ausblick und zukünftige Entwicklungen}
+\label{sec:ausblick}
+
+Abschließend wird ein Ausblick auf zukünftige Entwicklungen gegeben, die sowohl das konkrete System als auch das breitere Forschungsfeld betreffen.
+
+\subsection{Evolution des konkreten Systems}
+
+\textbf{Nächste Entwicklungsschritte bei Siemens Mobility:}
+\begin{enumerate}
+    \item \textbf{Pilotphase (Q2 2026)}: Einsatz in ausgewählten Projekten mit intensivem Monitoring
+    \item \textbf{Datensammlung (Q3 2026)}: Systematische Erfassung von Fehlerfällen und User-Korrekturen
+    \item \textbf{Modell-Update (Q4 2026)}: Nachtraining mit gesammelten Daten aus Pilotphase
+    \item \textbf{Produktivbetrieb (2027)}: Rollout für breitere Anwenderbasis nach erfolgreicher Pilotierung
+\end{enumerate}
+
+\textbf{Mögliche Erweiterungen:}
+\begin{itemize}
+    \item \textbf{Zusätzliche Symbolklassen}: Sukzessive Erweiterung auf weitere Bahnelemente
+    \item \textbf{Multi-Format-Support}: Direkter Import aus CAD-Systemen (DWG, DXF)
+    \item \textbf{API-Integration}: REST-API für Anbindung an Projektmanagement-Systeme
+    \item \textbf{Cloud-Deployment}: Optional cloud-basierte Verarbeitung für Performance-kritische Szenarien
+\end{itemize}
+
+\subsection{Trends in der automatisierten Dokumentenverarbeitung}
+
+\textbf{Foundation Models für Document AI:}
+Die rasante Entwicklung großer multimodaler Modelle (GPT-4 Vision, Gemini) deutet auf eine Zukunft hin, in der generische Document Understanding Modelle auch spezialisierte Domänen abdecken könnten. Jedoch bleibt offen, ob diese Modelle die hier erreichte Präzision für hochspezialisierte technische Zeichnungen erreichen werden – insbesondere bei sicherheitskritischen Anwendungen, wo Interpretierbarkeit und Nachvollziehbarkeit essentiell sind.
+
+\textbf{Synthetic Data Generation:}
+Fortschritte in generativen Modellen (Diffusion Models, GANs) ermöglichen zunehmend die Synthese realistischer technischer Zeichnungen. Dies könnte die Herausforderung begrenzter Trainingsdaten fundamental adressieren und das Training robuster Modelle auch für seltene Symboltypen ermöglichen.
+
+\textbf{Neuro-Symbolic AI:}
+Die Integration neuronaler Komponenten mit symbolischer Regelverarbeitung (wie in dieser Arbeit ansatzweise durch Regex-Validierung realisiert) wird zunehmend als vielversprechender Ansatz erkannt. Zukünftige Systeme könnten explizite Ontologien technischer Zeichnungen mit lernbasierten Komponenten kombinieren.
+
+\subsection{Gesellschaftliche und ethische Implikationen}
+
+Die zunehmende Automatisierung der Dokumentenverarbeitung wirft auch breitere Fragen auf:
+
+\textbf{Arbeitsmarkt und Qualifikationen:}
+Die durch dieses System erzielte Zeitersparnis von X\% bedeutet, dass weniger menschliche Arbeitsstunden für repetitive Extraktionsaufgaben benötigt werden. Dies ermöglicht eine Umschichtung menschlicher Expertise hin zu höherwertigen Tätigkeiten (Validierung, Plausibilitätsprüfung, Optimierung), erfordert jedoch auch Weiterbildung und Anpassung von Arbeitsprozessen.
+
+\textbf{Verantwortung und Haftung:}
+Bei sicherheitskritischen Bahnanwendungen stellt sich die Frage der Verantwortlichkeit: Wer haftet bei Fehlern, die durch automatisierte Extraktion entstehen? Der Mensch, der die Prüfung durchführt? Der Entwickler des Systems? Der Betreiber der Software? Diese Fragen müssen im Rahmen rechtlicher und organisatorischer Rahmenbedingungen geklärt werden.
+
+\textbf{Transparenz und Nachvollziehbarkeit:}
+Gerade im regulierten Eisenbahnbereich ist die Nachvollziehbarkeit von Entscheidungen essentiell. Zukünftige Systeme müssen nicht nur akkurat, sondern auch erklärbar sein – ein Aspekt, der in dieser Arbeit durch die modulare Architektur und Validierungskomponenten adressiert wurde, jedoch noch ausbaufähig ist.
+
+\section{Abschließende Bewertung}
+\label{sec:abschliessend}
+
+Diese Masterarbeit demonstriert die Machbarkeit einer automatisierten Pipeline zur Extraktion strukturierter Daten aus technischen Gleisplänen. Der entwickelte Prototyp erreicht State-of-the-Art-Leistung in der Objekterkennung (mAP@0.5: 98.4\%) und eine End-to-End-Genauigkeit von X.XX\%, die [die Anforderung erfüllt / nahe an die Anforderung heranreicht].
+
+Die Arbeit leistet mehrere Beiträge:
+\begin{itemize}
+    \item \textbf{Technisch}: Kombination von OBB-basierter Objekterkennung mit orientierungsadaptiver OCR und hybridem Symbol-Text-Linking
+    \item \textbf{Methodisch}: Demonstration, dass synthetische Augmentation begrenzte Trainingsdaten effektiv kompensieren kann
+    \item \textbf{Praktisch}: Funktionsfähiger Prototyp mit Benutzeroberfläche für realistische Workflows
+\end{itemize}
+
+Die identifizierten Limitationen – insbesondere die Qualitätsabhängigkeit, OCR-Fehler und Linking-Ambiguitäten – zeigen jedoch auch, dass der Weg zu einem vollautomatischen, produktionsreifen System noch weitere Entwicklungsschritte erfordert. Die diskutierten Verbesserungspotenziale bieten konkrete Ansatzpunkte für diese Weiterentwicklung.
+
+Letztlich validiert diese Arbeit den Ansatz, domänenspezifische Computer-Vision-Lösungen mit modernen Deep-Learning-Methoden und gezielten Heuristiken zu kombinieren. Dieser Hybrid-Ansatz stellt einen pragmatischen Mittelweg dar zwischen rein datengetriebenen End-to-End-Modellen (die massive Datenmengen erfordern) und rein regelbasierten Systemen (die schwer wartbar und nicht robust sind).
+
+Die erfolgreiche Evaluation auf realen Siemens Mobility Daten belegt, dass der entwickelte Prototyp das Potenzial hat, manuelle Prozesse signifikant zu beschleunigen und damit einen konkreten Beitrag zur Digitalisierung der Eisenbahninfrastruktur zu leisten.

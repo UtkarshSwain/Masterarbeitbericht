@@ -147,7 +147,69 @@ Die Daten wurden in eine standardisierte COCO-Verzeichnisstruktur (Abbildung \re
     \caption{COCO-konforme Datensetstruktur für YOLOv8-OBB Training}
     \label{fig:COCODatenset}
 \end{figure}
+\subsubsection{Synthetische Datenaugmentation durch Rotation}
 
+Um die Robustheit des Modells gegenüber beliebigen Symbolorientierungen zu verbessern und die Klassenbalance zu optimieren, wurde eine gezielte synthetische Augmentation durch Rotation implementiert. Diese Strategie adressiert zwei zentrale Herausforderungen:
+
+\begin{enumerate}
+    \item \textbf{Klassenungleichgewicht}: Die natürliche Verteilung der Symbolklassen im Datensatz ist stark unausgeglichen (vgl. Tabelle~\ref{tab:dataset_distribution}), mit dominierenden Klassen wie \textit{coordinate} (629 Instanzen) und unterrepräsentierten Klassen wie \textit{endeweichen} (4 Instanzen).
+    
+    \item \textbf{Orientierungsvielfalt}: Obwohl technische Zeichnungen Symbole in verschiedenen Winkeln enthalten, sind bestimmte Orientierungen (insbesondere $0°$ und $90°$) überrepräsentiert, während diagonale Ausrichtungen seltener auftreten.
+\end{enumerate}
+
+\textbf{Augmentationsstrategie:}
+
+Die synthetische Rotation wurde selektiv auf unterrepräsentierte Klassen angewendet. Für jede Instanz einer Zielklasse wurden systematische Rotationen um folgende Winkel durchgeführt:
+
+$$\Theta_{\text{aug}} = \{-90°, -60°, -45°, -30°, -15°, +15°, +30°, +45°, +60°, +90°\}$$
+
+Die Rotation erfolgte um den Zentroid $(c_x, c_y)$ der Oriented Bounding Box, wobei sowohl die Bildregion als auch die OBB-Koordinaten entsprechend transformiert wurden. Die Rotationsmatrix für einen Winkel $\theta$ lautet:
+
+$$\mathbf{R}(\theta) = \begin{pmatrix} 
+\cos(\theta) & -\sin(\theta) \\ 
+\sin(\theta) & \cos(\theta) 
+\end{pmatrix}$$
+
+\textbf{Klassenspezifische Augmentation:}
+
+Die Anzahl der generierten synthetischen Samples wurde klassenabhängig gesteuert, um eine Zielverteilung von ca. 600 Instanzen pro Klasse zu erreichen (Ausnahme: \textit{coordinate} mit Ziel +300 Instanzen aufgrund der bereits hohen Ausgangsanzahl).
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{|l|r|r|r|r|}
+\hline
+\textbf{Klasse} & \textbf{Original} & \textbf{Augmentiert} & \textbf{Gesamt} & \textbf{Faktor} \\
+\hline
+coordinate & 629 & 300 & 929 & 1.48× \\
+signal & 218 & 382 & 600 & 2.75× \\
+sverbinder & 85 & 515 & 600 & 7.06× \\
+gks\_gesteuert & 69 & 531 & 600 & 8.70× \\
+gm\_block & 91 & 509 & 600 & 6.59× \\
+haltepunkt & 47 & 553 & 600 & 12.77× \\
+gks\_festkodiert & 60 & 540 & 600 & 10.00× \\
+weichen\_block & 39 & 561 & 600 & 15.38× \\
+isolierstoß & 27 & 573 & 600 & 22.22× \\
+prellblock & 16 & 584 & 600 & 37.50× \\
+haltetafel & 11 & 589 & 600 & 54.55× \\
+endeweichen & 4 & 596 & 600 & 150.00× \\
+weichengruppeende & 9 & 591 & 600 & 66.67× \\
+\hline
+\textbf{Gesamt} & \textbf{1.305} & \textbf{6.724} & \textbf{8.029} & \textbf{6.15×} \\
+\hline
+\end{tabular}
+\caption{Verteilung der Instanzen vor und nach synthetischer Rotation}
+\label{tab:augmentation_statistics}
+\end{table}
+\textbf{Technische Umsetzung:}
+Die hohen Augmentationsfaktoren für seltene Klassen (z.B. 150× für \textit{endeweichen}) sind gerechtfertigt, da diese Symbole in realen Gleisplänen tatsächlich sehr selten vorkommen, das Modell aber dennoch in der Lage sein muss, sie zuverlässig zu erkennen. Die synthetische Rotation simuliert realistische Orientierungsvariationen und verhindert Overfitting auf die wenigen Original-Samples. 
+
+Die finale Datensatzaufteilung erfolgte automatisch durch YOLOv8s integrierte Split-Funktion mit einem 80/20-Verhältnis, was zu 923 Trainings- und 208 Validierungsbildern führte. Nach manueller Filterung leerer oder irrelevanter Tiles verblieben 115 Validierungsbilder (1.305 Instanzen), die als dedizierter Testdatensatz für die Evaluation in Kapitel~\ref{chap:evaluation} dienen.
+Die Rotation wurde in einem Preprocessing-Schritt vor dem Training durchgeführt und die augmentierten Samples wurden als separate Einträge im Trainingsdatensatz gespeichert. Dies ermöglicht eine deterministische Reproduzierbarkeit der Augmentation. Die Implementation erfolgte mittels OpenCV's \texttt{cv2.getRotationMatrix2D()} und \texttt{cv2.warpAffine()}, wobei die Bildgröße dynamisch angepasst wurde, um ein Abschneiden rotierter Objekte zu vermeiden.
+
+\textbf{Validierung der Augmentation:}
+
+Um sicherzustellen, dass die synthetische Rotation keine Artefakte einführt, wurden die augmentierten Samples manuell gesichtet. Die OBB-Annotationen wurden entsprechend transformiert und auf geometrische Korrektheit geprüft.
 \subsection{Modelltraining und Optimierung}
 \label{subsec:Modelltraining}
 Das Training des YOLOv8-OBB Modells wurde auf einer cloud-basierten GPU-Instanz mit einer NVIDIA AWS Instance g4dn.xlarge, (16 GB VRAM) durchgeführt. Die Wahl einer externen GPU-Instanz war notwendig, da lokale Entwicklungsmaschinen nicht über ausreichende Rechenleistung verfügen, um das Training in angemessener Zeit abzuschließen.
