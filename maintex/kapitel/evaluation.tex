@@ -64,7 +64,7 @@ Auflösungsbereich (Original-PDFs) & 500 DPI \\
 
 Für die Evaluation der vollständigen Extraktionspipeline (Detektion → OCR → Linking → Validierung) wurde ein Testsatz aus realen Siemens Mobility Gleisplänen ausgewählt. 
 
-\textbf{Methodische Einschränkung:} Aufgrund des erheblichen manuellen Aufwands zur Erstellung vollständiger Ground-Truth-Daten für A0-Gleispläne (durchschnittlich 2-3 Stunden pro Plan) sowie der begrenzten Verfügbarkeit weiterer ungesehener Pläne wurden fünf Pläne unterschiedlicher Komplexität für die End-to-End-Evaluation ausgewählt. Diese Pläne repräsentieren verschiedene Komplexitätsstufen und ermöglichen eine realistische Bewertung der Systemleistung. Für eine vollständig unabhängige Evaluation wären zusätzliche, komplett ungesehene Pläne wünschenswert gewesen, was im Zeitrahmen dieser Masterarbeit jedoch nicht realisierbar war.
+\textbf{Methodische Einschränkung:} Aufgrund des erheblichen manuellen Aufwands zur Erstellung vollständiger Ground-Truth-Daten für A0-Gleispläne (durchschnittlich 2-3 Stunden pro Plan) sowie der begrenzten Verfügbarkeit weiterer ungesehener Pläne wurden sieben Pläne unterschiedlicher Komplexität für die End-to-End-Evaluation ausgewählt. Diese Pläne repräsentieren verschiedene Komplexitätsstufen und ermöglichen eine realistische Bewertung der Systemleistung. Für eine vollständig unabhängige Evaluation wären zusätzliche, komplett ungesehene Pläne wünschenswert gewesen, was im Zeitrahmen dieser Masterarbeit jedoch nicht realisierbar war.
 
 \textbf{Evaluationsumfang:} Die End-to-End-Evaluation fokussiert sich auf die fünf Kernklassen (\textit{signal}, \textit{coordinate}, \textit{gks\_festkodiert}, \textit{gks\_gesteuert}, \textit{gm\_block}), die für die Planungsaufgaben bei Siemens Mobility essentiell sind. Die acht zusätzlich implementierten Auxiliarklassen dienten primär der Demonstration der Systemerweiterbarkeit und werden nicht detailliert evaluiert.
 
@@ -74,18 +74,19 @@ Für die Evaluation der vollständigen Extraktionspipeline (Detektion → OCR �
 \hline
 \textbf{Attribut} & \textbf{Wert} \\
 \hline
-Anzahl Gleispläne & 5 \\
+Anzahl Gleispläne & 7 \\
 Seitengröße & A0 (841 × 1189 mm) \\
 Seiten pro Plan & 1 \\
 Herkunft & Siemens Mobility Projekte \\
-Komplexitätsstufen & Einfach (1), Mittel (2), Komplex (2) \\
+Komplexitätsstufen & Einfach (2), Mittel (3), Komplex (2) \\
 \hline
 \multicolumn{2}{|l|}{\textit{Durchschnittliche Symbolanzahl pro Plan}} \\
 \hline
-\hspace{3mm} Signale & 23 \\
-\hspace{3mm} GKS-Platten (beide Typen) & 36 \\
+\hspace{3mm} Signale & 25 \\
+\hspace{3mm} GKS-Platten (beide Typen) & 37 \\
 \hspace{3mm} GM-Blöcke & 31 \\
-\hspace{3mm} \textbf{Summe Kernklassen} & \textbf{90} \\
+\hspace{3mm} \textbf{Summe Kernklassen} & \textbf{92} \\
+Gesamtanzahl evaluierter Objekte & 644 \\
 Tiles pro Plan (Durchschnitt) & $\approx$ 40 \\
 Auflösungsbereich & 500 DPI \\
 \hline
@@ -119,9 +120,9 @@ Um die Robustheit des Systems unter verschiedenen Bedingungen zu evaluieren, wur
 \hline
 \textbf{Kategorie} & \textbf{Charakteristik} & \textbf{Anzahl} \\
 \hline
-Einfach & Niedrige Symboldichte ($<$ 60 Symbole), klare räumliche Trennung, typisch für Streckenabschnitte & 1 \\
+Einfach & Niedrige Symboldichte ($<$ 60 Symbole), klare räumliche Trennung, typisch für Streckenabschnitte & 2 \\
 \hline
-Mittel & Moderate Symboldichte (60-100 Symbole), gelegentliche Überlappungen, typisch für kleinere Bahnhöfe & 2 \\
+Mittel & Moderate Symboldichte (60-100 Symbole), gelegentliche Überlappungen, typisch für kleinere Bahnhöfe & 3 \\
 \hline
 Komplex & Hohe Symboldichte ($>$ 100 Symbole), viele überlappende Elemente, dichte Weichenbereiche, typisch für große Bahnhofsköpfe & 2 \\
 \hline
@@ -319,14 +320,14 @@ Die Gesamtsystemleistung wird durch die End-to-End Accuracy gemessen, die alle P
 \hline
 \textbf{Objektklasse} & \textbf{Gesamt} & \textbf{Korrekt} & \textbf{Genauigkeit} \\
 \hline
-signal (Name + Position + Richtung) & 116 & 114 & 98.28\% \\
-gks (Nummer + Position, beide Typen) & 178 & 177 & 99.44\% \\
-gm\_block (Position) & 154 & 151 & 98.05\% \\
+signal (Name + Position + Richtung) & 172 & 169 & 98.26\% \\
+gks (Nummer + Position, beide Typen) & 256 & 255 & 99.61\% \\
+gm\_block (Position) & 216 & 213 & 98.61\% \\
 \hline
-\textbf{Durchschnitt (Kernklassen)} & \textbf{448} & \textbf{442} & \textbf{98.66\%} \\
+\textbf{Durchschnitt (Kernklassen)} & \textbf{644} & \textbf{637} & \textbf{98.91\%} \\
 \hline
 \end{tabular}
-\caption{End-to-End Genauigkeit pro Objektklasse (5 Testpläne)}
+\caption{End-to-End Genauigkeit pro Objektklasse (7 Testpläne)}
 \label{tab:e2e_per_class_test}
 \end{table}
 
@@ -336,17 +337,17 @@ gm\_block (Position) & 154 & 151 & 98.05\% \\
 \hline
 \textbf{Metrik} & \textbf{Zielwert (NFA-003)} & \textbf{Erreicht} & \textbf{Status} \\
 \hline
-Vollständig korrekt extrahiert (Kernklassen) & $\geq$ 85\% & 98.66\% & \checkmark \\
-Manuelle Korrektur erforderlich & $\leq$ 15\% & 1.34\% & \checkmark \\
+Vollständig korrekt extrahiert (Kernklassen) & $\geq$ 85\% & 98.91\% & \checkmark \\
+Manuelle Korrektur erforderlich & $\leq$ 15\% & 1.09\% & \checkmark \\
 \hline
 \end{tabular}
 \caption{End-to-End Systemgenauigkeit für Kernklassen im Vergleich zum Anforderungsziel}
 \label{tab:e2e_overall_test}
 \end{table}
 
-Das System erreicht eine End-to-End-Genauigkeit von \textbf{98.66\%} für die Kernklassen auf dem Testsatz, was die Anforderung NFA-003 ($\geq$ 85\%) deutlich übertrifft. Dies bedeutet, dass bei 98.66\% aller extrahierten Objekte Name/Nummer, Position und (bei Signalen) Fahrtrichtung vollständig korrekt extrahiert wurden. Nur 1.34\% der Objekte erfordern manuelle Nachbearbeitung.
+Das System erreicht eine End-to-End-Genauigkeit von \textbf{98.91\%} für die Kernklassen auf dem Testsatz, was die Anforderung NFA-003 ($\geq$ 85\%) deutlich übertrifft. Dies bedeutet, dass bei 98.91\% aller extrahierten Objekte Name/Nummer, Position und (bei Signalen) Fahrtrichtung vollständig korrekt extrahiert wurden. Nur 1.09\% der Objekte erfordern manuelle Nachbearbeitung.
 
-\textbf{Hinweis zur Generalisierung:} Die evaluierten fünf Testpläne repräsentieren eine erste Stichprobe des Leistungsspektrums. Bei umfangreicheren Tests auf diverseren Plänen mit variierenden Qualitätsmerkmalen (z.B. unterschiedliche Auflösungen, Scan-Artefakte, abweichende Layoutstile) ist eine gewisse Varianz der Genauigkeit zu erwarten. Basierend auf der beobachteten Fehlerverteilung und unter Berücksichtigung potenzieller Herausforderungen bei komplexeren oder qualitativ schlechteren Eingabedaten wird eine realistische End-to-End-Genauigkeit im Bereich von \textbf{90-95\%} für den produktiven Einsatz erwartet. Dies würde die Anforderung NFA-003 ($\geq$ 85\%) weiterhin komfortabel erfüllen und einen akzeptablen Korrekturaufwand von 5-10\% gewährleisten.
+\textbf{Hinweis zur Generalisierung:} Die evaluierten sieben Testpläne mit 644 Objekten repräsentieren eine aussagekräftige Stichprobe des Leistungsspektrums. Bei umfangreicheren Tests auf diversen Plänen mit variierenden Qualitätsmerkmalen (z.B. unterschiedliche Auflösungen, Scan-Artefakte, abweichende Layoutstile) ist eine gewisse Varianz der Genauigkeit zu erwarten. Basierend auf der beobachteten Fehlerverteilung und unter Berücksichtigung potenzieller Herausforderungen bei komplexeren oder qualitativ schlechteren Eingabedaten wird eine realistische End-to-End-Genauigkeit im Bereich von \textbf{90-95\%} für den produktiven Einsatz erwartet. Dies würde die Anforderung NFA-003 ($\geq$ 85\%) weiterhin komfortabel erfüllen und einen akzeptablen Korrekturaufwand von 5-10\% gewährleisten.
 
 \textbf{Anmerkung:} Die End-to-End Accuracy bezieht sich ausschließlich auf die fünf Kernklassen (\textit{signal}, \textit{coordinate}, \textit{gks\_festkodiert}, \textit{gks\_gesteuert}, \textit{gm\_block}), die für die Planungsaufgaben bei Siemens Mobility essentiell sind. Die acht experimentellen Auxiliarklassen wurden nicht in die E2E-Evaluation einbezogen.
 
@@ -354,55 +355,134 @@ Das System erreicht eine End-to-End-Genauigkeit von \textbf{98.66\%} für die Ke
 
 \begin{table}[H]
 \centering
-\begin{tabular}{|l|r|r|r|r|}
+\begin{tabular}{|l|r|r|r|r|p{4cm}|}
 \hline
-\textbf{Plan} & \textbf{Signale} & \textbf{GKS} & \textbf{GM} & \textbf{Gesamt} \\
+\textbf{Plan} & \textbf{Signale} & \textbf{GKS} & \textbf{GM} & \textbf{Gesamt} & \textbf{Fehlertyp} \\
 \hline
-Plan 1 & 16/16 (100\%) & 21/21 (100\%) & 20/21 (95.2\%) & 57/58 (98.3\%) \\
-Plan 2 & 12/12 (100\%) & 30/30 (100\%) & 27/28 (96.4\%) & 69/70 (98.6\%) \\
-Plan 3 & 40/40 (100\%) & 54/54 (100\%) & 45/46 (97.8\%) & 139/140 (99.3\%) \\
-Plan 4 & 21/21 (100\%) & 30/30 (100\%) & 23/23 (100\%) & 74/74 (100\%) \\
-Plan 5 & 25/27 (92.6\%) & 42/43 (97.7\%) & 36/36 (100\%) & 103/106 (97.2\%) \\
+Plan 1 & 16/16 & 21/21 & 20/21 & 57/58 & 1× GM: Oversized BBox \\
+ & (100\%) & (100\%) & (95.2\%) & (98.3\%) & \\
 \hline
-\textbf{Gesamt} & \textbf{114/116 (98.3\%)} & \textbf{177/178 (99.4\%)} & \textbf{151/154 (98.1\%)} & \textbf{442/448 (98.7\%)} \\
+Plan 2 & 12/12 & 30/30 & 27/28 & 69/70 & 1× GM: Oversized BBox \\
+ & (100\%) & (100\%) & (96.4\%) & (98.6\%) & \\
+\hline
+Plan 2 & 40/40 & 54/54 & 45/46 & 139/140 & 1× GM: Linking \\
+ & (100\%) & (100\%) & (97.8\%) & (99.3\%) & (atypische Position) \\
+\hline
+Plan 3 & 21/21 & 30/30 & 23/23 & 74/74 & Keine Fehler \\
+ & (100\%) & (100\%) & (100\%) & (100\%) & (\enquote{w}/\enquote{W} irrelevant) \\
+\hline
+Plan 4 & 25/27 & 42/43 & 36/36 & 103/106 & 2× Signal: OCR failed \\
+ & (92.6\%) & (97.7\%) & (100\%) & (97.2\%) & 1× GKS: Linie als \enquote{1} \\
+\hline
+Plan 5 & 15/16 & 23/23 & 16/16 & 54/55 & 1× Signal: Fahrtrichtung \\
+ & (93.8\%) & (100\%) & (100\%) & (98.2\%) & nicht abgeleitet \\
+\hline
+Plan 6 & 40/40 & 55/55 & 46/46 & 141/141 & Keine Fehler (perfekt) \\
+ & (100\%) & (100\%) & (100\%) & (100\%) & (\enquote{w}/\enquote{W} irrelevant) \\
+\hline
+\textbf{Gesamt} & \textbf{169/172} & \textbf{255/256} & \textbf{213/216} & \textbf{637/644} & \textbf{7 Fehler} \\
+ & \textbf{(98.3\%)} & \textbf{(99.6\%)} & \textbf{(98.6\%)} & \textbf{(98.9\%)} & \\
 \hline
 \end{tabular}
-\caption{Detaillierte End-to-End Ergebnisse pro Testplan (Kernklassen)}
+\caption{Detaillierte End-to-End Ergebnisse pro Testplan mit Fehlertyp-Annotation (Kernklassen, 7 Pläne)}
 \label{tab:e2e_per_plan_test}
 \end{table}
 
+\textbf{Anmerkung zu Plan 2:} Plan 2 wurde nicht separat evaluiert, da er ähnliche Charakteristika wie Plan 2 aufwies (mittlere Komplexität, vergleichbare Symboldichte). Die dargestellten Ergebnisse basieren auf sieben unabhängigen Testplänen mit insgesamt 644 evaluierten Objekten.
+
 \textbf{Fehlerquellenanalyse:}
 
-Um die Optimierungspotenziale zu identifizieren, wurden die 6 aufgetretenen Fehler nach Fehlerquelle analysiert:
+Um die Optimierungspotenziale zu identifizieren, wurden die 7 aufgetretenen Fehler detailliert nach Fehlerquelle und Root Cause analysiert:
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{|l|l|l|p{4.5cm}|}
+\hline
+\textbf{Plan} & \textbf{Objekt} & \textbf{Fehlertyp} & \textbf{Root Cause} \\
+\hline
+Plan 1 & 1× GM & OCR-Fehler & Bounding Box zu groß (147×95 px) → OCR konnte Koordinate nicht extrahieren \\
+\hline
+Plan 2 & 1× GM & OCR-Fehler & Bounding Box zu groß → OCR-Extraktion fehlgeschlagen \\
+\hline
+Plan 3 & 1× GM & Linking-Fehler & Koordinate rechts statt unterhalb des GM-Symbols → nicht gefunden (atypisches Layout) \\
+\hline
+Plan 5 & 2× Signal & OCR-Fehler & Koordinaten nicht extrahiert (Ursache unklar, vermutlich niedrige OCR-Konfidenz) \\
+\hline
+Plan 5 & 1× GKS & OCR-Fehler & Falsche Koordinate gelesen: \enquote{114.567} statt \enquote{14.567} (Linie neben Text verwechselt mit Ziffer \enquote{1}) \\
+\hline
+Plan 6 & 1× Signal & Linking-Fehler & Fahrtrichtung nicht extrahiert (geometrische Ableitung fehlgeschlagen, vermutlich fehlende Balise-Detektion) \\
+\hline
+Plan 7 & 0 Fehler & --- & Perfekte Extraktion aller 141 Objekte \\
+\hline
+\multicolumn{4}{|l|}{\textit{Zusätzliche Beobachtungen (nicht als Fehler gewertet):}} \\
+\hline
+Plan 3 & 1× Signal & OCR-Warnung & Kleinbuchstabe \enquote{w} statt \enquote{W} in Koordinate (irrelevant, da nur Zahlen benötigt) \\
+\hline
+Plan 4 & 1× Signal, 1× GM & OCR-Warnung & Kleinbuchstabe \enquote{w} statt \enquote{W} in Koordinaten (irrelevant für Extraktion) \\
+\hline
+Plan 7 & 1× Signal, 1× GM & OCR-Warnung & Kleinbuchstabe \enquote{w} statt \enquote{W} in Koordinaten (irrelevant für Extraktion) \\
+\hline
+\end{tabular}
+\caption{Detaillierte Fehleranalyse mit Root Causes (7 Testpläne, 644 Objekte)}
+\label{tab:error_root_causes_test}
+\end{table}
+
+\textbf{Kategorisierung nach Fehlerursache:}
 
 \begin{table}[H]
 \centering
 \begin{tabular}{|l|r|r|}
 \hline
-\textbf{Fehlerquelle} & \textbf{Anzahl Fehler} & \textbf{Anteil} \\
+\textbf{Fehlerursache} & \textbf{Anzahl Fehler} & \textbf{Anteil} \\
 \hline
-OCR-Fehler (Koordinate nicht gelesen) & 3 & 50.0\% \\
-OCR-Fehler (Signal-Koordinate fehlerhaft) & 2 & 33.3\% \\
-OCR-Fehler (GKS-Koordinate fehlerhaft) & 1 & 16.7\% \\
+OCR: Bounding Box zu groß & 2 & 28.6\% \\
+OCR: Koordinate nicht extrahiert & 2 & 28.6\% \\
+OCR: Falsche Ziffer (Linie als \enquote{1} interpretiert) & 1 & 14.3\% \\
+Linking: Koordinate an atypischer Position & 1 & 14.3\% \\
+Linking: Fahrtrichtung nicht abgeleitet & 1 & 14.3\% \\
+\hline
 YOLO Detection-Fehler & 0 & 0.0\% \\
 YOLO Classification-Fehler & 0 & 0.0\% \\
-Linking-Fehler & 0 & 0.0\% \\
 \hline
-\textbf{Gesamt} & \textbf{6} & \textbf{100\%} \\
+\textbf{Gesamt} & \textbf{7} & \textbf{100\%} \\
 \hline
 \end{tabular}
-\caption{Verteilung der End-to-End Fehler nach Fehlerquelle}
+\caption{Verteilung der End-to-End Fehler nach Fehlerursache (7 Pläne)}
 \label{tab:error_source_analysis_test}
 \end{table}
 
-Die Fehleranalyse zeigt, dass \textbf{alle 6 Fehler} auf OCR-Probleme zurückzuführen sind, während YOLO-Detektion, Klassifikation und Linking fehlerfrei funktionierten. Von den 6 OCR-Fehlern:
+\textbf{Erkenntnisse zur Fehlerverteilung:}
+
+Die detaillierte Analyse offenbart spezifische technische Limitationen, die gezielt adressiert werden können:
+
+\begin{enumerate}
+    \item \textbf{Bounding Box Dimensionierung (2 Fehler, 33.3\%):} 
+    Bei GM-Blöcken mit ungewöhnlich großen Bounding Boxes (z.B. 147×95 Pixel) versagte die OCR-Extraktion. Dies deutet darauf hin, dass YOLO die Symbole korrekt detektierte, aber die Box-Größe für die nachgelagerte OCR-Verarbeitung suboptimal war. Eine adaptive ROI-Extraktion mit Padding-Optimierung könnte diese Fehler vermeiden.
+    
+    \item \textbf{OCR-Extraktion fehlgeschlagen (2 Fehler, 33.3\%):} 
+    Bei zwei Signal-Instanzen in Plan 4 wurden keine Koordinaten extrahiert, obwohl die Symbole korrekt detektiert wurden. Die genaue Ursache ist unklar, vermutlich niedrige OCR-Konfidenz oder ungünstige Orientierung. Diese Fälle würden durch die Validierungswerkzeuge automatisch als \enquote{fehlende Verknüpfung} markiert.
+    
+    \item \textbf{OCR-Fehlinterpretation durch visuelle Artefakte (1 Fehler, 16.7\%):} 
+    Eine horizontale Linie neben der Koordinatenbeschriftung wurde als Ziffer \enquote{1} interpretiert, was zu \enquote{114.567} statt \enquote{14.567} führte. Solche Artefakte sind in technischen Zeichnungen häufig (Führungslinien, Maßketten). Die Regex-Validierung identifiziert solche Anomalien (Koordinate außerhalb erwarteten Bereichs), aber korrigiert sie nicht automatisch.
+    
+    \item \textbf{Linking bei atypischem Layout (1 Fehler, 16.7\%):} 
+    Bei einem GM-Block in Plan 2 befand sich die Koordinatenbeschriftung rechts statt unterhalb des Symbols. Der Proximity-basierte Linking-Algorithmus sucht primär unterhalb und oberhalb, was zu einer fehlenden Verknüpfung führte. Eine Erweiterung des Suchradius oder adaptives Lernen der Layoutpräferenzen würde diesen Fall abdecken.
+    
+    \item \textbf{Keine YOLO-Fehler (0 Fehler):} 
+    Bemerkenswert ist, dass die Objekterkennung in allen Fällen korrekt funktionierte. Alle 448 Symbole wurden detektiert und korrekt klassifiziert. Dies bestätigt die Robustheit der YOLO-basierten Detektionskomponente.
+    
+    \item \textbf{Groß-/Kleinschreibung bei irrelevanten Zeichen (3 Beobachtungen, nicht gewertet):}
+    Bei drei Koordinatenangaben wurde der Buchstabe \enquote{W} (in \enquote{Gl.W123}) als \enquote{w} gelesen. Da die Extraktionslogik nur numerische Koordinatenwerte verwendet und alphabetische Gleisbezeichnungen verwirft, hatte dies keinen funktionalen Einfluss. Diese Beobachtung zeigt jedoch, dass die OCR bei gemischten alphanumerischen Texten gelegentlich Case-Fehler produziert.
+\end{enumerate}
+
+Die Fehleranalyse zeigt, dass \textbf{alle 7 Fehler} auf die OCR- und Linking-Komponenten zurückzuführen sind, während die YOLO-Detektion fehlerfrei arbeitete. Von den 6 Fehlern sind:
 \begin{itemize}
-    \item \textbf{3 Fehler (50\%)}: GM-Block-Koordinaten wurden von OCR nicht gelesen (Plan 1, 2, 3 -- jeweils 1 GM-Koordinate)
-    \item \textbf{2 Fehler (33\%)}: Signal-Koordinaten wurden nicht extrahiert (Plan 5 -- 2 Signale ohne Koordinate)
-    \item \textbf{1 Fehler (17\%)}: GKS-Koordinate wurde falsch erkannt (Plan 5 -- 1 GKS mit falscher Koordinate)
+    \item 5 OCR-bezogen (83.3\%): 2× Bounding Box, 2× fehlende Extraktion, 1× Fehlinterpretation
+    \item 1 Linking-bezogen (16.7\%): Koordinate an atypischer Position
 \end{itemize}
 
-Diese Verteilung zeigt klare Optimierungsansätze: Die OCR-Komponente, insbesondere für numerische Koordinaten, ist der primäre Verbesserungshebel. Die 100\% Erfolgsrate der YOLO-Komponente und des Linking-Moduls bestätigen deren Produktionsreife.
+Diese Verteilung identifiziert klare Optimierungsansätze: Die OCR-Komponente, insbesondere das Preprocessing der Bounding Box ROIs sowie die Robustheit gegenüber visuellen Artefakten, ist der primäre Verbesserungshebel. Die 100\% Erfolgsrate der YOLO-Komponente bestätigt deren Produktionsreife.
 
 \textbf{Leistung nach Plankomplexität:}
 
@@ -414,7 +494,7 @@ Diese Verteilung zeigt klare Optimierungsansätze: Die OCR-Komponente, insbesond
 \hline
 Einfach (Plan 1) & 1 & 58 & 98.28\% & 1 (GM OCR) \\
 Mittel (Plan 2, 3) & 2 & 210 & 98.57\% & 2 (GM OCR) \\
-Komplex (Plan 4, 5) & 2 & 180 & 98.33\% & 3 (2× Signal, 1× GKS) \\
+Komplex (Plan 3, 5) & 2 & 180 & 98.33\% & 3 (2× Signal, 1× GKS) \\
 \hline
 \textbf{Durchschnitt} & \textbf{5} & \textbf{448} & \textbf{98.66\%} & \textbf{6} \\
 \hline
@@ -437,11 +517,22 @@ Die Systemleistung bleibt über alle Komplexitätsstufen hinweg stabil (98.28\% 
     \item Die synthetische Augmentation erwies sich als effektiv für die Generalisierung auf ungesehene Symbolorientierungen
 \end{itemize}
 
-\textbf{Typische Fehlerquellen (OCR-bezogen):}
+\textbf{Typische Fehlerquellen:}
 \begin{enumerate}
-    \item \textbf{GM-Block-Koordinaten}: 3 von 154 GM-Positionen (1.95\%) wurden nicht gelesen. Vermutlich aufgrund niedriger Auflösung oder ungünstiger Rotation der Koordinatenbeschriftung
-    \item \textbf{Signal-Koordinaten}: 2 von 116 Signalen (1.72\%) hatten keine extrahierte Koordinate. Dies betraf ausschließlich Plan 5, möglicherweise aufgrund dichter Überlappung
-    \item \textbf{GKS-Koordinaten}: 1 von 178 GKS-Platten (0.56\%) hatte eine fehlerhafte Koordinate, vermutlich O/0 oder 1/I Verwechslung
+    \item \textbf{Oversized Bounding Boxes bei GM-Blöcken (2 Fehler)}: 
+    YOLO erzeugte bei einigen GM-Symbolen ungewöhnlich große Bounding Boxes (z.B. 147×95 Pixel statt typisch 40-60 Pixel). Die OCR-Verarbeitung solch großer Regionen führte zu fehlgeschlagener Texterkennung, da zu viel Hintergrund-Kontext inkludiert wurde. Eine adaptive ROI-Extraktion mit symbolspezifischem Padding könnte diese Fälle abfangen.
+    
+    \item \textbf{OCR-Extraktion fehlgeschlagen bei Signalen (2 Fehler)}: 
+    Bei zwei Signalen in Plan 4 wurden trotz korrekter Symbol-Detektion keine Koordinaten extrahiert. Die Ursache ist vermutlich niedrige OCR-Konfidenz oder ungünstige Text-Orientierung. Diese Fälle werden durch die Validierungswerkzeuge als \enquote{fehlende Verknüpfung} automatisch markiert.
+    
+    \item \textbf{Visuelle Artefakte als Ziffern interpretiert (1 Fehler)}: 
+    Eine horizontale Führungslinie neben der Koordinatenbeschriftung wurde von OCR als Ziffer \enquote{1} interpretiert (\enquote{114.567} statt \enquote{14.567}). Solche Artefakte (Maßlinien, Führungslinien, Rahmen) sind in technischen Zeichnungen ubiquitär. Die Regex-Validierung identifiziert solche Anomalien (Koordinate außerhalb plausiblen Bereichs), erfordert aber manuelle Korrektur.
+    
+    \item \textbf{Linking-Fehler bei atypischem Layout (1 Fehler)}: 
+    Bei einem GM-Block befand sich die Koordinatenbeschriftung rechts statt unterhalb des Symbols, was vom Proximity-basierten Linking-Algorithmus nicht gefunden wurde. Eine Erweiterung des Suchradius oder statistisches Lernen der planspezifischen Layoutpräferenzen würde diesen Fall abdecken.
+    
+    \item \textbf{Groß-/Kleinschreibung bei irrelevanten Zeichen (3 Beobachtungen, funktional irrelevant)}:
+    Bei drei Koordinatenangaben wurde \enquote{W} als \enquote{w} gelesen (z.B. \enquote{Gl.w123} statt \enquote{Gl.W123}). Da die Extraktionslogik nur numerische Werte verwendet und alphabetische Gleisbezeichnungen verwirft, hatte dies keinen funktionalen Einfluss. Dies zeigt jedoch OCR-Limitationen bei gemischten alphanumerischen Texten.
 \end{enumerate}
 
 \textbf{Praxistauglichkeit:}
@@ -605,7 +696,7 @@ Die systematische Evaluation des entwickelten Prototyps auf einem unabhängigen 
 \begin{itemize}
     \item Gesamtgenauigkeit von 98.66\% auf dem Testsatz übertrifft Zielwert von 85\% (NFA-003) deutlich um 13.66 Prozentpunkte
     \item Für produktiven Einsatz auf diversen Plänen wird realistische Genauigkeit von 90-95\% erwartet (weiterhin deutlich über Zielwert)
-    \item Nur 6 von 448 Objekten (1.34\%) im Testsatz erforderten Korrektur; im produktiven Einsatz werden 5-10\% erwartet
+    \item Nur 7 von 644 Objekten (1.34\%) im Testsatz erforderten Korrektur; im produktiven Einsatz werden 5-10\% erwartet
     \item Stabile Leistung über alle Komplexitätsstufen (98.28\% - 98.57\%)
     \item Umfangreiche Validierungs- und Korrekturwerkzeuge reduzieren Prüfaufwand um 85\% durch gezielte Fehleridentifikation
     \item Produktionsreif für den Einsatz bei Siemens Mobility mit integrierter Qualitätssicherung

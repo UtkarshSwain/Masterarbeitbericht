@@ -22,7 +22,7 @@ Obwohl diese Pläne in der heutigen Ingenieurspraxis mittels CAD-Systemen (Compu
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=1\textwidth]{images/gleisplandrawio.png} 
+    \includegraphics[width=1\textwidth]{images/tracklayout2.png} 
     \caption{Ausschnitt eines schematischen Gleisplans mit Darstellung von Signalen, Weichen und Gleisbezeichnungen (Beispielhafte Darstellung) aus Quelle \cite{railroadstationdrawing}}
     \label{fig:gleisplan_schema}
 \end{figure}
@@ -85,8 +85,13 @@ Die Anwendung von Machine Learning auf technische Zeichnungen ist ein aktives Fo
 
 Jamieson et al. \cite{Jamieson2024} liefern eine umfassende Übersicht über Deep-Learning-Methoden für Engineering-Diagramme und identifizieren als zentrale Herausforderungen die hohe Variabilität kundenspezifischer Symbolbibliotheken, den Mangel an annotierten Trainingsdaten sowie die Notwendigkeit rotationsinvarianter Detektionsverfahren. Für den bahntechnischen Bereich existieren bisher hauptsächlich proprietäre Lösungen einzelner Eisenbahnunternehmen ohne publizierte wissenschaftliche Evaluierung. Die vorliegende Arbeit adressiert diese Forschungslücke durch Entwicklung und Evaluation eines prototypischen Systems auf Basis moderner One-Stage-Detektoren.
 
-\subsection{Entwicklung der Objekterkennung}
 
+
+\subsection{Entwicklung der Objekterkennung}
+Die erwähnten Detektionsverfahren basieren auf \textit{Deep Learning}, einer Form des maschinellen Lernens, bei der künstliche neuronale Netze -- insbesondere \textit{Convolutional Neural Networks} (CNNs) -- 
+relevante Merkmale automatisch aus Trainingsbildern lernen \cite{neuralnetwork}. Im Gegensatz zu klassischen Verfahren, bei denen Erkennungsmerkmale manuell definiert werden müssen, ermöglichen 
+CNNs die End-to-End-Optimierung des gesamten Erkennungssystems. Die folgenden Abschnitte beschreiben zunächst die historische Entwicklung 
+dieser Technologie, bevor spezialisierte Architekturen für die Objekterkennung detailliert werden.
 Die Objekterkennung hat sich von regelbasierten Verfahren über klassisches 
 maschinelles Lernen zu Deep-Learning-Ansätzen entwickelt 
 \cite{Zou2019_ObjectDetectionSurvey}. Für die vorliegende Arbeit werden 
