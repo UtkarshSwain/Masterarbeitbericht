@@ -949,13 +949,15 @@ Feldgenauigkeit & Feld/Label & Identifikatoren, exakte Übereinstimmung erforder
 \label{tab:ocr_metrics_comparison}
 \end{table}
 
-\subsubsection{Relevanz für die Gleisplanerkennung}
-
-Für die domänenspezifische Anwendung der Gleisplanerkennung ist die \textbf{Feldgenauigkeit die primäre Evaluationsmetrik}. Die extrahierten Texte -- Signalbezeichnungen, Kilometrierungen, Balisen-IDs -- dienen als eindeutige Identifikatoren für technische Objekte. Eine Signalbezeichnung \enquote{A5102} statt \enquote{AS102} referenziert ein anderes Signal; partielle Korrektheit ist daher funktional äquivalent zu vollständiger Fehlidentifikation.
-
-Die CER dient ergänzend zur Diagnose systematischer OCR-Fehler. Eine hohe Feldfehlerzahl bei gleichzeitig niedriger CER deutet auf konsistente Einzelzeichenfehler hin (z.\,B. systematische Homoglyphen-Verwechslungen wie O$\leftrightarrow$0 oder S$\leftrightarrow$5), die durch gezielte Nachbearbeitung korrigiert werden können (vgl. Abschnitt \ref{subsec:ocr_quality}, Tabelle \ref{tab:homoglyphs}).
-
-Die in Kapitel \ref{chap:evaluation} präsentierte Evaluation verwendet beide Metriken: Die Feldgenauigkeit quantifiziert die End-to-End-Systemleistung, während die CER-Analyse die Optimierung der OCR-Pipeline (Vorverarbeitung, Engine-Auswahl, Nachkorrektur) informiert.
+\textbf{Anmerkung zur Metrikauswahl in integrierten Systemen:} Für die isolierte 
+Bewertung von OCR-Komponenten sind zeichenbasierte Metriken wie CER etabliert. 
+In integrierten Extraktionspipelines, bei denen OCR nur eine von mehreren Stufen 
+darstellt (Detektion → OCR → Verknüpfung → Validierung), ist jedoch die 
+\textit{Feldgenauigkeit} oft aussagekräftiger: Sie bewertet, ob das finale 
+Extraktionsergebnis korrekt ist, unabhängig davon, in welcher Pipeline-Stufe 
+potenzielle Fehler auftraten oder kompensiert wurden. Die in 
+Kapitel~\ref{chap:evaluation} verwendete End-to-End-Metrik erweitert dieses 
+Prinzip auf das Gesamtsystem.
 
 
 \subsection{Herausforderungen bei technischen Zeichnungen}

@@ -14,64 +14,163 @@ Eine zentrale Anforderung ist die zuverlässige Detektion bahntechnischer Symbol
     \item \textbf{FA-001}\label{req:FA-001} \textbf{Erkennungsrate:} Das System muss mindestens 90\,\% der definierten Symbolklassen automatisiert erkennen (gemessen als Recall des YOLO-Modells).
 
     \item \textbf{FA-002}\label{req:FA-002} \textbf{Rotationsinvarianz:} Da Symbole in Gleisplänen der Topologie folgend in beliebigen Winkeln angeordnet sein können, muss die Erkennung rotationsinvariant erfolgen. Das System muss in der Lage sein, Objekte unabhängig von ihrer Orientierung ($0^\circ$ bis $360^\circ$) korrekt zu klassifizieren und deren Winkel (Rotation) präzise zu bestimmen.
-    
-    \item \textbf{FA-003}\label{req:FA-003} \textbf{Zielobjekte:} Basierend auf der Domänenanalyse wurden die in Tabelle \ref{tab:objekte} dargestellten Objekte als primäre Detektionsziele definiert.
+    \item \textbf{FA-003}\label{req:FA-003} \textbf{Zielobjekte:} Basierend auf der Domänenanalyse wurden die in Tabelle \ref{tab:objekte} dargestellten Objekte als Detektionsziele definiert. Diese gliedern sich in \textbf{Kernklassen}, die für die Planungsaufgaben bei Siemens Mobility essentiell sind und vollständig evaluiert werden, sowie \textbf{Auxiliarklassen}, die zur Demonstration der Systemerweiterbarkeit implementiert werden.
+\end{itemize} % <--- THIS WAS MISSING
+\subsubsection{Kernklassen (produktionsrelevant)}
 
-\begin{longtable}{|p{4cm}|p{8cm}|}
+Die folgenden fünf Objektklassen bilden den Kern der Extraktionsaufgabe und werden 
+in Kapitel~\ref{chap:evaluation} quantitativ evaluiert:
+
+\begin{longtable}{|p{5cm}|p{7cm}|}
     \hline
-    \textbf{Objektklasse} & \centering\textbf{Symbol} \tabularnewline
+    \textbf{Objektklasse} & \textbf{Symbol} \\
     \hline
     \endhead
 
-    Signale & 
-    \parbox[c]{8cm}{\centering
+    Signal & 
+    \parbox[c]{7cm}{\centering
         \vspace{0.2cm}
         \includegraphics[width=2cm]{images/symbols/Signal2.png}
         \vspace{0.2cm}
-    } \\ 
+    } \\
     \hline 
 
-    Positionsangabe & 
-    \parbox[c]{8cm}{\centering
+    Koordinate (Positionsangabe) & 
+    \parbox[c]{7cm}{\centering
         \vspace{0.2cm}
         \includegraphics[width=2cm]{images/symbols/Position.png}
         \vspace{0.2cm}
     } \\
     \hline
 
-    Gleiskoppelspulen & 
-    \parbox[c]{8cm}{\centering
+    GKS-Platte (festkodiert) & 
+    \parbox[c]{7cm}{\centering
         \vspace{0.2cm}
         \includegraphics[width=2cm]{images/symbols/GKS1.png}
         \vspace{0.2cm}
     } \\
     \hline
 
-    Haltepunkt & 
-    \parbox[c]{8cm}{\centering
+    GKS-Platte (gesteuert) & 
+    \parbox[c]{7cm}{\centering
         \vspace{0.2cm}
-        \includegraphics[width=1cm]{images/symbols/Haltepunkt2.png+.png}
+        \includegraphics[width=2cm]{images/symbols/GKS2.png}
         \vspace{0.2cm}
     } \\
     \hline
 
-    Weichen & 
-    \parbox[c]{8cm}{\centering
+    GM-Block & 
+    \parbox[c]{7cm}{\centering
+        \vspace{0.2cm}
+        \includegraphics[width=2cm]{images/symbols/gleismagnet.png}
+        \vspace{0.2cm}
+    } \\
+    \hline
+
+    \caption{Kernklassen für die Datenextraktion (vollständig evaluiert)}
+    \label{tab:kernklassen}
+\end{longtable}
+
+\subsubsection{Auxiliarklassen (Erweiterbarkeit)}
+
+Zur Demonstration der Modularität und Erweiterbarkeit des Systems (vgl. Anforderung 
+FA-016) werden zusätzlich acht weitere Objektklassen implementiert. Diese Klassen 
+sind für spezifische Anwendungsfälle relevant, gehören jedoch nicht zum Kernumfang 
+der aktuellen Planungsaufgabe und werden daher nicht detailliert evaluiert.
+
+\begin{longtable}{|p{5cm}|p{7.5cm}|}
+    \hline
+    \textbf{Objektklasse} & \textbf{Symbol} \\
+    \hline
+    \endhead
+
+    Weichenblock & 
+    \parbox[c]{7cm}{\centering
+        \vspace{0.2cm}
+        \includegraphics[width=2cm]{images/symbols/Weiche2.png}
+        \vspace{0.2cm}
+    } \\
+    \hline 
+
+    Haltepunkt & 
+    \parbox[c]{7cm}{\centering
+        \vspace{0.2cm}
+        \includegraphics[width=2cm]{images/symbols/Haltepunkt2.png}
+        \vspace{0.2cm}
+    } \\
+    \hline
+
+    Isolierstoß & 
+    \parbox[c]{7cm}{\centering
+        \vspace{0.2cm}
+        \includegraphics[width=2cm]{images/symbols/Isolierstoß.png}
+        \vspace{0.2cm}
+    } \\
+    \hline
+
+    S-Verbinder & 
+    \parbox[c]{7cm}{\centering
         \vspace{0.2cm}
         \includegraphics[width=2cm]{images/symbols/Weiche2.png}
         \vspace{0.2cm}
     } \\
     \hline
 
-    \caption{Übersicht der Objekte}
-    \label{tab:objekte}
+    Prellbock & 
+    \parbox[c]{7cm}{\centering
+        \vspace{0.2cm}
+        \includegraphics[width=2cm]{images/symbols/prellblock.png}
+        \vspace{0.2cm}
+    } \\
+    \hline
+
+    Haltetafel & 
+    \parbox[c]{7cm}{\centering
+        \vspace{0.2cm}
+        \includegraphics[width=3cm]{images/symbols/Haltetafel.png}
+        \vspace{0.2cm}
+    } \\
+    \hline
+
+    Ende Weichen & 
+    \parbox[c]{7cm}{\centering
+        \vspace{0.2cm}
+        \includegraphics[width=3cm]{images/symbols/weichenende.png}
+        \vspace{0.2cm}
+    } \\
+    \hline
+
+    Weichengruppenende & 
+    \parbox[c]{7cm}{\centering
+        \vspace{0.2cm}
+        \includegraphics[width=3cm]{images/symbols/weichengruppeende.png}
+        \vspace{0.2cm}
+    } \\
+    \hline
+
+    \caption{Auxiliarklassen zur Demonstration der Erweiterbarkeit (nicht evaluiert)}
+    \label{tab:auxiliarklassen}
 \end{longtable}
 
-\end{itemize}
+\textbf{Hinweis:} Die Auxiliarklassen werden im Rahmen des YOLOv8-Trainings 
+(Kapitel~\ref{sec:objekterkennungmityolov8obb}) mit annotiert und erreichen 
+vergleichbare Detektionsleistungen wie die Kernklassen (siehe 
+Anhang~\ref{app:all_classes}). Die Fokussierung der End-to-End-Evaluation auf 
+die Kernklassen erfolgt aufgrund ihrer direkten Relevanz für die 
+Projektierungsaufgaben bei Siemens Mobility.
 
 \subsection{Texterkennung und OCR-Integration}
 \begin{itemize}
-    \item \textbf{FA-004}\label{req:FA-004} \textbf{OCR-Genauigkeit:} Integration von OCR zur Extraktion von Textinformationen (Signalbezeichnungen, Kilometrierungen). Das System soll eine hohe Texterkennung erreichen, wobei typische OCR-Fehler (Verwechslungen von O/0, I/1, etc.) durch domänenspezifische Validierung (Regex-Muster) automatisch erkannt und korrigiert werden können. Die tatsächlich erreichte Character Error Rate (CER) wird in Kapitel 7 quantitativ ermittelt.
+    \item \textbf{FA-004}\label{req:FA-004} \textbf{OCR-Genauigkeit:} Integration von OCR 
+    zur Extraktion von Textinformationen (Signalbezeichnungen, Kilometrierungen). Die 
+    Bewertung der Texterkennungsqualität erfolgt nach dem Prinzip der 
+    \textit{Feldgenauigkeit} (vgl. Abschnitt~\ref{subsec:ocr_metriken}): Ein Textfeld 
+    gilt als korrekt, wenn der extrahierte Wert exakt mit dem Ground Truth 
+    übereinstimmt. Diese feldbasierte Bewertung ist in die End-to-End-Systemgenauigkeit 
+    (NFA-003) integriert, da sie die praktische Relevanz für den Engineering-Workflow 
+    besser abbildet als zeichenbasierte Metriken wie die Character Error Rate. 
+    Typische OCR-Fehler (Verwechslungen von O/0, I/1, etc.) werden durch 
+    domänenspezifische Validierung (Regex-Muster) automatisch erkannt.
     
     \item \textbf{FA-005}\label{req:FA-005} \textbf{Robustheit:} Die Texterkennung muss auch unter erschwerten Bedingungen zuverlässig funktionieren. Dazu zählen:
     \begin{itemize}
@@ -93,16 +192,18 @@ Eine zentrale Anforderung ist die zuverlässige Detektion bahntechnischer Symbol
 \begin{itemize}
     \item \textbf{FA-006}\label{req:FA-006} \textbf{Fahrtrichtungsdetektion:} Basierend auf der geometrischen Orientierung (Rotationswinkel) von Signalen und Weichen muss automatisch die Wirkrichtung (z.\,B. in Richtung steigender oder fallender Kilometrierung) abgeleitet werden.
     
-    \item \textbf{FA-007}\label{req:FA-007} \textbf{Gruppierung von Attributen:} Zusammengehörige Informationen, wie z.\,B. ein Haltepunkt-Symbol und die dazugehörige Kilometrierungsangabe (Text), müssen räumlich assoziiert und als ein logisches Objekt gespeichert werden (\enquote{Coordinate Grouping}).
-    
-    \item \textbf{FA-008}\label{req:FA-008} \textbf{Multi-Koordinaten-Parsing:} Bei komplexen Objekten wie Weichenblöcken muss das System in der Lage sein, mehrere relevante Koordinatenpunkte (z.\,B. Weichenspitze, Herzstück) zu extrahieren und einem einzigen Weichen-Objekt zuzuordnen.
-    
-    \item \textbf{FA-009}\label{req:FA-009} \textbf{Manuelle Korrektur (Human-in-the-Loop):} Da automatische Heuristiken fehleranfällig sein können, muss das System eine Möglichkeit bieten, automatisch erstellte Verknüpfungen manuell zu überschreiben oder zu korrigieren (\enquote{Linking Override}).
+    \item \textbf{FA-007}\label{req:FA-007} \textbf{Symbol-Koordinaten-Verknüpfung:} 
+    Jedes erkannte Gleisplanelement (Signal, GKS-Platte, GM-Block) muss automatisch 
+    mit der räumlich nächstgelegenen Kilometrierungsangabe verknüpft werden. 
+    Die Verknüpfung erfolgt durch geometrische Proximity-Analyse unter 
+    Berücksichtigung der Symbolorientierung. Bei komplexen Objekten wie Haltepunkten müssen zusätzlich mehrere zusammengehörige Elemente (Haltepunkt-Symbol, zugehöriges Signal, Koordinate) zu einer logischen Einheit gruppiert werden.
+
+    \item \textbf{FA-008}\label{req:FA-008} \textbf{Manuelle Korrektur (Human-in-the-Loop):} Da automatische Heuristiken fehleranfällig sein können, muss das System eine Möglichkeit bieten, automatisch erstellte Verknüpfungen manuell zu überschreiben oder zu korrigieren (\enquote{Linking Override}).
 \end{itemize}
 
 \subsection{Datenaufbereitung und Export}
 \begin{itemize}
-    \item \textbf{FA-010}\label{req:FA-010} \textbf{Excel-Integration:} Die extrahierten Daten müssen vollautomatisch in vordefinierte Projektierungs- oder Prüftabellen (Excel .xlsx) übertragen werden. Dabei ist essenziell, dass die Daten in die semantisch korrekten Zellen (Zeilen/Spalten) geschrieben werden.
+    \item \textbf{FA-009}\label{req:FA-009} \textbf{Excel-Integration:} Die extrahierten Daten müssen vollautomatisch in vordefinierte Projektierungs- oder Prüftabellen (Excel .xlsx) übertragen werden. Dabei ist essenziell, dass die Daten in die semantisch korrekten Zellen (Zeilen/Spalten) geschrieben werden.
     \begin{figure}[H]
     \centering
     \includegraphics[width=6cm]{images/Kapitel4/excelübertragung.png} 
@@ -110,9 +211,9 @@ Eine zentrale Anforderung ist die zuverlässige Detektion bahntechnischer Symbol
     \label{fig:excelübertragung}
     \end{figure}
 
-    \item \textbf{FA-011}\label{req:FA-011} \textbf{Strukturerhalt:} Beim Import in bestehende Dateien darf die vorhandene Struktur (Formatierung, Formeln, Makros) nicht beschädigt werden. Das System darf lediglich Werte (Values) in definierte Bereiche einfügen (Non-destructive Update).
-    
-    \item \textbf{FA-012}\label{req:FA-012} \textbf{Änderungsverfolgung (Diff-Funktion):} Automatischer Vergleich zweier Planversionen mit Kategorisierung:
+    \item \textbf{FA-010}\label{req:FA-010} \textbf{Strukturerhalt:} Beim Import in bestehende Dateien darf die vorhandene Struktur (Formatierung, Formeln, Makros) nicht beschädigt werden. Das System darf lediglich Werte (Values) in definierte Bereiche einfügen (Non-destructive Update).
+
+    \item \textbf{FA-011}\label{req:FA-011} \textbf{Änderungsverfolgung (Diff-Funktion):} Automatischer Vergleich zweier Planversionen mit Kategorisierung:
         \begin{itemize}
             \item Hinzugefügt: Neue Objekte in Version B
             \item Entfernt: Objekte aus Version A fehlen in Version B
@@ -127,7 +228,7 @@ Eine zentrale Anforderung ist die zuverlässige Detektion bahntechnischer Symbol
     \label{fig:änderungsample}
     \end{figure}
 
-    \item \textbf{FA-013}\label{req:FA-013} \textbf{Visuelle Validierung:} Zur manuellen Überprüfung (\enquote{Ground Truthing}) sollen im ausgegebenen Gleisplan (oder einer Overlay-Ansicht) alle erkannten Objekte durch farbige Bounding Boxes markiert werden.
+    \item \textbf{FA-012}\label{req:FA-012} \textbf{Visuelle Validierung:} Zur manuellen Überprüfung (\enquote{Ground Truthing}) sollen im ausgegebenen Gleisplan (oder einer Overlay-Ansicht) alle erkannten Objekte durch farbige Bounding Boxes markiert werden.
     \begin{figure}[H]
     \centering
     \includegraphics[width=14cm]{images/Kapitel4/gleisplanmarkierung.png} 
@@ -138,11 +239,11 @@ Eine zentrale Anforderung ist die zuverlässige Detektion bahntechnischer Symbol
 
 \subsection{Benutzerinteraktion und Konfiguration}
 \begin{itemize}
-    \item \textbf{FA-014}\label{req:FA-014} \textbf{Grafische Benutzeroberfläche (GUI):} Die Bedienung soll über eine intuitive Oberfläche erfolgen, die den Upload von PDF-Dateien, den Start der Analyse sowie den Export ermöglicht, ohne dass Kommandozeilen-Kenntnisse erforderlich sind.
+    \item \textbf{FA-013}\label{req:FA-013} \textbf{Grafische Benutzeroberfläche (GUI):} Die Bedienung soll über eine intuitive Oberfläche erfolgen, die den Upload von PDF-Dateien, den Start der Analyse sowie den Export ermöglicht, ohne dass Kommandozeilen-Kenntnisse erforderlich sind.
     
-    \item \textbf{FA-015}\label{req:FA-015} \textbf{Konfigurierbarkeit:} Kundenspezifische Anpassungen, wie z.\,B. Mappings von Symbolklassen zu internen IDs oder spezifische OCR-Parameter, müssen über externe Konfigurationsdateien (YAML/JSON) anpassbar sein, ohne den Quellcode anpassen zu müssen.
+    \item \textbf{FA-014}\label{req:FA-014} \textbf{Konfigurierbarkeit:} Kundenspezifische Anpassungen, wie z.\,B. Mappings von Symbolklassen zu internen IDs oder spezifische OCR-Parameter, müssen über externe Konfigurationsdateien (YAML/JSON) anpassbar sein, ohne den Quellcode anpassen zu müssen.
     
-    \item \textbf{FA-016}\label{req:FA-016} \textbf{Modularität:} Die Architektur muss so gestaltet sein, dass neue Symboltypen durch ein Nachtraining des Modells integriert werden können (\enquote{Model-as-a-Service}-Ansatz), ohne die Kernlogik der Anwendung zu verändern.
+    \item \textbf{FA-015}\label{req:FA-015} \textbf{Modularität:} Die Architektur muss so gestaltet sein, dass neue Symboltypen durch ein Nachtraining des Modells integriert werden können (\enquote{Model-as-a-Service}-Ansatz), ohne die Kernlogik der Anwendung zu verändern.
 \end{itemize}
 
 \section{Nicht-funktionale Anforderungen}
@@ -238,3 +339,182 @@ Die Realisierung der in den Abschnitten \ref{subsec:req_symbol} bis \ref{subsec:
     \item \textbf{Mangel an Trainingsdaten:} Es existiert kein öffentlicher Datensatz für bahntechnische Symbolik. Ein \enquote{Cold Start} ist notwendig, bei dem Trainingsdaten zunächst manuell (z.\,B. via CVAT) annotiert werden müssen.
     \item \textbf{Semantische Lücke:} Der Schritt von der Erkennung (\enquote{Da ist eine Box}) zur Bedeutung (\enquote{Das ist Weiche 12 in Rechtslage}) erfordert komplexe Heuristiken, insbesondere beim Mapping von Textboxen zu den geometrisch nächsten Symbolen.
 \end{enumerate}
+
+\section{Anforderungs-Rückverfolgbarkeit}
+\label{sec:traceability}
+
+Zur Sicherstellung der vollständigen Umsetzung aller definierten Anforderungen 
+wird eine Rückverfolgbarkeitsmatrix (Traceability Matrix) eingeführt. Diese 
+dokumentiert die Zuordnung jeder Anforderung zu den entsprechenden 
+Implementierungskomponenten (Kapitel~\ref{chap:implementierung}) sowie den 
+Evaluationsmetriken (Kapitel~\ref{chap:evaluation}).
+
+\subsection{Funktionale Anforderungen}
+
+\begin{longtable}{|l|p{3.5cm}|p{4cm}|p{4cm}|}
+\hline
+\textbf{ID} & \textbf{Anforderung} & \textbf{Implementierung} & \textbf{Evaluation} \\
+\hline
+\endfirsthead
+\hline
+\textbf{ID} & \textbf{Anforderung} & \textbf{Implementierung} & \textbf{Evaluation} \\
+\hline
+\endhead
+
+FA-001 & Erkennungsrate $\geq$ 90\% & 
+§\ref{sec:objekterkennungmityolov8obb}: YOLOv8-OBB Training mit 13 Klassen & 
+§\ref{subsec:detection_eval}: mAP@0.5 = 98.0\%, Recall = 95.7\% \\
+\hline
+
+FA-002 & Rotationsinvarianz ($0°$--$360°$) & 
+§\ref{sec:objekterkennungmityolov8obb}: OBB-Annotation, synthetische Rotation (10 Winkel) & 
+§\ref{subsec:detection_eval}: Stabile Leistung über alle Orientierungen \\
+\hline
+
+FA-003 & Zielobjekte (5 Kernklassen) & 
+§\ref{sec:objekterkennungmityolov8obb}: Signal, Koordinate, GKS (2 Typen), GM-Block & 
+§\ref{subsec:e2e_test_eval}: 644 Objekte evaluiert \\
+\hline
+
+FA-004 & OCR-Genauigkeit & 
+§\ref{sec:ocrpipeline}: Multi-Engine Kaskade (PaddleOCR, Tesseract, EasyOCR) & 
+§\ref{subsec:e2e_test_eval}: 98.91\% E2E-Genauigkeit \\
+\hline
+
+FA-005 & OCR-Robustheit (Rauschen, Rotation) & 
+§\ref{sec:ocrpipeline}: Dual-Winkel-Routing, CLAHE, Linienentfernung & 
+§\ref{subsec:e2e_test_eval}: 3 OCR-Fehler bei 644 Objekten (0.47\%) \\
+\hline
+
+FA-006 & Fahrtrichtungsdetektion & 
+§\ref{sec:intelligentesymboltextverknüpfung}: Geometrische Ableitung aus Balisen-Signal-Relation & 
+§\ref{subsec:e2e_test_eval}: 171/172 korrekt (99.4\%) \\
+\hline
+
+FA-007 & Gruppierung von Attributen & 
+§\ref{sec:intelligentesymboltextverknüpfung}: Proximity-basiertes Linking, Haltepunkt-Gruppierung & 
+§\ref{subsec:e2e_test_eval}: 642/644 Verknüpfungen korrekt \\
+\hline
+
+FA-008 & Manuelle Korrektur (Human-in-the-Loop) & 
+§\ref{sec:validierungundsicherung}: Validierungsdialog mit Inline-Editierung & 
+§\ref{subsubsec:validation_tools}: 85\% Prüfzeitreduktion \\
+\hline
+
+FA-009 & Excel-Integration & 
+§\ref{subsec:exportfunktionlität}: XLSX-Export mit Formatierung & 
+Funktionstest bestanden \\
+\hline
+
+FA-010 & Strukturerhalt (Non-destructive Update) & 
+§\ref{subsec:exportfunktionlität}: Werte-Insertion ohne Formatänderung & 
+Funktionstest bestanden \\
+\hline
+
+FA-011 & Änderungsverfolgung (Diff) & 
+§\ref{subsec:vergleichundänderung}: UID-basierter Versionsvergleich & 
+Funktionstest bestanden \\
+\hline
+
+FA-012 & Visuelle Validierung (Bounding Boxes) & 
+§\ref{sec:benutzeroberfläche}: PDF-Viewer mit Overlay-System & 
+Funktionstest bestanden \\
+\hline
+
+FA-013 & Grafische Benutzeroberfläche & 
+§\ref{sec:benutzeroberfläche}: PyQt5-basierte Desktop-Anwendung & 
+Funktionstest bestanden \\
+\hline
+
+FA-014 & Konfigurierbarkeit (YAML/JSON) & 
+§\ref{sec:unterstützendekomponente}: Externe Konfigurationsdateien & 
+Funktionstest bestanden \\
+\hline
+
+FA-015 & Modularität (Nachtraining) & 
+§\ref{subsec:Modelltraining}: Separates Modell-Gewichte-Loading & 
+8 Auxiliarklassen demonstrieren Erweiterbarkeit \\
+\hline
+
+\caption{Rückverfolgbarkeitsmatrix: Funktionale Anforderungen}
+\label{tab:traceability_fa}
+\end{longtable}
+
+\subsection{Nicht-funktionale Anforderungen}
+
+\begin{longtable}{|l|p{3.5cm}|p{4cm}|p{4cm}|}
+\hline
+\textbf{ID} & \textbf{Anforderung} & \textbf{Implementierung} & \textbf{Evaluation} \\
+\hline
+\endfirsthead
+\hline
+\textbf{ID} & \textbf{Anforderung} & \textbf{Implementierung} & \textbf{Evaluation} \\
+\hline
+\endhead
+
+NFA-001 & On-Premise-Verarbeitung & 
+Vollständig lokale Ausführung, keine Cloud-APIs & 
+§\ref{subsec:testumgebung}: CPU-only Inferenz validiert \\
+\hline
+
+NFA-002 & Lizenzkonformität (Apache/MIT/BSD) & 
+Tab.~\ref{tab:tech_stack}: Alle Bibliotheken Open Source & 
+Lizenzprüfung bestanden \\
+\hline
+
+NFA-003 & Gesamtgenauigkeit $\geq$ 85\% & 
+Gesamte Pipeline (Kap.~\ref{chap:implementierung}) & 
+§\ref{subsec:e2e_test_eval}: 98.91\% erreicht \\
+\hline
+
+NFA-004 & Robustheit (fehlerhafte Eingaben) & 
+§\ref{sec:validierungundsicherung}: Fehlerbehandlung, Fallback-Mechanismen & 
+7 Testpläne ohne Systemabstürze \\
+\hline
+
+NFA-005 & Prüfbarkeit (Rückverfolgbarkeit) & 
+§\ref{sec:unterstützendekomponente}: Metadaten-Persistierung, Jump-to-Detection & 
+§\ref{subsubsec:validation_tools}: Bidirektionale Navigation \\
+\hline
+
+NFA-006 & Prozessoptimierung & 
+Automatisierung des manuellen Prozesses & 
+§\ref{subsubsec:processing_time}: 75.3\% Zeitersparnis \\
+\hline
+
+NFA-007 & Ressourceneffizienz & 
+CPU-kompatible Inferenz & 
+§\ref{subsubsec:processing_time}: Ø 12.3 min/Plan \\
+\hline
+
+NFA-008 & Erweiterbarkeit & 
+Modulare Architektur (§\ref{sec:unterstützendekomponente}) & 
+8 Auxiliarklassen ohne Kernlogik-Änderung \\
+\hline
+
+NFA-009 & Update-Fähigkeit & 
+Externe Modell-Gewichte (\texttt{best.pt}) & 
+Nachtraining demonstriert \\
+\hline
+
+NFA-010 & Eingabeformate (PDF, PNG, JPG) & 
+§\ref{Inferenz}: PyMuPDF für PDF, OpenCV für Bilder & 
+7 PDF-Testpläne verarbeitet \\
+\hline
+
+NFA-011 & Datenquellen (Kundenpläne, Scans) & 
+§\ref{Inferenz}: 500 DPI Rasterisierung & 
+Reale Siemens-Pläne verwendet \\
+\hline
+
+NFA-012 & Ausgabeformate (XLSX, CSV, JSON) & 
+§\ref{subsec:exportfunktionlität}: Drei Export-Optionen & 
+Funktionstest bestanden \\
+\hline
+
+\caption{Rückverfolgbarkeitsmatrix: Nicht-funktionale Anforderungen}
+\label{tab:traceability_nfa}
+\end{longtable}
+
+Die vollständige Validierung der Anforderungserfüllung mit quantitativen Metriken 
+erfolgt in Kapitel~\ref{chap:evaluation}.

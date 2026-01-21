@@ -154,23 +154,25 @@ Eine Detektion gilt als \textit{True Positive}, wenn die Intersection over Union
 
 \subsubsection{Metriken für die Texterkennung}
 
-Die OCR-Leistung wird durch die in Abschnitt~\ref{subsec:ocr_metriken} eingeführten Metriken quantifiziert:
+Die OCR-Leistung wird nicht isoliert durch zeichenbasierte Metriken wie die 
+Character Error Rate (CER) bewertet, sondern nach dem Prinzip der 
+\textit{Feldgenauigkeit} (vgl. Abschnitt~\ref{subsec:ocr_metriken}): Ein 
+OCR-Ergebnis gilt als korrekt, wenn der extrahierte Text exakt mit dem 
+Ground Truth übereinstimmt. Diese Bewertung ist in die End-to-End-Systemmetrik 
+integriert, wodurch folgende Vorteile entstehen:
 
 \begin{itemize}
-    \item \textbf{Character Error Rate (CER)}: Zeichenfehlerrate basierend auf Levenshtein-Distanz
-    \item \textbf{Field Accuracy Rate (FAR)}: Anteil vollständig korrekt erkannter Textfelder
-    \item \textbf{Regex-Validierungsrate}: Anteil der OCR-Ergebnisse, die klassenspezifische Formatmuster erfüllen
+    \item OCR-Fehler, die durch nachgelagerte Validierung (Regex-Muster) 
+    automatisch korrigiert werden, beeinflussen das Endergebnis nicht negativ
+    \item Die Metrik entspricht dem tatsächlichen Informationsbedarf: 
+    „Wurde der korrekte Wert extrahiert? \enquote{statt} Wie viele Zeichen waren falsch?"
+    \item Fehlerquellen können der jeweiligen Pipeline-Stufe zugeordnet werden 
+    (YOLO vs. OCR vs. Linking)
 \end{itemize}
 
-\subsubsection{Metriken für die Symbol-Text-Verknüpfung}
+Zusätzlich wird die \textbf{Regex-Validierungsrate} erfasst, die den Anteil 
+der OCR-Ergebnisse quantifiziert, die klassenspezifische Formatmuster erfüllen.
 
-Die Linking-Qualität wird durch folgende Metriken bewertet:
-
-\begin{itemize}
-    \item \textbf{Linking Accuracy}: Anteil korrekter Verknüpfungen an allen erwarteten Verknüpfungen
-    \item \textbf{False Positive Linking Rate}: Anteil fälschlicherweise hergestellter Verknüpfungen
-    \item \textbf{Missing Link Rate}: Anteil fehlender Verknüpfungen
-\end{itemize}
 
 \subsubsection{End-to-End Systemmetrik}
 
@@ -772,16 +774,15 @@ FA-003 & Zielobjekte detektierbar & \checkmark \\
 FA-004 & OCR-Genauigkeit & \checkmark (98.7\% E2E) \\
 FA-005 & OCR-Robustheit & \checkmark \\
 FA-006 & Fahrtrichtungsdetektion & \checkmark (100\%) \\
-FA-007 & Gruppierung von Attributen & \checkmark \\
-FA-008 & Multi-Koordinaten-Parsing & \checkmark \\
-FA-009 & Manuelle Korrektur & \checkmark \\
-FA-010 & Excel-Integration & \checkmark \\
-FA-011 & Strukturerhalt & \checkmark \\
-FA-012 & Änderungsverfolgung & \checkmark \\
-FA-013 & Visuelle Validierung & \checkmark \\
-FA-014 & GUI & \checkmark \\
-FA-015 & Konfigurierbarkeit & \checkmark \\
-FA-016 & Modularität & \checkmark \\
+FA-007 & Symbol-Koordinaten-Verknüpfung & \checkmark (99.7\%)\\
+FA-008 & Manuelle Korrektur & \checkmark \\
+FA-009 & Excel-Integration & \checkmark \\
+FA-010 & Strukturerhalt & \checkmark \\
+FA-011 & Änderungsverfolgung & \checkmark \\
+FA-012 & Visuelle Validierung & \checkmark \\
+FA-013 & GUI & \checkmark \\
+FA-014 & Konfigurierbarkeit & \checkmark \\
+FA-015 & Modularität & \checkmark \\
 \hline
 \end{tabular}
 \caption{Validierung der funktionalen Anforderungen}

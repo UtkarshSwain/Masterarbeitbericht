@@ -116,29 +116,45 @@ Die Verteilung der Objektinstanzen über die Klassen hinweg zeigt Tabelle \ref{t
 \hline
 \textbf{Klasse} & \textbf{Bilder} & \textbf{Instanzen} \\
 \hline
+\multicolumn{3}{|c|}{\textit{Kernklassen (produktionsrelevant)}} \\
+\hline
 coordinate & 113 & 629 \\
 signal & 81 & 218 \\
-sverbinder & 81 & 85 \\
 gks\_gesteuert & 67 & 69 \\
 gm\_block & 55 & 91 \\
-haltepunkt & 47 & 47 \\
 gks\_festkodiert & 43 & 60 \\
+\hline
+\textbf{Summe Kernklassen} & --- & \textbf{1.067 (81.8\%)} \\
+\hline
+\multicolumn{3}{|c|}{\textit{Auxiliarklassen (Erweiterbarkeit)}} \\
+\hline
+sverbinder & 81 & 85 \\
+haltepunkt & 47 & 47 \\
 weichen\_block & 25 & 39 \\
 isolierstoß & 16 & 27 \\
 prellblock & 14 & 16 \\
 haltetafel & 11 & 11 \\
-endeweichen & 4 & 4 \\
 weichengruppeende & 9 & 9 \\
+endeweichen & 4 & 4 \\
+\hline
+\textbf{Summe Auxiliarklassen} & --- & \textbf{238 (18.2\%)} \\
+\hline
 \hline
 \textbf{Gesamt} & \textbf{115} & \textbf{1.305} \\
 \hline
 \end{tabular}
-\caption{Verteilung der Annotationen über Klassen und Bilder im Validierungssatz}
+\caption{Verteilung der Annotationen über Klassen und Bilder im Validierungssatz, unterteilt nach Kern- und Auxiliarklassen (vgl. Anforderung FA-003)}
 \label{tab:dataset_distribution}
 \end{table}
 
 Es ist ersichtlich, dass die Klassenverteilung unausgeglichen ist, mit Koordinaten und Signalen als dominierende Klassen. Diese Verteilung spiegelt die reale Häufigkeit der Symbole in Gleisplänen wider. Um ein Overfitting auf häufige Klassen zu vermeiden, wurde während des Trainings eine klassengewichtete Verlustfunktion zwar in Betracht gezogen, letztendlich jedoch zugunsten einer robusten Datenaugmentation verworfen.
-
+\textbf{Klassenpriorisierung:} Gemäß Anforderung \textbf{FA-003} werden die Objektklassen 
+in zwei Kategorien unterteilt. Die fünf \textit{Kernklassen} (signal, coordinate, 
+gks\_festkodiert, gks\_gesteuert, gm\_block) repräsentieren die für die Projektierung 
+bei Siemens Mobility essentiellen Symbole und bilden den Fokus der End-to-End-Evaluation 
+in Kapitel~\ref{chap:evaluation}. Die acht \textit{Auxiliarklassen} wurden zusätzlich 
+implementiert, um die Erweiterbarkeit des Systems zu demonstrieren (vgl. Anforderung 
+\textbf{NFA-008}), werden jedoch nicht im Detail evaluiert.
 Die Daten wurden in eine standardisierte COCO-Verzeichnisstruktur (Abbildung \ref{fig:COCODatenset}) überführt, welche die Organisation von Trainings- und Validierungsdaten sowie die zugehörigen Annotationen in separaten Verzeichnissen vorsieht.
 
 \begin{figure}[H]
@@ -181,13 +197,20 @@ Die Anzahl der generierten synthetischen Samples wurde klassenabhängig gesteuer
 \hline
 \textbf{Klasse} & \textbf{Original} & \textbf{Augmentiert} & \textbf{Gesamt} & \textbf{Faktor} \\
 \hline
+\multicolumn{5}{|c|}{\textit{Kernklassen}} \\
+\hline
 coordinate & 629 & 300 & 929 & 1.48× \\
 signal & 218 & 382 & 600 & 2.75× \\
-sverbinder & 85 & 515 & 600 & 7.06× \\
 gks\_gesteuert & 69 & 531 & 600 & 8.70× \\
 gm\_block & 91 & 509 & 600 & 6.59× \\
-haltepunkt & 47 & 553 & 600 & 12.77× \\
 gks\_festkodiert & 60 & 540 & 600 & 10.00× \\
+\hline
+\textbf{Summe Kernklassen} & \textbf{1.067} & \textbf{2.262} & \textbf{3.329} & --- \\
+\hline
+\multicolumn{5}{|c|}{\textit{Auxiliarklassen}} \\
+\hline
+sverbinder & 85 & 515 & 600 & 7.06× \\
+haltepunkt & 47 & 553 & 600 & 12.77× \\
 weichen\_block & 39 & 561 & 600 & 15.38× \\
 isolierstoß & 27 & 573 & 600 & 22.22× \\
 prellblock & 16 & 584 & 600 & 37.50× \\
@@ -195,12 +218,16 @@ haltetafel & 11 & 589 & 600 & 54.55× \\
 endeweichen & 4 & 596 & 600 & 150.00× \\
 weichengruppeende & 9 & 591 & 600 & 66.67× \\
 \hline
+\textbf{Summe Auxiliarklassen} & \textbf{238} & \textbf{4.462} & \textbf{4.700} & --- \\
+\hline
+\hline
 \textbf{Gesamt} & \textbf{1.305} & \textbf{6.724} & \textbf{8.029} & \textbf{6.15×} \\
 \hline
 \end{tabular}
-\caption{Verteilung der Instanzen vor und nach synthetischer Rotation}
+\caption{Verteilung der Instanzen vor und nach synthetischer Rotation, unterteilt nach Kern- und Auxiliarklassen}
 \label{tab:augmentation_statistics}
 \end{table}
+
 \textbf{Technische Umsetzung:}
 Die hohen Augmentationsfaktoren für seltene Klassen (z.B. 150× für \textit{endeweichen}) sind gerechtfertigt, da diese Symbole in realen Gleisplänen tatsächlich sehr selten vorkommen, das Modell aber dennoch in der Lage sein muss, sie zuverlässig zu erkennen. Die synthetische Rotation simuliert realistische Orientierungsvariationen und verhindert Overfitting auf die wenigen Original-Samples. 
 
@@ -1238,23 +1265,22 @@ Nach der OCR-Verarbeitung durchläuft jedes Ergebnis mehrere Validierungsschritt
 
 \subsubsection{Regelbasierte Textvalidierung}
 
-Jede Symbolklasse hat ein spezifisches Format, das durch Regular Expressions (Regex) beschrieben wird. Diese Patterns definieren, welche Zeichenfolgen für eine Klasse gültig sind.
-
 \begin{table}[h]
 \centering
 \small
-\begin{tabular}{|l|p{3.5cm}|p{4.5cm}|}
+\begin{tabular}{|l|p{3.7cm}|p{4.5cm}|c|}
 \hline
 \textbf{Klasse} & \textbf{Pattern} & \textbf{Beispiele} \\
 \hline
-Signal & \verb|^[A-Z]\d{1,3}[a-z]?$| & A1, B234, C45a \\
-Balise & \verb|^BAL\d{4}$| oder \verb|^\d{4}$| & BAL1234, 5678 \\
-Weiche & \verb|^W\d{2,4}[a-z]?$| & W12, W234, W45a \\
-Koordinate & \verb|^\d+[+-]\d+$| & 123+456, 78-90 \\
-Haltepunkt & \verb|^[A-Z]{2,4}$| & AB, WXYZ \\
+Signal & \verb|^[A-Z]\d{1,3}[a-z]?$| & A1, B234, C45a  \\
+GKS (beide Typen) & \verb|^\d{3,4}$| & 1234, 567  \\
+Koordinate & \verb|^\d+[.,]\d+$| & 18.1606, 123,456  \\
+GM-Block & \verb|^\d+[.,]\d+$| & 18.1606  \\
+Haltepunkt & \verb|^[A-Z]{2,4}$| & AB, WXYZ  \\
+Weiche & \verb|^W\d{2,4}[a-z]?$| & W12, W234  \\
 \hline
 \end{tabular}
-\caption{Validierungs-Patterns und Beispiele pro Symbolklasse}
+\caption{Validierungs-Patterns pro Symbolklasse mit Klassifizierung}
 \end{table}
 
 Für Signale bedeutet das Pattern \verb|^[A-Z]\d{1,3}[a-z]?$| konkret:
@@ -1507,46 +1533,125 @@ Für jeden Textkandidaten im Umkreis eines Symbols wird diese Transformation dur
 
 \subsection{Proximity-basierter Linking-Algorithmus}
 
-\subsubsection{Klassenspezifische Suchradien}
+\subsubsection{Dynamische Suchbereichsberechnung}
 
-Die Größe des Suchbereichs, innerhalb dessen nach zugehörigen Texten gesucht wird, variiert je nach Symbolklasse. Diese Variation ergibt sich aus den unterschiedlichen typischen Abständen zwischen Symbolen und ihren Beschriftungen in technischen Zeichnungen sowie aus den unterschiedlichen Symbol- und Textgrößen. Tabelle \ref{tab:search_radii} zeigt die empirisch ermittelten Suchradien für die wichtigsten Symbolklassen.
+Im Gegensatz zu statischen Suchradien verwendet die Implementierung einen \textit{dimensionsadaptiven} Ansatz, bei dem die Suchbereiche dynamisch aus den Abmessungen der detektierten Bounding Boxes berechnet werden. Dies gewährleistet Robustheit gegenüber unterschiedlichen Symbolgrößen und Planauflösungen.
 
-\begin{table}[h]
+Für die Verknüpfung eines Ankersymbols (z.B. Signal, GKS-Platte) mit seiner zugehörigen Koordinatenbeschriftung werden die maximalen Suchentfernungen wie folgt berechnet:
+
+\textbf{Vertikaler Suchbereich:}
+\begin{equation}
+dy_{\text{max}} = 1{,}6 \cdot h_{\text{anchor}} \cdot k_{dy}
+\label{eq:dy_max}
+\end{equation}
+
+\textbf{Horizontaler Suchbereich:}
+\begin{equation}
+dx_{\text{max}} = \max\left( k_{dx} \cdot 0{,}6 \cdot \max(w_{\text{anchor}}, w_{\text{coord}}), \; 30 \right)
+\label{eq:dx_max}
+\end{equation}
+
+wobei $h_{\text{anchor}}$ die Höhe und $w_{\text{anchor}}$ die Breite der Anker-Bounding-Box bezeichnen, $w_{\text{coord}}$ die Breite der Koordinaten-Box, und $k_{dy}$, $k_{dx}$ klassenspezifische Multiplikatoren sind. Der Mindestwert von 30 Pixeln für $dx_{\text{max}}$ stellt sicher, dass auch bei sehr schmalen Symbolen ein ausreichender horizontaler Suchbereich gewährleistet ist.
+
+\subsubsection{Klassenspezifische Multiplikatoren}
+
+Die Multiplikatoren wurden empirisch auf Basis der typischen Layoutkonventionen in Gleisplänen optimiert. Tabelle~\ref{tab:linking_multipliers} zeigt die konfigurierten Werte für alle Symbolklassen.
+
+\begin{table}[H]
 \centering
-\begin{tabular}{|l|r|p{6cm}|}
+\begin{tabular}{|l|c|c|r|r|c|}
 \hline
-\textbf{Symbolklasse} & \textbf{Suchradius (px)} & \textbf{Begründung} \\
+\textbf{Klasse} & $\boldsymbol{k_{dy}}$ & $\boldsymbol{k_{dx}}$ & \textbf{$dy_{\text{max}}$} & \textbf{$dx_{\text{max}}$} & \textbf{Typ} \\
 \hline
-Signal & 150 & Signalbezeichnungen können aufgrund von Platzmangel weiter entfernt positioniert sein \\
+\multicolumn{6}{|c|}{\textit{Kernklassen}} \\
 \hline
-Balise & 100 & Balisennummern befinden sich typischerweise direkt am Symbol \\
+signal & 1.0 & 1.0 & 80--130 px & 30--50 px & Kern \\
+gks\_festkodiert & 1.0 & 1.0 & 80--130 px & 30--50 px & Kern \\
+gks\_gesteuert & 1.0 & 1.0 & 80--130 px & 30--50 px & Kern \\
+gm\_block & 1.0 & 1.0 & 80--130 px & 30--50 px & Kern \\
+coordinate & --- & --- & \multicolumn{2}{c|}{(wird verknüpft, nicht Anker)} & Kern \\
 \hline
-Weiche & 200 & Große Symbole mit variabler Textposition, oft mehrere Beschriftungen \\
+\multicolumn{6}{|c|}{\textit{Auxiliarklassen}} \\
 \hline
-Koordinate & 80 & Kilometer-Angaben bilden mit dem Symbol eine kompakte Einheit \\
-\hline
-Haltepunkt & 120 & Moderate Distanz zur zugehörigen Signalbezeichnung \\
+haltepunkt & 1.0 & 1.0 & 80--130 px & 30--50 px & Auxiliar \\
+sverbinder & 1.0 & 1.0 & 80--130 px & 30--50 px & Auxiliar \\
+isolierstoß & 1.0 & 1.0 & 80--130 px & 30--50 px & Auxiliar \\
+haltetafel & 1.0 & 2.0 & 80--130 px & 60--100 px & Auxiliar \\
+prellblock & 1.0 & 2.0 & 80--130 px & 60--100 px & Auxiliar \\
+weichenende & 1.0 & 3.0 & 80--130 px & 90--150 px & Auxiliar \\
+weichengruppeende & 1.0 & 4.0 & 80--130 px & 120--200 px & Auxiliar \\
 \hline
 \end{tabular}
-\caption{Klassenspezifische Suchradien für die Symbol-Text-Verknüpfung}
-\label{tab:search_radii}
+\caption{Klassenspezifische Linking-Parameter. Die Wertebereiche für $dy_{\text{max}}$ und $dx_{\text{max}}$ basieren auf typischen Symbolgrößen von 50--80 Pixeln bei 500 DPI.}
+\label{tab:linking_multipliers}
 \end{table}
 
-Diese Suchradien wurden durch Analyse von mehreren hundert manuell annotierten Symbol-Text-Paaren ermittelt und stellen einen Kompromiss zwischen Vollständigkeit (alle korrekten Texte werden gefunden) und Präzision (möglichst wenige falsch-positive Kandidaten) dar.
+Die erhöhten horizontalen Multiplikatoren ($k_{dx} > 1$) für Auxiliarklassen wie \textit{haltetafel}, \textit{prellblock} und \textit{weichengruppeende} reflektieren deren typische Layoutcharakteristik: Diese Symbole haben häufig horizontal versetzte Beschriftungen, während die Kernklassen überwiegend vertikal ausgerichtete Text-Symbol-Relationen aufweisen.
+
+\subsubsection{Spezialfälle mit festen Suchparametern}
+
+Für bestimmte komplexe Verknüpfungsaufgaben, die über die einfache Anker-Koordinaten-Zuordnung hinausgehen, werden feste Pixelwerte verwendet. Diese wurden empirisch auf Basis der bei 500 DPI typischen physikalischen Abstände kalibriert.
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{|l|r|r|p{5.5cm}|}
+\hline
+\textbf{Anwendungsfall} & \textbf{Parameter} & \textbf{Wert} & \textbf{Beschreibung} \\
+\hline
+\multicolumn{4}{|c|}{\textit{Fahrtrichtungsdetektion (vgl. Abschnitt~\ref{sec:fahrtrichtung})}} \\
+\hline
+GKS-Suche & $d_{\text{max}}$ & 250 px & Max. euklidische Distanz zum Signal \\
+& $dy_{\text{min}}$ & 30 px & Min. vertikale Separation \\
+& $dy_{\text{max}}$ & 200 px & Max. vertikale Separation \\
+& $dx_{\text{tol}}$ & $\pm$120 px & Horizontale Toleranz \\
+\hline
+\multicolumn{4}{|c|}{\textit{Haltetafel-GKS-Fallback}} \\
+\hline
+GKS-Proximity & $d_{\text{max}}$ & 250 px & Euklidische Distanz zur GKS \\
+& $dy_{\text{tol}}$ & 100 px & Max. vertikale Separation \\
+& $dx_{\text{tol}}$ & 300 px & Max. horizontale Separation \\
+\hline
+\multicolumn{4}{|c|}{\textit{Fallback-Mechanismen}} \\
+\hline
+Isolierstoß & $r_{\text{max}}$ & 300 px & 360°-Suchradius bei fehlender Zuordnung \\
+Gleismittellinie & $d_{\text{ray}}$ & 1500 px & Sicherheitslimit für Ray-Casting \\
+\hline
+\end{tabular}
+\caption{Feste Suchparameter für Spezialfälle (kalibriert für 500 DPI)}
+\label{tab:linking_special_params}
+\end{table}
+
+\textbf{Physikalische Interpretation:} Bei einer Renderauflösung von 500 DPI entsprechen die Parameter folgenden physikalischen Abständen:
+\begin{itemize}
+    \item 250 px $\approx$ 12,7 mm (typischer Abstand zwischen Signal und zugehöriger GKS-Platte)
+    \item 120 px $\approx$ 6 mm (horizontale Toleranz für leicht versetzte Symbole)
+    \item 300 px $\approx$ 15 mm (erweiterter Fallback-Suchbereich)
+\end{itemize}
 
 \subsubsection{Richtungsbasierte Filterung}
 
-Neben der Distanzprüfung wird für jede Symbolklasse eine erwartete Richtung definiert, in der sich der zugehörige Text relativ zum Symbol befinden sollte. Dies nutzt domänenspezifisches Wissen über die Konventionen in Gleisplänen. Die Richtungsbedingungen werden im lokalen Koordinatensystem formuliert:
+Neben der Distanzprüfung wird für jede Symbolklasse eine erwartete Richtung definiert, in der sich der zugehörige Text relativ zum Symbol befinden sollte. Die Richtungsbedingungen werden im lokalen Koordinatensystem (vgl. Abschnitt~\ref{sec:Koordinatentransformation}) formuliert:
 
 \begin{itemize}
-    \item \textbf{Signal}: Text sollte sich \emph{unterhalb} befinden, d.h. $dy_{\text{local}} > 0$. Dies entspricht der üblichen Konvention, dass Signalbezeichnungen unter den Signalsymbolen angeordnet werden.
+    \item \textbf{Kernklassen (Signal, GKS, GM-Block):} Text primär \emph{unterhalb} des Symbols erwartet ($dy_{\text{local}} > 0$). Dies entspricht der standardisierten Zeichnungskonvention für Bahnanlagenpläne.
     
-    \item \textbf{Balise}: Text sollte sich \emph{unterhalb oder rechts} befinden, d.h. $dy_{\text{local}} > 0$ oder $dx_{\text{local}} > 0$. Balisennummern sind flexibler positioniert.
-    
-    \item \textbf{Weiche}: Keine strenge Richtungseinschränkung, da Weichen oft mehrere Beschriftungen in verschiedenen Richtungen aufweisen.
-    
-    \item \textbf{Koordinate}: Text sollte sich \emph{in der Nähe} befinden, ohne strenge Richtungspräferenz, da Kilometer-Angaben je nach verfügbarem Platz positioniert werden.
+    \item \textbf{Auxiliarklassen mit erhöhtem $k_{dx}$:} Flexiblere Richtungstoleranz, da Beschriftungen auch seitlich positioniert sein können ($dy_{\text{local}} > 0$ \textbf{oder} $|dx_{\text{local}}| < dx_{\text{max}}$).
 \end{itemize}
+
+Für den Spezialfall der \textit{tight}-Verknüpfung (bei eindeutiger räumlicher Nähe) wird der horizontale Suchbereich reduziert:
+
+\begin{equation}
+dx_{\text{max,tight}} = k_{dx} \cdot 0{,}45 \cdot \max(w_{\text{anchor}}, w_{\text{coord}})
+\end{equation}
+
+Zusätzlich wird bei aktivierter Linkssuche (\texttt{search\_left=True}) der horizontale Suchbereich asymmetrisch erweitert:
+
+\begin{equation}
+dx_{\text{max,left}} = 1{,}3 \cdot dx_{\text{max}} \quad \text{(falls Koordinate links vom Anker)}
+\end{equation}
+
+Diese Asymmetrie berücksichtigt, dass in einigen Gleisplänen Koordinatenangaben bevorzugt links von Symbolen platziert werden.
 
 \subsubsection{Algorithmus zur Symbol-Text-Zuordnung}
 
@@ -1773,7 +1878,7 @@ Eine negative lokale y-Koordinate bedeutet, dass die Balise sich oberhalb des Si
 \caption{Geometrische Bestimmung der Fahrtrichtung eines Signals}
 \label{fig:signal_direction}
 \end{figure}
-
+Die konkreten Suchparameter für die GKS-Lokalisierung sind in Tabelle~\ref{tab:linking_special_params} dokumentiert: Die maximale Suchdistanz beträgt 250 Pixel ($\approx$ 12,7 mm bei 500 DPI), wobei die vertikale Separation zwischen 30 und 200 Pixeln liegen muss und eine horizontale Toleranz von $\pm$120 Pixeln erlaubt ist.
 Diese geometrische Ableitung der Fahrtrichtung hat mehrere Vorteile gegenüber einer expliziten Klassifikation. Erstens wird kein separater Klassifikator benötigt, der auf Trainingsbeispielen für Fahrtrichtungen trainiert werden müsste. Zweitens ist die Methode robust gegenüber verschiedenen graphischen Darstellungsformen von Signalen, da sie ausschließlich auf der räumlichen Anordnung basiert und nicht auf visuellen Merkmalen des Symbols selbst. Drittens ist die Bestimmung rotationsinvariant, da sie im lokalen Koordinatensystem des Signals operiert.
 
 \subsubsection{Haltepunkt-Gruppierung}
@@ -1790,7 +1895,7 @@ d(H, K) + d(K, S) \leq d(H, S) + \epsilon
 
 wobei $d(\cdot, \cdot)$ die euklidische Distanz zwischen zwei Punkten bezeichnet. Die Toleranz $\epsilon$ wird typischerweise auf 20 Pixel gesetzt, um eine gewisse Flexibilität gegenüber nicht-perfekt linearen Anordnungen zu ermöglichen, gleichzeitig aber sicherzustellen, dass die Koordinate tatsächlich zwischen den beiden anderen Elementen liegt und nicht deutlich von der Verbindungslinie abweicht.
 
-Der Gruppierungsalgorithmus iteriert über alle detektierten Haltepunkt-Symbole. Für jedes Haltepunkt-Symbol werden alle Signale und Koordinaten innerhalb eines definierten Umkreises (typischerweise 300 Pixel) als potenzielle Gruppierungspartner betrachtet. Für jede Kombination aus Haltepunkt, Signal und Koordinate wird die Kollinearitätsbedingung geprüft. Die erste Kombination, die die Bedingung erfüllt, wird als gültige Gruppierung akzeptiert und persistiert.
+Der Gruppierungsalgorithmus iteriert über alle detektierten Haltepunkt-Symbole. Für jedes Haltepunkt-Symbol werden alle Signale und Koordinaten innerhalb eines definierten Umkreises (typischerweise 250 Pixeln) als potenzielle Gruppierungspartner betrachtet. Für jede Kombination aus Haltepunkt, Signal und Koordinate wird die Kollinearitätsbedingung geprüft. Die erste Kombination, die die Bedingung erfüllt, wird als gültige Gruppierung akzeptiert und persistiert.
 
 Diese geometrische Gruppierungsmethode stellt sicher, dass die semantisch zusammengehörigen Elemente eines Haltepunkts korrekt identifiziert werden. In der exportierten Datenstruktur werden gruppierte Haltepunkte als zusammenhängende Einheiten behandelt, wobei alle drei Komponenten miteinander verlinkt sind. Dies ermöglicht es nachgelagerten Systemen oder menschlichen Anwendern, die vollständige Information eines Haltepunkts effizient abzurufen, ohne die drei Komponenten manuell zusammensuchen zu müssen.
 
@@ -1801,7 +1906,7 @@ Die implementierte Symbol-Text-Verknüpfung kombiniert mehrere komplementäre An
 \begin{enumerate}
     \item \textbf{Rotationsinvariante Geometrie}: Transformation in lokale Koordinatensysteme ermöglicht richtungsbasierte Filterung unabhängig von der globalen Orientierung.
     
-    \item \textbf{Klassenspezifische Heuristiken}: Unterschiedliche Suchradien und Richtungspräferenzen reflektieren domänenspezifisches Wissen über Zeichnungskonventionen.
+    \item \textbf{Dimensionsadaptive Suchbereiche}: Dynamische Berechnung der Suchparameter aus Bounding-Box-Dimensionen (Gleichungen~\ref{eq:dy_max} und \ref{eq:dx_max}) mit klassenspezifischen Multiplikatoren gewährleistet Robustheit gegenüber unterschiedlichen Symbolgrößen und Planauflösungen.
     
     \item \textbf{Adaptive Lernmechanismen}: Statistische Analyse erfolgreicher Links ermöglicht Anpassung an plan-spezifische Layouts.
     
@@ -1823,7 +1928,10 @@ Die Validierungsarchitektur basiert auf einem modularen Framework, das die extra
 Ein Validierungsproblem wird durch folgende Eigenschaften beschrieben. Der Schweregrad klassifiziert das Problem in die Kategorien Fehler, Warnung oder Information, wobei Fehler kritische Inkonsistenzen darstellen, die zwingend einer Korrektur bedürfen, während Warnungen auf potenzielle Probleme hinweisen, die einer Überprüfung bedürfen. Die Kategorie beschreibt die Art des Problems, beispielsweise Formatfehler, Duplikate oder fehlende Daten. Das betroffene Feld identifiziert die spezifische Datenspalte, in der das Problem auftritt. Bei automatisch korrigierbaren Problemen wird zusätzlich ein Korrekturvorschlag mit dem empfohlenen neuen Wert bereitgestellt. Die Konfidenz des Korrekturvorschlags wird als normalisierter Wert im Intervall $[0, 1]$ angegeben, wobei höhere Werte eine größere Zuverlässigkeit der vorgeschlagenen Korrektur indizieren.
 
 Die Validierung erfolgt durch sequenzielle Ausführung aller implementierten Prüfungen, wobei das Ergebnis die Gesamtheit aller identifizierten Probleme sowie statistische Kennzahlen zur Fehlerverteilung umfasst. Diese strukturierte Repräsentation ermöglicht sowohl die programmatische Weiterverarbeitung als auch die Präsentation in einer benutzerfreundlichen Oberfläche.
-
+\textbf{Validierungsfokus:} Die regelbasierte Validierung konzentriert sich primär auf 
+die fünf Kernklassen, da diese für den produktiven Einsatz bei Siemens Mobility 
+relevant sind. Für Auxiliarklassen werden grundlegende Formatprüfungen durchgeführt, 
+jedoch keine domänenspezifischen Plausibilitätsprüfungen.
 \subsubsection{Dreistufige Validierungsstrategie}
 
 Die Validierung ist hierarchisch in drei Ebenen organisiert, die aufeinander aufbauen und unterschiedliche Aspekte der Datenqualität adressieren. Diese Strukturierung ermöglicht eine systematische Fehleridentifikation von grundlegenden Formatproblemen bis hin zu komplexen semantischen Inkonsistenzen.
@@ -1896,7 +2004,7 @@ Die zweite Ebene, die semantische Validierung, überprüft die inhaltliche Plaus
 
 Bei mehrfach vorkommenden Signalen wird die Konsistenz der zugeordneten Attribute überprüft. Ein Signal mit identischer Bezeichnung sollte in allen Instanzen dieselbe Kilometrierung aufweisen, da physisch identische Signale an einem festen geografischen Punkt lokalisiert sind. Ebenso wird die Konsistenz der Fahrtrichtung geprüft, wobei Inkonsistenzen auf Erkennungsfehler oder tatsächliche Duplikate hindeuten können.
 
-Die dritte Ebene, die räumliche Validierung, analysiert die geometrischen Beziehungen zwischen den erkannten Objekten. Für Objektklassen, die zwingend eine Kilometrierung benötigen wie Signale, GKS-Platten, Weichenblöcke und Streckentrenner wird geprüft, ob eine Koordinate in räumlicher Nähe vorhanden ist. Die Definition räumlicher Nähe erfolgt klassenspezifisch, wobei für Signale ein Radius von 200 Pixeln und für GKS-Platten ein Radius von 150 Pixeln als akzeptabel definiert wurde. Diese Schwellenwerte basieren auf der durchschnittlichen Größe der Symbole und der typischen Anordnung von Text relativ zu Symbolen in Gleisplänen.
+Die dritte Ebene, die räumliche Validierung, analysiert die geometrischen Beziehungen zwischen den erkannten Objekten. Für Objektklassen, die zwingend eine Kilometrierung benötigen wie Signale, GKS-Platten, Weichenblöcke und Streckentrenner wird geprüft, ob eine Koordinate in räumlicher Nähe vorhanden ist. Die Definition räumlicher Nähe erfolgt klassenspezifisch gemäß den in Abschnitt~\ref{subsec:proximity_linking} definierten dynamischen Suchbereichen. Für die Kernklassen (Signal, GKS, GM-Block) resultiert dies typischerweise in vertikalen Suchbereichen von 80--130 Pixeln und horizontalen Bereichen von 30--50 Pixeln (vgl. Tabelle~\ref{tab:linking_multipliers}). Diese Schwellenwerte basieren auf der durchschnittlichen Größe der Symbole und der typischen Anordnung von Text relativ zu Symbolen in Gleisplänen.
 
 Zusätzlich werden YOLO-Konfidenzwerte gegen klassenspezifische Schwellenwerte validiert. Jede Objektklasse besitzt einen eigenen Mindestkonfidenzwert, der aus der Trainingsphase des YOLO-Modells abgeleitet wurde. Erkennungen unterhalb dieser Schwellenwerte werden als unsicher gekennzeichnet und zur manuellen Überprüfung vorgeschlagen.
 
@@ -2888,7 +2996,10 @@ Dieses Kapitel stellte die technische Realisierung der automatisierten Datenextr
 Die Extraktionspipeline besteht aus folgenden Hauptmodulen:
 
 \textbf{Objekterkennung (Abschnitt \ref{sec:objekterkennungmityolov8obb}):}
-Das YOLOv8-OBB Modell wurde auf einem selbst erstellten Datensatz trainiert und ermöglicht die rotationsinvariante Detektion von Bahnelementen in hochauflösenden PDF-Plänen. Die Inferenz erfolgt mittels einer Tiling-Strategie, die große Dokumente in überlappende Bildkacheln unterteilt und anschließend die Detektionen in das Gesamtkoordinatensystem rücktransformiert.
+Das YOLOv8-OBB Modell wurde auf einem Datensatz mit 13 Symbolklassen trainiert, 
+wobei fünf \textit{Kernklassen} (signal, coordinate, gks\_festkodiert, gks\_gesteuert, 
+gm\_block) den Fokus der Evaluation bilden und acht \textit{Auxiliarklassen} die 
+Erweiterbarkeit des Systems demonstrieren (vgl. Anforderungen FA-003 und NFA-008).
 
 \textbf{OCR-Pipeline (Abschnitt \ref{sec:ocrpipeline}):}
 Die orientierungsadaptive OCR-Pipeline bildet das Herzstück der Textextraktion. Durch die Kaskadierung dreier OCR-Engines (PaddleOCR, Tesseract, EasyOCR) wird eine hohe Erkennungsrobustheit erreicht. Das Dual-Winkel-Routing-System behandelt sowohl achsenparallele als auch beliebig rotierte Texte mittels unterschiedlicher Transformationsstrategien. Klassenspezifische Vorverarbeitungspipelines passen die Bildaufbereitung an die jeweiligen Charakteristika der Symbole an (z.B. adaptive Padding für Signale, morphologische Filterung für Balisenplatten). Die Validierung erfolgt durch regex-basierte Pattern-Matching-Verfahren mit konfidenzgewichteten Scoring-Mechanismen.
