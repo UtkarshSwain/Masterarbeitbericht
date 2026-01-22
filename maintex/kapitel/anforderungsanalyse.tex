@@ -73,8 +73,7 @@ in Kapitel~\ref{chap:evaluation} quantitativ evaluiert:
 
 \subsubsection{Auxiliarklassen (Erweiterbarkeit)}
 
-Zur Demonstration der Modularität und Erweiterbarkeit des Systems (vgl. Anforderung 
-FA-016) werden zusätzlich acht weitere Objektklassen implementiert. Diese Klassen 
+Zur Demonstration der Modularität und Erweiterbarkeit des Systems (vgl. Anforderung FA-013) werden zusätzlich acht weitere Objektklassen implementiert. Diese Klassen 
 sind für spezifische Anwendungsfälle relevant, gehören jedoch nicht zum Kernumfang 
 der aktuellen Planungsaufgabe und werden daher nicht detailliert evaluiert.
 
@@ -241,9 +240,8 @@ Projektierungsaufgaben bei Siemens Mobility.
 \begin{itemize}
     \item \textbf{FA-013}\label{req:FA-013} \textbf{Grafische Benutzeroberfläche (GUI):} Die Bedienung soll über eine intuitive Oberfläche erfolgen, die den Upload von PDF-Dateien, den Start der Analyse sowie den Export ermöglicht, ohne dass Kommandozeilen-Kenntnisse erforderlich sind.
     
-    \item \textbf{FA-014}\label{req:FA-014} \textbf{Konfigurierbarkeit:} Kundenspezifische Anpassungen, wie z.\,B. Mappings von Symbolklassen zu internen IDs oder spezifische OCR-Parameter, müssen über externe Konfigurationsdateien (YAML/JSON) anpassbar sein, ohne den Quellcode anpassen zu müssen.
     
-    \item \textbf{FA-015}\label{req:FA-015} \textbf{Modularität:} Die Architektur muss so gestaltet sein, dass neue Symboltypen durch ein Nachtraining des Modells integriert werden können (\enquote{Model-as-a-Service}-Ansatz), ohne die Kernlogik der Anwendung zu verändern.
+    \item \textbf{FA-014}\label{req:FA-014} \textbf{Modularität:} Die Architektur muss so gestaltet sein, dass neue Symboltypen durch ein Nachtraining des Modells integriert werden können (\enquote{Model-as-a-Service}-Ansatz), ohne die Kernlogik der Anwendung zu verändern.
 \end{itemize}
 
 \section{Nicht-funktionale Anforderungen}
@@ -428,12 +426,8 @@ FA-013 & Grafische Benutzeroberfläche &
 §\ref{subsec:functional_validation}, Tab.~\ref{tab:functional_validation} \\
 \hline
 
-FA-014 & Konfigurierbarkeit (YAML/JSON) & 
-§\ref{sec:unterstützendekomponente}: Externe Konfigurationsdateien & 
-§\ref{subsec:functional_validation}, Tab.~\ref{tab:functional_validation} \\
-\hline
 
-FA-015 & Modularität (Nachtraining) & 
+FA-014 & Modularität (Nachtraining) & 
 §\ref{subsec:Modelltraining}: Separates Modell-Gewichte-Loading & 
 §\ref{subsec:functional_validation}, Tab.~\ref{tab:functional_validation} \\
 \hline
