@@ -37,7 +37,7 @@ Designentscheidungen: Die Größe der Tiles und der Überlappungsgrad sind konfi
 
 Dieses Modul bildet das technologische Herzstück des Systems und kombiniert zwei komplementäre Erkennungsverfahren:
 \begin{enumerate}
-    \item \textbf{Objekterkennung} - Ein trainiertes Deep Learning Modell der YOLO Familie analysiert die vorverarbeiteten Bildausschnitte und identifiziert relevante Symbole (Signale, Weichen, Balisen, etc.). Für jedes erkannte Objekt liefert das Modell:
+    \item \textbf{Objekterkennung} - Ein trainiertes Deep Learning Modell der YOLO Familie analysiert die vorverarbeiteten Bildausschnitte und identifiziert relevante Symbole (Signale, Weichen, GKS, etc.). Für jedes erkannte Objekt liefert das Modell:
     \begin{itemize}
         \item Die Klasse (z.B. \enquote{Signal},\enquote{Weiche})
         \item Die Bounding Box (räumliche Position im Bild)
@@ -565,7 +565,7 @@ Für komplexe Entitäten wurden spezialisierte Verknüpfungsalgorithmen entwicke
 
 \begin{itemize}
   \item \textbf{Fahrtrichtungserkennung}: Geometrische Ableitung aus der relativen 
-        Position von Signal und Balise
+        Position von Signal und Gleiskoppelspule(festkodiert)
   \item \textbf{Haltepunkt-Gruppierung}: Kollinearitätstest zur Verknüpfung von 
         Haltepunkt-Symbol, Signal und Koordinate
 \end{itemize}

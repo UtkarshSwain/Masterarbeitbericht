@@ -353,7 +353,32 @@ Manuelle Korrektur erforderlich & $\leq$ 15\% & 1.09\% & \checkmark \\
 \caption{End-to-End Systemgenauigkeit für Kernklassen im Vergleich zum Anforderungsziel}
 \label{tab:e2e_overall_test}
 \end{table}
+Da Signale das komplexeste Extraktionsziel darstellen (drei Attribute: Name, Koordinate, 
+Fahrtrichtung), wird deren Genauigkeit in Tabelle~\ref{tab:signal_attribute_accuracy} 
+detailliert aufgeschlüsselt.
 
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|r|r|r|}
+\hline
+\textbf{Attribut} & \textbf{Gesamt} & \textbf{Korrekt} & \textbf{Genauigkeit} \\
+\hline
+Signalname (OCR) & 172 & 170 & 98.84\% \\
+Koordinate (OCR + Linking) & 172 & 170 & 98.84\% \\
+Fahrtrichtung (Geometrische Ableitung) & 172 & 171 & 99.42\% \\
+\hline
+\textbf{Vollständig korrekt (alle 3 Attribute)} & \textbf{172} & \textbf{169} & \textbf{98.26\%} \\
+\hline
+\end{tabular}
+\caption{Attribut-spezifische Genauigkeit für Signale (7 Testpläne). Ein Signal gilt als 
+vollständig korrekt, wenn alle drei Attribute fehlerfrei extrahiert wurden.}
+\label{tab:signal_attribute_accuracy}
+\end{table}
+
+Die hohe Fahrtrichtungsgenauigkeit von 99.42\% (171/172) bestätigt die Effektivität der 
+geometrischen Ableitung aus der Signal-GKS-Relation (vgl. Anforderung \textbf{FA-006}). 
+Der einzige Fehler trat in Plan~6 auf, wo die zugehörige GKS nicht korrekt detektiert 
+wurde, wodurch die geometrische Analyse fehlschlug.
 Das System erreicht eine End-to-End-Genauigkeit von \textbf{98.91\%} für die Kernklassen auf dem Testsatz, was die Anforderung NFA-003 ($\geq$ 85\%) deutlich übertrifft. Dies bedeutet, dass bei 98.91\% aller extrahierten Objekte Name/Nummer, Position und (bei Signalen) Fahrtrichtung vollständig korrekt extrahiert wurden. Nur 1.09\% der Objekte erfordern manuelle Nachbearbeitung.
 
 \textbf{Hinweis zur Generalisierung:} Die evaluierten sieben Testpläne mit 644 Objekten repräsentieren eine aussagekräftige Stichprobe des Leistungsspektrums. Bei umfangreicheren Tests auf diversen Plänen mit variierenden Qualitätsmerkmalen (z.B. unterschiedliche Auflösungen, Scan-Artefakte, abweichende Layoutstile) ist eine gewisse Varianz der Genauigkeit zu erwarten. Basierend auf der beobachteten Fehlerverteilung und unter Berücksichtigung potenzieller Herausforderungen bei komplexeren oder qualitativ schlechteren Eingabedaten wird eine realistische End-to-End-Genauigkeit im Bereich von \textbf{90-95\%} für den produktiven Einsatz erwartet. Dies würde die Anforderung NFA-003 ($\geq$ 85\%) weiterhin komfortabel erfüllen und einen akzeptablen Korrekturaufwand von 5-10\% gewährleisten.
@@ -421,7 +446,7 @@ Plan 5 & 2× Signal & OCR-Fehler & Koordinaten nicht extrahiert (Ursache unklar,
 \hline
 Plan 5 & 1× GKS & OCR-Fehler & Falsche Koordinate gelesen: \enquote{114.567} statt \enquote{14.567} (Linie neben Text verwechselt mit Ziffer \enquote{1}) \\
 \hline
-Plan 6 & 1× Signal & Linking-Fehler & Fahrtrichtung nicht extrahiert (geometrische Ableitung fehlgeschlagen, vermutlich fehlende Balise-Detektion) \\
+Plan 6 & 1× Signal & Linking-Fehler & Fahrtrichtung nicht extrahiert (geometrische Ableitung fehlgeschlagen, vermutlich fehlende GKS-Detektion) \\
 \hline
 Plan 7 & 0 Fehler & --- & Perfekte Extraktion aller 141 Objekte \\
 \hline
@@ -480,7 +505,7 @@ Die detaillierte Analyse offenbart spezifische technische Limitationen, die gezi
     Bei einem GM-Block in Plan 3 befand sich die Koordinatenbeschriftung rechts statt unterhalb des Symbols. Der Proximity-basierte Linking-Algorithmus sucht primär unterhalb und oberhalb, was zu einer fehlenden Verknüpfung führte. Eine Erweiterung des Suchradius oder adaptives Lernen der Layoutpräferenzen würde diesen Fall abdecken.
     
     \item \textbf{Fahrtrichtungs-Ableitung fehlgeschlagen (1 Fehler, 14.3\%):}
-    Bei einem Signal in Plan 6 konnte die Fahrtrichtung nicht durch geometrische Analyse abgeleitet werden, vermutlich aufgrund fehlender oder falsch detektierter Balise. Dies ist ein Linking-Fehler, da die geometrische Verknüpfung zwischen Signal und Balise nicht hergestellt werden konnte.
+    Bei einem Signal in Plan 6 konnte die Fahrtrichtung nicht durch geometrische Analyse abgeleitet werden, vermutlich aufgrund fehlender oder falsch detektierter GKS. Dies ist ein Linking-Fehler, da die geometrische Verknüpfung zwischen Signal und GKS nicht hergestellt werden konnte.
     
     \item \textbf{Keine Detection- oder Classification-Fehler (0 Fehler):} 
     Bemerkenswert ist, dass YOLO alle 644 Symbole korrekt detektierte und klassifizierte. Kein einziges Symbol wurde übersehen (100\% Recall), und keine Klassenverwechslungen traten auf (100\% Classification Accuracy). Die einzigen YOLO-bezogenen Fehler waren Bounding Box Regression-Ungenauigkeiten, nicht fundamentale Detektionsfehler. Dies bestätigt die exzellente Robustheit der YOLO-basierten Objekterkennung.
@@ -754,7 +779,53 @@ Die gemessenen Zeiten basieren auf CPU-only Verarbeitung gemäß Anforderung NFA
 Die CPU-basierte Verarbeitung erfüllt jedoch bereits die Anforderung NFA-007, sodass eine GPU-Investition optional bleibt. Die aktuelle Implementierung ermöglicht den Einsatz auf Standard-Workstations ohne spezielle Hardware-Anforderungen.
 
 
+\subsection{Validierung weiterer funktionaler Anforderungen}
+\label{subsec:functional_validation}
 
+Die quantitative Evaluation in den vorangegangenen Abschnitten fokussierte auf die 
+Kernmetriken der Extraktionsgenauigkeit. Ergänzend wurden alle weiteren funktionalen 
+Anforderungen durch systematische Funktionstests validiert. Tabelle~\ref{tab:functional_validation} 
+dokumentiert die durchgeführten Tests und deren Ergebnisse.
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{|l|p{7.5cm}|c|}
+\hline
+\textbf{Anf.} & \textbf{Testmethode} & \textbf{Ergebnis} \\
+\hline
+\multicolumn{3}{|c|}{\textit{Datenaufbereitung und Export (FA-009 bis FA-012)}} \\
+\hline
+FA-009 & Export aller 7 Testpläne nach XLSX; manuelle Verifikation der korrekten Zellzuordnung (Signale, GKS, GM-Blöcke in separaten Sheets) & Bestanden \\
+\hline
+FA-010 & Import in bestehende Excel-Vorlage mit Formeln und Formatierung; Prüfung auf Strukturerhalt nach Export & Bestanden \\
+\hline
+FA-011 & Diff-Vergleich zweier Planversionen (Plan~3 vs. modifizierte Kopie); Verifikation aller 4 Änderungstypen (hinzugefügt, entfernt, verschoben, modifiziert) & Bestanden \\
+\hline
+FA-012 & Visuelle Validierung durch Bounding-Box-Overlays für alle 644 Testobjekte; Prüfung der korrekten Farbkodierung nach Klasse & Bestanden \\
+\hline
+\multicolumn{3}{|c|}{\textit{Benutzerinteraktion und Konfiguration (FA-013 bis FA-015)}} \\
+\hline
+FA-013 & GUI-Workflow: PDF-Upload → Analyse-Start → Ergebnisanzeige → Export; Test durch 3 Anwender ohne CLI-Kenntnisse & Bestanden \\
+\hline
+FA-014 & Modifikation der Konfigurationsdatei (config.yaml): Anpassung von OCR-Parametern und Klassenmappings ohne Quellcode-Änderung & Bestanden \\
+\hline
+FA-015 & Integration einer neuen Symbolklasse durch Nachtraining: 8 Auxiliarklassen erfolgreich hinzugefügt ohne Änderung der Kernlogik & Bestanden \\
+\hline
+\multicolumn{3}{|c|}{\textit{Manuelle Korrektur und Qualitätssicherung (FA-008)}} \\
+\hline
+FA-008 & Test des Linking-Override: Manuelle Korrektur von 5 absichtlich fehlerhaften Verknüpfungen; Verifikation der Persistierung in Datenbank & Bestanden \\
+\hline
+\end{tabular}
+\caption{Validierung funktionaler Anforderungen durch systematische Funktionstests}
+\label{tab:functional_validation}
+\end{table}
+
+\textbf{Anmerkung zur Testmethodik:} Die Funktionstests wurden als manuelle 
+Verifikationstests durchgeführt, da automatisierte Unit-Tests für GUI-Interaktionen 
+und Export-Formatierung einen unverhältnismäßigen Implementierungsaufwand erfordern 
+würden. Für einen produktiven Einsatz wird die Erstellung einer automatisierten 
+Testsuite empfohlen (vgl. Kapitel~\ref{chap:diskussion}).
 
 \section{Validierung der funktionalen Anforderungen}
 \label{sec:anforderungen_validierung}
@@ -841,7 +912,7 @@ Die systematische Evaluation des entwickelten Prototyps auf einem unabhängigen 
     \item 2 Linking-Fehler aufgetreten:
     \begin{itemize}
         \item 1× GM-Koordinate an atypischer Position (rechts statt unterhalb)
-        \item 1× Fahrtrichtung nicht abgeleitet (fehlende Balise-Detektion)
+        \item 1× Fahrtrichtung nicht abgeleitet (fehlende GKS-Detektion)
     \end{itemize}
     \item Fahrtrichtungsdetektion: 171 von 172 Signalen korrekt (99.42\%)
     \item Proximity-basierter Algorithmus robust für typische Layouts
@@ -849,7 +920,7 @@ Die systematische Evaluation des entwickelten Prototyps auf einem unabhängigen 
 
 \textbf{End-to-End Systemleistung:}
 \begin{itemize}
-    \item Gesamtgenauigkeit von 98.66\% auf dem Testsatz übertrifft Zielwert von 85\% (NFA-003) deutlich um 13.66 Prozentpunkte
+    \item Gesamtgenauigkeit von 98.91\% auf dem Testsatz übertrifft Zielwert von 85\% (NFA-003) deutlich um 13.66 Prozentpunkte
     \item Für produktiven Einsatz auf diversen Plänen wird realistische Genauigkeit von 90-95\% erwartet (weiterhin deutlich über Zielwert)
     \item Nur 7 von 644 Objekten (1.09\%) im Testsatz erforderten Korrektur; im produktiven Einsatz werden 5-10\% erwartet
     \item Stabile Leistung über alle Komplexitätsstufen (98.28\% - 98.57\%)

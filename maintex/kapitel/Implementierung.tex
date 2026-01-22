@@ -88,7 +88,7 @@ Die Leistungsfähigkeit eines objekterkennenden Modells hängt direkt von der Qu
 
 \subsubsection{Vorverarbeitung der Gleispläne}
 
-Die initialen Gleispläne lagen im PDF-Format vor und mussten zunächst in ein für die Annotation geeignetes Bildformat überführt werden. Hierzu wurde die Python-Bibliothek PyMuPDF eingesetzt, welche eine zuverlässige Rasterisierung von PDF-Dokumenten ermöglicht. Die Konvertierung erfolgte mit einer Auflösung von 500 DPI (dots per inch), was einem Skalierungsfaktor von $\frac{500}{72} \approx 6.94$ gegenüber der Standard-PDF-Auflösung entspricht. Diese hohe Auflösung wurde gewählt, um auch kleine Symbole wie Balisenplatten oder Isolierstöße mit ausreichender Detailgenauigkeit darzustellen.
+Die initialen Gleispläne lagen im PDF-Format vor und mussten zunächst in ein für die Annotation geeignetes Bildformat überführt werden. Hierzu wurde die Python-Bibliothek PyMuPDF eingesetzt, welche eine zuverlässige Rasterisierung von PDF-Dokumenten ermöglicht. Die Konvertierung erfolgte mit einer Auflösung von 500 DPI (dots per inch), was einem Skalierungsfaktor von $\frac{500}{72} \approx 6.94$ gegenüber der Standard-PDF-Auflösung entspricht. Diese hohe Auflösung wurde gewählt, um auch kleine Symbole wie Gleiskoppelspulenplatten oder Isolierstöße mit ausreichender Detailgenauigkeit darzustellen.
 
 Nach der Rasterisierung wurden die hochauflösenden Bilder in kleinere, überlappende Bildausschnitte segmentiert. Die gewählte Segmentgröße betrug $1024 \times 1024$ Pixel. Diese Dimensionierung stellt einen Kompromiss dar zwischen ausreichendem Kontext für die Objekterkennung und der effizienten Verarbeitung auf GPU-Systemen mit begrenztem Videospeicher. Größere Tiles würden zwar mehr Kontext bieten, jedoch den verfügbaren VRAM der Trainings-GPU (NVIDIA, AWS Instance g4dn.xlarge, 16 GB VRAM) überschreiten und damit das Training unmöglich machen oder die Batch-Größe unzulässig reduzieren.
 
@@ -1071,7 +1071,7 @@ Obwohl diese Methode rechenintensiver ist (etwa 2-3 Mal langsamer als eine einfa
 
 \subsection{Klassenspezifische Strategien}
 
-Verschiedene Symbolklassen im Gleisplan haben unterschiedliche visuelle Eigenschaften, die spezielle Vorverarbeitungsschritte erfordern. Signale haben beispielsweise oft einen farbigen Hintergrund und größere Beschriftungen, während Balisen häufig von dünnen Linien umgeben sind und sehr kompakte Texte haben. Um diese Unterschiede zu berücksichtigen, wurde für jede Klasse eine spezialisierte Verarbeitungsstrategie implementiert.
+Verschiedene Symbolklassen im Gleisplan haben unterschiedliche visuelle Eigenschaften, die spezielle Vorverarbeitungsschritte erfordern. Signale haben beispielsweise oft einen farbigen Hintergrund und größere Beschriftungen, während GKS häufig von dünnen Linien umgeben sind und sehr kompakte Texte haben. Um diese Unterschiede zu berücksichtigen, wurde für jede Klasse eine spezialisierte Verarbeitungsstrategie implementiert.
 
 \subsubsection{Adaptive Padding}
 
@@ -1094,7 +1094,7 @@ Die folgende Tabelle zeigt die optimierten Faktoren für jede Symbolklasse:
 \textbf{Klasse} & $\boldsymbol{\alpha}$ & $\boldsymbol{\beta}$ & \textbf{Begründung} \\
 \hline
 Signal & 0.2 & 0.3 & Beschriftung oft oberhalb des Symbols \\
-Balise & 0.15 & 0.15 & Kompakte, zentrierte Beschriftung \\
+GKS (beide Typen) & 0.15 & 0.15 & Kompakte, zentrierte Beschriftung \\
 Weiche & 0.1 & 0.1 & Text direkt am Symbol \\
 Koordinate & 0.25 & 0.25 & Längere Zahlenfolgen, mehr Platz nötig \\
 \hline
@@ -1106,9 +1106,9 @@ Für Signale wurde beispielsweise ein Faktor von $\alpha = 0.2$ (20\% der Breite
 
 Das finale erweiterte Bild hat dann die Dimensionen $(h + 2p_y) \times (w + 2p_x)$, wobei das \enquote{2} berücksichtigt, dass das Padding sowohl oben und unten als auch links und rechts hinzugefügt wird.
 
-\subsubsection{Morphologische Filterung für Balisen}
+\subsubsection{Morphologische Filterung für GKS}
 
-Balisen-Symbole sind häufig von dünnen Linien umgeben, die die OCR-Qualität beeinträchtigen können. Diese Linien können fälschlicherweise als Buchstaben wie \enquote{I}, \enquote{l} oder \enquote{1} interpretiert werden. Um diese Störungen zu reduzieren, wird ein morphologischer Opening-Filter angewendet.
+GKS-Symbole sind häufig von dünnen Linien umgeben, die die OCR-Qualität beeinträchtigen können. Diese Linien können fälschlicherweise als Buchstaben wie \enquote{I}, \enquote{l} oder \enquote{1} interpretiert werden. Um diese Störungen zu reduzieren, wird ein morphologischer Opening-Filter angewendet.
 
 Opening ist eine Kombination aus zwei aufeinanderfolgenden Operationen: Zunächst wird eine \textbf{Erosion} durchgeführt, die kleine helle Strukturen (wie dünne Linien) entfernt. Anschließend wird eine \textbf{Dilation} durchgeführt, die die verbleibenden Strukturen (die Textzeichen) wieder auf ihre ursprüngliche Größe erweitert. Der Effekt ist, dass dünne Linien komplett verschwinden, während dickere Strukturen (Buchstaben und Zahlen) erhalten bleiben.
 
@@ -1120,7 +1120,7 @@ Der Filter verwendet ein quadratisches strukturierendes Element mit der Größe 
 % Original with noise
 \node at (1.8, 3.5) {\textbf{Original (mit Rauschen)}};
 \draw[thick] (0, 0) rectangle (3.5, 3);
-% Balise (trapezoid)
+% GKS (trapezoid)
 \draw[thick, fill=gray!30] (1, 1.5) -- (1.5, 2.3) -- (2, 2.3) -- (2.5, 1.5) -- cycle;
 \node at (1.75, 1.9) {\small 1234};
 % Noise pixels
@@ -1135,7 +1135,7 @@ Der Filter verwendet ein quadratisches strukturierendes Element mit der Größe 
 % After erosion
 \node at (7.3, 3.5) {\textbf{Nach Erosion}};
 \draw[thick] (5.5, 0) rectangle (9, 3);
-% Smaller balise
+% Smaller GKS symbol
 \draw[thick, fill=gray!30] (6.6, 1.6) -- (7, 2.2) -- (7.4, 2.2) -- (7.8, 1.6) -- cycle;
 \node[font=\tiny] at (7.2, 1.9) {1234};
 
@@ -1145,12 +1145,12 @@ Der Filter verwendet ein quadratisches strukturierendes Element mit der Größe 
 % After dilation (cleaned)
 \node at (12.8, 3.5) {\textbf{Nach Dilation (gereinigt)}};
 \draw[thick] (11, 0) rectangle (14.5, 3);
-% Restored balise
+% Restored GKS symbol
 \draw[thick, fill=gray!30] (12, 1.5) -- (12.5, 2.3) -- (13, 2.3) -- (13.5, 1.5) -- cycle;
 \node at (12.75, 1.9) {\small 1234};
 
 \end{tikzpicture}
-\caption{Morphologisches Opening zur Rauschentfernung bei Balisen-Symbolen}
+\caption{Morphologisches Opening zur Rauschentfernung bei GKS-Symbolen}
 \label{fig:morphology}
 \end{figure}
 
@@ -1175,7 +1175,7 @@ Vor der eigentlichen OCR-Verarbeitung werden die Bildausschnitte durch eine Reih
 % Step 1: Original with lines
 \node at (1, 3.2) {\small \textbf{1. Original}};
 \draw[thick] (0, 0) rectangle (2.5, 2.5);
-% Balise symbol (trapezoid)
+% GKS symbol (trapezoid)
 \draw[thick, fill=gray!20] (0.5, 1.5) -- (1, 2.2) -- (1.5, 2.2) -- (2, 1.5) -- cycle;
 \node at (1.25, 1.85) {\tiny 1234};
 % Track lines (störende Gleislinien)
@@ -1189,7 +1189,7 @@ Vor der eigentlichen OCR-Verarbeitung werden die Bildausschnitte durch eine Reih
 % Step 2: Lines removed
 \node at (5.5, 3.2) {\small \textbf{2. Linien entfernt}};
 \draw[thick] (4.3, 0) rectangle (6.8, 2.5);
-% Balise symbol (trapezoid) - ohne störende Linien
+% GKS symbol (trapezoid) - ohne störende Linien
 \draw[thick, fill=gray!20] (4.8, 1.5) -- (5.3, 2.2) -- (5.8, 2.2) -- (6.3, 1.5) -- cycle;
 \node at (5.55, 1.85) {\tiny 1234};
 \node[below, font=\tiny] at (5.55, 1) {12345,6};
@@ -1200,7 +1200,7 @@ Vor der eigentlichen OCR-Verarbeitung werden die Bildausschnitte durch eine Reih
 % Step 3: CLAHE applied
 \node at (10, 3.2) {\small \textbf{3. CLAHE}};
 \draw[thick, fill=yellow!10] (8.8, 0) rectangle (11.3, 2.5);
-% Balise symbol (trapezoid) - besserer Kontrast
+% GKS symbol (trapezoid) - besserer Kontrast
 \draw[thick, fill=gray!40] (9.3, 1.5) -- (9.8, 2.2) -- (10.3, 2.2) -- (10.8, 1.5) -- cycle;
 \node[font=\bfseries] at (10.05, 1.85) {\tiny 1234};
 \node[below, font=\tiny\bfseries] at (10.05, 1) {12345,6};
@@ -1211,7 +1211,7 @@ Vor der eigentlichen OCR-Verarbeitung werden die Bildausschnitte durch eine Reih
 % Step 4: Scaled
 \node at (14.5, 3.2) {\small \textbf{4. Skaliert}};
 \draw[thick, fill=yellow!10] (13, -0.3) rectangle (16, 2.8);
-% Balise symbol (trapezoid) - vergrößert
+% GKS symbol (trapezoid) - vergrößert
 \draw[thick, fill=gray!40] (13.25, 1) -- (13.95, 2.2) -- (15.05, 2.2) -- (15.75, 1) -- cycle;
 \node[font=\bfseries] at (14.50, 1.6) {\small 1234};
 \node[below, font=\small\bfseries] at (14.5, 0.5) {12345,6};
@@ -1372,7 +1372,7 @@ Die gesamte OCR-Pipeline wird als modulare Funktion implementiert, die eine List
 \begin{enumerate}
     \item \textbf{Bildausschnitt extrahieren}: Basierend auf den Koordinaten $(x, y)$, der Größe $(w, h)$ und dem Winkel $\theta$ der Bounding Box wird der relevante Bereich aus dem Originalbild ausgeschnitten.
     
-    \item \textbf{Klassenspezifisches Preprocessing}: Je nach Symbolklasse werden die entsprechenden Vorverarbeitungsschritte angewendet – adaptive Padding-Berechnung, morphologische Filterung für Balisen, oder Multi-Scale-Processing für Koordinaten.
+    \item \textbf{Klassenspezifisches Preprocessing}: Je nach Symbolklasse werden die entsprechenden Vorverarbeitungsschritte angewendet – adaptive Padding-Berechnung, morphologische Filterung für GKS, oder Multi-Scale-Processing für Koordinaten.
     
     \item \textbf{Dual-Angle Routing}: Basierend auf dem Rotationswinkel wird entweder der Cardinal Path (bei Winkeln $\leq$ 15°) oder der Angular Path (bei Winkeln >15°) gewählt und die entsprechende Transformation (diskrete Rotation oder Perspektiventransformation) durchgeführt.
     
@@ -1456,7 +1456,7 @@ Die Implementierung der Koordinatentransformation erfolgt für jedes Symbol-Text
 \centering
 \begin{tikzpicture}[scale=1.4]
     
-    % LEFT: Rotated balise with coordinate - THE PROBLEM
+    % LEFT: Rotated GKS with coordinate - THE PROBLEM
     \begin{scope}
         \node[font=\Large\bfseries] at (0,4) {Globales System};
         
@@ -1464,7 +1464,7 @@ Die Implementierung der Koordinatentransformation erfolgt für jedes Symbol-Text
         \draw[->, black, thick] (-1.5,0.5) -- (1.5,0.5) node[right, font=\small] {$x$};
         \draw[->, black, thick] (0,0.2) -- (0,3.5) node[above, font=\small] {$y$};
         
-        % Rotated balise at angle 40°
+        % Rotated GKS at angle 40°
         \begin{scope}[shift={(0,1.3)}, rotate=40]
             % Inner trapezoid
             \draw[thick, blue, fill=blue!20, line width=1.5pt] 
@@ -1475,7 +1475,7 @@ Die Implementierung der Koordinatentransformation erfolgt für jedes Symbol-Text
             % Number inside
             \node[blue, font=\scriptsize] at (0,-0.2) {1234};
             
-            % Coordinate positioned "above" the balise AND ROTATED with it
+            % Coordinate positioned "above" the GKS AND ROTATED with it
             % Need to use 'transform shape' to rotate the node itself
             \node[green!70!black, draw=green!70!black, thick, font=\small, fill=white, 
                   transform shape] 
@@ -1499,7 +1499,7 @@ Die Implementierung der Koordinatentransformation erfolgt für jedes Symbol-Text
         \draw[->, black, thick] (-1.5,1.1) -- (1.8,1.1) node[right, font=\small] {$x_{\text{local}}$};
         \draw[->, black, thick] (0,0.3) -- (0,3.5) node[above, font=\small] {$y_{\text{local}}$};
         
-        % Balise now aligned with local axes (horizontal)
+        % GKS now aligned with local axes (horizontal)
         \begin{scope}[shift={(0,1.3)}]
             % Inner trapezoid
             \draw[thick, blue, fill=blue!20, line width=1.5pt] 
@@ -1532,6 +1532,7 @@ Die Implementierung der Koordinatentransformation erfolgt für jedes Symbol-Text
 Für jeden Textkandidaten im Umkreis eines Symbols wird diese Transformation durchgeführt, um die räumliche Beziehung in der lokalen Orientierung des Symbols zu bestimmen. Das Ergebnis sind drei Werte: die lokale x-Komponente $dx_{\text{local}}$, die lokale y-Komponente $dy_{\text{local}}$ sowie die euklidische Gesamtdistanz $d_{\text{local}}$. Diese Werte bilden die Grundlage für alle nachfolgenden Verknüpfungsoperationen, da sie eine rotationsinvariante Beschreibung der räumlichen Relation zwischen Symbol und Text ermöglichen.
 
 \subsection{Proximity-basierter Linking-Algorithmus}
+\label{subsec:proximity_linking}
 
 \subsubsection{Dynamische Suchbereichsberechnung}
 
@@ -1786,21 +1787,22 @@ Dieser adaptive Mechanismus ermöglicht es dem System, sich an plan-spezifische 
 \subsection{Komplexe Verknüpfungslogik für Spezialfälle}
 
 \subsubsection{Fahrtrichtungsdetektion}
+\label{sec:fahrtrichtung}
 
 In Gleisplänen ist die Fahrtrichtung eines Signals ein kritisches Attribut, das angibt, in welche Richtung das Signal wirkt und für welche Fahrtrichtung es relevant ist. Die konventionelle Kodierung sieht zwei mögliche Fahrtrichtungen vor: Richtung A entspricht üblicherweise der Fahrt in positiver Streckenrichtung, Richtung B der Fahrt in negativer Streckenrichtung. 
 
-Anstatt die Fahrtrichtung als separate Klassifikationsaufgabe zu behandeln, wird sie im implementierten System durch geometrische Analyse der räumlichen Beziehung zwischen Signal und zugeordneter Balise bestimmt. Diese Methode nutzt die in Gleisplänen übliche Konvention, dass die relative Position der Balise zum Signal die Fahrtrichtung kodiert.
+Anstatt die Fahrtrichtung als separate Klassifikationsaufgabe zu behandeln, wird sie im implementierten System durch geometrische Analyse der räumlichen Beziehung zwischen Signal und zugeordneter GKS(festkodiert) bestimmt. Diese Methode nutzt die in Gleisplänen übliche Konvention, dass die relative Position der GKS(festkodiert) zum Signal die Fahrtrichtung kodiert.
 
-Die Fahrtrichtung wird durch die Vorzeichenbetrachtung der lokalen y-Koordinate der Balise relativ zum Signal bestimmt. Hierbei wird die in Abschnitt \ref{sec:Koordinatentransformation} beschriebene Koordinatentransformation angewendet, um die Position der Balise im lokalen Koordinatensystem des Signals zu ermitteln. Die Entscheidungsregel lautet:
+Die Fahrtrichtung wird durch die Vorzeichenbetrachtung der lokalen y-Koordinate der GKS(festkodiert) relativ zum Signal bestimmt. Hierbei wird die in Abschnitt \ref{sec:Koordinatentransformation} beschriebene Koordinatentransformation angewendet, um die Position der GKS(festkodiert) im lokalen Koordinatensystem des Signals zu ermitteln. Die Entscheidungsregel lautet:
 
 \begin{equation}
 \text{Fahrtrichtung} = \begin{cases} 
-\text{A} & \text{falls } dy_{\text{local}}(\text{Balise}, \text{Signal}) < 0 \\
-\text{B} & \text{falls } dy_{\text{local}}(\text{Balise}, \text{Signal}) > 0
+\text{A} & \text{falls } dy_{\text{local}}(\text{GKS}, \text{Signal}) < 0 \\
+\text{B} & \text{falls } dy_{\text{local}}(\text{GKS}, \text{Signal}) > 0
 \end{cases}
 \end{equation}
 
-Eine negative lokale y-Koordinate bedeutet, dass die Balise sich oberhalb des Signals in dessen lokaler Orientierung befindet, was nach Konvention der Fahrtrichtung A entspricht. Eine positive lokale y-Koordinate indiziert, dass die Balise unterhalb des Signals liegt, was der Fahrtrichtung B zugeordnet wird. Abbildung~\ref{fig:signal_direction} veranschaulicht diese Bestimmung durch die relative Position der zugeordneten Balise im lokalen Koordinatensystem. Die Koordinatenangabe befindet sich zwischen Signal und Balise. Links ist der Fall $dy_{\text{local}} < 0$ (Balise oberhalb) dargestellt, was Fahrtrichtung~A entspricht; rechts der Fall $dy_{\text{local}} > 0$ (Balise unterhalb), entsprechend Fahrtrichtung~B.
+Eine negative lokale y-Koordinate bedeutet, dass die GKS sich oberhalb des Signals in dessen lokaler Orientierung befindet, was nach Konvention der Fahrtrichtung A entspricht. Eine positive lokale y-Koordinate indiziert, dass die GKS unterhalb des Signals liegt, was der Fahrtrichtung B zugeordnet wird. Abbildung~\ref{fig:signal_direction} veranschaulicht diese Bestimmung durch die relative Position der zugeordneten GKS im lokalen Koordinatensystem. Die Koordinatenangabe befindet sich zwischen Signal und GKS. Links ist der Fall $dy_{\text{local}} < 0$ (GKS oberhalb) dargestellt, was Fahrtrichtung~A entspricht; rechts der Fall $dy_{\text{local}} > 0$ (GKS unterhalb), entsprechend Fahrtrichtung~B.
 \begin{figure}[H]
 \centering
 \begin{tikzpicture}[scale=1.3]
@@ -1823,7 +1825,7 @@ Eine negative lokale y-Koordinate bedeutet, dass die Balise sich oberhalb des Si
         % Koordinate (Box entfernt, fill=white verdeckt die Linie dahinter)
         \node[fill=white, font=\small, inner sep=2pt] at (0,1.2) {12345};
         
-        % Balise (oberhalb)
+        % GKS (oberhalb)
         \begin{scope}[shift={(0,1.4)}]
             \draw[thick, green!70!black, fill=green!10] 
                 (-0.35,0) -- (-0.25,0.4) -- (0.25,0.4) -- (0.35,0) -- cycle;
@@ -1831,10 +1833,10 @@ Eine negative lokale y-Koordinate bedeutet, dass die Balise sich oberhalb des Si
                 (-0.4,-0.05) rectangle (0.4,0.45);
             \node[green!70!black, font=\scriptsize] at (0,0.2) {1234};
         \end{scope}
-        \node[green!70!black, font=\small] at (0.8,1.6) {Balise};
+        \node[green!70!black, font=\small] at (0.8,1.6) {GKS};
         
         \node[font=\footnotesize] at (0,-1.0) {$dy_{\text{local}} < 0$};
-        \node[font=\footnotesize] at (0,-1.4) {(Balise oberhalb)};
+        \node[font=\footnotesize] at (0,-1.4) {(GKS oberhalb)};
     \end{scope}
     
     % --- RECHTE SEITE (Fahrtrichtung B) ---
@@ -1859,7 +1861,7 @@ Eine negative lokale y-Koordinate bedeutet, dass die Balise sich oberhalb des Si
         % Koordinate (Box weg, Linie verdeckt)
         \node[fill=white, font=\small, inner sep=2pt] at (0,\yoff-1.2) {12345};
         
-        % Balise unterhalb
+        % GKS unterhalb
         \begin{scope}[shift={(0,\yoff-1.4)}]
             \draw[thick, green!70!black, fill=green!10] 
                 (-0.35,-0.4) -- (-0.25,0) -- (0.25,0) -- (0.35,-0.4) -- cycle;
@@ -1867,11 +1869,11 @@ Eine negative lokale y-Koordinate bedeutet, dass die Balise sich oberhalb des Si
                 (-0.4,-0.45) rectangle (0.4,0.05);
             \node[green!70!black, font=\scriptsize] at (0,-0.2) {1234};
         \end{scope}
-        \node[green!70!black, font=\small] at (0.8,\yoff-1.6) {Balise};
+        \node[green!70!black, font=\small] at (0.8,\yoff-1.6) {GKS};
         
         % Annotation
         \node[font=\footnotesize] at (0,-1.0) {$dy_{\text{local}} > 0$};
-        \node[font=\footnotesize] at (0,-1.4) {(Balise unterhalb)};
+        \node[font=\footnotesize] at (0,-1.4) {(GKS unterhalb)};
     \end{scope}
     
 \end{tikzpicture}
@@ -2312,16 +2314,16 @@ wobei $\oplus$ die String-Konkatenation bezeichnet und die Normalisierungsfunkti
 \draw[arrow] (sig1) -- (sig2) node[midway, right, font=\small] {Extraktion};
 \draw[arrow] (sig2) -- (sig3) node[midway, right, font=\small] {UID-Gen.};
 
-% Example 2: Balise
-\node[box, right=2cm of sig1] (bal1) {Balise\\12345};
-\node[box, below=0.5cm of bal1] (bal2) {class: ``balise''\\text: ``12345''};
-\node[box, below=0.5cm of bal2] (bal3) {\texttt{balise\_12345}};
+% Example 2: GKS
+\node[box, right=2cm of sig1] (gks1) {GKS\\12345};
+\node[box, below=0.5cm of gks1] (gks2) {class: ``gks''\\text: ``12345''};
+\node[box, below=0.5cm of gks2] (gks3) {\texttt{gks\_12345}};
 
-\draw[arrow] (bal1) -- (bal2);
-\draw[arrow] (bal2) -- (bal3);
+\draw[arrow] (gks1) -- (gks2);
+\draw[arrow] (gks2) -- (gks3);
 
 % Example 3: Coordinate
-\node[box, right=2cm of bal1] (coord1) {Koordinate\\18.1606};
+\node[box, right=2cm of gks1] (coord1) {Koordinate\\18.1606};
 \node[box, below=0.5cm of coord1] (coord2) {class: ``coordinate''\\text: ``18.1606''};
 \node[box, below=0.5cm of coord2] (coord3) {\texttt{coordinate\_18.1606}};
 
@@ -2337,7 +2339,7 @@ wobei $\oplus$ die String-Konkatenation bezeichnet und die Normalisierungsfunkti
 \textbf{Beispiele für generierte UIDs:}
 \begin{itemize}
     \item Signal mit Bezeichnung ``AS102'' $\rightarrow$ \texttt{signal\_AS102}
-    \item Balise mit Kennung ``12345'' $\rightarrow$ \texttt{balise\_12345}
+    \item GKS mit Kennung ``12345'' $\rightarrow$ \texttt{gks\_12345}
     \item Kilometerangabe ``18.1606'' $\rightarrow$ \texttt{coordinate\_18.1606}
 \end{itemize}
 
@@ -2373,14 +2375,13 @@ Der Vergleichsalgorithmus basiert auf mengentheoretischen Operationen zwischen z
 
     % Example objects, adjusted positions to fit the larger circles
     \node[font=\small] at (-1.8, 0.5) {signal\_F3};
-    \node[font=\small] at (-1.8, -0.5) {balise\_98765};
+    \node[font=\small] at (-1.8, -0.5) {gks\_98765};
 
     \node[font=\small] at (2, 0.7) {signal\_AS102};
     \node[font=\small] at (2, 0) {coordinate\_18.1606};
-    \node[font=\small] at (2, -0.7) {balise\_12345};
-
+    \node[font=\small] at (2, -0.7) {gks\_12345};
     \node[font=\small] at (5.8, 0.5) {signal\_F5};
-    \node[font=\small] at (5.8, -0.5) {balise\_11111};
+    \node[font=\small] at (5.8, -0.5) {gks\_11111};
 
     % Legend removed as requested
 \end{tikzpicture}
@@ -2465,7 +2466,7 @@ Die identifizierten Änderungen werden in einem strukturierten Change Report dok
 \hline
 signal\_AS102 & Verschoben & $x=1024, y=768$ & $x=1050, y=770$ \\
 signal\_F5 & Hinzugefügt & $-$ & $x=2300, y=1200$ \\
-balise\_98765 & Entfernt & $x=1500, y=900$ & $-$ \\
+gks\_98765 & Entfernt & $x=1500, y=900$ & $-$ \\
 coordinate\_18.1606 & Textänderung & Text: ``18.1606'' & Text: ``18.1608'' \\
 \hline
 \end{tabular}
@@ -2827,7 +2828,7 @@ wobei 72 die Standard-DPI-Referenz für PDF-Dokumente darstellt. Der Zoomfaktor 
 
 \begin{itemize}
     \item Signal: Rot (\texttt{RGB}(255, 0, 0))
-    \item Balise: Blau (\texttt{RGB}(0, 0, 255))
+    \item GKS: Blau (\texttt{RGB}(0, 0, 255))
     \item Weiche: Grün (\texttt{RGB}(0, 255, 0))
     \item Koordinate: Magenta (\texttt{RGB}(255, 0, 255))
 \end{itemize}
@@ -3002,10 +3003,10 @@ gm\_block) den Fokus der Evaluation bilden und acht \textit{Auxiliarklassen} die
 Erweiterbarkeit des Systems demonstrieren (vgl. Anforderungen FA-003 und NFA-008).
 
 \textbf{OCR-Pipeline (Abschnitt \ref{sec:ocrpipeline}):}
-Die orientierungsadaptive OCR-Pipeline bildet das Herzstück der Textextraktion. Durch die Kaskadierung dreier OCR-Engines (PaddleOCR, Tesseract, EasyOCR) wird eine hohe Erkennungsrobustheit erreicht. Das Dual-Winkel-Routing-System behandelt sowohl achsenparallele als auch beliebig rotierte Texte mittels unterschiedlicher Transformationsstrategien. Klassenspezifische Vorverarbeitungspipelines passen die Bildaufbereitung an die jeweiligen Charakteristika der Symbole an (z.B. adaptive Padding für Signale, morphologische Filterung für Balisenplatten). Die Validierung erfolgt durch regex-basierte Pattern-Matching-Verfahren mit konfidenzgewichteten Scoring-Mechanismen.
+Die orientierungsadaptive OCR-Pipeline bildet das Herzstück der Textextraktion. Durch die Kaskadierung dreier OCR-Engines (PaddleOCR, Tesseract, EasyOCR) wird eine hohe Erkennungsrobustheit erreicht. Das Dual-Winkel-Routing-System behandelt sowohl achsenparallele als auch beliebig rotierte Texte mittels unterschiedlicher Transformationsstrategien. Klassenspezifische Vorverarbeitungspipelines passen die Bildaufbereitung an die jeweiligen Charakteristika der Symbole an (z.B. adaptive Padding für Signale, morphologische Filterung für GKS-Platten). Die Validierung erfolgt durch regex-basierte Pattern-Matching-Verfahren mit konfidenzgewichteten Scoring-Mechanismen.
 
 \textbf{Symbol-Text-Verknüpfung (Abschnitt \ref{sec:intelligentesymboltextverknüpfung}):}
-Die intelligente Linking-Komponente ordnet extrahierte Texte ihren zugehörigen Symbolen zu. Die rotationsinvariante Koordinatentransformation ermöglicht eine geometrisch konsistente Richtungsbeziehung unabhängig von der Symbolorientierung. Der proximity-basierte Algorithmus nutzt klassenspezifische Suchradien und berücksichtigt erwartete räumliche Relationen. Ein adaptiver Lernmechanismus erfasst wiederkehrende Layoutmuster und optimiert die Verknüpfung durch probabilistische Fenstersuche. Speziallogiken behandeln komplexe Fälle wie die geometrische Ableitung der Fahrtrichtung aus der Balisen-Signal-Relation oder die Gruppierung von Haltepunkt-Tripeln.
+Die intelligente Linking-Komponente ordnet extrahierte Texte ihren zugehörigen Symbolen zu. Die rotationsinvariante Koordinatentransformation ermöglicht eine geometrisch konsistente Richtungsbeziehung unabhängig von der Symbolorientierung. Der proximity-basierte Algorithmus nutzt klassenspezifische Suchradien und berücksichtigt erwartete räumliche Relationen. Ein adaptiver Lernmechanismus erfasst wiederkehrende Layoutmuster und optimiert die Verknüpfung durch probabilistische Fenstersuche. Speziallogiken behandeln komplexe Fälle wie die geometrische Ableitung der Fahrtrichtung aus der GKS-Signal-Relation oder die Gruppierung von Haltepunkt-Tripeln.
 
 \subsection{Unterstützende Systeme}
 

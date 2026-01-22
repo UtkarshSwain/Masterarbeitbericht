@@ -14,7 +14,7 @@ Eine zentrale Anforderung ist die zuverlässige Detektion bahntechnischer Symbol
     \item \textbf{FA-001}\label{req:FA-001} \textbf{Erkennungsrate:} Das System muss mindestens 90\,\% der definierten Symbolklassen automatisiert erkennen (gemessen als Recall des YOLO-Modells).
 
     \item \textbf{FA-002}\label{req:FA-002} \textbf{Rotationsinvarianz:} Da Symbole in Gleisplänen der Topologie folgend in beliebigen Winkeln angeordnet sein können, muss die Erkennung rotationsinvariant erfolgen. Das System muss in der Lage sein, Objekte unabhängig von ihrer Orientierung ($0^\circ$ bis $360^\circ$) korrekt zu klassifizieren und deren Winkel (Rotation) präzise zu bestimmen.
-    \item \textbf{FA-003}\label{req:FA-003} \textbf{Zielobjekte:} Basierend auf der Domänenanalyse wurden die in Tabelle \ref{tab:objekte} dargestellten Objekte als Detektionsziele definiert. Diese gliedern sich in \textbf{Kernklassen}, die für die Planungsaufgaben bei Siemens Mobility essentiell sind und vollständig evaluiert werden, sowie \textbf{Auxiliarklassen}, die zur Demonstration der Systemerweiterbarkeit implementiert werden.
+    \item \textbf{FA-003}\label{req:FA-003} \textbf{Zielobjekte:} Basierend auf der Domänenanalyse wurden die in Tabellen \ref{tab:kernklassen} und \ref{tab:auxiliarklassen} dargestellten Objekte als Detektionsziele definiert. Diese gliedern sich in \textbf{Kernklassen}, die für die Planungsaufgaben bei Siemens Mobility essentiell sind und vollständig evaluiert werden, sowie \textbf{Auxiliarklassen}, die zur Demonstration der Systemerweiterbarkeit implementiert werden.
 \end{itemize} % <--- THIS WAS MISSING
 \subsubsection{Kernklassen (produktionsrelevant)}
 
@@ -334,7 +334,7 @@ Die Realisierung der in den Abschnitten \ref{subsec:req_symbol} bis \ref{subsec:
 
 \begin{enumerate}
     \item \textbf{Daten-Heterogenität:} Die Varianz in den Eingabedaten (unterschiedliche Export-Einstellungen, Linienstärken, Skalierungen) erschwert eine universelle Regelbildung.
-    \item \textbf{Visuelle Ambiguität:} Einige Symbole (z.\,B. unterschiedliche Balisen-Typen) unterscheiden sich visuell nur in wenigen Pixeln oder sind nur durch den Kontext (Begleittext) differenzierbar.
+    \item \textbf{Visuelle Ambiguität:} Einige Symbole (z.\,B. unterschiedliche Gleiskoppelspulen-Typen) unterscheiden sich visuell nur in wenigen Pixeln oder sind nur durch den Kontext (Begleittext) differenzierbar.
     \item \textbf{OCR-Komplexität:} Technischer Text in Plänen ist oft extrem klein, rotiert und durch Führungslinien durchgestrichen, was klassische OCR-Engines (wie Tesseract) an ihre Grenzen bringt.
     \item \textbf{Mangel an Trainingsdaten:} Es existiert kein öffentlicher Datensatz für bahntechnische Symbolik. Ein \enquote{Cold Start} ist notwendig, bei dem Trainingsdaten zunächst manuell (z.\,B. via CVAT) annotiert werden müssen.
     \item \textbf{Semantische Lücke:} Der Schritt von der Erkennung (\enquote{Da ist eine Box}) zur Bedeutung (\enquote{Das ist Weiche 12 in Rechtslage}) erfordert komplexe Heuristiken, insbesondere beim Mapping von Textboxen zu den geometrisch nächsten Symbolen.
@@ -351,7 +351,7 @@ Evaluationsmetriken (Kapitel~\ref{chap:evaluation}).
 
 \subsection{Funktionale Anforderungen}
 
-\begin{longtable}{|l|p{3.5cm}|p{4cm}|p{4cm}|}
+\begin{longtable}{|l|p{4cm}|p{4.5cm}|p{4.5cm}|}
 \hline
 \textbf{ID} & \textbf{Anforderung} & \textbf{Implementierung} & \textbf{Evaluation} \\
 \hline
@@ -373,67 +373,71 @@ FA-002 & Rotationsinvarianz ($0°$--$360°$) &
 
 FA-003 & Zielobjekte (5 Kernklassen) & 
 §\ref{sec:objekterkennungmityolov8obb}: Signal, Koordinate, GKS (2 Typen), GM-Block & 
-§\ref{subsec:e2e_test_eval}: 644 Objekte evaluiert \\
+"§\ref{subsec:e2e_test_eval}: 637/644 Textfelder korrekt (98.91\%)"\\
 \hline
 
 FA-004 & OCR-Genauigkeit & 
 §\ref{sec:ocrpipeline}: Multi-Engine Kaskade (PaddleOCR, Tesseract, EasyOCR) & 
-§\ref{subsec:e2e_test_eval}: 98.91\% E2E-Genauigkeit \\
+§\ref{subsec:e2e_test_eval}: 637/644 Objekte vollständig korrekt extrahiert (98.91\% E2E, OCR-Anteil: 3 Fehler) \\
 \hline
 
 FA-005 & OCR-Robustheit (Rauschen, Rotation) & 
 §\ref{sec:ocrpipeline}: Dual-Winkel-Routing, CLAHE, Linienentfernung & 
-§\ref{subsec:e2e_test_eval}: 3 OCR-Fehler bei 644 Objekten (0.47\%) \\
+§\ref{subsec:e2e_test_eval}: 3 von 7 Gesamtfehlern OCR-bedingt; 
+Fehlertypen: fehlende Extraktion (2×), Artefakt-Fehlinterpretation (1×) \\
 \hline
 
 FA-006 & Fahrtrichtungsdetektion & 
-§\ref{sec:intelligentesymboltextverknüpfung}: Geometrische Ableitung aus Balisen-Signal-Relation & 
-§\ref{subsec:e2e_test_eval}: 171/172 korrekt (99.4\%) \\
+§\ref{sec:intelligentesymboltextverknüpfung}: Geometrische Ableitung aus GKS-Signal-Relation & 
+§\ref{subsec:e2e_test_eval}: 171/172 Fahrtrichtungen korrekt (99.4\%), 
+1 Fehler durch fehlende GKS-Signal Beziehung\\
 \hline
 
-FA-007 & Gruppierung von Attributen & 
+FA-007 & Symbol-Koordinaten-Verknüpfung & 
 §\ref{sec:intelligentesymboltextverknüpfung}: Proximity-basiertes Linking, Haltepunkt-Gruppierung & 
-§\ref{subsec:e2e_test_eval}: 642/644 Verknüpfungen korrekt \\
+§\ref{subsec:e2e_test_eval}: 2 Linking-Fehler bei 644 Objekten (99.7\%)\\
 \hline
+
+% In Table 4.3 (Traceability FA), update the Evaluation column:
 
 FA-008 & Manuelle Korrektur (Human-in-the-Loop) & 
 §\ref{sec:validierungundsicherung}: Validierungsdialog mit Inline-Editierung & 
-§\ref{subsubsec:validation_tools}: 85\% Prüfzeitreduktion \\
+§\ref{subsec:functional_validation}, Tab.~\ref{tab:functional_validation} \\
 \hline
 
 FA-009 & Excel-Integration & 
 §\ref{subsec:exportfunktionlität}: XLSX-Export mit Formatierung & 
-Funktionstest bestanden \\
+§\ref{subsec:functional_validation}, Tab.~\ref{tab:functional_validation} \\
 \hline
 
 FA-010 & Strukturerhalt (Non-destructive Update) & 
 §\ref{subsec:exportfunktionlität}: Werte-Insertion ohne Formatänderung & 
-Funktionstest bestanden \\
+§\ref{subsec:functional_validation}, Tab.~\ref{tab:functional_validation} \\
 \hline
 
 FA-011 & Änderungsverfolgung (Diff) & 
 §\ref{subsec:vergleichundänderung}: UID-basierter Versionsvergleich & 
-Funktionstest bestanden \\
+§\ref{subsec:functional_validation}, Tab.~\ref{tab:functional_validation} \\
 \hline
 
 FA-012 & Visuelle Validierung (Bounding Boxes) & 
 §\ref{sec:benutzeroberfläche}: PDF-Viewer mit Overlay-System & 
-Funktionstest bestanden \\
+§\ref{subsec:functional_validation}, Tab.~\ref{tab:functional_validation} \\
 \hline
 
 FA-013 & Grafische Benutzeroberfläche & 
 §\ref{sec:benutzeroberfläche}: PyQt5-basierte Desktop-Anwendung & 
-Funktionstest bestanden \\
+§\ref{subsec:functional_validation}, Tab.~\ref{tab:functional_validation} \\
 \hline
 
 FA-014 & Konfigurierbarkeit (YAML/JSON) & 
 §\ref{sec:unterstützendekomponente}: Externe Konfigurationsdateien & 
-Funktionstest bestanden \\
+§\ref{subsec:functional_validation}, Tab.~\ref{tab:functional_validation} \\
 \hline
 
 FA-015 & Modularität (Nachtraining) & 
 §\ref{subsec:Modelltraining}: Separates Modell-Gewichte-Loading & 
-8 Auxiliarklassen demonstrieren Erweiterbarkeit \\
+§\ref{subsec:functional_validation}, Tab.~\ref{tab:functional_validation} \\
 \hline
 
 \caption{Rückverfolgbarkeitsmatrix: Funktionale Anforderungen}
@@ -464,7 +468,7 @@ Lizenzprüfung bestanden \\
 
 NFA-003 & Gesamtgenauigkeit $\geq$ 85\% & 
 Gesamte Pipeline (Kap.~\ref{chap:implementierung}) & 
-§\ref{subsec:e2e_test_eval}: 98.91\% erreicht \\
+§\ref{subsec:e2e_test_eval}: 98.91\% erreicht (vollständiger Testsatz) \\
 \hline
 
 NFA-004 & Robustheit (fehlerhafte Eingaben) & 
@@ -479,7 +483,7 @@ NFA-005 & Prüfbarkeit (Rückverfolgbarkeit) &
 
 NFA-006 & Prozessoptimierung & 
 Automatisierung des manuellen Prozesses & 
-§\ref{subsubsec:processing_time}: 75.3\% Zeitersparnis \\
+§\ref{subsubsec:processing_time}: 75.3\% Zeitersparnis\\
 \hline
 
 NFA-007 & Ressourceneffizienz & 
@@ -515,6 +519,3 @@ Funktionstest bestanden \\
 \caption{Rückverfolgbarkeitsmatrix: Nicht-funktionale Anforderungen}
 \label{tab:traceability_nfa}
 \end{longtable}
-
-Die vollständige Validierung der Anforderungserfüllung mit quantitativen Metriken 
-erfolgt in Kapitel~\ref{chap:evaluation}.
