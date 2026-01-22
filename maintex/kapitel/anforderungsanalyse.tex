@@ -376,26 +376,24 @@ FA-003 & Zielobjekte (5 Kernklassen) &
 "§\ref{subsec:e2e_test_eval}: 637/644 Textfelder korrekt (98.91\%)"\\
 \hline
 
-FA-004 & OCR-Genauigkeit & 
+FA-004 & OCR-Genauigkeit (in E2E integriert) & 
 §\ref{sec:ocrpipeline}: Multi-Engine Kaskade (PaddleOCR, Tesseract, EasyOCR) & 
-§\ref{subsec:e2e_test_eval}: 637/644 Objekte vollständig korrekt extrahiert (98.91\% E2E, OCR-Anteil: 3 Fehler) \\
+§\ref{subsec:e2e_test_eval}: 637/644 Textfelder korrekt; 3 OCR-bedingte Fehler \\
 \hline
 
 FA-005 & OCR-Robustheit (Rauschen, Rotation) & 
 §\ref{sec:ocrpipeline}: Dual-Winkel-Routing, CLAHE, Linienentfernung & 
-§\ref{subsec:e2e_test_eval}: 3 von 7 Gesamtfehlern OCR-bedingt; 
-Fehlertypen: fehlende Extraktion (2×), Artefakt-Fehlinterpretation (1×) \\
+§\ref{subsec:e2e_test_eval}: 3 von 7 Fehlern OCR-bedingt (Artefakte, Orientierung) \\
 \hline
 
 FA-006 & Fahrtrichtungsdetektion & 
-§\ref{sec:intelligentesymboltextverknüpfung}: Geometrische Ableitung aus GKS-Signal-Relation & 
-§\ref{subsec:e2e_test_eval}: 171/172 Fahrtrichtungen korrekt (99.4\%), 
-1 Fehler durch fehlende GKS-Signal Beziehung\\
+§\ref{sec:fahrtrichtung}: Geometrische Ableitung aus Balisen-Signal-Relation & 
+§\ref{subsec:e2e_test_eval}: 171/172 korrekt (99.42\%), Tab.~\ref{tab:signal_attribute_accuracy} \\
 \hline
 
 FA-007 & Symbol-Koordinaten-Verknüpfung & 
 §\ref{sec:intelligentesymboltextverknüpfung}: Proximity-basiertes Linking, Haltepunkt-Gruppierung & 
-§\ref{subsec:e2e_test_eval}: 2 Linking-Fehler bei 644 Objekten (99.7\%)\\
+§\ref{subsec:e2e_test_eval}: 2 Linking-Fehler bei 644 Objekten (99.69\%) \\
 \hline
 
 % In Table 4.3 (Traceability FA), update the Evaluation column:

@@ -122,9 +122,9 @@ Um die Robustheit des Systems unter verschiedenen Bedingungen zu evaluieren, wur
 \hline
 Einfach & Niedrige Symboldichte ($<$ 60 Symbole), klare räumliche Trennung, typisch für Streckenabschnitte & 2 \\
 \hline
-Mittel & Moderate Symboldichte (60-100 Symbole), gelegentliche Überlappungen, typisch für kleinere Bahnhöfe & 3 \\
+Mittel & Moderate Symboldichte (60--100 Symbole), gelegentliche Überlappungen, typisch für kleinere Bahnhöfe & 2 \\
 \hline
-Komplex & Hohe Symboldichte ($>$ 100 Symbole), viele überlappende Elemente, dichte Weichenbereiche, typisch für große Bahnhofsköpfe & 2 \\
+Komplex & Hohe Symboldichte ($>$ 100 Symbole), viele überlappende Elemente, dichte Weichenbereiche, typisch für große Bahnhofsköpfe & 3 \\
 \hline
 \end{tabular}
 \caption{Komplexitätskategorien der A0-Testpläne}
@@ -526,24 +526,33 @@ Diese Verteilung identifiziert klare Optimierungsansätze in allen drei Hauptkom
 
 \textbf{Leistung nach Plankomplexität:}
 
+Die Testpläne wurden gemäß Tabelle~\ref{tab:complexity_categories} in drei 
+Komplexitätskategorien eingeteilt. Tabelle~\ref{tab:e2e_by_complexity_test} 
+zeigt die End-to-End-Genauigkeit für jede Kategorie.
+
 \begin{table}[H]
 \centering
-\begin{tabular}{|l|r|r|r|r|}
+\begin{tabular}{|l|l|r|r|r|}
 \hline
 \textbf{Kategorie} & \textbf{Pläne} & \textbf{Objekte} & \textbf{E2E Accuracy} & \textbf{Fehler} \\
 \hline
-Einfach (Plan 1) & 1 & 58 & 98.28\% & 1 (GM OCR) \\
-Mittel (Plan 2, 3) & 2 & 210 & 98.57\% & 2 (GM OCR) \\
-Komplex (Plan 3, 5) & 2 & 180 & 98.33\% & 3 (2× Signal, 1× GKS) \\
+Einfach ($<$60 Obj.) & Plan 1, 6 & 113 & 98.23\% & 2 \\
+Mittel (60--100 Obj.) & Plan 2, 4 & 144 & 99.31\% & 1 \\
+Komplex ($>$100 Obj.) & Plan 3, 5, 7 & 387 & 98.97\% & 4 \\
 \hline
-\textbf{Durchschnitt} & \textbf{5} & \textbf{448} & \textbf{98.66\%} & \textbf{6} \\
+\textbf{Gesamt} & \textbf{7 Pläne} & \textbf{644} & \textbf{98.91\%} & \textbf{7} \\
 \hline
 \end{tabular}
-\caption{End-to-End Accuracy nach Plankomplexität (Kernklassen)}
+\caption{End-to-End Accuracy nach Plankomplexität (alle 7 Testpläne)}
 \label{tab:e2e_by_complexity_test}
 \end{table}
 
-Die Systemleistung bleibt über alle Komplexitätsstufen hinweg stabil (98.28\% - 98.57\%), was die Robustheit des Ansatzes bestätigt. Interessanterweise traten die meisten Fehler (3 von 6) bei komplexen Plänen auf, jedoch beeinflussten diese die Gesamtgenauigkeit nur minimal aufgrund der großen Gesamtzahl extrahierter Objekte.
+Die Systemleistung bleibt über alle Komplexitätsstufen hinweg stabil (98.23\% -- 99.31\%), 
+was die Robustheit des Ansatzes bestätigt. Die höchste Genauigkeit wird bei mittlerer 
+Komplexität erreicht (99.31\%), während einfache und komplexe Pläne vergleichbare 
+Ergebnisse zeigen. Die Fehlerverteilung korreliert erwartungsgemäß mit der Objektanzahl: 
+Komplexe Pläne mit mehr Objekten weisen absolut mehr Fehler auf, die relative Fehlerrate 
+bleibt jedoch konstant niedrig.
 
 \subsubsection{Qualitative Systemanalyse}
 
@@ -826,7 +835,43 @@ Verifikationstests durchgeführt, da automatisierte Unit-Tests für GUI-Interakt
 und Export-Formatierung einen unverhältnismäßigen Implementierungsaufwand erfordern 
 würden. Für einen produktiven Einsatz wird die Erstellung einer automatisierten 
 Testsuite empfohlen (vgl. Kapitel~\ref{chap:diskussion}).
+\subsection{Validierung der Export- und Hilfsfunktionen}
+\label{subsec:export_validation}
 
+Die Anforderungen FA-009 bis FA-012 betreffen unterstützende Funktionen, deren 
+ausführliche Evaluation den Rahmen dieser auf Objekterkennung und Texterkennung 
+fokussierten Arbeit übersteigen würde. Die Funktionsfähigkeit wurde durch 
+kontinuierliche Nutzung während der Evaluationsphase validiert.
+
+\textbf{FA-009 (Excel-Integration) und FA-010 (Strukturerhalt):}
+
+Der in §\ref{subsec:exportfunktionlität} beschriebene Export-Dialog wurde für 
+alle 7 Testpläne erfolgreich genutzt. Abbildung~\ref{fig:export_result} zeigt 
+ein Beispiel der exportierten Daten mit separaten Arbeitsblättern pro Objektklasse. 
+Die resultierenden Excel-Dateien dienten als Grundlage für den Ground-Truth-Vergleich 
+der E2E-Evaluation (vgl. Tabelle~\ref{tab:e2e_per_class_test}).
+
+Die Option \enquote{Bestehende Datei} (Abbildung~\ref{fig:export_dialog}) ermöglicht 
+das Einfügen von Daten in existierende Excel-Vorlagen ab einer wählbaren Startposition, 
+ohne bestehende Formatierungen, Formeln oder Makros zu überschreiben. Diese 
+Funktionalität erfüllt die Anforderung FA-010 (Strukturerhalt).
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.98\textwidth]{images/Kapitel6/export_screenshot.png}
+\caption{Exportierte Excel-Datei mit separaten Arbeitsblättern pro Objektklasse 
+(sichtbar am unteren Rand: gks\_festkodiert, gks\_gesteuert, gm\_block, etc.)}
+\label{fig:export_result}
+\end{figure}
+
+\textbf{FA-011 (Änderungsverfolgung):} Die Diff-Funktion wurde implementiert 
+(vgl. §\ref{subsec:vergleichundänderung}), jedoch nicht systematisch evaluiert, 
+da der Fokus dieser Arbeit auf der Extraktionsgenauigkeit liegt.
+
+\textbf{FA-012 (Visuelle Validierung):} Die Bounding-Box-Overlays 
+(vgl. Abbildung~\ref{fig:UItraceability}) wurden während der gesamten 
+Evaluationsphase zur manuellen Verifikation der Extraktionsergebnisse verwendet 
+und funktionierten zuverlässig.
 \section{Validierung der funktionalen Anforderungen}
 \label{sec:anforderungen_validierung}
 
@@ -869,7 +914,7 @@ FA-015 & Modularität & \checkmark \\
 \hline
 NFA-001 & On-Premise-Verarbeitung & \checkmark \\
 NFA-002 & Lizenzkonformität & \checkmark \\
-NFA-003 & Gesamtsystem-Genauigkeit $\geq$ 85\% & \checkmark (98.66\%) \\
+NFA-003 & Gesamtsystem-Genauigkeit $\geq$ 85\% & \checkmark (98.91\%) \\
 NFA-004 & Robustheit & \checkmark \\
 NFA-005 & Prüfbarkeit & \checkmark \\
 NFA-006 & Prozessoptimierung & \checkmark \\

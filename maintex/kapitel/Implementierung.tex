@@ -2957,7 +2957,37 @@ Zusätzlich wird ein \textit{Metadata}-Sheet erzeugt, das Verarbeitungsmetadaten
     \item Konfidenzstatistiken: $\mu_{\text{conf}}, \sigma_{\text{conf}}, \min(\text{conf}), \max(\text{conf})$
     \item Anzahl Detektionen pro Klasse
 \end{itemize}
+\subsubsection{Erweiterter Export-Dialog}
 
+Für die praktische Anwendung wurde ein umfassender Export-Dialog implementiert 
+(Abbildung~\ref{fig:export_dialog}), der über die Grundfunktionalität hinausgeht 
+und die Anforderungen FA-009 (Excel-Integration) sowie FA-010 (Strukturerhalt) 
+adressiert. Die wichtigsten Funktionen umfassen:
+
+\begin{itemize}
+    \item \textbf{Klassenbasierte Auswahl:} Hierarchische Baumansicht aller 
+    Objektklassen mit Anzahl der Instanzen; selektiver Export einzelner Klassen
+    \item \textbf{Live-Vorschau:} Tabellarische Vorschau der zu exportierenden 
+    Daten mit Möglichkeit zum Ausschließen einzelner Zeilen
+    \item \textbf{Zieloptionen:} Export in neue Datei oder Anhängen an bestehende 
+    Excel-Datei mit wählbarer Startposition (Blatt, Spalte, Zeile)
+    \item \textbf{Formatierung:} Optionen für Überschriften, Spaltenbreiten, 
+    fixierte Kopfzeile, Zahlenformat und Leerzellenbehandlung
+    \item \textbf{Gruppierung:} Export aller Klassen in ein Blatt, als Sektionen, 
+    oder auf separate Arbeitsblätter (vgl. Abbildung~\ref{fig:export_result})
+\end{itemize}
+
+Die ASCII-Vorschau der Zielposition (rechts unten in Abbildung~\ref{fig:export_dialog}) 
+visualisiert, wo die Daten in einer bestehenden Datei eingefügt werden, und 
+verhindert versehentliches Überschreiben vorhandener Inhalte.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.98\textwidth]{images/Kapitel6/export_dialog.png}
+\caption{Export-Dialog mit klassenbasierter Auswahl, Live-Vorschau und 
+Zielpositionierung für bestehende Dateien}
+\label{fig:export_dialog}
+\end{figure}
 \subsubsection{JSON-Export}
 
 Der JSON-Export folgt einem hierarchischen Schema mit vollständigen Geometriedaten:
