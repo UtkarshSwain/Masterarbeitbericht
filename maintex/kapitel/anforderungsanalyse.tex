@@ -241,7 +241,8 @@ Projektierungsaufgaben bei Siemens Mobility.
     \item \textbf{FA-013}\label{req:FA-013} \textbf{Grafische Benutzeroberfläche (GUI):} Die Bedienung soll über eine intuitive Oberfläche erfolgen, die den Upload von PDF-Dateien, den Start der Analyse sowie den Export ermöglicht, ohne dass Kommandozeilen-Kenntnisse erforderlich sind.
     
     
-    \item \textbf{FA-014}\label{req:FA-014} \textbf{Modularität:} Die Architektur muss so gestaltet sein, dass neue Symboltypen durch ein Nachtraining des Modells integriert werden können (\enquote{Model-as-a-Service}-Ansatz), ohne die Kernlogik der Anwendung zu verändern.
+    \item \textbf{FA-014}\label{req:FA-014} \textbf{Modularität:} Der Prototyp muss eine 
+    modulare Architektur aufweisen, die eine klare Trennung der Verantwortlichkeiten zwischen den Verarbeitungsstufen (Objekterkennung, Texterkennung, UI, Export) gewährleistet. Dies ermöglicht die unabhängige Weiterentwicklung einzelner Komponenten sowie die Integration neuer Funktionalitäten (z.B. zusätzliche Symbolklassen) ohne Modifikation der Kernlogik. Die Architekturkonzeption wird in Kapitel~\ref{chap:konzeption} detailliert beschrieben.
 \end{itemize}
 
 \section{Nicht-funktionale Anforderungen}
@@ -361,44 +362,42 @@ Evaluationsmetriken (Kapitel~\ref{chap:evaluation}).
 
 FA-001 & Erkennungsrate $\geq$ 90\% & 
 §\ref{sec:objekterkennungmityolov8obb}: YOLOv8-OBB Training mit 13 Klassen & 
-§\ref{subsec:detection_eval}: mAP@0.5 = 98.0\%, Recall = 95.7\% \\
+§\ref{subsec:detection_eval}: Recall = 95.7\% (Val), 100\% (Test) \\
 \hline
 
 FA-002 & Rotationsinvarianz ($0°$--$360°$) & 
 §\ref{sec:objekterkennungmityolov8obb}: OBB-Annotation, synthetische Rotation (10 Winkel) & 
-§\ref{subsec:detection_eval}: Stabile Leistung über alle Orientierungen \\
+§\ref{subsec:detection_eval}: Stabile Leistung über alle Testpläne \\
 \hline
 
 FA-003 & Zielobjekte (5 Kernklassen) & 
 §\ref{sec:objekterkennungmityolov8obb}: Signal, Koordinate, GKS (2 Typen), GM-Block & 
-"§\ref{subsec:e2e_test_eval}: 637/644 Textfelder korrekt (98.91\%)"\\
+§\ref{subsec:e2e_test_eval}: 636/644 Objekte korrekt (98.76\%)\\
 \hline
 
 FA-004 & OCR-Genauigkeit (in E2E integriert) & 
 §\ref{sec:ocrpipeline}: Multi-Engine Kaskade (PaddleOCR, Tesseract, EasyOCR) & 
-§\ref{subsec:e2e_test_eval}: 637/644 Textfelder korrekt; 3 OCR-bedingte Fehler \\
+§\ref{subsec:e2e_test_eval}: 3 OCR-bedingte Fehler (0.47\% Fehlerrate) \\
 \hline
 
 FA-005 & OCR-Robustheit (Rauschen, Rotation) & 
 §\ref{sec:ocrpipeline}: Dual-Winkel-Routing, CLAHE, Linienentfernung & 
-§\ref{subsec:e2e_test_eval}: 3 von 7 Fehlern OCR-bedingt (Artefakte, Orientierung) \\
+§\ref{subsec:e2e_test_eval}: Erfolgreiche Extraktion bei $\theta = 37.5°$ (Abb.~\ref{fig:angular_ocr_example}) \\
 \hline
 
 FA-006 & Fahrtrichtungsdetektion & 
-§\ref{sec:fahrtrichtung}: Geometrische Ableitung aus Balisen-Signal-Relation & 
+§\ref{sec:fahrtrichtung}: Geometrische Ableitung aus Signal-GKS-Relation & 
 §\ref{subsec:e2e_test_eval}: 171/172 korrekt (99.42\%), Tab.~\ref{tab:signal_attribute_accuracy} \\
 \hline
 
 FA-007 & Symbol-Koordinaten-Verknüpfung & 
-§\ref{sec:intelligentesymboltextverknüpfung}: Proximity-basiertes Linking, Haltepunkt-Gruppierung & 
-§\ref{subsec:e2e_test_eval}: 2 Linking-Fehler bei 644 Objekten (99.69\%) \\
+§\ref{sec:intelligentesymboltextverknüpfung}: Proximity-basiertes Linking & 
+§\ref{subsec:e2e_test_eval}: 642/644 Verknüpfungen korrekt (99.69\%) \\
 \hline
-
-% In Table 4.3 (Traceability FA), update the Evaluation column:
 
 FA-008 & Manuelle Korrektur (Human-in-the-Loop) & 
 §\ref{sec:validierungundsicherung}: Validierungsdialog mit Inline-Editierung & 
-§\ref{subsec:functional_validation}, Tab.~\ref{tab:functional_validation} \\
+§\ref{subsubsec:validation_tools}: Prüfaufwand um 85\% reduziert \\
 \hline
 
 FA-009 & Excel-Integration & 
@@ -426,10 +425,9 @@ FA-013 & Grafische Benutzeroberfläche &
 §\ref{subsec:functional_validation}, Tab.~\ref{tab:functional_validation} \\
 \hline
 
-
-FA-014 & Modularität (Nachtraining) & 
-§\ref{subsec:Modelltraining}: Separates Modell-Gewichte-Loading & 
-§\ref{subsec:functional_validation}, Tab.~\ref{tab:functional_validation} \\
+FA-014 & Modularität (Architektur) & 
+§\ref{chap:konzeption}: Schichtenarchitektur; §\ref{sec:objekterkennungmityolov8obb}: 8 Auxiliarklassen & 
+§\ref{subsec:nfa_validation}: Erweiterung ohne Kernlogik-Änderung \\
 \hline
 
 \caption{Rückverfolgbarkeitsmatrix: Funktionale Anforderungen}
@@ -450,32 +448,32 @@ FA-014 & Modularität (Nachtraining) &
 
 NFA-001 & On-Premise-Verarbeitung & 
 Vollständig lokale Ausführung, keine Cloud-APIs & 
-§\ref{subsec:testumgebung}: CPU-only Inferenz validiert \\
+§\ref{subsec:testumgebung}: CPU-only Inferenz; §\ref{subsec:nfa_validation} \\
 \hline
 
 NFA-002 & Lizenzkonformität (Apache/MIT/BSD) & 
 Tab.~\ref{tab:tech_stack}: Alle Bibliotheken Open Source & 
-Lizenzprüfung bestanden \\
+§\ref{subsec:nfa_validation}: Lizenzprüfung dokumentiert \\
 \hline
 
 NFA-003 & Gesamtgenauigkeit $\geq$ 85\% & 
 Gesamte Pipeline (Kap.~\ref{chap:implementierung}) & 
-§\ref{subsec:e2e_test_eval}: 98.91\% erreicht (vollständiger Testsatz) \\
+§\ref{subsec:e2e_test_eval}: 98.76\% erreicht \\
 \hline
 
 NFA-004 & Robustheit (fehlerhafte Eingaben) & 
-§\ref{sec:validierungundsicherung}: Fehlerbehandlung, Fallback-Mechanismen & 
-7 Testpläne ohne Systemabstürze \\
+§\ref{sec:validierungundsicherung}: Fallback-Mechanismen & 
+§\ref{subsubsec:validation_tools}: 7 Pläne ohne Abstürze \\
 \hline
 
 NFA-005 & Prüfbarkeit (Rückverfolgbarkeit) & 
-§\ref{sec:unterstützendekomponente}: Metadaten-Persistierung, Jump-to-Detection & 
+§\ref{sec:unterstützendekomponente}: Metadaten, Jump-to-Detection & 
 §\ref{subsubsec:validation_tools}: Bidirektionale Navigation \\
 \hline
 
 NFA-006 & Prozessoptimierung & 
 Automatisierung des manuellen Prozesses & 
-§\ref{subsubsec:processing_time}: 75.3\% Zeitersparnis\\
+§\ref{subsubsec:processing_time}: 75.3\% Zeitersparnis \\
 \hline
 
 NFA-007 & Ressourceneffizienz & 
@@ -484,28 +482,28 @@ CPU-kompatible Inferenz &
 \hline
 
 NFA-008 & Erweiterbarkeit & 
-Modulare Architektur (§\ref{sec:unterstützendekomponente}) & 
-8 Auxiliarklassen ohne Kernlogik-Änderung \\
+Modulare Architektur (§\ref{chap:konzeption}) & 
+§\ref{subsec:nfa_validation}: 8 Auxiliarklassen integriert \\
 \hline
 
 NFA-009 & Update-Fähigkeit & 
 Externe Modell-Gewichte (\texttt{best.pt}) & 
-Nachtraining demonstriert \\
+§\ref{subsec:nfa_validation}: Nachtraining demonstriert \\
 \hline
 
 NFA-010 & Eingabeformate (PDF, PNG, JPG) & 
-§\ref{Inferenz}: PyMuPDF für PDF, OpenCV für Bilder & 
-7 PDF-Testpläne verarbeitet \\
+§\ref{Inferenz}: PyMuPDF, OpenCV & 
+§\ref{subsec:testdatensatz}: 7 PDFs verarbeitet \\
 \hline
 
-NFA-011 & Datenquellen (Kundenpläne, Scans) & 
+NFA-011 & Datenquellen (Kundenpläne) & 
 §\ref{Inferenz}: 500 DPI Rasterisierung & 
-Reale Siemens-Pläne verwendet \\
+§\ref{subsec:testdatensatz}: Siemens Mobility Pläne \\
 \hline
 
 NFA-012 & Ausgabeformate (XLSX, CSV, JSON) & 
 §\ref{subsec:exportfunktionlität}: Drei Export-Optionen & 
-Funktionstest bestanden \\
+§\ref{subsec:functional_validation}: Funktionstest bestanden \\
 \hline
 
 \caption{Rückverfolgbarkeitsmatrix: Nicht-funktionale Anforderungen}

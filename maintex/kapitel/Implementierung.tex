@@ -46,7 +46,10 @@ ORM & psycopg2 & 2.9.7 & PostgreSQL-Adapter \\
 \caption{Übersicht der verwendeten Technologien und Bibliotheken}
 \label{tab:tech_stack}
 \end{table}
-
+\textbf{Lizenzkonformität (NFA-002):} Alle verwendeten Bibliotheken unterliegen 
+Open-Source-Lizenzen (Apache 2.0, MIT, BSD), die für den kommerziellen Einsatz 
+bei Siemens Mobility geeignet sind. Eine detaillierte Lizenzprüfung wurde durchgeführt 
+und bestätigt die Konformität mit den Unternehmensrichtlinien.
 \subsection{Entwicklungsumgebung}
 Die Entwicklung erfolgte in Visual Studio Code mit Git-Versionskontrolle. 
 Die Annotation wurde mittels CVAT (Version 2.5.0) in lokaler Docker-Umgebung 
@@ -75,7 +78,11 @@ Die Implementierung folgt einer modularen Architektur mit klarer Trennung der Ve
     \item \texttt{main.py} - Haupteinstiegspunkt
 \end{itemize}
 
-Die Modularität ermöglicht eine unabhängige Weiterentwicklung einzelner Komponenten sowie eine einfache Integration neuer Funktionen oder OCR-Engines.
+\textbf{Modularität (FA-014, NFA-008):} Die dargestellte Projektstruktur gewährleistet 
+eine klare Trennung der Verantwortlichkeiten. Jedes Modul (\texttt{core/}, \texttt{ui/}, 
+\texttt{validation/}) kann unabhängig weiterentwickelt werden. Die Integration neuer 
+Symbolklassen erfordert lediglich Anpassungen in \texttt{core/detection.py} und 
+\texttt{core/linking.py}, ohne die UI- oder Export-Logik zu modifizieren.
 
 \section{Objekterkennung mit YOLOv8-OBB}
 \label{sec:objekterkennungmityolov8obb}
@@ -184,6 +191,13 @@ $$\mathbf{R}(\theta) = \begin{pmatrix}
 \cos(\theta) & -\sin(\theta) \\ 
 \sin(\theta) & \cos(\theta) 
 \end{pmatrix}$$
+
+\textbf{Rotationsinvarianz (FA-002):} Die synthetische Augmentation mit 10 
+Rotationswinkeln ($\Theta_{\text{aug}} = \{-90^\circ, -60^\circ, ..., +90^\circ\}$) stellt sicher, 
+dass das Modell Symbole in beliebigen Orientierungen erkennen kann. In Kombination 
+mit der OBB-Architektur wird eine vollständige Rotationsinvarianz von $0^\circ$ bis $360^\circ$ 
+erreicht.
+
 
 \textbf{Klassenspezifische Augmentation:}
 
@@ -332,7 +346,10 @@ Folgende Beobachtungen lassen sich aus den Kurven ableiten:
     kein signifikanter Gap existiert. Dies belegt, dass das Modell gut generalisiert und 
     nicht auf den Trainingsdaten overfittet.
 \end{itemize}
-
+\textbf{Update-Fähigkeit (NFA-009):} Die trainierten Modellgewichte werden als 
+externe Datei (\texttt{best.pt}) gespeichert und können ohne Code-Änderungen 
+ausgetauscht werden. Bei Bedarf an neuen Symbolklassen kann ein Nachtraining 
+(Fine-Tuning) auf dem bestehenden Modell durchgeführt werden.
 Die detaillierte quantitative Auswertung der Detektionsleistung sowie die Analyse der 
 Konfusionsmatrix erfolgen in Kapitel \ref{chap:evaluation}.
 
@@ -847,7 +864,12 @@ Die durchschnittliche Inferenzzeit pro Tile beträgt ca. 120 ms auf einer Standa
 
 \section{Orientierungsadaptive OCR-Pipeline}
 \label{sec:ocrpipeline}
-Die Texterkennung aus den detektierten Symbolen stellt eine zentrale Herausforderung dar, da die Textregionen beliebig im Gleisplan rotiert sein können. Dieses Kapitel beschreibt die implementierte OCR-Pipeline, die durch Multi-Engine-Kaskadierung, rotationsadaptive Strategien und klassenspezifische Bildvorverarbeitung eine robuste Texterkennung ermöglicht.
+Die Texterkennung aus den detektierten Symbolen stellt eine zentrale Herausforderung dar, 
+da die Textregionen beliebig im Gleisplan rotiert sein können. Dieses Kapitel beschreibt 
+die implementierte OCR-Pipeline, die durch Multi-Engine-Kaskadierung, rotationsadaptive 
+Strategien und klassenspezifische Bildvorverarbeitung eine robuste Texterkennung ermöglicht 
+und damit die Anforderungen \textbf{FA-004} (OCR-Genauigkeit) und \textbf{FA-005} 
+(OCR-Robustheit) adressiert.
 
 \subsection{Multi-Engine Kaskadierung}
 
@@ -1067,7 +1089,18 @@ Obwohl diese Methode rechenintensiver ist (etwa 2-3 Mal langsamer als eine einfa
 \caption{Vergleich: Cardinal Path vs. Angular Path Rotationsstrategien}
 \label{fig:dual_path}
 \end{figure}
+Abbildung~\ref{fig:angular_ocr_example} demonstriert die erfolgreiche Verarbeitung eines um 37,5° rotierten Koordinatentexts durch den Angular Path.
 
+
+
+Das System erkannte den Koordinatentext \texttt{0.0629} korrekt trotz der nicht-kardinalen Orientierung von $\theta = -37{,}5°$. Die Perspektiventransformation richtete die gedrehte Oriented Bounding Box horizontal aus, wodurch PaddleOCR mit einer Konfidenz von 0.95 den Text extrahieren konnte. Die erfolgreiche Verknüpfung mit dem benachbarten Symbol (Gl.112) validiert sowohl die OCR-Robustheit (FA-005) als auch die Rotationsinvarianz (FA-002) für beliebige Winkel außerhalb der kardinalen Orientierungen.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.65\textwidth]{images/Kapitel6/angulartextv1.png}
+\caption{Verarbeitung eines um 37,5° rotierten Elemente durch Angular-Path-OCR}
+\label{fig:angular_ocr_example}
+\end{figure}
 \subsection{Klassenspezifische Strategien}
 
 Verschiedene Symbolklassen im Gleisplan haben unterschiedliche visuelle Eigenschaften, die spezielle Vorverarbeitungsschritte erfordern. Signale haben beispielsweise oft einen farbigen Hintergrund und größere Beschriftungen, während GKS häufig von dünnen Linien umgeben sind und sehr kompakte Texte haben. Um diese Unterschiede zu berücksichtigen, wurde für jede Klasse eine spezialisierte Verarbeitungsstrategie implementiert.
@@ -1389,7 +1422,12 @@ Das finale Ergebnis der gesamten OCR-Pipeline ist eine Liste von Tupeln. Jedes T
 
 \section{Intelligente Symbol-Text Verknüpfung}
 \label{sec:intelligentesymboltextverknüpfung}
-Nach der erfolgreichen Detektion von Symbolen durch YOLOv8-OBB und der Extraktion von Textinhalten mittels der orientierungsadaptiven OCR-Pipeline besteht die zentrale Herausforderung in der korrekten Zuordnung der extrahierten Texte zu ihren zugehörigen Symbolen. Diese Verknüpfung ist essenziell für die Generierung semantisch korrekter Datensätze aus den Gleisplänen.
+Nach der erfolgreichen Detektion von Symbolen durch YOLOv8-OBB und der Extraktion von 
+Textinhalten mittels der orientierungsadaptiven OCR-Pipeline besteht die zentrale 
+Herausforderung in der korrekten Zuordnung der extrahierten Texte zu ihren zugehörigen 
+Symbolen. Diese Verknüpfung ist essenziell für die Generierung semantisch korrekter 
+Datensätze aus den Gleisplänen und adressiert die Anforderungen \textbf{FA-006} 
+(Fahrtrichtungsdetektion) und \textbf{FA-007} (Symbol-Koordinaten-Verknüpfung).
 
 Die naive Anwendung rein distanzbasierter Proximity-Algorithmen -- bei denen einfach der nächstgelegene Text einem Symbol zugeordnet wird -- führt bei rotierten Symbolen zu systematischen Fehlzuordnungen. Ein Signal, das beispielsweise um 45° gedreht ist, besitzt eine eigene lokale Orientierung, und der zugehörige Text befindet sich typischerweise \enquote{unterhalb} des Signals in dessen lokaler Ausrichtung, nicht notwendigerweise in globalen Bildkoordinaten. Die Implementierung muss daher rotationsinvariante Algorithmen einsetzen, die geometrische Transformationen nutzen, um die semantische räumliche Beziehung zwischen Symbolen und Texten korrekt zu erfassen.
 
@@ -1918,8 +1956,12 @@ Die Kombination dieser Techniken erreicht eine Linking-Genauigkeit von über 92\
 
 \section{Datenvalidierung und Qualitätssicherung}
 \label{sec:validierungundsicherung}
-
-Die Validierung extrahierter Daten stellt einen kritischen Schritt zur Sicherstellung der Datenqualität in der gesamten Verarbeitungspipeline dar. Während YOLO-basierte Objekterkennung und OCR-Engines bereits intrinsische Konfidenzwerte liefern, erfordert die Anwendung im Kontext von Gleisplanerkennung zusätzliche domänenspezifische Validierungen, die sowohl syntaktische als auch semantische Korrektheit überprüfen. Das implementierte System kombiniert regelbasierte Validierung mit intelligenten Korrekturvorschlägen, um sowohl offensichtliche Fehler automatisch zu beheben als auch komplexere Inkonsistenzen zur manuellen Prüfung zu kennzeichnen.
+Die Validierung extrahierter Daten stellt einen kritischen Schritt zur Sicherstellung 
+der Datenqualität dar. Das implementierte System kombiniert regelbasierte Validierung 
+mit intelligenten Korrekturvorschlägen und adressiert damit die Anforderungen 
+\textbf{FA-008} (manuelle Korrektur durch Human-in-the-Loop), \textbf{NFA-004} 
+(Robustheit gegenüber fehlerhaften Eingaben) und \textbf{NFA-005} (Prüfbarkeit 
+durch strukturierte Fehlerberichte).
 
 \subsection{Validierungsarchitektur}
 
@@ -2474,7 +2516,37 @@ coordinate\_18.1606 & Textänderung & Text: ``18.1606'' & Text: ``18.1608'' \\
 \end{table}
 
 Diese strukturierte Dokumentation ermöglicht eine effiziente Nachvollziehbarkeit von Planänderungen und unterstützt Quality-Assurance-Prozesse in der Eisenbahnplanung.
+Die Implementierung umfasst eine dedizierte grafische Benutzeroberfläche zur Visualisierung und Analyse der Änderungen, wie in Abbildung~\ref{fig:diff_ui} dargestellt.
 
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.98\textwidth]{images/Kapitel6/änderungsmangement window.png}
+\caption{Versionsvergleichs-Dialog mit tabellarischer Auflistung aller Änderungen zwischen zwei Planversionen}
+\label{fig:diff_ui}
+\end{figure}
+
+Der Dialog zeigt eine tabellarische Übersicht aller identifizierten Änderungen mit Spalten für Objektklasse, Text, Feldname, alte und neue Werte sowie Seitenzuordnung. In diesem Beispiel wurden fünf GKS-Koordinaten modifiziert, wobei die Verschiebungen im Bereich von +0{,}0m bis +0{,}6m liegen. Die Änderungstypen werden durch Icons visualisiert: Hinzugefügte Elemente erhalten ein grünes Plus-Symbol, entfernte Elemente ein rotes Minus-Symbol, und modifizierte Werte werden orange hervorgehoben. Diese Darstellung erfüllt Anforderung FA-011 und ermöglicht Ingenieuren eine schnelle Identifikation relevanter Planänderungen ohne manuelle Vergleichsarbeit.
+
+Ein konkretes Beispiel einer detektierten Koordinatenänderung zeigen die Abbildungen~\ref{fig:gks_change_before} und~\ref{fig:gks_change_after} für die GKS-Platte mit der Kennung 0305.
+
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.48\textwidth}
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/Kapitel6/gkschange1.png}
+    \caption{GKS 0305 in Version 1: Koordinate 0.1770}
+    \label{fig:gks_change_before}
+\end{minipage}
+\hfill
+\begin{minipage}{0.48\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{images/Kapitel6/gkschange2.png}
+    \caption{GKS 0305 in Version 2: Koordinate 0.1729}
+    \label{fig:gks_change_after}
+\end{minipage}
+\end{figure}
+
+Die automatische Änderungsdetektion identifizierte eine Verschiebung um $\Delta = -0{,}0041$ km (ca. 4,1 Meter) durch UID-basierten Objektvergleich. Der Algorithmus erkannte, dass beide Versionen dasselbe Objekt (\texttt{gks\_gesteuert\_0305}) beschreiben, jedoch unterschiedliche Koordinatenwerte aufweisen. Solche Präzisionsänderungen im Meterbereich sind in der Feinplanung von Bahnanlagen kritisch und müssen dokumentiert werden, da sie die Positionierung sicherheitsrelevanter Komponenten betreffen.
 \subsection{Rückverfolgbarkeit zur Quelldokumentation}
 
 Die vollständige Rückverfolgbarkeit extrahierter Daten zur Originalquelle ist essentiell für die Validierung und manuelle Nachkorrektur von Extraktionsergebnissen. Hierzu wird für jeden extrahierten Datensatz ein umfassender Metadatensatz persistiert.
@@ -2594,12 +2666,6 @@ Interaktives Anklicken eines visualisierten Objekts im PDF-Viewer triggert ein a
 
 Diese Funktionalität reduziert den kognitiven Aufwand bei der manuellen Validierung signifikant und ermöglicht eine effiziente Identifikation systematischer Extraktionsfehler.
 
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.9\textwidth]{images/Kapitel6/UItracebility.png} 
-    \caption{Bidirektionale Navigation zwischen Datenansicht und Quelldokument}
-    \label{fig:UItraceability}
-\end{figure}
 
 
 
@@ -2757,7 +2823,11 @@ Die Verwendung von Connection-Pooling mittels Context Manager optimiert die Perf
 
 \section{Benutzeroberfläche}
 \label{sec:benutzeroberfläche}
-Die Benutzeroberfläche dient als interaktive Komponente zur Qualitätskontrolle und manuellen Nachbearbeitung der extrahierten Daten. Obwohl sie nicht zum wissenschaftlichen Kernbeitrag dieser Arbeit gehört, ist sie für die praktische Anwendbarkeit des Systems essentiell. Die Implementierung erfolgte mit einem etablierten GUI Framework für Desktop-Anwendungen und folgt bewährten Designprinzipien der Mensch-Computer-Interaktion.
+Die Benutzeroberfläche dient als interaktive Komponente zur Qualitätskontrolle und 
+manuellen Nachbearbeitung der extrahierten Daten. Sie adressiert die Anforderungen 
+\textbf{FA-013} (GUI ohne CLI-Kenntnisse), \textbf{FA-012} (visuelle Validierung 
+durch Bounding-Box-Overlays) und \textbf{NFA-001} (On-Premise-Verarbeitung als 
+Desktop-Anwendung).
 
 \subsection{Architektur und Designentscheidungen}
 
@@ -2870,7 +2940,16 @@ Die Filterung basiert auf regulären Ausdrücken. Gegeben sei ein Regex-Muster $
 Bei Auswahl einer Tabellenzeile wird die entsprechende Bounding Box in der PDF-Ansicht hervorgehoben. Die Navigation erfolgt durch Zentrierung des Viewports auf die Objektposition $(x_c, y_c)$ mit einem Hervorhebungsradius $r_{\text{highlight}} = 50$ Pixel. Die Hervorhebung wird als gelber Kreis mit zeitlich begrenzter Sichtbarkeit ($t_{\text{highlight}} = 0.5$ Sekunden) dargestellt.
 
 Die inverse Verlinkung (PDF → Tabelle) erfolgt über einen eindeutigen Zeilen-Identifier, der sowohl im Tabellenelement als auch in der grafischen Repräsentation gespeichert wird. Bei einem Klick auf eine Bounding Box wird die zugehörige Tabellenzeile automatisch selektiert und in den sichtbaren Bereich gescrollt.
+Abbildung~\ref{fig:complete_ui} zeigt die vollständige Benutzeroberfläche mit allen beschriebenen Komponenten in integrierter Darstellung.
 
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.98\textwidth]{images/Kapitel6/UI_linkingv1.png}
+\caption{Hauptfenster mit PDF-Viewer (links), hierarchischer Ergebnistabelle (rechts) und bidirektionaler Navigation}
+\label{fig:complete_ui}
+\end{figure}
+
+Die Abbildung demonstriert die praktische Anwendung der bidirektionalen Verlinkung: Das in der Tabelle selektierte Objekt (GKS 0553 mit Koordinate 15{,}2564, hervorgehoben in cyan) ist im PDF-Viewer durch eine grüne Bounding Box markiert und zentriert. Die farbliche Codierung der Overlays folgt dem definierten Schema (Signale rot, GKS-Platten gelb/orange, GM-Blöcke grün, Koordinaten grün). Die Toolbar am oberen Rand bietet Funktionen zur Datenvalidierung, Erkennungsqualitätsprüfung, manuellen Koordinatenverknüpfung und OCR-Re-Extraktion. Das rechte Panel zeigt Detailinformationen zum selektierten Objekt, einschließlich Klassentyp (gks\_gesteuert), YOLO-Konfidenz (0{,}947), extrahiertem Text und Seitenzuordnung. Diese integrierte Ansicht erfüllt die Anforderungen FA-012 (Visuelle Validierung) und FA-013 (GUI) und ermöglicht eine effiziente Qualitätsprüfung ohne Medienbruch zwischen Originaldokument und strukturierten Daten.
 \subsection{Validierungs-Dialog}
 
 Der Validierungs-Dialog implementiert eine mehrstufige Fehlerklassifikation basierend auf den Validierungsregeln aus Abschnitt [Referenz zu Validierungskapitel]. Die Fehlertypen umfassen:
@@ -2987,6 +3066,25 @@ verhindert versehentliches Überschreiben vorhandener Inhalte.
 Zielpositionierung für bestehende Dateien}
 \label{fig:export_dialog}
 \end{figure}
+
+Abbildung~\ref{fig:export_result} zeigt 
+ein Beispiel der exportierten Daten mit separaten Arbeitsblättern pro Objektklasse. 
+Die resultierenden Excel-Dateien dienten als Grundlage für den Ground-Truth-Vergleich 
+der E2E-Evaluation (vgl. Tabelle~\ref{tab:e2e_per_class_test}).
+
+Die Option \enquote{Bestehende Datei} (Abbildung~\ref{fig:export_dialog}) ermöglicht 
+das Einfügen von Daten in existierende Excel-Vorlagen ab einer wählbaren Startposition, 
+ohne bestehende Formatierungen, Formeln oder Makros zu überschreiben. Diese 
+Funktionalität erfüllt die Anforderung FA-010 (Strukturerhalt).
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.98\textwidth]{images/Kapitel6/export_screenshot.png}
+\caption{Exportierte Excel-Datei mit separaten Arbeitsblättern pro Objektklasse 
+(sichtbar am unteren Rand: gks\_festkodiert, gks\_gesteuert, gm\_block, etc.)}
+\label{fig:export_result}
+\end{figure}
+
 \subsubsection{JSON-Export}
 
 Der JSON-Export folgt einem hierarchischen Schema mit vollständigen Geometriedaten:

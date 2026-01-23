@@ -3,7 +3,8 @@
 In diesem Kapitel wird der Entwurf und die technische Konzeption des Prototyps aufbauend auf der im vorherigen Kapitel definierten Anforderungsanalyse dargelegt. Das Ziel besteht in der Entwicklung einer modularen und skalierbaren Systemarchitektur, die den gesamten Workflow von der rohen PDF-Datei bis zum strukturierten und validierten Datenexport automatisiert. Die konkrete Implementierungsdetails werden anschließend in Kapitel 6 behandelt.
 
 \section{Systemarchitektur}
-Die Architektur des Prototyps folgt dem Prinzip der Modularität und Separation of Concerns. Das System ist in funktional abgegrenzte Module unterteilt, die über definierte Schnittstellen miteinander kommunizieren. Diese Architektur ermöglicht eine schrittweise Entwicklung, einfache Wartbarkeit und die Möglichkeit zur späteren Erweiterung um zusätzliche Funktionalitäten. Abbildung \ref{fig:Systemarchitektur} zeigt die Gesamtarchitektur des Systems mit ihren Hauptkomponenten.Im Folgenden werden die einzelnen Module und ihre Aufgaben erläutert. 
+Die Architektur des Prototyps folgt dem Prinzip der Modularität und Separation of Concerns. 
+Das System ist in funktional abgegrenzte Module unterteilt, die über definierte Schnittstellen miteinander kommunizieren. Diese Architektur ermöglicht eine schrittweise Entwicklung, einfache Wartbarkeit und die Möglichkeit zur späteren Erweiterung um zusätzliche Funktionalitäten \textbf{(Anforderungen FA-014, NFA-008)}. Abbildung \ref{fig:Systemarchitektur} zeigt die Gesamtarchitektur des Systems mit ihren Hauptkomponenten.
 
 \begin{figure}[H]
     \centering
@@ -232,7 +233,9 @@ Im Auswahlprozess wurden verschiedene Architekturen evaluiert. Die folgende Tabe
     \caption{Vergleich und Bewertung von Alternativen zu YOLOv8}
     \label{tab:Alternative_Detection}
 \end{table}
-
+Die Entscheidung für YOLOv8-OBB adressiert direkt die Anforderungen \textbf{FA-001} 
+(Erkennungsrate $\geq$ 90\%), \textbf{FA-002} (Rotationsinvarianz durch OBB-Regression) 
+und \textbf{NFA-007} (Ressourceneffizienz durch Echtzeitfähigkeit).
 \subsection{Texterkennung: Multi-Engine-Strategie und Dual-Angle-Routing}
 Die Extraktion von Textinformationen aus technischen Gleisplänen stellt aufgrund variierender Schriftarten, unterschiedlicher Orientierungen ($0^\circ, 90^\circ, 270^\circ$) und der Überlagerung durch grafische Elemente eine besondere Herausforderung dar. Um eine maximale Robustheit zu gewährleisten, wurde keine einfache OCR-Lösung gewählt, sondern eine \textbf{kaskadierte Multi-Engine-Strategie} implementiert.
 
@@ -343,7 +346,8 @@ Die folgende Tabelle fasst zusammen, warum aktuelle Transformer-basierte Ansätz
     \caption{Vergleich und Bewertung alternativer OCR-Ansätze}
     \label{tab:ocr_alternatives}
 \end{table}
-
+Die Multi-Engine-Strategie mit Dual-Angle-Routing erfüllt die Anforderungen \textbf{FA-004} 
+(OCR-Genauigkeit) und \textbf{FA-005} (OCR-Robustheit bei Rotation und Rauschen).
 \subsection{Datenexport und Reporting: Excel Schnittstelle}
 Für den Export der extrahierten Informationen und die Übergabe an die Fachabteilung wird die Funktion \texttt{pandas.DataFrame.to\_excel()} in Kombination mit der \texttt{openpyxl}-Engine verwendet. Diese Architektur ermöglicht die direkte Serialisierung der internen Datenstrukturen in das weit verbreitete \texttt{.xlsx}-Format (Office Open XML).\cite{openpyxl}
 
@@ -392,7 +396,8 @@ Die Entscheidung für diesen Ansatz stützt sich auf drei zentrale Gründe:
 \end{enumerate}
 Die Implementierung der Export-Pipeline, einschließlich der Tabellenformatierung, 
 bedingten Formatierung und Formelintegration, wird in Abschnitt \ref{subsec:exportfunktionlität}
-(Excel-Export-Modul) beschrieben.
+(Excel-Export-Modul) beschrieben. Diese Architekturentscheidung erfüllt die Anforderungen \textbf{FA-009} (Excel-Integration), 
+\textbf{FA-010} (Strukturerhalt bei bestehendem Template) und \textbf{NFA-012} (Ausgabeformate).
 \subsection{Rückverfolgbarkeit: Koordinaten + Bildausschnitte}
 Die gewählte Lösung für die Rückverfolgbarkeit ist ein hybrider Ansatz mit Koordinaten in Excel und optionaler Miniaturbildgenerierung. Und für die UI-Interaktion wurde eine einfache Methode verwendet: Wird die Tabellenzeile in der Benutzeroberfläche angeklickt, so wird dem Benutzer ein vergrößerter Bereich von $2048 \times 2048$ px im Layout angezeigt, wobei die entsprechenden Datenüberlagerungen in leuchtendem Rot hervorgehoben sind.\\
 Die Gründe für diese gewählte Lösung sind:
@@ -490,6 +495,9 @@ Für die Benutzeroberfläche wurde das Framework PyQt5 aus der Python-Bibliothek
     \caption{Alternative zu PyQt5}
     \label{tab:Alternative6}
     \end{table}
+Die Wahl von PyQt5 als Desktop-Framework adressiert die Anforderungen \textbf{FA-013} 
+(GUI ohne CLI-Kenntnisse), \textbf{NFA-001} (On-Premise-Verarbeitung ohne Cloud) und 
+\textbf{FA-012} (visuelle Validierung durch Overlay-System).
 \subsection{Datenpersistenz und Speicherschicht: PostgreSQL}
 Für die dauerhafte Speicherung der Analyseergebnisse und Gleisplandaten wurde das objekt-relationale Datenbanksystem (ORDBMS) PostgreSQL gewählt. Die Implementierung verfolgt einen hybriden Ansatz (\enquote{Relational + Document Store}), der die Transaktionssicherheit einer SQL-Datenbank mit der Flexibilität einer dokumentenorientierten Speicherung (via JSONB) kombiniert.\cite{postgresql_docs}
 \begin{enumerate}
@@ -520,11 +528,14 @@ Für die dauerhafte Speicherung der Analyseergebnisse und Gleisplandaten wurde d
 
 
 \end{enumerate}
-
+Das Datenbankdesign unterstützt die Anforderungen \textbf{NFA-005} (Prüfbarkeit durch 
+Metadaten-Persistierung), \textbf{FA-011} (Änderungsverfolgung durch Versionierung) und \textbf{NFA-002} (Lizenzkonformität durch Open-Source-Datenbank).
 \section{Linking- \& Assoziationsmodul}
 \label{sec:linkingassociationmodul}
 Die semantische Interpretation der Gleispläne erfordert die korrekte Verknüpfung 
-zwischen erkannten Symbolen (Ankerobjekten) und den zugehörigen Texten (IDs, Koordinaten).
+zwischen erkannten Symbolen (Ankerobjekten) und den zugehörigen Texten (IDs, Koordinaten). 
+Dieses Modul adressiert die Anforderungen \textbf{FA-006} (Fahrtrichtungsdetektion) und 
+\textbf{FA-007} (Symbol-Koordinaten-Verknüpfung).
 
 \subsection{Konzeptioneller Ansatz}
 
@@ -574,7 +585,8 @@ Die mathematische Formulierung und algorithmischen Details werden im Abschnitt \
 
 \section{Validierung und Qualitätssicherung}
 \label{sec:validierungundqualitätssicherung}
-Das Validierungskonzept gliedert sich in drei Ebenen:
+Das Validierungskonzept adressiert die Anforderungen \textbf{FA-008} (manuelle Korrektur durch Human-in-the-Loop), \textbf{NFA-004} (Robustheit durch Fehlerbehandlung) und 
+\textbf{NFA-005} (Prüfbarkeit durch strukturierte Validierungsberichte).Das Validierungskonzept gliedert sich in drei Ebenen:
 
 \begin{enumerate}
     \item \textbf{Symbolvalidierung}: Prüfung erkannter Objekte gegen erwartete 

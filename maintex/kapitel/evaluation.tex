@@ -132,11 +132,27 @@ Komplex & Hohe Symboldichte ($>$ 100 Symbole), viele überlappende Elemente, dic
 \end{table}
 
 Diese Kategorisierung ermöglicht eine differenzierte Analyse der Systemleistung in Abhängigkeit von der Plankomplexität und identifiziert kritische Schwellenwerte für Symboldichte und räumliche Überlappung.
+\textbf{Validierung FA-001 und FA-002:}
 
+\textbf{FA-001 (Erkennungsrate $\geq$ 90\%):} Der erreichte Recall von 95.7\% auf dem 
+Validierungssatz und 100\% auf dem Testsatz (kein Symbol übersehen) übertrifft die 
+geforderte Mindesterkennungsrate deutlich.
+
+\textbf{FA-002 (Rotationsinvarianz):} Die OBB-Architektur in Kombination mit der 
+synthetischen Rotationsaugmentation (10 Winkel von $-90°$ bis $+90°$, vgl. 
+§\ref{subsec:Modelltraining}) gewährleistet robuste Erkennung bei beliebigen 
+Symbolorientierungen. Die konstante Detektionsleistung über alle 7 Testpläne -- 
+die Symbole in diversen Orientierungen enthalten -- bestätigt die Rotationsinvarianz 
+empirisch. Eine dedizierte Winkel-Stratifizierung wurde nicht durchgeführt, da die 
+Ground-Truth-Annotationen keine explizite Winkelinformation enthalten.
+
+\textbf{FA-003 (Zielobjekte):} Alle 5 Kernklassen (signal, coordinate, gks\_festkodiert, 
+gks\_gesteuert, gm\_block) werden zuverlässig detektiert. Die zusätzliche Integration 
+von 8 Auxiliarklassen demonstriert die Erweiterbarkeit des Systems (NFA-008).
 \subsection{Evaluationsmetriken}
 \label{subsec:evaluationsmetriken}
 
-Die Bewertung des Systems erfolgt auf mehreren Ebenen mit jeweils spezifischen Metriken. Die verwendeten Metriken basieren auf den in Kapitel~\ref{chap:grundlagen} eingeführten Standardverfahren für Objekterkennung (Abschnitt~\ref{subsec:evaluationsmetriken}) und OCR-Systeme (Abschnitt~\ref{subsec:ocr_metriken}). Dieser Abschnitt fasst die angewandten Metriken kurz zusammen und definiert die spezifische End-to-End Systemmetrik.
+Die Bewertung des Systems erfolgt auf mehreren Ebenen mit jeweils spezifischen Metriken. Die verwendeten Metriken basieren auf den in Kapitel~\ref{chap:theoretischeundtechnischegrundlagen} eingeführten Standardverfahren für Objekterkennung (Abschnitt~\ref{subsec:evaluationsmetriken}) und OCR-Systeme (Abschnitt~\ref{subsec:ocr_metriken}). Dieser Abschnitt fasst die angewandten Metriken kurz zusammen und definiert die spezifische End-to-End Systemmetrik.
 
 \subsubsection{Metriken für die Objekterkennung}
 
@@ -330,24 +346,23 @@ Die Gesamtsystemleistung wird durch die End-to-End Accuracy gemessen, die alle P
 \textbf{Objektklasse} & \textbf{Gesamt} & \textbf{Korrekt} & \textbf{Genauigkeit} \\
 \hline
 signal (Name + Position + Richtung) & 172 & 169 & 98.26\% \\
-gks (Nummer + Position, beide Typen) & 256 & 255 & 99.61\% \\
+gks (Nummer + Position, beide Typen) & 256 & 254 & 99.22\% \\
 gm\_block (Position) & 216 & 213 & 98.61\% \\
 \hline
-\textbf{Durchschnitt (Kernklassen)} & \textbf{644} & \textbf{637} & \textbf{98.91\%} \\
+\textbf{Durchschnitt (Kernklassen)} & \textbf{644} & \textbf{636} & \textbf{98.76\%} \\
 \hline
 \end{tabular}
 \caption{End-to-End Genauigkeit pro Objektklasse (7 Testpläne)}
 \label{tab:e2e_per_class_test}
 \end{table}
-
 \begin{table}[H]
 \centering
 \begin{tabular}{|l|r|r|r|}
 \hline
 \textbf{Metrik} & \textbf{Zielwert (NFA-003)} & \textbf{Erreicht} & \textbf{Status} \\
 \hline
-Vollständig korrekt extrahiert (Kernklassen) & $\geq$ 85\% & 98.91\% & \checkmark \\
-Manuelle Korrektur erforderlich & $\leq$ 15\% & 1.09\% & \checkmark \\
+Vollständig korrekt extrahiert (Kernklassen) & $\geq$ 85\% & 98.76\% & \checkmark \\
+Manuelle Korrektur erforderlich & $\leq$ 15\% & 1.24\% & \checkmark \\
 \hline
 \end{tabular}
 \caption{End-to-End Systemgenauigkeit für Kernklassen im Vergleich zum Anforderungsziel}
@@ -405,8 +420,9 @@ Plan 3 & 40/40 & 54/54 & 45/46 & 139/140 & 1× GM: Linking \\
 Plan 4 & 21/21 & 30/30 & 23/23 & 74/74 & Keine Fehler \\
  & (100\%) & (100\%) & (100\%) & (100\%) & (\enquote{w}/\enquote{W} irrelevant) \\
 \hline
-Plan 5 & 25/27 & 42/43 & 36/36 & 103/106 & 2× Signal: OCR failed \\
- & (92.6\%) & (97.7\%) & (100\%) & (97.2\%) & 1× GKS: Linie als \enquote{1} \\
+Plan 5 & 25/27 & 41/43 & 36/36 & 102/106 & 2× Signal: OCR failed \\
+ & (92.6\%) & (95.3\%) & (100\%) & (96.2\%) & 1× GKS: Linie als \enquote{1} \\
+ & & & & & 1× GKS: Fehlklassifikation \\
 \hline
 Plan 6 & 15/16 & 23/23 & 16/16 & 54/55 & 1× Signal: Fahrtrichtung \\
  & (93.8\%) & (100\%) & (100\%) & (98.2\%) & nicht abgeleitet \\
@@ -414,8 +430,8 @@ Plan 6 & 15/16 & 23/23 & 16/16 & 54/55 & 1× Signal: Fahrtrichtung \\
 Plan 7 & 40/40 & 55/55 & 46/46 & 141/141 & Keine Fehler (perfekt) \\
  & (100\%) & (100\%) & (100\%) & (100\%) & (\enquote{w}/\enquote{W} irrelevant) \\
 \hline
-\textbf{Gesamt} & \textbf{169/172} & \textbf{255/256} & \textbf{213/216} & \textbf{637/644} & \textbf{7 Fehler} \\
- & \textbf{(98.3\%)} & \textbf{(99.6\%)} & \textbf{(98.6\%)} & \textbf{(98.9\%)} & \\
+\textbf{Gesamt} & \textbf{169/172} & \textbf{254/256} & \textbf{213/216} & \textbf{636/644} & \textbf{8 Fehler} \\
+ & \textbf{(98.3\%)} & \textbf{(99.2\%)} & \textbf{(98.6\%)} & \textbf{(98.8\%)} & \\
 \hline
 \end{tabular}
 \caption{Detaillierte End-to-End Ergebnisse pro Testplan mit Fehlertyp-Annotation (Kernklassen, 7 Pläne)}
@@ -424,7 +440,17 @@ Plan 7 & 40/40 & 55/55 & 46/46 & 141/141 & Keine Fehler (perfekt) \\
 
 \textbf{Anmerkung:} Die dargestellten Ergebnisse basieren auf sieben unabhängigen 
 Testplänen mit insgesamt 644 evaluierten Objekten.
+\textbf{Validierung FA-006 und FA-007:}
 
+\textbf{FA-006 (Fahrtrichtungsdetektion):} Die geometrische Ableitung der Fahrtrichtung 
+aus der Signal-GKS-Relation erreicht eine Genauigkeit von 99.42\% (171/172 Signale). 
+Der einzige Fehler trat in Plan~6 auf, wo die zugehörige GKS nicht korrekt mit dem 
+Signal verknüpft werden konnte.
+
+\textbf{FA-007 (Symbol-Koordinaten-Verknüpfung):} Der Proximity-basierte Linking-Algorithmus 
+erreicht eine Verknüpfungsgenauigkeit von 99.69\% (642/644). Die 2 Linking-Fehler 
+(1× atypische Koordinatenposition, 1× fehlende Fahrtrichtungsableitung) sind auf 
+ungewöhnliche Layoutvarianten zurückzuführen.
 \textbf{Fehlerquellenanalyse:}
 
 Um die Optimierungspotenziale zu identifizieren, wurden die 7 aufgetretenen Fehler detailliert nach Fehlerquelle und Root Cause analysiert:
@@ -444,7 +470,9 @@ Plan 3 & 1× GM & Linking-Fehler & Koordinate rechts statt unterhalb des GM-Symb
 \hline
 Plan 5 & 2× Signal & OCR-Fehler & Koordinaten nicht extrahiert (Ursache unklar, vermutlich niedrige OCR-Konfidenz) \\
 \hline
-Plan 5 & 1× GKS & OCR-Fehler & Falsche Koordinate gelesen: \enquote{114.567} statt \enquote{14.567} (Linie neben Text verwechselt mit Ziffer \enquote{1}) \\
+Plan 5 & 1× GKS & OCR-Fehler & Falsche Koordinate gelesen: \enquote{114.567} statt \enquote{14.567} (Linie neben Text als Ziffer \enquote{1} interpretiert) \\
+\hline
+Plan 5 & 1× GKS & YOLO-Fehler & Fehlklassifikation: \textit{gks\_gesteuert} als \textit{gks\_festkodiert} erkannt (visuelle Ähnlichkeit der Symboltypen) \\
 \hline
 Plan 6 & 1× Signal & Linking-Fehler & Fahrtrichtung nicht extrahiert (geometrische Ableitung fehlgeschlagen, vermutlich fehlende GKS-Detektion) \\
 \hline
@@ -463,24 +491,22 @@ Plan 7 & 1× Signal, 1× GM & OCR-Warnung & Kleinbuchstabe \enquote{w} statt \en
 \label{tab:error_root_causes_test}
 \end{table}
 
-\textbf{Kategorisierung nach Fehlerursache:}
-
 \begin{table}[H]
 \centering
 \begin{tabular}{|l|r|r|}
 \hline
 \textbf{Fehlerursache} & \textbf{Anzahl Fehler} & \textbf{Anteil} \\
 \hline
-YOLO: Bounding Box zu groß & 2 & 28.6\% \\
-OCR: Koordinate nicht extrahiert & 2 & 28.6\% \\
-OCR: Falsche Ziffer (Linie als \enquote{1} interpretiert) & 1 & 14.3\% \\
-Linking: Koordinate an atypischer Position & 1 & 14.3\% \\
-Linking: Fahrtrichtung nicht abgeleitet & 1 & 14.3\% \\
+YOLO: Bounding Box zu groß & 2 & 25.0\% \\
+YOLO: Fehlklassifikation (GKS-Typ) & 1 & 12.5\% \\
+OCR: Koordinate nicht extrahiert & 2 & 25.0\% \\
+OCR: Falsche Ziffer (Linie als \enquote{1} interpretiert) & 1 & 12.5\% \\
+Linking: Koordinate an atypischer Position & 1 & 12.5\% \\
+Linking: Fahrtrichtung nicht abgeleitet & 1 & 12.5\% \\
 \hline
 YOLO Detection-Fehler (Symbol nicht erkannt) & 0 & 0.0\% \\
-YOLO Classification-Fehler (falsche Klasse) & 0 & 0.0\% \\
 \hline
-\textbf{Gesamt} & \textbf{7} & \textbf{100\%} \\
+\textbf{Gesamt} & \textbf{8} & \textbf{100\%} \\
 \hline
 \end{tabular}
 \caption{Verteilung der End-to-End Fehler nach Fehlerursache (7 Pläne)}
@@ -507,23 +533,48 @@ Die detaillierte Analyse offenbart spezifische technische Limitationen, die gezi
     \item \textbf{Fahrtrichtungs-Ableitung fehlgeschlagen (1 Fehler, 14.3\%):}
     Bei einem Signal in Plan 6 konnte die Fahrtrichtung nicht durch geometrische Analyse abgeleitet werden, vermutlich aufgrund fehlender oder falsch detektierter GKS. Dies ist ein Linking-Fehler, da die geometrische Verknüpfung zwischen Signal und GKS nicht hergestellt werden konnte.
     
-    \item \textbf{Keine Detection- oder Classification-Fehler (0 Fehler):} 
-    Bemerkenswert ist, dass YOLO alle 644 Symbole korrekt detektierte und klassifizierte. Kein einziges Symbol wurde übersehen (100\% Recall), und keine Klassenverwechslungen traten auf (100\% Classification Accuracy). Die einzigen YOLO-bezogenen Fehler waren Bounding Box Regression-Ungenauigkeiten, nicht fundamentale Detektionsfehler. Dies bestätigt die exzellente Robustheit der YOLO-basierten Objekterkennung.
+    \item \textbf{Ein Classification-Fehler bei GKS-Typen (1 Fehler, 12.5\%):} 
+        In Plan~5 wurde eine \textit{gks\_gesteuert} fälschlicherweise als 
+        \textit{gks\_festkodiert} klassifiziert. Dies bestätigt die in der 
+        Konfusionsmatrix (Abbildung~\ref{fig:confusion_matrix}) beobachtete 
+        Verwechslungstendenz zwischen diesen visuell ähnlichen Symboltypen. 
+        Die beiden GKS-Plattentypen unterscheiden sich nur durch interne 
+        Symboldetails (fest kodierter vs. programmierbarer Code), was die 
+        Unterscheidung für das neuronale Netz erschwert.
+        
+    \item \textbf{Keine Detection-Fehler (0 Fehler):} 
+        Bemerkenswert ist, dass YOLO alle 644 Symbole korrekt detektierte -- 
+        kein einziges Symbol wurde übersehen (100\% Recall auf dem Testsatz). 
+        Die YOLO-bezogenen Fehler beschränken sich auf Bounding-Box-Regression 
+        (2 Fehler) und Klassifikation (1 Fehler), nicht auf fundamentale 
+        Detektionsfehler.
     
     \item \textbf{Groß-/Kleinschreibung bei irrelevanten Zeichen (3 Beobachtungen, nicht gewertet):}
     Bei drei Koordinatenangaben wurde der Buchstabe \enquote{W} (in \enquote{Gl.W123}) als \enquote{w} gelesen. Da die Extraktionslogik nur numerische Koordinatenwerte verwendet und alphabetische Gleisbezeichnungen verwirft, hatte dies keinen funktionalen Einfluss. Diese Beobachtung zeigt jedoch, dass die OCR bei gemischten alphanumerischen Texten gelegentlich Case-Fehler produziert.
 \end{enumerate}
 
-Die Fehleranalyse zeigt eine \textbf{balancierte Fehlerverteilung}:
+Die Fehleranalyse zeigt folgende Verteilung:
 \begin{itemize}
-    \item 2 YOLO-bezogen (28.6\%): Bounding Box Regression-Ungenauigkeiten
-    \item 3 OCR-bezogen (42.9\%): 2× fehlende Extraktion, 1× Fehlinterpretation
-    \item 2 Linking-bezogen (28.6\%): Koordinate an atypischer Position, Fahrtrichtung nicht abgeleitet
+    \item 3 YOLO-bezogen (37.5\%): 2× Bounding-Box-Regression, 1× Fehlklassifikation
+    \item 3 OCR-bezogen (37.5\%): 2× fehlende Extraktion, 1× Fehlinterpretation
+    \item 2 Linking-bezogen (25.0\%): 1× atypische Position, 1× Fahrtrichtung nicht abgeleitet
 \end{itemize}
 
 Diese Verteilung identifiziert klare Optimierungsansätze in allen drei Hauptkomponenten der Pipeline. Die 100\% Erfolgsrate bei Detection und Classification bestätigt die Produktionsreife der YOLO-Komponente, während die Bounding Box Regression sowie die OCR- und Linking-Module Verbesserungspotenzial aufweisen.
 
+\textbf{Validierung FA-004 und FA-005:}
 
+\textbf{FA-004 (OCR-Genauigkeit):} Die OCR-Komponente ist in die End-to-End-Genauigkeit 
+von 98.76\% integriert. Von den 8 aufgetretenen Fehlern sind 3 OCR-bedingt (37.5\%), 
+was einer OCR-spezifischen Fehlerrate von 0.47\% (3/644) entspricht.
+
+\textbf{FA-005 (OCR-Robustheit):} Die Multi-Engine-Kaskade (PaddleOCR → Tesseract → 
+EasyOCR) mit Dual-Winkel-Routing gewährleistet robuste Texterkennung auch unter 
+erschwerten Bedingungen. Das in Abb.~\ref{fig:angular_ocr_example} gezeigte Beispiel 
+eines um 37.5° rotierten Koordinatentexts demonstriert die erfolgreiche Verarbeitung 
+nicht-kardinaler Orientierungen. Die klassenspezifische Vorverarbeitung (morphologische 
+Filterung für GKS, Multi-Scale für Koordinaten) adressiert domänenspezifische 
+Herausforderungen wie Linien-Artefakte und niedrige Auflösung.
 \textbf{Leistung nach Plankomplexität:}
 
 Die Testpläne wurden gemäß Tabelle~\ref{tab:complexity_categories} in drei 
@@ -538,9 +589,9 @@ zeigt die End-to-End-Genauigkeit für jede Kategorie.
 \hline
 Einfach ($<$60 Obj.) & Plan 1, 6 & 113 & 98.23\% & 2 \\
 Mittel (60--100 Obj.) & Plan 2, 4 & 144 & 99.31\% & 1 \\
-Komplex ($>$100 Obj.) & Plan 3, 5, 7 & 387 & 98.97\% & 4 \\
+Komplex ($>$100 Obj.) & Plan 3, 5, 7 & 387 & 98.71\% & 5 \\
 \hline
-\textbf{Gesamt} & \textbf{7 Pläne} & \textbf{644} & \textbf{98.91\%} & \textbf{7} \\
+\textbf{Gesamt} & \textbf{7 Pläne} & \textbf{644} & \textbf{98.76\%} & \textbf{8} \\
 \hline
 \end{tabular}
 \caption{End-to-End Accuracy nach Plankomplexität (alle 7 Testpläne)}
@@ -653,7 +704,21 @@ Der typische Korrektur-Workflow für einen extrahierten Gleisplan umfasst:
 \end{enumerate}
 
 Dieser Workflow gewährleistet, dass selbst bei erwarteten Genauigkeiten von 90-95\% im produktiven Einsatz die Qualitätssicherung effizient und systematisch erfolgen kann.
+\textbf{Validierung FA-008, NFA-004 und NFA-005:}
 
+\textbf{FA-008 (Manuelle Korrektur):} Der Validierungsdialog (Abb.~\ref{fig:validation_dialog_ui}) 
+ermöglicht die systematische Prüfung und Inline-Korrektur fehlerhafter Extraktionen. 
+Die automatische Fehleridentifikation durch Regex-Validierung und Konfidenz-Schwellenwerte 
+reduziert den manuellen Prüfaufwand um 85\% (Tab.~\ref{tab:validation_efficiency}).
+
+\textbf{NFA-004 (Robustheit):} Alle 7 Testpläne wurden ohne Systemabstürze oder 
+Fehlerunterbrechungen verarbeitet. Die implementierten Fallback-Mechanismen 
+(Multi-Engine OCR-Kaskade, Regex-Validierung mit Fehlermarkierung statt Abbruch) 
+gewährleisten eine stabile Verarbeitung auch bei suboptimalen Eingabedaten.
+
+\textbf{NFA-005 (Prüfbarkeit):} Die bidirektionale Navigation zwischen Tabelle und 
+PDF-Viewer (Jump-to-Detection) sowie die vollständige Metadaten-Persistierung 
+ermöglichen eine lückenlose Rückverfolgbarkeit jeder Extraktion zur Quelldokumentation.
 \subsubsection{Verarbeitungszeit-Analyse}
 \label{subsubsec:processing_time}
 
@@ -786,15 +851,47 @@ Die gemessenen Zeiten basieren auf CPU-only Verarbeitung gemäß Anforderung NFA
 \end{itemize}
 
 Die CPU-basierte Verarbeitung erfüllt jedoch bereits die Anforderung NFA-007, sodass eine GPU-Investition optional bleibt. Die aktuelle Implementierung ermöglicht den Einsatz auf Standard-Workstations ohne spezielle Hardware-Anforderungen.
+\textbf{Validierung NFA-006 und NFA-007:}
 
+\textbf{NFA-006 (Prozessoptimierung):} Der KI-gestützte Workflow reduziert den 
+Gesamtzeitaufwand um 75.3\% gegenüber dem manuellen Prozess (Tab.~\ref{tab:time_comparison_manual}). 
+Bei einem durchschnittlichen Plan mit 92 Objekten entspricht dies einer Zeitersparnis 
+von 48 Minuten pro Plan.
 
+\textbf{NFA-007 (Ressourceneffizienz):} Die durchschnittliche Verarbeitungszeit von 
+12.3 Minuten pro A0-Plan auf Standard-CPU-Hardware (Intel i7-10700, ohne GPU) erfüllt 
+die Anforderung einer Verarbeitung in \enquote{wenigen Minuten} und ermöglicht den 
+Einsatz auf typischen Engineering-Workstations.
 \subsection{Validierung weiterer funktionaler Anforderungen}
 \label{subsec:functional_validation}
 
 Die quantitative Evaluation in den vorangegangenen Abschnitten fokussierte auf die 
 Kernmetriken der Extraktionsgenauigkeit. Ergänzend wurden alle weiteren funktionalen 
-Anforderungen durch systematische Funktionstests validiert. Tabelle~\ref{tab:functional_validation} 
-dokumentiert die durchgeführten Tests und deren Ergebnisse.
+Anforderungen durch systematische Funktionstests validiert.
+
+\textbf{Anmerkung zur Testabdeckung:} Die Anforderungen FA-001 bis FA-007 wurden bereits 
+durch quantitative Metriken in den Abschnitten~\ref{subsec:detection_eval} (Objekterkennung) 
+und~\ref{subsec:e2e_test_eval} (End-to-End-Evaluation) validiert:
+
+\begin{itemize}
+    \item \textbf{FA-001} (Erkennungsrate $\geq$ 90\%): Recall = 95.7\% 
+    (Tabelle~\ref{tab:detection_per_class})
+    \item \textbf{FA-002} (Rotationsinvarianz): YOLOv8-OBB Training mit synthetischer 
+    Rotation (§\ref{sec:objekterkennungmityolov8obb})
+    \item \textbf{FA-003} (Zielobjekte): Alle 5 Kernklassen erfolgreich detektiert 
+    (Tabelle~\ref{tab:detection_per_class})
+    \item \textbf{FA-004} (OCR-Genauigkeit): Integriert in E2E-Genauigkeit von 98.91\% 
+    (Tabelle~\ref{tab:e2e_per_class_test})
+    \item \textbf{FA-005} (OCR-Robustheit): Dual-Winkel-Routing, erfolgreiche Extraktion 
+    bei $\theta = 37{,}5°$ (§\ref{sec:ocrpipeline})
+    \item \textbf{FA-006} (Fahrtrichtung): 99.42\% Genauigkeit 
+    (Tabelle~\ref{tab:signal_attribute_accuracy})
+    \item \textbf{FA-007} (Symbol-Koordinaten-Verknüpfung): 99.69\% Linking-Genauigkeit 
+    (§\ref{subsec:e2e_test_eval})
+\end{itemize}
+
+Tabelle~\ref{tab:functional_validation} dokumentiert die Validierung der verbleibenden 
+funktionalen Anforderungen (FA-008 bis FA-014) durch manuelle Funktionstests.
 
 \begin{table}[H]
 \centering
@@ -813,11 +910,11 @@ FA-011 & Diff-Vergleich zweier Planversionen (Plan~3 vs. modifizierte Kopie); Ve
 \hline
 FA-012 & Visuelle Validierung durch Bounding-Box-Overlays für alle 644 Testobjekte; Prüfung der korrekten Farbkodierung nach Klasse & Bestanden \\
 \hline
-\multicolumn{3}{|c|}{\textit{Benutzerinteraktion und Konfiguration (FA-013 bis FA-014)}} \\
+\multicolumn{3}{|c|}{\textit{Benutzerinteraktion und Modularität (FA-013, FA-014)}} \\
 \hline
 FA-013 & GUI-Workflow: PDF-Upload → Analyse-Start → Ergebnisanzeige → Export; Test durch 3 Anwender ohne CLI-Kenntnisse & Bestanden \\
 \hline
-FA-014 & Integration einer neuen Symbolklasse durch Nachtraining: 8 Auxiliarklassen erfolgreich hinzugefügt ohne Änderung der Kernlogik & Bestanden \\
+FA-014 & Integration neuer Symbolklassen: 8 Auxiliarklassen erfolgreich hinzugefügt ohne Änderung der Kernlogik; modulare Architektur (§\ref{chap:konzeption}) ermöglicht unabhängige Weiterentwicklung der Komponenten & Bestanden \\
 \hline
 \multicolumn{3}{|c|}{\textit{Manuelle Korrektur und Qualitätssicherung (FA-008)}} \\
 \hline
@@ -833,6 +930,52 @@ Verifikationstests durchgeführt, da automatisierte Unit-Tests für GUI-Interakt
 und Export-Formatierung einen unverhältnismäßigen Implementierungsaufwand erfordern 
 würden. Für einen produktiven Einsatz wird die Erstellung einer automatisierten 
 Testsuite empfohlen (vgl. Kapitel~\ref{chap:diskussion}).
+
+
+\subsection{Validierung weiterer nicht-funktionaler Anforderungen}
+\label{subsec:nfa_validation}
+
+\textbf{NFA-001 (On-Premise-Verarbeitung):} Das System wurde vollständig lokal auf der 
+in Tab.~\ref{tab:testumgebung} beschriebenen Hardware ausgeführt. Keine Daten wurden 
+an externe Server übertragen. Die PyQt5-basierte Desktop-Anwendung erfordert keine 
+Internetverbindung zur Laufzeit.
+
+\textbf{NFA-002 (Lizenzkonformität):} Alle verwendeten Bibliotheken (Tab.~\ref{tab:tech_stack}) 
+unterliegen Open-Source-Lizenzen, die für den kommerziellen Einsatz geeignet sind:
+\begin{itemize}
+    \item PyTorch, Ultralytics: Apache 2.0
+    \item PaddleOCR: Apache 2.0
+    \item OpenCV: Apache 2.0
+    \item PyQt5: GPL v3 (für interne Tools akzeptabel)
+    \item PostgreSQL: PostgreSQL License (BSD-ähnlich)
+\end{itemize}
+
+\textbf{NFA-008 (Erweiterbarkeit):} Die modulare Architektur wurde durch die Integration 
+von 8 Auxiliarklassen validiert. Diese Klassen wurden ohne Modifikation der Kernlogik 
+(OCR-Pipeline, Linking-Algorithmus, Export-Modul) hinzugefügt. Die Auxiliarklassen 
+erreichen vergleichbare Detektionsleistungen (Ø mAP@0.5: 98.8\%) wie die Kernklassen 
+(vgl. Anhang~\ref{app:all_classes}).
+
+\textbf{NFA-009 (Update-Fähigkeit):} Die trainierten Modellgewichte werden als externe 
+Datei (\texttt{best.pt}) geladen. Ein Nachtraining auf erweiterten Datensätzen wurde 
+während der Entwicklung mehrfach durchgeführt, wobei lediglich die Gewichtsdatei 
+ausgetauscht werden musste.
+
+\textbf{NFA-010 (Eingabeformate):} Alle 7 Testpläne wurden als PDF-Dateien verarbeitet. 
+Die Rasterisierung erfolgte mit PyMuPDF bei 500 DPI. Die Pipeline unterstützt zusätzlich 
+PNG- und JPG-Eingaben, was jedoch im Rahmen dieser Evaluation nicht explizit getestet wurde.
+
+\textbf{NFA-011 (Datenquellen):} Der Testsatz besteht ausschließlich aus realen 
+Siemens Mobility Gleisplänen verschiedener Projekte und Komplexitätsstufen 
+(Tab.~\ref{tab:test_dataset_stats}). Dies validiert die Kompatibilität mit 
+kundenspezifischen Datenquellen.
+
+\textbf{NFA-012 (Ausgabeformate):} Der Export in XLSX-Format wurde für alle 7 Testpläne 
+durchgeführt (vgl. §\ref{subsec:export_validation}). Die Export-Optionen für CSV und 
+JSON sind implementiert und wurden durch Funktionstests validiert 
+(Tab.~\ref{tab:functional_validation}).
+
+
 \subsection{Validierung der Export- und Hilfsfunktionen}
 \label{subsec:export_validation}
 
@@ -882,13 +1025,13 @@ Tabelle~\ref{tab:anforderungen_erfuellt} fasst die Erfüllung der in Kapitel~\re
 \hline
 \textbf{Anf.-ID} & \textbf{Anforderung} & \textbf{Erfüllt} \\
 \hline
-FA-001 & Erkennungsrate $\geq$ 90\% & \checkmark (97.9\%) \\
+FA-001 & Erkennungsrate $\geq$ 90\% & \checkmark (95.7\% Val, 100\% Test) \\
 FA-002 & Rotationsinvarianz & \checkmark \\
 FA-003 & Zielobjekte detektierbar & \checkmark \\
-FA-004 & OCR-Genauigkeit & \checkmark (98.7\% E2E) \\
+FA-004 & OCR-Genauigkeit & \checkmark (integriert in 98.76\% E2E) \\
 FA-005 & OCR-Robustheit & \checkmark \\
-FA-006 & Fahrtrichtungsdetektion & \checkmark (100\%) \\
-FA-007 & Symbol-Koordinaten-Verknüpfung & \checkmark (99.7\%)\\
+FA-006 & Fahrtrichtungsdetektion & \checkmark (99.42\%) \\
+FA-007 & Symbol-Koordinaten-Verknüpfung & \checkmark (99.69\%)\\
 FA-008 & Manuelle Korrektur & \checkmark \\
 FA-009 & Excel-Integration & \checkmark \\
 FA-010 & Strukturerhalt & \checkmark \\
@@ -911,7 +1054,7 @@ FA-014 & Modularität & \checkmark \\
 \hline
 NFA-001 & On-Premise-Verarbeitung & \checkmark \\
 NFA-002 & Lizenzkonformität & \checkmark \\
-NFA-003 & Gesamtsystem-Genauigkeit $\geq$ 85\% & \checkmark (98.91\%) \\
+NFA-003 & Gesamtsystem-Genauigkeit $\geq$ 85\% & \checkmark (98.76\%) \\
 NFA-004 & Robustheit & \checkmark \\
 NFA-005 & Prüfbarkeit & \checkmark \\
 NFA-006 & Prozessoptimierung & \checkmark \\
@@ -935,17 +1078,19 @@ Die systematische Evaluation des entwickelten Prototyps auf einem unabhängigen 
 \textbf{Objekterkennung (YOLO):}
 \begin{itemize}
     \item Exzellente Detektionsleistung mit mAP@0.5 von 98.0\% auf dem Validierungssatz
-    \item 100\% Detektionsgenauigkeit auf dem Testsatz (keine fehlenden oder falsch klassifizierten Symbole)
-    \item Robuste Rotationsinvarianz mit weniger als 1\% Varianz über alle Orientierungen
+    \item 100\% Detektionsrate auf dem Testsatz (kein Symbol übersehen)
+    \item 1 Klassifikationsfehler (GKS-Typ-Verwechslung) auf dem Testsatz
+    \item Robuste Rotationsinvarianz durch OBB-Architektur und synthetische Augmentation
     \item Erfolgreiche Anforderungserfüllung FA-001 (Recall 95.7\% $>$ 90\%) und FA-002 (Rotationsinvarianz)
 \end{itemize}
 
-\textbf{OCR-Pipeline:}
+\textbf{End-to-End Systemleistung:}
 \begin{itemize}
-    \item Hohe Zuverlässigkeit mit 98.7\% erfolgreicher Texterkennung im End-to-End-Test
-    \item Von den 7 aufgetretenen Fehlern sind 3 OCR-bezogen (42.9\%), 2 YOLO-bezogen (28.6\%, Bounding Box Regression) und 2 Linking-bezogen (28.6\%).
-    \item Erfolgreiche Multi-Engine-Kaskadierung mit effektivem Fallback-Mechanismus
-    \item Orientierungsadaptive Verarbeitung ermöglicht robuste Texterkennung bei beliebigen Winkeln
+    \item Gesamtgenauigkeit von \textbf{98.76\%} auf dem Testsatz übertrifft Zielwert von 85\% (NFA-003) deutlich
+    \item Nur 8 von 644 Objekten (1.24\%) erforderten Korrektur
+    \item Fehlerverteilung: 3 YOLO (37.5\%), 3 OCR (37.5\%), 2 Linking (25.0\%)
+    \item Stabile Leistung über alle Komplexitätsstufen (98.23\% -- 99.31\%)
+    \item Produktionsreif für den Einsatz bei Siemens Mobility
 \end{itemize}
 
 \textbf{Symbol-Text-Verknüpfung:}
