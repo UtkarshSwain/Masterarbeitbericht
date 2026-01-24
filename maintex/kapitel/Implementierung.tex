@@ -96,7 +96,7 @@ Die Leistungsfähigkeit eines objekterkennenden Modells hängt direkt von der Qu
 
 Die initialen Gleispläne lagen im PDF-Format vor und mussten zunächst in ein für die Annotation geeignetes Bildformat überführt werden. Hierzu wurde die Python-Bibliothek PyMuPDF eingesetzt, welche eine zuverlässige Rasterisierung von PDF-Dokumenten ermöglicht. Die Konvertierung erfolgte mit einer Auflösung von 500 DPI (dots per inch), was einem Skalierungsfaktor von $\frac{500}{72} \approx 6.94$ gegenüber der Standard-PDF-Auflösung entspricht. Diese hohe Auflösung wurde gewählt, um auch kleine Symbole wie Gleiskoppelspulenplatten oder Isolierstöße mit ausreichender Detailgenauigkeit darzustellen.
 
-Nach der Rasterisierung wurden die hochauflösenden Bilder in kleinere, überlappende Bildausschnitte segmentiert. Die gewählte Segmentgröße betrug $1024 \times 1024$ Pixel. Diese Dimensionierung stellt einen Kompromiss dar zwischen ausreichendem Kontext für die Objekterkennung und der effizienten Verarbeitung auf GPU-Systemen mit begrenztem Videospeicher. Größere Tiles würden zwar mehr Kontext bieten, jedoch den verfügbaren VRAM der Trainings-GPU (NVIDIA, AWS Instance g4dn.xlarge, 16 GB VRAM) überschreiten und damit das Training unmöglich machen oder die Batch-Größe unzulässig reduzieren.
+Nach der Rasterisierung wurden die hochauflösenden Bilder in kleinere, überlappende Bildausschnitte segmentiert. Die gewählte Segmentgröße für die Annotation und das Training betrug $1024 \times 1024$ Pixel, entsprechend der YOLO-Eingabegröße. Für die Inferenz werden größere Tiles ($2048 \times 2048$ Pixel) verwendet und vor der Modellverarbeitung auf $1024 \times 1024$ Pixel herunterskaliert (siehe Abschnitt~\ref{Inferenz}). Diese Dimensionierung stellt einen Kompromiss dar zwischen ausreichendem Kontext für die Objekterkennung und der effizienten Verarbeitung auf GPU-Systemen mit begrenztem Videospeicher. Größere Tiles würden zwar mehr Kontext bieten, jedoch den verfügbaren VRAM der Trainings-GPU (NVIDIA, AWS Instance g4dn.xlarge, 16 GB VRAM) überschreiten und damit das Training unmöglich machen oder die Batch-Größe unzulässig reduzieren.
 
 \subsubsection{Annotationsprozess}
 
@@ -169,6 +169,14 @@ Die Daten wurden in eine standardisierte COCO-Verzeichnisstruktur (Abbildung \re
     \caption{COCO-konforme Datensetstruktur für YOLOv8-OBB Training}
     \label{fig:COCODatenset}
 \end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.95\textwidth]{images/Kapitel7/labels.jpg}
+    \caption{Charakteristika des Trainingsdatensatzes: (oben links) Klassenverteilung mit absoluten Instanzzahlen, (unten links) räumliche Verteilung der Bounding-Box-Zentren, (unten rechts) Größenverteilung der annotierten Objekte in normalisierten Koordinaten.}
+    \label{fig:labels_distribution}
+\end{figure}
+Abbildung~\ref{fig:labels_distribution} visualisiert die Charakteristika des annotierten Trainingsdatensatzes. Die Klassenverteilung zeigt eine deutliche Dominanz der Koordinaten-Klasse (5.945 Instanzen), gefolgt von Signalen (1.875 Instanzen). Diese Ungleichverteilung spiegelt die tatsächliche Häufigkeit der Symbole in realen Gleisplänen wider und wurde bewusst beibehalten, um das Modell auf praxisnahe Verteilungen zu trainieren. Die räumliche Verteilung der Bounding-Box-Zentren zeigt eine gleichmäßige Abdeckung des Bildbereichs, während die Größenverteilung die charakteristisch kleinen Objektgrößen der Gleisplansymbole verdeutlicht.
 \subsubsection{Synthetische Datenaugmentation durch Rotation}
 
 Um die Robustheit des Modells gegenüber beliebigen Symbolorientierungen zu verbessern und die Klassenbalance zu optimieren, wurde eine gezielte synthetische Augmentation durch Rotation implementiert. Diese Strategie adressiert zwei zentrale Herausforderungen:
@@ -463,7 +471,7 @@ Die resultierende Pixmap wird in ein RGB-Array mit den Dimensionen $H \times W \
 
 \subsubsection{Tiling-Strategie}
 \label{subsubsec:tiling_strategie}
-Da die resultierenden Bilder mit mehreren Millionen Pixeln die Eingabegröße des YOLO-Modells ($1024 \times 1024$) bei weitem überschreiten, wird das Vollbild in überlappende Kacheln (Tiles) zerlegt. Die Tile-Größe beträgt $T = 2048 \times 2048$ Pixel, was eine Verarbeitung auf gängigen GPUs ermöglicht und gleichzeitig ausreichend Kontext für die Detektion bietet.
+Da die resultierenden Bilder mit mehreren Millionen Pixeln die Eingabegröße des YOLO-Modells ($1024 \times 1024$) bei weitem überschreiten, wird das Vollbild in überlappende Kacheln (Tiles) zerlegt. Die Tile-Größe beträgt $T = 2048 \times 2048$ Pixel, was eine Verarbeitung auf gängigen GPUs ermöglicht und gleichzeitig ausreichend Kontext für die Detektion bietet.Die extrahierten Tiles mit einer Größe von $2048 \times 2048$ Pixeln werden vor der YOLO-Inferenz auf die Trainingsgröße von $1024 \times 1024$ Pixeln herunterskaliert (Downsampling). Die resultierenden Bounding-Box-Koordinaten werden anschließend mit dem Faktor 2 multipliziert, um die korrekten Positionen im Originaltile zu erhalten. Dieses Vorgehen ermöglicht eine höhere effektive Auflösung bei der Symbolerkennung, da feinere Details im größeren Eingabebild erhalten bleiben, bevor das Downsampling erfolgt.
 
 \begin{figure}[ht]
     \centering
@@ -663,6 +671,7 @@ Abbildung \ref{fig:halo_tiling} veranschaulicht dieses Prinzip: Das neuronale Ne
     \label{fig:halo_tiling}
 \end{figure}
 \FloatBarrier
+Der Halo-Bereich von 128 Pixeln dient als zusätzlicher Kontextbereich um jedes Tile und ist unabhängig vom Overlap. Während der Overlap (256 Pixel) die Mindestüberlappung zwischen benachbarten Tiles definiert, um Objekte an Tile-Grenzen zu erfassen, stellt der Halo sicher, dass Objekte nahe dem Tile-Rand ausreichend Kontextinformation für eine zuverlässige Erkennung haben. Detektionen, deren Zentrum im Halo-Bereich liegt, werden beim NMS-Schritt gefiltert.
 \subsubsection{Winkeladaptive Parameterauswahl}
 \label{subsubsec:winkelnormalisierung}
 Eine Besonderheit der Implementierung besteht in der winkeladaptiven Anpassung der Bounding-Box-Parameter für jede Detektion. Nach der initialen YOLO-Detektion, die eine OBB in Form von $(c_x, c_y, w, h, \theta)$ liefert, werden die Dimensionen $w$ und $h$ sowie das Padding basierend auf dem Rotationswinkel $\theta$ angepasst.
@@ -1109,10 +1118,10 @@ Verschiedene Symbolklassen im Gleisplan haben unterschiedliche visuelle Eigensch
 
 Das Padding erweitert den von YOLO gelieferten Bildausschnitt, um sicherzustellen, dass der gesamte Text erfasst wird. Oft liegt der Text teilweise außerhalb der detektierten Bounding Box, besonders bei Signalen, wo die Beschriftung über oder neben dem eigentlichen Symbol sein kann.
 
-Die Größe des Paddings wird nicht absolut (z.B. \enquote{10 Pixel}), sondern relativ zur Größe der Bounding Box berechnet. Dies stellt sicher, dass auch bei unterschiedlichen Skalierungen der Gleispläne das Padding angemessen ist. Die Berechnung erfolgt durch:
+Die Größe des Paddings wird primär relativ zur Größe der Bounding Box berechnet. Um jedoch auch bei sehr schmalen Objekten (z.B. Signalmasten) eine Mindesterfassung zu gewährleisten, wird zusätzlich ein absolutes Minimum pmin=10 Pixel definiert. Die Berechnung erfolgt durch:
 
-\begin{equation}
-p_x = \alpha \cdot w_{\text{bbox}}, \quad p_y = \beta \cdot h_{\text{bbox}}
+\begin{equation} 
+    p_x = \max(\alpha \cdot w_{\text{bbox}}, p_{\text{min}}), \quad p_y = \max(\beta \cdot h_{\text{bbox}}, p_{\text{min}}) 
 \end{equation}
 
 wobei $p_x$ das horizontale Padding (in Pixeln), $p_y$ das vertikale Padding (in Pixeln), $w_{\text{bbox}}$ die Breite der Bounding Box, $h_{\text{bbox}}$ die Höhe der Bounding Box, und $\alpha$ sowie $\beta$ klassenspezifische Faktoren sind.
@@ -1134,7 +1143,7 @@ Koordinate & 0.25 & 0.25 & Längere Zahlenfolgen, mehr Platz nötig \\
 \caption{Klassenspezifische Padding-Faktoren und deren Begründung}
 \end{table}
 
-Für Signale wurde beispielsweise ein Faktor von $\alpha = 0.2$ (20\% der Breite) und $\beta = 0.3$ (30\% der Höhe) als optimal ermittelt. Das größere vertikale Padding berücksichtigt, dass Signal-Beschriftungen typischerweise oberhalb des Symbols positioniert sind. Bei einer Bounding Box von 100×50 Pixeln würde dies ein Padding von 20 Pixeln horizontal und 15 Pixeln vertikal bedeuten.
+Für Signale wurde beispielsweise ein Faktor von $\alpha = 0.2$ (20\% der Breite) und $\beta = 0.3$ (30\% der Höhe) als optimal ermittelt. Das größere vertikale Padding berücksichtigt, dass Signal-Beschriftungen typischerweise oberhalb des Symbols positioniert sind. Bei einer Bounding Box von $100 \times 50$ Pixeln würde dies ein Padding von 20 Pixeln horizontal und 15 Pixeln vertikal bedeuten.
 
 Das finale erweiterte Bild hat dann die Dimensionen $(h + 2p_y) \times (w + 2p_x)$, wobei das \enquote{2} berücksichtigt, dass das Padding sowohl oben und unten als auch links und rechts hinzugefügt wird.
 
@@ -1296,8 +1305,8 @@ Die Schwelle von 40 Pixeln wurde empirisch bestimmt: Tests zeigten, dass die OCR
 Nach der OCR-Verarbeitung durchläuft jedes Ergebnis mehrere Validierungsschritte, um die Qualität der Extraktion sicherzustellen und offensichtliche Fehler zu erkennen.
 
 \subsubsection{Regelbasierte Textvalidierung}
-
-\begin{table}[h]
+Die in Tabelle~\ref{tab:regex_patterns} (Kapitel~\ref{chap:theoretischeundtechnischegrundlagen}) eingeführten domänenspezifischen Validierungsmuster werden wie folgt implementiert:
+\begin{table}[H]
 \centering
 \small
 \begin{tabular}{|l|p{3.7cm}|p{4.5cm}|c|}
@@ -1952,7 +1961,8 @@ Die implementierte Symbol-Text-Verknüpfung kombiniert mehrere komplementäre An
     \item \textbf{Komplexe Relationserkennung}: Spezielle Algorithmen für Fahrtrichtungsdetektion und Haltepunkt-Gruppierung behandeln semantisch reiche Objektbeziehungen.
 \end{enumerate}
 
-Die Kombination dieser Techniken erreicht eine Linking-Genauigkeit von über 92\% auf den Testdaten (detaillierte Evaluierung in Kapitel \ref{chap:evaluation}), wobei die verbleibenden Fehler hauptsächlich auf ambige Fälle zurückzuführen sind, in denen mehrere Texte ähnliche Distanzen zum Symbol aufweisen.
+Die Kombination dieser Techniken erreicht eine hohe Linking-Genauigkeit, die in Kapitel~\ref{chap:evaluation} quantitativ evaluiert wird.
+
 
 \section{Datenvalidierung und Qualitätssicherung}
 \label{sec:validierungundsicherung}
@@ -1966,7 +1976,7 @@ durch strukturierte Fehlerberichte).
 \subsection{Validierungsarchitektur}
 
 \subsubsection{Grundstruktur des Validierungsframeworks}
-Die Validierungsarchitektur basiert auf einem modularen Framework, das die extrahierten Daten in tabellarischer Form entgegennimmt und eine strukturierte Fehleranalyse durchführt. Das zentrale Validierungsmodul analysiert dabei einen DataFrame, der alle Erkennungen aus der YOLO-Pipeline, die zugehörigen OCR-Texte sowie die durch das Linking-Modul hergestellten Verknüpfungen enthält. Die Ausgabe der Validierung besteht aus einer Liste von Validierungsproblemen, wobei jedes Problem durch mehrere Attribute charakterisiert wird.
+Die Validierungsarchitektur basiert auf einem modularen Framework, das die extrahierten Daten in tabellarischer Form entgegennimmt und eine strukturierte Fehleranalyse durchführt. Das zentrale Validierungsmodul prüft dabei einen DataFrame, der alle Erkennungen aus der YOLO-Pipeline, die zugehörigen OCR-Texte sowie die durch das Linking-Modul hergestellten Verknüpfungen enthält. Die Ausgabe der Validierung besteht aus einer Liste von Validierungsproblemen, wobei jedes Problem durch mehrere Attribute charakterisiert wird.
 
 Ein Validierungsproblem wird durch folgende Eigenschaften beschrieben. Der Schweregrad klassifiziert das Problem in die Kategorien Fehler, Warnung oder Information, wobei Fehler kritische Inkonsistenzen darstellen, die zwingend einer Korrektur bedürfen, während Warnungen auf potenzielle Probleme hinweisen, die einer Überprüfung bedürfen. Die Kategorie beschreibt die Art des Problems, beispielsweise Formatfehler, Duplikate oder fehlende Daten. Das betroffene Feld identifiziert die spezifische Datenspalte, in der das Problem auftritt. Bei automatisch korrigierbaren Problemen wird zusätzlich ein Korrekturvorschlag mit dem empfohlenen neuen Wert bereitgestellt. Die Konfidenz des Korrekturvorschlags wird als normalisierter Wert im Intervall $[0, 1]$ angegeben, wobei höhere Werte eine größere Zuverlässigkeit der vorgeschlagenen Korrektur indizieren.
 
@@ -2146,7 +2156,7 @@ Ein spezialisierter Tab ist den automatisch korrigierbaren Problemen gewidmet un
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.9\textwidth]{images/Kapitel6/Validierungsdialog.png} 
-\caption{Schematische Darstellung der fünf-Tab Validierungsdialogstruktur}
+\caption{Schematische Darstellung der fünfteiligen Tab-Struktur des Validierungsdialogs}
 \label{fig:validation_dialog_ui}
 \end{figure}
 
@@ -2332,13 +2342,11 @@ Die systematische Identifikation und Dokumentation von Änderungen zwischen vers
 
 \subsubsection{Generierung eindeutiger Identifikatoren}
 
-Für die eindeutige Identifikation extrahierter Objekte über verschiedene Planversionen hinweg wird ein deterministischer Unique Identifier (UID) generiert. Die UID-Generierung erfolgt durch Konkatenation der Objektklasse mit dem normalisierten Textinhalt:
+Für die eindeutige Identifikation extrahierter Objekte über verschiedene Planversionen hinweg wird ein deterministischer Unique Identifier (UID) generiert. Die UID-Generierung erfolgt durch Konkatenation der Objektklasse, des normalisierten Textinhalts und eines räumlichen Index, um Dopplungen bei identischem Textinhalt zu vermeiden:
 
-\begin{equation}
-\text{UID}(o) = \text{class}(o) \oplus \text{``\_''} \oplus \text{normalize}(\text{content}(o))
-\end{equation}
+\begin{equation} \text{UID}(o) = \text{class}(o) \oplus \text{normalize}(\text{content}(o)) \oplus \text{GridIndex}(x, y) \end{equation}
 
-wobei $\oplus$ die String-Konkatenation bezeichnet und die Normalisierungsfunktion $\text{normalize}: \Sigma^* \rightarrow \Sigma^*$ Leerzeichen entfernt und Sonderzeichen standardisiert, um konsistente Identifikatoren zu gewährleisten.
+wobei GridIndex(x,y) die Koordinaten auf ein grobes Raster abbildet, um Robustheit gegen minimale Pixelverschiebungen zu gewährleisten, während Identität bei gleicher Semantik an verschiedenen Orten unterschieden wird. $\oplus$ bezeichnet die String-Konkatenation und die Normalisierungsfunktion $\text{normalize}: \Sigma^* \rightarrow \Sigma^*$ Leerzeichen entfernt und Sonderzeichen standardisiert, um konsistente Identifikatoren zu gewährleisten.
 \begin{figure}[h]
 \centering
 \begin{tikzpicture}[
@@ -2520,7 +2528,7 @@ Die Implementierung umfasst eine dedizierte grafische Benutzeroberfläche zur Vi
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.98\textwidth]{images/Kapitel6/änderungsmangement window.png}
+\includegraphics[width=0.98\textwidth]{images/Kapitel6/diff_dialog.png}
 \caption{Versionsvergleichs-Dialog mit tabellarischer Auflistung aller Änderungen zwischen zwei Planversionen}
 \label{fig:diff_ui}
 \end{figure}
@@ -3014,7 +3022,22 @@ s_B = s_A \cdot \frac{h_B}{h_A}
 \end{equation}
 
 wobei $s_A$ die Scrollposition in Viewer A, $h_A$ dessen Gesamthöhe und entsprechend für Viewer B. Dies gewährleistet proportionale Navigation bei unterschiedlichen Seitengrößen.
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth]{images/Kapitel6/diff_dialog2.png}\caption{Änderungsvergleich-Dialog}
+\label{fig:diff_dialog}
+\end{figure}
 
+Abbildung~\ref{fig:diff_dialog} zeigt den Dialog zum Vergleich zweier Planversionen. 
+Nach Auswahl der zu vergleichenden PDFs (PDF~1 als Referenz, PDF~2 als aktualisierte 
+Version) analysiert das System automatisch alle Unterschiede. Die Zusammenfassung 
+kategorisiert die Änderungen in fünf Typen: \textit{Hinzugefügt} (neue Elemente in 
+PDF~2), \textit{Gelöscht} (fehlende Elemente in PDF~2), \textit{Verschoben} (gleiche 
+Kennung, unterschiedliche km-Position), \textit{Modifiziert} (geänderte Feldwerte) 
+und \textit{Unverändert}. Im dargestellten Beispiel wurden zwischen zwei Versionen 
+des Plans SgSl0603 insgesamt 41 Änderungen erkannt: 21 hinzugefügte, 15 gelöschte 
+und 5 verschobene Elemente bei 224 unveränderten Objekten. Die einzelnen Tabs 
+ermöglichen die detaillierte Inspektion jeder Änderungskategorie.
 \subsection{Export-Funktionalität}
 \label{subsec:exportfunktionlität}
 \subsubsection{Excel-Export}
@@ -3108,11 +3131,43 @@ Der JSON-Export folgt einem hierarchischen Schema mit vollständigen Geometrieda
 \end{verbatim}
 
 Diese Struktur ermöglicht die vollständige Rekonstruktion der Extraktionsergebnisse und eignet sich für Weiterverarbeitung in anderen Systemen.
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth]{images/Kapitel6/export_dialog_json.png}
+\caption{Export-Dialog mit Formatauswahl. Das Dropdown-Menü (rechts) bietet 
+drei Ausgabeformate: Excel (.xlsx), CSV (.csv) und JSON (.json). }
+\label{fig:export_format_selection}
+\end{figure}
 
+Gemäß Anforderung \textbf{NFA-012} unterstützt das System drei Ausgabeformate:
+
+\begin{itemize}
+    \item \textbf{Excel (.xlsx):} Primärformat für Engineering-Workflows mit 
+    Unterstützung für Formatierung, mehrere Arbeitsblätter und Formelerhalt
+    \item \textbf{CSV (.csv):} Textbasiertes Format für einfachen Datenaustausch 
+    und Import in Drittsysteme
+    \item \textbf{JSON (.json):} Maschinenlesbares Format für API-Anbindung; 
+    die Struktur ist konfigurierbar (Records als Liste von Objekten oder 
+    spaltenbasiertes Array)
+\end{itemize}
+
+Die Formatauswahl erfolgt über ein Dropdown-Menü im Export-Dialog 
+(Abbildung~\ref{fig:export_format_selection}).
 \subsubsection{Export des Differenzberichts}
 
-Für Versionsvergleiche wird ein dediziertes Excel-Sheet mit den Spalten [\textit{UID, Status, Alte Werte, Neue Werte, Position Alt, Position Neu}] generiert. Dies ermöglicht eine nachvollziehbare Änderungshistorie zwischen Planversionen.
-
+Die erkannten Änderungen können über die Schaltfläche \textit{Exportieren} in eine 
+Excel-Datei ausgegeben werden (Abbildung~\ref{fig:diff_export}). Die exportierte 
+Arbeitsmappe enthält separate Arbeitsblätter für jede Änderungskategorie 
+(Zusammenfassung, Hinzugefügt, Gelöscht, Verschoben), wodurch eine strukturierte 
+Dokumentation der Planänderungen für Revisionszwecke ermöglicht wird. Bei 
+verschobenen Elementen werden sowohl der alte als auch der neue km-Wert sowie 
+die Differenz in Metern angegeben.
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth]{images/Kapitel6/diff_export.png}
+\caption{Änderungsexport}
+\label{fig:diff_export}
+\end{figure}
 
 
 \section{Zusammenfassung}

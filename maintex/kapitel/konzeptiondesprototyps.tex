@@ -25,9 +25,9 @@ Das System akzeptiert Gleispläne in PDF Format als primäre Eingabe. PDF wurde 
 
 
 \subsection{Vorverarbeitung}
-Die Vorverarbeitung transformiert die PDF Dokumente in ein für die nachfolgenden KI Module geeignetes Format. Dieser Schritt ist essentiell, weil Deep Learning basierte Objekterkennungsmodelle pixelbasierte Eingaben benötigen. Kernaufgaben des Vorverarbeitungmoduls: 
+Die Vorverarbeitung transformiert die PDF Dokumente in ein für die nachfolgenden KI Module geeignetes Format. Dieser Schritt ist essentiell, weil Deep Learning basierte Objekterkennungsmodelle pixelbasierte Eingaben benötigen. Kernaufgaben des Vorverarbeitungsmoduls: 
 \begin{enumerate}
-    \item \textbf{Rasterisierung}: Konvertierung der PDF Seiten in hochauflösende Bilddateien (z.B. PNG, JPEG). Die Auflösung muss ausreichend hoch gewählt werden, um auch kleine Symbole und Beschriftungen erkennbar zu machen, typischerweise \>300 DPI.
+    \item \textbf{Rasterisierung}: Konvertierung der PDF Seiten in hochauflösende Bilddateien (z.B. PNG, JPEG). Die Auflösung muss ausreichend hoch gewählt werden, um auch kleine Symbole und Beschriftungen erkennbar zu machen, typischerweise $\>300$ DPI.
     \item \textbf{Normalisierung}: Einheitliche Farbkanalbehandlung (z.B. Konvertierung zu Graustufen) zur Reduktion der Datenkomplexität bei gleichzeitiger Beibehaltung der relevanten visuellen Information.
     \item \textbf{Tiling (Kachelbildung)}: Große Gleispläne überschreiten häufig die maximale Eingabegröße moderner Objekterkennung (typischerweise 640x640 bis 1024x1024 Pixel). Daher wird das Gesamtbild in überlappende Ausschnitte (Tiles) unterteilt. Die Überlappung stellt sicher, dass Symbole an Kachelgrenzen nicht unvollständig erfasst werden.  
 \end{enumerate}
@@ -399,10 +399,10 @@ bedingten Formatierung und Formelintegration, wird in Abschnitt \ref{subsec:expo
 (Excel-Export-Modul) beschrieben. Diese Architekturentscheidung erfüllt die Anforderungen \textbf{FA-009} (Excel-Integration), 
 \textbf{FA-010} (Strukturerhalt bei bestehendem Template) und \textbf{NFA-012} (Ausgabeformate).
 \subsection{Rückverfolgbarkeit: Koordinaten + Bildausschnitte}
-Die gewählte Lösung für die Rückverfolgbarkeit ist ein hybrider Ansatz mit Koordinaten in Excel und optionaler Miniaturbildgenerierung. Und für die UI-Interaktion wurde eine einfache Methode verwendet: Wird die Tabellenzeile in der Benutzeroberfläche angeklickt, so wird dem Benutzer ein vergrößerter Bereich von $2048 \times 2048$ px im Layout angezeigt, wobei die entsprechenden Datenüberlagerungen in leuchtendem Rot hervorgehoben sind.\\
+Die gewählte Lösung für die Rückverfolgbarkeit ist ein hybrider Ansatz mit Koordinaten in Excel und optionaler Miniaturbildgenerierung. Für die UI-Interaktion wurde eine einfache Methode verwendet: Wird die Tabellenzeile in der Benutzeroberfläche angeklickt, so wird dem Benutzer ein vergrößerter Bereich von $2048 \times 2048$ px im Layout angezeigt, wobei die entsprechenden Datenüberlagerungen in leuchtendem Rot hervorgehoben sind.\\
 Die Gründe für diese gewählte Lösung sind:
 \begin{itemize}
-    \item Kompaktheit: Die Koordinaten benötigen nur 8 Byte und 50 KB pro Miniaturansicht, was einen sehr geringen Speicherplatzbedarf darstellt und eine sehr hohe Funktionalität bieten würde. 
+    \item Kompaktheit: Die Koordinaten benötigen nur 8 Byte und 50 KB pro Miniaturansicht, was einen sehr geringen Speicherplatzbedarf darstellt und eine sehr hohe Funktionalität bieten. 
     \item Flexibilität: Auf Wunsch des Benutzers kann die Benutzeroberfläche den entsprechenden vergrößerten Bereich für eine genauere und präzisere Analyse darstellen. 
     \item Normkonformität: Diese Methode erfüllt außerdem die Anforderungen der VDI 1000:2017-06 hinsichtlich Rückverfolgbarkeit.\cite{VDI1000} 
 \end{itemize} 

@@ -14,8 +14,8 @@ Eine zentrale Anforderung ist die zuverlässige Detektion bahntechnischer Symbol
     \item \textbf{FA-001}\label{req:FA-001} \textbf{Erkennungsrate:} Das System muss mindestens 90\,\% der definierten Symbolklassen automatisiert erkennen (gemessen als Recall des YOLO-Modells).
 
     \item \textbf{FA-002}\label{req:FA-002} \textbf{Rotationsinvarianz:} Da Symbole in Gleisplänen der Topologie folgend in beliebigen Winkeln angeordnet sein können, muss die Erkennung rotationsinvariant erfolgen. Das System muss in der Lage sein, Objekte unabhängig von ihrer Orientierung ($0^\circ$ bis $360^\circ$) korrekt zu klassifizieren und deren Winkel (Rotation) präzise zu bestimmen.
-    \item \textbf{FA-003}\label{req:FA-003} \textbf{Zielobjekte:} Basierend auf der Domänenanalyse wurden die in Tabellen \ref{tab:kernklassen} und \ref{tab:auxiliarklassen} dargestellten Objekte als Detektionsziele definiert. Diese gliedern sich in \textbf{Kernklassen}, die für die Planungsaufgaben bei Siemens Mobility essentiell sind und vollständig evaluiert werden, sowie \textbf{Auxiliarklassen}, die zur Demonstration der Systemerweiterbarkeit implementiert werden.
-\end{itemize} % <--- THIS WAS MISSING
+    \item \textbf{FA-003}\label{req:FA-003} \textbf{Zielobjekte:} Basierend auf der Domänenanalyse wurden die in den Tabellen \ref{tab:kernklassen} und \ref{tab:auxiliarklassen} dargestellten Objekte als Detektionsziele definiert. Diese gliedern sich in \textbf{Kernklassen}, die für die Planungsaufgaben bei Siemens Mobility essentiell sind und vollständig evaluiert werden, sowie \textbf{Auxiliarklassen}, die zur Demonstration der Systemerweiterbarkeit implementiert werden.
+\end{itemize} 
 \subsubsection{Kernklassen (produktionsrelevant)}
 
 Die folgenden fünf Objektklassen bilden den Kern der Extraktionsaufgabe und werden 
@@ -153,8 +153,7 @@ der aktuellen Planungsaufgabe und werden daher nicht detailliert evaluiert.
 
 \textbf{Hinweis:} Die Auxiliarklassen werden im Rahmen des YOLOv8-Trainings 
 (Kapitel~\ref{sec:objekterkennungmityolov8obb}) mit annotiert und erreichen 
-vergleichbare Detektionsleistungen wie die Kernklassen (siehe 
-Anhang~\ref{app:all_classes}). Die Fokussierung der End-to-End-Evaluation auf 
+vergleichbare Detektionsleistungen wie die Kernklassen. Die Fokussierung der End-to-End-Evaluation auf 
 die Kernklassen erfolgt aufgrund ihrer direkten Relevanz für die 
 Projektierungsaufgaben bei Siemens Mobility.
 
@@ -219,7 +218,7 @@ Projektierungsaufgaben bei Siemens Mobility.
             \item Verschoben: Identische Kennung, unterschiedliche Position
             \item Modifiziert: Gleiche Position, geänderter Text
         \end{itemize}
-    Export als separates Excel-Sheet mit Spalten: Objektklasse, Kennung, Änderungstyp, Alt-Wert, Neu-Wert, Koordinaten. Visuelle Darstellung: farbkodierte Overlays (grün/rot/orange).
+    Export als separates Excel-Sheet mit Spalten: Objektklasse, Kennung, Änderungstyp, Alt-Wert, Neu-Wert, Koordinaten.
     \begin{figure}[H]
     \centering
     \includegraphics[width=9cm]{images/Kapitel4/änderungsample.png} 
@@ -287,7 +286,7 @@ Die Datengrundlage bilden reale Gleispläne aus dem Bereich \textit{Trainguard M
     \item \textbf{NFA-010}\label{req:NFA-010} \textbf{Eingabeformate:} Das System muss folgende Eingabeformate verarbeiten können:
     \begin{itemize}
         \item PDF-Dateien (Vektor- und Rastergrafiken)
-        \item Bilddateien (PNG, JPG) mit Mindestauflösung $\geq 300$ dpi
+        \item Bilddateien (PNG, JPG) mit Mindestauflösung $\geq 300$ DPI
     \end{itemize}
     
     \item \textbf{NFA-011}\label{req:NFA-011} \textbf{Datenquellen:} Das System muss mit folgenden Datenquellen kompatibel sein:

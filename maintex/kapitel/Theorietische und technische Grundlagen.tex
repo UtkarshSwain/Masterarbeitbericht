@@ -31,7 +31,7 @@ Obwohl diese Pläne in der heutigen Ingenieurspraxis mittels CAD-Systemen (Compu
 \label{sec:Bahntechnischesymbole}
 In den Gleisplänen kommen zahlreiche Symbole zum Einsatz, um die verschiedenen technischen Objekte, Anlagenkomponenten und zusätzlichen Informationen übersichtlich darzustellen. Diese Symboldarstellung dient nicht nur der Visualisierung der Gleiskomponenten, sondern bildet auch die Grundlage für Planung, Projektierung, Dokumentation und spätere Anwendung. \cite{signallayout} Da der Gleisplan eine zentrale Schnittstelle zwischen technischer Planung, 
 betrieblicher Umsetzung und sicherheitstechnischen Systemen darstellt, ist eine präzise, klare und einheitliche Symbolklassifizierung notwendig. Die für diese Arbeit relevanten Symbolklassen gliedern sich in drei funktionale 
-Kategorien (siehe Tabelle \ref{tab:symbol_categories}):
+Kategorien (siehe Tabelle~\ref{tab:symbol_categories}):
 
 \begin{table}[h]
 \centering
@@ -69,7 +69,7 @@ Für technische Anwendungen wie die Analyse von Konstruktionszeichnungen oder Gl
 \subsection{Objekterkennung in technischen CAD-Zeichnungen}
 \label{subsec:cad_spezifisch}
 
-Im Gegensatz zu natürlichen Szenen weisen technische Konstruktionszeichnungen spezifische Charakteristika auf, die dedizierte Lösungsansätze erfordern. Diese domänenspezifischen Besonderheiten haben direkten Einfluss auf die Wahl geeigneter Erkennungsverfahren und definieren die in Kapitel \ref{chap:anforderungen} formulierten funktionalen Anforderungen an das System.
+Im Gegensatz zu natürlichen Szenen weisen technische Konstruktionszeichnungen spezifische Charakteristika auf, die dedizierte Lösungsansätze erfordern. Diese domänenspezifischen Besonderheiten haben direkten Einfluss auf die Wahl geeigneter Erkennungsverfahren und definieren die in Kapitel~\ref{chap:anforderungen} formulierten funktionalen Anforderungen an das System.
 
 \subsubsection{Domänenspezifische Eigenschaften}
 
@@ -77,7 +77,7 @@ Technische Zeichnungen unterscheiden sich fundamental von natürlichen Bildern i
 
 Bahntechnische Symbole folgen standardisierten Bibliotheken gemäß EN-Normen oder kundenspezifischen Richtlinien. Die Variabilität innerhalb einer Symbolklasse ist somit deutlich geringer als bei natürlichen Objekten wie Fahrzeugen oder Personen, jedoch erschweren kundenspezifische Anpassungen die Generalisierung über verschiedene Planungsunternehmen hinweg. Ein durchschnittlicher Bahnhofsgleisplan enthält zwischen 500 und 2000 individuelle Symbole auf einer Fläche von wenigen Quadratmetern, was eine deutlich höhere Objektdichte als in typischen Computer-Vision-Benchmark-Datensätzen wie COCO \cite{Lin2014_COCO} oder Pascal VOC \cite{Everingham2010_PascalVOC} darstellt. Zum Vergleich: COCO-Bilder enthalten im Durchschnitt 7 bis 10 Objekte, während ein Gleisplanausschnitt von vergleichbarer Pixelgröße 50 bis 100 Symbole aufweisen kann.
 
-Anders als bei Objekten mit kanonischer Orientierung -- etwa Straßenverkehrsschilder (typischerweise frontal) oder Fußgänger (vertikal stehend) -- können bahntechnische Symbole und Textannotationen entlang der Gleisachsen in beliebigen Winkeln orientiert sein. Ein Weichensymbol kann beispielsweise in 16 verschiedenen Rotationen auftreten, die jeweils 22,5° Schritte zwischen 0° und 360° abdecken. Signale werden parallel zur Gleisachse positioniert, Gleisnummern folgen der Krümmung des Gleises. Diese Rotationsvariabilität ohne bevorzugte Ausrichtung erfordert rotationsinvariante Detektionsarchitekturen, deren Notwendigkeit in Abschnitt \ref{sec:obb} detailliert erläutert wird.
+Anders als bei Objekten mit kanonischer Orientierung -- etwa Straßenverkehrsschilder (typischerweise frontal) oder Fußgänger (vertikal stehend) -- können bahntechnische Symbole und Textannotationen entlang der Gleisachsen in beliebigen Winkeln orientiert sein. Ein Weichensymbol kann beispielsweise in 16 verschiedenen Rotationen auftreten, die jeweils $22,5^\circ$ Schritte zwischen $0^\circ$ und $360^\circ$ abdecken. Signale werden parallel zur Gleisachse positioniert, Gleisnummern folgen der Krümmung des Gleises. Diese Rotationsvariabilität ohne bevorzugte Ausrichtung erfordert rotationsinvariante Detektionsarchitekturen, deren Notwendigkeit in Abschnitt~\ref{sec:obb} detailliert erläutert wird.
 
 \subsubsection{Stand der Forschung}
 
@@ -108,13 +108,13 @@ Die Implementierung von CNN-basierten Objektdetektoren lässt sich in zwei Archi
 
 Zweistufige Detektoren wie Faster R-CNN \cite{Ren2015_FasterRCNN} separieren den Erkennungsprozess konzeptionell in zwei aufeinanderfolgende Phasen. Zunächst generiert ein Region Proposal Network (RPN) zwischen 100 und 300 Kandidatenregionen, die potenziell Objekte enthalten könnten. Diese Regionen werden anschließend durch ein separates Klassifikationsnetzwerk evaluiert, das sowohl die Objektklasse bestimmt als auch die Bounding-Box-Koordinaten verfeinert. Der Vorteil liegt in hoher Detektionspräzision, insbesondere bei kleinen oder teilweise verdeckten Objekten. Die sequenzielle Verarbeitung hunderter Kandidatenregionen führt jedoch zu Bildraten von lediglich 5 bis 10 Bildern pro Sekunde (Frames Per Second, FPS) auf moderner GPU-Hardware (Graphics Processing Unit).
 
-Für die Gleisplananalyse erweist sich diese Geschwindigkeit als kritisch. Ein durchschnittlicher Plan umfasst nach der Kachelungsstrategie (siehe Abschnitt \ref{subsubsec:tiling_strategie}) zwischen 150 und 300 Bildausschnitte. Während YOLO-Modelle typischerweise mit Eingangsgrößen von 640×640 oder 1024×1024 Pixeln arbeiten, werden für die Gleisplananalyse aufgrund der sehr kleinen Symbolgrößen Kacheln von 2048×2048 Pixeln verwendet (Details zur Kachelungsstrategie in Abschnitt \ref{subsubsec:tiling_strategie}). Bei einer Verarbeitungszeit von 100 bis 200 Millisekunden pro Kachel würde die Gesamtanalyse zwischen 15 Sekunden und 4 Minuten dauern. 
+Für die Gleisplananalyse erweist sich diese Geschwindigkeit als kritisch. Ein durchschnittlicher Plan umfasst nach der Kachelungsstrategie (siehe Abschnitt~\ref{subsubsec:tiling_strategie}) zwischen 150 und 300 Bildausschnitte. Während YOLO-Modelle typischerweise mit Eingangsgrößen von 640×640 oder 1024×1024 Pixeln arbeiten, werden für die Gleisplananalyse aufgrund der sehr kleinen Symbolgrößen Kacheln von 2048×2048 Pixeln verwendet (Details zur Kachelungsstrategie in Abschnitt~\ref{subsubsec:tiling_strategie}). Bei einer Verarbeitungszeit von 100 bis 200 Millisekunden pro Kachel würde die Gesamtanalyse zwischen 4 bis 15 Minuten dauern. Bei größeren Eingabebildern erfolgt ein automatisches Downsampling auf die konfigurierte Eingabegröße, wobei die Ausgabekoordinaten entsprechend zurückskaliert werden. 
 
 Einstufige Detektoren wie YOLO (You Only Look Once) \cite{redmon2016lookonceunifiedrealtime} adressieren diese Geschwindigkeitsproblematik durch eine fundamental andere Strategie. YOLO unterteilt das Eingabebild in ein regelmäßiges Raster von Zellen (beispielsweise 13×13 oder 26×26 Zellen bei kleineren Eingabegrößen, bzw. entsprechend größere Raster bei höheren Auflösungen). Für jede Zelle sagt das Netz in einem einzigen Vorwärtsdurchlauf direkt mehrere Aspekte voraus: Liegt in dieser Zelle ein Objekt? Wenn ja, welcher Objektklasse gehört es an? Wie hoch ist die Konfidenz dieser Vorhersage? Und wo genau innerhalb der Zelle befindet sich das Objekt? Diese parallele Verarbeitung aller Bildbereiche ermöglicht Inferenzgeschwindigkeiten von 40 bis über 100 Bildern pro Sekunde \cite{yolov8_ultralytics}. Moderne Varianten wie YOLOv8 erreichen durch architektonische Verbesserungen -- insbesondere Feature Pyramid Networks (FPN) \cite{Lin2017_FPN} für Multi-Scale-Detektion und verbesserte Loss-Funktionen -- vergleichbare oder sogar überlegene Präzision gegenüber zweistufigen Detektoren bei Beibehaltung der Echtzeitfähigkeit.
 
 Die Abwägung zwischen beiden Paradigmen muss im Kontext der Anwendungsanforderungen erfolgen. Für technische Gleispläne mit gut sichtbaren, scharf gerenderten Symbolen rechtfertigt die hohe Verarbeitungsgeschwindigkeit marginale Genauigkeitseinbußen. Einstufige Architekturen können bei technischen Zeichnungen vergleichbare Präzision erreichen (die konkrete Evaluation erfolgt in Kapitel~\ref{chap:evaluation}).
 
-Abbildung \ref{fig:two_stage_vs_one_stage} illustriert den fundamentalen Unterschied zwischen beiden Architekturparadigmen. Faster R-CNN generiert zunächst mehrere hundert Kandidatenregionen mittels RPN, die anschließend sequenziell klassifiziert werden müssen. YOLO hingegen sagt in einem einzigen Vorwärtsdurchlauf direkt die Bounding Boxes und Klassen voraus, was zu einer Beschleunigung um den Faktor 5 führt. Für die Analyse eines typischen Gleisplans mit 200 gekachelten Bildausschnitten (je 2048×2048 Pixel) reduziert sich die Gesamtverarbeitungszeit von etwa 4 Minuten (Faster R-CNN) auf unter 5 Sekunden (YOLO).
+Abbildung~\ref{fig:two_stage_vs_one_stage} illustriert den fundamentalen Unterschied zwischen beiden Architekturparadigmen. Faster R-CNN generiert zunächst mehrere hundert Kandidatenregionen mittels RPN, die anschließend sequenziell klassifiziert werden müssen. YOLO hingegen sagt in einem einzigen Vorwärtsdurchlauf direkt die Bounding Boxes und Klassen voraus, was zu einer Beschleunigung um den Faktor 5 führt. Für die Analyse eines typischen Gleisplans mit 200 gekachelten Bildausschnitten (je 2048×2048 Pixel) reduziert sich die Gesamtverarbeitungszeit von etwa 4 Minuten (Faster R-CNN) auf unter 5 Sekunden (YOLO).
 
 % ABBILDUNG 3.2: Two-Stage vs One-Stage
 \begin{figure}[H]
@@ -162,12 +162,12 @@ Abbildung \ref{fig:two_stage_vs_one_stage} illustriert den fundamentalen Untersc
 
 Das Training erfolgt supervised mit annotierten Bounding Boxes. Die konkreten 
 Trainingsparameter und Augmentationsstrategien werden in 
-Kapitel~\ref{chap:implementierung}, Abschnitt \ref{subsec:Modelltraining} dokumentiert.
+Kapitel~\ref{chap:implementierung}, Abschnitt~\ref{subsec:Modelltraining} dokumentiert.
 
 \subsection{Evaluationsmetriken}
 \label{subsec:evaluationsmetriken}
 
-Die Bewertung von Objektdetektoren erfordert standardisierte Metriken, die sowohl Lokalisierungsgenauigkeit als auch Klassifikationsgüte quantifizieren. Im Gegensatz zu einfachen Klassifikationsproblemen müssen Detektoren beide Aspekte simultan korrekt vorhersagen. Die nachfolgenden Metriken bilden die Grundlage für die in Kapitel \ref{chap:evaluation} präsentierte Systemevaluation.
+Die Bewertung von Objektdetektoren erfordert standardisierte Metriken, die sowohl Lokalisierungsgenauigkeit als auch Klassifikationsgüte quantifizieren. Im Gegensatz zu einfachen Klassifikationsproblemen müssen Detektoren beide Aspekte simultan korrekt vorhersagen. Die nachfolgenden Metriken bilden die Grundlage für die in Kapitel~\ref{chap:evaluation} präsentierte Systemevaluation.
 
 \subsubsection{Intersection over Union}
 
@@ -181,7 +181,7 @@ Die Intersection over Union (IoU) \cite{Everingham2010_PascalVOC} quantifiziert 
 
 Der IoU-Wert liegt im Intervall $[0, 1]$, wobei 0 keine Überlappung und 1 perfekte Übereinstimmung signalisiert. In der Praxis gilt eine Detektion als korrekt, wenn $\text{IoU} \geq 0.5$ -- das heißt, die Überlappung muss mindestens die Hälfte der Gesamtfläche betragen. Dieser Schwellenwert reflektiert einen Kompromiss zwischen Forderung nach Präzision und Toleranz gegenüber geringfügigen Positionsabweichungen. Für präzisionskritische Anwendungen werden teilweise höhere Schwellen (0.75 oder 0.9) verwendet \cite{Lin2014_COCO}.
 
-Abbildung \ref{fig:iou_visualization} veranschaulicht diese Berechnung anhand eines konkreten Beispiels. Die grüne Box repräsentiert die Ground-Truth-Position eines Symbols, wie sie von einem menschlichen Annotator markiert wurde. Die blaue Box stellt die Vorhersage des Detektors dar. Die Schnittfläche (rot schraffiert) entspricht der Fläche, in der beide Boxen überlappen. Die Vereinigungsfläche (durch die gestrichelte schwarze Linie umrandet) umfasst alle Bereiche, die von mindestens einer der beiden Boxen abgedeckt werden. Im dargestellten Fall beträgt die IoU etwa 0.28, was unterhalb der üblichen Schwelle von 0.5 liegt. Obwohl visuell erkennbar ist, dass der Detektor das richtige Objekt identifiziert hat, wird die Detektion aufgrund der ungenügenden Lokalisierung als Fehldetektion gewertet. Dies verdeutlicht die Strenge der IoU-Metrik: Nicht nur die korrekte Objektklasse, sondern auch eine präzise Lokalisierung ist erforderlich.
+Abbildung~\ref{fig:iou_visualization} veranschaulicht diese Berechnung anhand eines konkreten Beispiels. Die grüne Box repräsentiert die Ground-Truth-Position eines Symbols, wie sie von einem menschlichen Annotator markiert wurde. Die blaue Box stellt die Vorhersage des Detektors dar. Die Schnittfläche (rot schraffiert) entspricht der Fläche, in der beide Boxen überlappen. Die Vereinigungsfläche (durch die gestrichelte schwarze Linie umrandet) umfasst alle Bereiche, die von mindestens einer der beiden Boxen abgedeckt werden. Im dargestellten Fall beträgt die IoU etwa 0.28, was unterhalb der üblichen Schwelle von 0.5 liegt. Obwohl visuell erkennbar ist, dass der Detektor das richtige Objekt identifiziert hat, wird die Detektion aufgrund der ungenügenden Lokalisierung als Fehldetektion gewertet. Dies verdeutlicht die Strenge der IoU-Metrik: Nicht nur die korrekte Objektklasse, sondern auch eine präzise Lokalisierung ist erforderlich.
 
 \begin{figure}[H]
 \centering
@@ -224,7 +224,7 @@ Basierend auf der IoU-Schwelle werden Detektionen klassifiziert: True Positives 
 
 Die Precision gibt an, welcher Anteil der vom Detektor gemeldeten Objekte tatsächlich korrekt ist. Ein hoher Precision-Wert bedeutet wenige Fehlalarme. Der Recall misst, welcher Anteil der im Bild tatsächlich vorhandenen Objekte vom Detektor gefunden wurde. Ein hoher Recall-Wert bedeutet, dass wenige Objekte übersehen werden. Beide Metriken stehen typischerweise in einem Trade-off: Durch Erhöhung der Konfidenzschwelle kann Precision verbessert werden, jedoch auf Kosten des Recalls.
 
-Für Gleisplanerkennung ist insbesondere der Recall kritisch. Ein übersehenes Signal oder eine fehlende Weichenkennzeichnung kann zu gravierenden Fehlern in der nachfolgenden Planung führen -- etwa falsche Berechnung von Gleiskapazitäten oder Sicherheitsrisiken. Falschdetektionen (niedrige Precision) sind weniger kritisch, da sie in der Validierungsphase (siehe Abschnitt \ref{sec:validierungundsicherung}) durch regelbasierte Filter und Plausibilitätsprüfungen eliminiert werden können. Ein falsch detektiertes Signal an einer unmöglichen Position (etwa mitten auf einem Gleis ohne Haltemöglichkeit) wird durch die semantische Validierung verworfen.
+Für Gleisplanerkennung ist insbesondere der Recall kritisch. Ein übersehenes Signal oder eine fehlende Weichenkennzeichnung kann zu gravierenden Fehlern in der nachfolgenden Planung führen -- etwa falsche Berechnung von Gleiskapazitäten oder Sicherheitsrisiken. Falschdetektionen (niedrige Precision) sind weniger kritisch, da sie in der Validierungsphase (siehe Abschnitt~\ref{sec:validierungundsicherung}) durch regelbasierte Filter und Plausibilitätsprüfungen eliminiert werden können. Ein falsch detektiertes Signal an einer unmöglichen Position (etwa mitten auf einem Gleis ohne Haltemöglichkeit) wird durch die semantische Validierung verworfen.
 
 Die Mean Average Precision (mAP) \cite{Everingham2010_PascalVOC,Lin2014_COCO} aggregiert die Erkennungsgüte über alle Objektklassen und verschiedene Konfidenzschwellen. Für jede Klasse wird zunächst die Average Precision (AP) als Fläche unter der Precision-Recall-Kurve berechnet. Diese Kurve entsteht, indem die Konfidenzschwelle variiert wird: Bei niedriger Schwelle werden viele Objekte detektiert (hoher Recall, niedrige Precision), bei hoher Schwelle nur sehr sichere Detektionen (niedriger Recall, hohe Precision). Die mAP ist der Mittelwert über alle Klassen:
 
@@ -232,13 +232,13 @@ Die Mean Average Precision (mAP) \cite{Everingham2010_PascalVOC,Lin2014_COCO} ag
 \text{mAP} = \frac{1}{N} \sum_{i=1}^{N} \text{AP}_i
 \end{equation}
 
-wobei $N$ die Anzahl der Objektklassen bezeichnet. Üblich ist die Angabe von mAP@0.5 (IoU-Schwelle 50\%) sowie mAP@[0.5:0.95] (Mittelwert über IoU-Schwellen von 50\% bis 95\% in 5\%-Schritten). Die letztere Metrik ist deutlich strenger und fordert präzisere Lokalisierung. Für diese Arbeit wird primär mAP@0.5 verwendet (siehe Kapitel \ref{chap:evaluation}), da leichte Ungenauigkeiten in der Boxlokalisierung durch nachgelagerte Validierung kompensiert werden können. Ein Signal, das mit 45° statt exakt 47° Rotation detektiert wird, ist für die Planungsaufgabe dennoch korrekt identifiziert.
+wobei $N$ die Anzahl der Objektklassen bezeichnet. Üblich ist die Angabe von mAP@0.5 (IoU-Schwelle 50\%) sowie mAP@[0.5:0.95] (Mittelwert über IoU-Schwellen von 50\% bis 95\% in 5\%-Schritten). Die letztere Metrik ist deutlich strenger und fordert präzisere Lokalisierung. Für diese Arbeit wird primär mAP@0.5 verwendet (siehe Kapitel~\ref{chap:evaluation}), da leichte Ungenauigkeiten in der Boxlokalisierung durch nachgelagerte Validierung kompensiert werden können. Ein Signal, das mit $45^\circ$ statt exakt $47^\circ$ Rotation detektiert wird, ist für die Planungsaufgabe dennoch korrekt identifiziert.
 
-Die in diesem Abschnitt dargestellten Verfahren -- von zweistufigen Detektoren wie Faster R-CNN bis zu einstufigen Architekturen wie YOLO -- verwenden achsenparallele Begrenzungsrahmen (Axis-Aligned Bounding Boxes, AABB). Diese Boxen sind durch vier Parameter definiert und ihre Kanten verlaufen stets horizontal und vertikal zum Bildrand. Für viele Anwendungen wie Fußgängererkennung oder Fahrzeugdetektion, bei denen Objekte typischerweise aufrechte oder horizontale Orientierung aufweisen, ist dies ausreichend. Technische Zeichnungen mit beliebig rotierten Symbolen und Textannotationen stellen jedoch besondere Anforderungen, die achsenparallele Boxen nur unzureichend erfüllen. Abschnitt \ref{sec:obb} führt daher orientierte Begrenzungsrahmen (Oriented Bounding Boxes, OBB) ein, die durch einen zusätzlichen Rotationsparameter präzisere Lokalisierung rotierter Objekte ermöglichen.
+Die in diesem Abschnitt dargestellten Verfahren -- von zweistufigen Detektoren wie Faster R-CNN bis zu einstufigen Architekturen wie YOLO -- verwenden achsenparallele Begrenzungsrahmen (Axis-Aligned Bounding Boxes, AABB). Diese Boxen sind durch vier Parameter definiert und ihre Kanten verlaufen stets horizontal und vertikal zum Bildrand. Für viele Anwendungen wie Fußgängererkennung oder Fahrzeugdetektion, bei denen Objekte typischerweise aufrechte oder horizontale Orientierung aufweisen, ist dies ausreichend. Technische Zeichnungen mit beliebig rotierten Symbolen und Textannotationen stellen jedoch besondere Anforderungen, die achsenparallele Boxen nur unzureichend erfüllen. Abschnitt~\ref{sec:obb} führt daher orientierte Begrenzungsrahmen (Oriented Bounding Boxes, OBB) ein, die durch einen zusätzlichen Rotationsparameter präzisere Lokalisierung rotierter Objekte ermöglichen.
 \section{Oriented Object Detection für rotierte Objekte}
 \label{sec:obb}
 
-Die in Abschnitt \ref{sec:objekterkennungmityolov8obb} vorgestellten objekterkennenden Modelle basieren überwiegend auf achsenparallelen Bounding Boxes (Axis-Aligned Bounding Boxes, AABB)\cite{redmon2016lookonceunifiedrealtime}. Bei der Detektion rotierter Objekte, wie sie in technischen Zeichnungen und Gleisplänen vorliegen, stoßen AABB-basierte Ansätze jedoch an fundamentale Grenzen. Oriented Bounding Boxes (OBB) bieten hier eine geometrisch präzisere Alternative, indem sie zusätzlich zum Zentrum und den Abmessungen auch den Rotationswinkel des Objekts modellieren.
+Die in Abschnitt~\ref{sec:objekterkennungmityolov8obb} vorgestellten objekterkennenden Modelle basieren überwiegend auf achsenparallelen Bounding Boxes (Axis-Aligned Bounding Boxes, AABB)\cite{redmon2016lookonceunifiedrealtime}. Bei der Detektion rotierter Objekte, wie sie in technischen Zeichnungen und Gleisplänen vorliegen, stoßen AABB-basierte Ansätze jedoch an fundamentale Grenzen. Oriented Bounding Boxes (OBB) bieten hier eine geometrisch präzisere Alternative, indem sie zusätzlich zum Zentrum und den Abmessungen auch den Rotationswinkel des Objekts modellieren.
 
 \subsection{Limitierungen achsenparalleler Bounding Boxes}
 
@@ -246,7 +246,7 @@ Achsenparallele Bounding Boxes werden durch vier Parameter definiert: Zentrumsko
 
 \subsubsection{Hintergrundanteil bei Rotation}
 
-Der fundamentale Nachteil von AABB zeigt sich im Verhältnis zwischen der vom Objekt tatsächlich belegten Fläche und der durch die Bounding Box umschlossenen Gesamtfläche. Bei rotierten Objekten umschließen achsenparallele Bounding Boxes einen erheblichen Anteil irrelevanten Hintergrunds\cite{Ding2019_LearningRoI}. Die AABB muss alle Ecken des rotierten Objekts umschließen und umfasst dabei große Bereiche außerhalb des eigentlichen Objekts. Die OBB hingegen liegt eng am Objekt an und minimiert den Hintergrundanteil. Dieser Unterschied ist in Abbildung \ref{fig:aabb_obb_comparison} für ein um 45° rotiertes Textlabel dargestellt.
+Der fundamentale Nachteil von AABB zeigt sich im Verhältnis zwischen der vom Objekt tatsächlich belegten Fläche und der durch die Bounding Box umschlossenen Gesamtfläche. Bei rotierten Objekten umschließen achsenparallele Bounding Boxes einen erheblichen Anteil irrelevanten Hintergrunds\cite{Ding2019_LearningRoI}. Die AABB muss alle Ecken des rotierten Objekts umschließen und umfasst dabei große Bereiche außerhalb des eigentlichen Objekts. Die OBB hingegen liegt eng am Objekt an und minimiert den Hintergrundanteil. Dieser Unterschied ist in Abbildung~\ref{fig:aabb_obb_comparison} für ein um $45^\circ$ rotiertes Textlabel dargestellt.
 
 \begin{figure}[H]
 \centering
@@ -301,7 +301,7 @@ Ein weiteres Problem ergibt sich bei der Nachbearbeitung von Detektionen mittels
 \text{IoU}(B_1, B_2) = \frac{\text{Area}(B_1 \cap B_2)}{\text{Area}(B_1 \cup B_2)}
 \end{equation}
 
-Bei dicht platzierten rotierten Objekten führen AABB zu hohen IoU-Werten, obwohl die Objekte selbst nicht überlappen\cite{Ding2019_LearningRoI}. Dies resultiert in fälschlicher Unterdrückung korrekter Detektionen. Abbildung \ref{fig:nms_problem} demonstriert dieses Fehlverhalten anhand zweier nahe beieinanderliegender Textlabels. Die beiden Textobjekte sind um 30° bzw. -30° rotiert und überlappen sich nicht. Ihre achsenparallelen Bounding Boxes hingegen weisen eine signifikante Überlappung mit IoU = 0.42 auf. Bei einem typischen NMS-Schwellenwert von $\tau = 0.4$\cite{Lin2017_FocalLoss} würde eine der beiden korrekten Detektionen fälschlicherweise unterdrückt. Im Gegensatz dazu berechnet sich die IoU zwischen den orientierten Bounding Boxes korrekt zu 0.0, da die Objekte tatsächlich nicht überlappen.
+Bei dicht platzierten rotierten Objekten führen AABB zu hohen IoU-Werten, obwohl die Objekte selbst nicht überlappen\cite{Ding2019_LearningRoI}. Dies resultiert in fälschlicher Unterdrückung korrekter Detektionen. Abbildung~\ref{fig:nms_problem} demonstriert dieses Fehlverhalten anhand zweier nahe beieinanderliegender Textlabels. Die beiden Textobjekte sind um $30^\circ$ bzw. $-30^\circ$ rotiert und überlappen sich nicht. Ihre achsenparallelen Bounding Boxes hingegen weisen eine signifikante Überlappung mit IoU = 0.42 auf. Bei einem typischen NMS-Schwellenwert von $\tau = 0.4$\cite{Lin2017_FocalLoss} würde eine der beiden korrekten Detektionen fälschlicherweise unterdrückt. Im Gegensatz dazu berechnet sich die IoU zwischen den orientierten Bounding Boxes korrekt zu 0.0, da die Objekte tatsächlich nicht überlappen.
 
 \begin{figure}[H]
 \centering
@@ -350,11 +350,11 @@ wobei $(c_x, c_y)$ das Zentrum, $w$ und $h$ die Dimensionen entlang der lokalen 
 
 \subsubsection{Vorteile für rotierte Objekte}
 
-Die präzisere geometrische Modellierung durch OBB bietet mehrere Vorteile. Bei perfekter Ausrichtung der OBB mit dem Objekt minimiert sich der Hintergrundanteil, während AABB bei starker Rotation erhebliche Hintergrundbereiche umschließen. Die IoU zwischen OBB reflektiert die tatsächliche Objektüberlappung, wodurch Fehlunterdrückungen bei NMS vermieden werden. Dies ist besonders wichtig bei dicht gruppierten Objekten, wo AABB fälschlicherweise hohe Überlappungen anzeigen würden. Zudem kodiert der Parameter $\theta$ explizit die Objektorientierung, was für nachgelagerte Prozesse wie orientierungsabhängige OCR wertvoll ist. Für die Domäne der Gleisplan-Analyse sind diese Eigenschaften besonders relevant, da Symbole entlang der Gleisachsen in beliebigen Winkeln angeordnet sind und oft dicht gruppiert auftreten.
+Die präzisere geometrische Modellierung durch OBB bietet mehrere Vorteile. Bei perfekter Ausrichtung der OBB mit dem Objekt minimiert sich der Hintergrundanteil, während AABB bei starker Rotation erhebliche Hintergrundbereiche umschließen. Die IoU zwischen OBB reflektiert die tatsächliche Objektüberlappung, wodurch Fehlunterdrückungen bei NMS vermieden werden. Dies ist besonders wichtig bei dicht gruppierten Objekten, wo AABB fälschlicherweise hohe Überlappungen anzeigen würden. Zudem kodiert der Parameter $\theta$ explizit die Objektorientierung, was für nachgelagerte Prozesse wie orientierungsabhängige OCR wertvoll ist. Für die Domäne der Gleisplananalyse sind diese Eigenschaften besonders relevant, da Symbole entlang der Gleisachsen in beliebigen Winkeln angeordnet sind und oft dicht gruppiert auftreten.
 
 \subsection{Herausforderungen bei der Verwendung von OBB}
 
-Trotz der geometrischen Vorteile bringen OBB zusätzliche Komplexität in die Detektionspipeline, die sich auf Training, Inferenz und Nachbearbeitung auswirkt. Abbildung \ref{fig:obb_challenges} fasst die drei Hauptherausforderungen zusammen: erhöhte Berechnungskomplexität bei der IoU-Berechnung, die Periodizität des Rotationswinkels, die zu Trainingsinstabilität führt, und der erhöhte Trainingsaufwand gegenüber AABB-Modellen.
+Trotz der geometrischen Vorteile bringen OBB zusätzliche Komplexität in die Detektionspipeline, die sich auf Training, Inferenz und Nachbearbeitung auswirkt. Abbildung~\ref{fig:obb_challenges} fasst die drei Hauptherausforderungen zusammen: erhöhte Berechnungskomplexität bei der IoU-Berechnung, die Periodizität des Rotationswinkels, die zu Trainingsinstabilität führt, und der erhöhte Trainingsaufwand gegenüber AABB-Modellen.
 
 \begin{figure}[H]
 \centering
@@ -389,7 +389,7 @@ Trotz der geometrischen Vorteile bringen OBB zusätzliche Komplexität in die De
         \node at (2.5, 2.5) {$\theta \in [0^\circ, 360^\circ)$};
         
         % Problem illustration
-        \node[align=center] at (2, 1.3) {$0^\circ$ und $89^\circ$:\\geometrisch 1° apart\\numerisch 89 apart};
+        \node[align=center] at (2, 1.3) {$0^\circ$ und $89^\circ$:\\geometrisch $1^\circ$ apart\\numerisch $89^\circ$ Diff};
         
         \draw[thick, red, <->] (0.5, 0.3) -- (3.5, 0.3);
         \node[below, font=\footnotesize] at (2, 0.3) {Trainingsinstabilität};
@@ -427,7 +427,7 @@ wobei $P_1$ und $P_2$ die als Vierecke repräsentierten OBB sind. Die Schnittpun
 
 \subsubsection{Winkel-Periodizität und Trainingsinstabilität}
 
-Der Rotationswinkel $\theta$ weist eine zyklische Periodizität auf: Eine Rotation um 180° (bzw. bei symmetrischen Objekten um 90°) resultiert in einer geometrisch identischen Bounding Box\cite{Yang2021RSDETR,Zhao2023ABFL}. Dies führt zu Ambiguitäten in der Netzwerk-Ausgabe. Betrachtet man beispielsweise zwei Vorhersagen $\theta_1 = 0^\circ$ und $\theta_2 = 89^\circ$ für dasselbe Objekt, so sind diese geometrisch nur 1° voneinander entfernt, numerisch jedoch 89 Einheiten. Standard-Regressionsverluste (z.B. Smooth L1) behandeln diese Diskrepanz linear, was zu instabilen Gradienten führt.
+Der Rotationswinkel $\theta$ weist eine zyklische Periodizität auf: Eine Rotation um $180^\circ$ (bzw. bei symmetrischen Objekten um $90^\circ$) resultiert in einer geometrisch identischen Bounding Box\cite{Yang2021RSDETR,Zhao2023ABFL}. Dies führt zu Ambiguitäten in der Netzwerk-Ausgabe. Betrachtet man beispielsweise zwei Vorhersagen $\theta_1 = 0^\circ$ und $\theta_2 = 89^\circ$ für dasselbe Objekt, so sind diese geometrisch nur $1^\circ$ voneinander entfernt, numerisch jedoch $89^\circ$. Standard-Regressionsverluste (z.B. Smooth L1) behandeln diese Diskrepanz linear, was zu instabilen Gradienten führt.
 
 
 \subsubsection{Erhöhter Trainingsaufwand}
@@ -436,7 +436,7 @@ Die zusätzliche Parameterregression für $\theta$ erhöht die Komplexität des 
 
 \subsection{YOLOv8-OBB Architektur}
 
-YOLOv8 bietet eine spezialisierte OBB-Variante, die für die Symbolerkennung geeignet ist. Die Architekturwahl wird in Kapitel~\ref{chap:konzeption} begründet. YOLOv8-OBB erweitert die Standard-Architektur um die Regression des Rotationsparameters $\theta$, während die grundlegende Netzwerkstruktur aus Backbone, Neck und Detection Heads erhalten bleibt\cite{yolov8_ultralytics}. Die schematische Architektur ist in Abbildung \ref{fig:yolov8_architecture} dargestellt und zeigt den Informationsfluss vom Eingabebild über die Feature-Extraktion bis zu den finalen OBB-Vorhersagen. Der Backbone extrahiert hierarchische Merkmale auf fünf Auflösungsstufen, das Neck fusioniert diese über Skalen hinweg, und die drei spezialisierten Detection Heads produzieren Vorhersagen für kleine, mittlere und große Objekte.
+YOLOv8 bietet eine spezialisierte OBB-Variante, die für die Symbolerkennung geeignet ist. Die Architekturwahl wird in Kapitel~\ref{chap:konzeption} begründet. YOLOv8-OBB erweitert die Standard-Architektur um die Regression des Rotationsparameters $\theta$, während die grundlegende Netzwerkstruktur aus Backbone, Neck und Detection Heads erhalten bleibt\cite{yolov8_ultralytics}. Die schematische Architektur ist in Abbildung~\ref{fig:yolov8_architecture} dargestellt und zeigt den Informationsfluss vom Eingabebild über die Feature-Extraktion bis zu den finalen OBB-Vorhersagen. Der Backbone extrahiert hierarchische Merkmale auf fünf Auflösungsstufen, das Neck fusioniert diese über Skalen hinweg, und die drei spezialisierten Detection Heads produzieren Vorhersagen für kleine, mittlere und große Objekte.
 
 \begin{figure}[H]
 \centering
@@ -528,23 +528,23 @@ Die Box-Loss $\mathcal{L}_{\text{box}}$ quantifiziert die Lokalisierungsgenauigk
 Die konkreten Trainingsparameter und -ergebnisse für den im Rahmen dieser Arbeit trainierten Detektor werden in Kapitel 6 detailliert dokumentiert. Die Kombination aus Echtzeitfähigkeit, Rotationsinvarianz und Anchor-Free-Design macht YOLOv8-OBB zu einem geeigneten Kandidaten für die Gleisplananalyse. Die endgültige Architekturentscheidung 
 wird in Kapitel~\ref{chap:konzeption} dokumentiert.
 
-\subsection{Relevanz für Gleisplan-Analyse}
+\subsection{Relevanz für Gleisplananalyse}
 
 Die beschriebenen OBB-Eigenschaften sind besonders relevant für die automatisierte Analyse von Gleisplänen. Technische Zeichnungen dieses Typs weisen drei charakteristische Merkmale auf, die den Einsatz orientierter Bounding Boxes notwendig machen. Symbole folgen der Topologie der Gleisachsen und können daher in jedem Winkel $\theta \in [0^\circ, 360^\circ)$ vorliegen. In Bahnhöfen und Weichenstraßen treten Symbole räumlich konzentriert auf, wobei AABB-basierte NMS zu Fehlunterdrückungen führen würde. Die vom OBB-Detektor gelieferte Rotation $\theta$ ist für nachgelagerte Prozesse wie die orientierungsabhängige OCR (vgl. Kapitel 6.3) essentiell, da Textlabels entsprechend ihrer Ausrichtung verarbeitet werden müssen.
 
-Die in Kapitel 4 definierten funktionalen Anforderungen an die Symbolerkennung erfordern daher zwingend den Einsatz rotationsinvarianter Detektionsverfahren. Die in Kapitel 6 beschriebene Implementierung nutzt YOLOv8-OBB mit Standard-Konfiguration für die Detektion von 13 domänenspezifischen Symbolklassen (vgl. Tabelle \ref{tab:kernklassen} und \ref{tab:auxiliarklassen} in Kapitel 4).
+Die in Kapitel 4 definierten funktionalen Anforderungen an die Symbolerkennung erfordern daher zwingend den Einsatz rotationsinvarianter Detektionsverfahren. Die in Kapitel 6 beschriebene Implementierung nutzt YOLOv8-OBB mit Standard-Konfiguration für die Detektion von 13 domänenspezifischen Symbolklassen (vgl. Tabelle~\ref{tab:kernklassen} und \ref{tab:auxiliarklassen} in Kapitel 4).
 
 \section{Optical Character Recognition (OCR)}
 \label{sec:ocr}
 
-Die optische Zeichenerkennung bildet das verbindende Element zwischen der visuellen Symbolerkennung und der semantischen Interpretation von Gleisplänen. Während die in Abschnitt \ref{subsec:cad_spezifisch} beschriebene Objekterkennung Symbole lokalisiert und klassifiziert, liefert sie zunächst keine Information über die zugehörigen Textinhalte. Erst durch die zuverlässige Extraktion von Signalbezeichnungen (z.\,B. \enquote{AS102}), Kilometerangaben (z.\,B. \enquote{18.1606}) und Balisen-Kennungen (z.\,B. \enquote{1234}) erhalten die erkannten Symbole ihre vollständige technische Bedeutung.
+Die optische Zeichenerkennung bildet das verbindende Element zwischen der visuellen Symbolerkennung und der semantischen Interpretation von Gleisplänen. Während die in Abschnitt~\ref{subsec:cad_spezifisch} beschriebene Objekterkennung Symbole lokalisiert und klassifiziert, liefert sie zunächst keine Information über die zugehörigen Textinhalte. Erst durch die zuverlässige Extraktion von Signalbezeichnungen (z.\,B. \enquote{AS102}), Kilometerangaben (z.\,B. \enquote{18.1606}) und Balisen-Kennungen (z.\,B. \enquote{1234}) erhalten die erkannten Symbole ihre vollständige technische Bedeutung.
 
 Dieser Abschnitt behandelt zunächst die allgemeinen Grundlagen der optischen Zeichenerkennung, bevor die spezifischen Herausforderungen technischer Zeichnungen und die für Gleispläne relevanten Lösungsansätze dargelegt werden. Die Progression folgt dabei dem Muster der vorangegangenen Abschnitte: vom allgemeinen Prinzip über moderne Architekturen bis zur domänenspezifischen Anwendung.
 
 \subsection{Grundlagen und Entwicklung der OCR-Technologie}
 \label{subsec:ocr_grundlagen}
 
-Die optische Zeichenerkennung bezeichnet die automatisierte Umwandlung von Bildern, die Text enthalten, in maschinenlesbaren Text. Diese Aufgabe lässt sich konzeptionell in eine Verarbeitungskette unterteilen, die in Abbildung \ref{fig:ocr_pipeline_konzept} dargestellt ist.
+Die optische Zeichenerkennung bezeichnet die automatisierte Umwandlung von Bildern, die Text enthalten, in maschinenlesbaren Text. Diese Aufgabe lässt sich konzeptionell in eine Verarbeitungskette unterteilen, die in Abbildung~\ref{fig:ocr_pipeline_konzept} dargestellt ist.
 
 \begin{figure}[h]
 \centering
@@ -618,7 +618,7 @@ Die \textbf{Nachverarbeitung} validiert und korrigiert die erkannten Texte. Für
 
 \subsubsection{Historische Entwicklung}
 
-Die Entwicklung der OCR-Technologie lässt sich in drei Phasen unterteilen, die in Tabelle \ref{tab:ocr_evolution} zusammengefasst sind.
+Die Entwicklung der OCR-Technologie lässt sich in drei Phasen unterteilen, die in Tabelle~\ref{tab:ocr_evolution} zusammengefasst sind.
 
 \begin{table}[H]
 \centering
@@ -651,7 +651,7 @@ Moderne OCR-Systeme basieren auf zwei dominierenden Architekturparadigmen: der C
 
 \subsubsection{CRNN-Architektur}
 
-Die CRNN-Architektur, eingeführt von Shi et al. \cite{Shi2017_CRNN}, kombiniert drei Komponenten zu einem End-to-End-trainierbaren System (Abbildung \ref{fig:crnn_architecture}).
+Die CRNN-Architektur, eingeführt von Shi et al. \cite{Shi2017_CRNN}, kombiniert drei Komponenten zu einem End-to-End-trainierbaren System (Abbildung~\ref{fig:crnn_architecture}).
 
 \begin{figure}[H]
 \centering
@@ -738,7 +738,7 @@ Transformer-basierte Ansätze bieten Vorteile bei langen Sequenzen und ermöglic
 
 \subsubsection{Vergleich der Architekturen}
 
-Tabelle \ref{tab:ocr_arch_comparison} fasst die wesentlichen Unterschiede zwischen CRNN und Transformer-basierten Ansätzen zusammen.
+Tabelle~\ref{tab:ocr_arch_comparison} fasst die wesentlichen Unterschiede zwischen CRNN und Transformer-basierten Ansätzen zusammen.
 \begin{table}[H]
 \centering
 \renewcommand{\arraystretch}{1.3}
@@ -784,8 +784,8 @@ PaddleOCR \cite{du2020ppocrpracticalultralightweight} ist ein vom chinesischen T
 
 \begin{enumerate}
     \item \textbf{DB-Detektor (Differentiable Binarization)}: Lokalisiert Textregionen durch semantische Segmentierung mit differenzierbarer Schwellenwertberechnung \cite{liao2019realtimescenetextdetection}.
-    \item \textbf{Winkelklassifikator}: Bestimmt die Orientierung des Textes (0° oder 180°) zur automatischen Korrektur.
-    \item \textbf{CRNN-Recognizer}: Erkennt die Zeichenfolge basierend auf der in Abschnitt \ref{subsec:ocr_architekturen} beschriebenen Architektur.
+    \item \textbf{Winkelklassifikator}: Bestimmt die Orientierung des Textes (0$^\circ$ oder 180$^\circ$) zur automatischen Korrektur.
+    \item \textbf{CRNN-Recognizer}: Erkennt die Zeichenfolge basierend auf der in Abschnitt~\ref{subsec:ocr_architekturen} beschriebenen Architektur.
 \end{enumerate}
 
 \begin{figure}[H]
@@ -824,7 +824,7 @@ PaddleOCR \cite{du2020ppocrpracticalultralightweight} ist ein vom chinesischen T
     
     % Annotations
     \node[right=0.3cm of detect, font=\scriptsize, align=left] {Polygone/Boxes\\für Textregionen};
-    \node[left=0.3cm of angle, font=\scriptsize, align=right] {0° oder 180°\\Korrektur};
+    \node[left=0.3cm of angle, font=\scriptsize, align=right] {0$^\circ$ oder 180$^\circ$\\Korrektur};
     \node[right=0.3cm of recog, font=\scriptsize, align=left] {Zeichenfolge\\+ Konfidenz};
 \end{tikzpicture}
 \caption{PaddleOCR-Pipeline: Dreistufige Architektur mit Detektion, Winkelkorrektur und Erkennung.}
@@ -833,7 +833,7 @@ PaddleOCR \cite{du2020ppocrpracticalultralightweight} ist ein vom chinesischen T
 
 \subsubsection{Vergleich der OCR-Systeme}
 
-Tabelle \ref{tab:ocr_systems_comparison} vergleicht die für technische Zeichnungen relevanten OCR-Systeme.
+Tabelle~\ref{tab:ocr_systems_comparison} vergleicht die für technische Zeichnungen relevanten OCR-Systeme.
 
 \begin{table}[H]
 \centering
@@ -855,115 +855,30 @@ TrOCR & Transformer & State-of-the-Art Genauigkeit & Hoher GPU-Bedarf, langsam\\
 \caption{Vergleich etablierter OCR-Systeme für technische Anwendungen}
 \label{tab:ocr_systems_comparison}
 \end{table}
+
+
 \subsection{Evaluationsmetriken für Texterkennung}
 \label{subsec:ocr_metriken}
 
-Analog zu den Evaluationsmetriken für die Objekterkennung (Abschnitt \ref{subsec:evaluationsmetriken}) erfordert die Bewertung von OCR-Systemen standardisierte Metriken, die Erkennungsfehler auf verschiedenen Granularitätsebenen quantifizieren. Diese Metriken basieren auf der Levenshtein-Distanz \cite{levenshtein1966}, welche die minimale Anzahl von Editieroperationen (Einfügungen, Löschungen, Ersetzungen) misst, die erforderlich sind, um eine Zeichenkette in eine andere zu transformieren.
+Für die isolierte Bewertung von OCR-Systemen existieren etablierte Metriken 
+wie die \textbf{Character Error Rate (CER)} und \textbf{Word Error Rate (WER)}, 
+die den Anteil fehlerhafter Zeichen bzw. Wörter quantifizieren 
+\cite{Rice1996_OCRAccuracy, Morris2004_WER}. Die \textbf{Feldgenauigkeit} 
+(Field Accuracy) bewertet, ob ein vollständiges Textfeld exakt korrekt 
+erkannt wurde.
 
-\subsubsection{Character Error Rate}
-
-Die \textbf{Character Error Rate (CER)} ist die fundamentale Metrik zur Bewertung von OCR-Systemen und quantifiziert den Anteil fehlerhafter Zeichen im erkannten Text relativ zur Ground Truth \cite{Rice1996_OCRAccuracy}:
-
-\begin{equation}
-\text{CER} = \frac{S + D + I}{N}
-\label{eq:cer}
-\end{equation}
-
-wobei $S$ die Anzahl der Substitutionen (falsch erkannte Zeichen), $D$ die Anzahl der Deletionen (fehlende Zeichen), $I$ die Anzahl der Insertionen (zusätzlich eingefügte Zeichen) und $N$ die Gesamtanzahl der Zeichen in der Ground Truth bezeichnet. Ein CER-Wert von 0 bedeutet perfekte Erkennung, während Werte über 1 theoretisch möglich sind, wenn die Anzahl der Fehler die Anzahl der Referenzzeichen übersteigt.
-
-Die Berechnung der einzelnen Fehlerkomponenten erfolgt mittels dynamischer Programmierung durch den Wagner-Fischer-Algorithmus \cite{Wagner1974_StringCorrection}, der die optimale Alignment-Sequenz zwischen Ground Truth und OCR-Ausgabe ermittelt.
-
-\begin{figure}[H]
-\centering
-\begin{tikzpicture}[scale=0.95]
-    % Ground Truth
-    \node[font=\bfseries, anchor=east] at (-0.5, 3) {Ground Truth:};
-    \foreach \char [count=\i] in {A,S,1,0,2} {
-        \node[draw, minimum width=0.9cm, minimum height=0.9cm, fill=green!15, font=\ttfamily] 
-            at (\i*1.1, 3) {\char};
-    }
-    
-    % OCR Output
-    \node[font=\bfseries, anchor=east] at (-0.5, 0.5) {OCR-Ausgabe:};
-    \node[draw, minimum width=0.9cm, minimum height=0.9cm, fill=green!15, font=\ttfamily] at (1.1, 0.5) {A};
-    \node[draw, minimum width=0.9cm, minimum height=0.9cm, fill=red!25, font=\ttfamily] at (2.2, 0.5) {5};
-    \node[draw, minimum width=0.9cm, minimum height=0.9cm, fill=green!15, font=\ttfamily] at (3.3, 0.5) {1};
-    \node[draw, minimum width=0.9cm, minimum height=0.9cm, fill=green!15, font=\ttfamily] at (4.4, 0.5) {0};
-    \node[draw, minimum width=0.9cm, minimum height=0.9cm, fill=green!15, font=\ttfamily] at (5.5, 0.5) {2};
-    
-    % Error indicator
-    \draw[->, thick, red!70!black] (2.2, 1.4) -- (2.2, 1.05);
-    \node[red!70!black, font=\footnotesize] at (2.2, 1.7) {Substitution (S$\rightarrow$5)};
-    
-    % Calculation
-    \node[align=center, font=\small] at (3.3, -0.7) {
-        $S=1, \quad D=0, \quad I=0, \quad N=5$\\[0.2em]
-        $\text{CER} = \frac{1+0+0}{5} = 0.20$ (20\%)
-    };
-\end{tikzpicture}
-\caption{Visualisierung der CER-Berechnung: Die Substitution des Buchstabens \enquote{S} durch die Ziffer \enquote{5} resultiert in einer Character Error Rate von 20\%.}
-\label{fig:cer_example}
-\end{figure}
-
-\subsubsection{Word Error Rate}
-
-Die \textbf{Word Error Rate (WER)} operiert auf Wortebene und wendet dieselbe Editierdistanz-Logik auf Wortsequenzen statt auf Zeichensequenzen an \cite{Morris2004_WER}:
-
-\begin{equation}
-\text{WER} = \frac{S_w + D_w + I_w}{N_w}
-\label{eq:wer}
-\end{equation}
-
-wobei $S_w$, $D_w$, $I_w$ die Substitutionen, Deletionen und Insertionen auf Wortebene und $N_w$ die Gesamtanzahl der Wörter in der Referenz bezeichnen. Für Gleispläne mit überwiegend einwortigen Bezeichnern (z.\,B. \enquote{AS102}, \enquote{W234}) konvergiert die WER zur nachfolgend beschriebenen Feldgenauigkeit.
-
-\subsubsection{Feldgenauigkeit}
-
-Die \textbf{Feldgenauigkeit} (engl. \textit{Field Accuracy} oder \textit{Word Accuracy}) bewertet auf der Ebene vollständiger Textfelder und gibt den Anteil der exakt korrekt erkannten Labels an \cite{Rice1996_OCRAccuracy}:
-
-\begin{equation}
-\text{Field Accuracy} = \frac{N_{\text{korrekt}}}{N_{\text{gesamt}}} = 1 - \text{Field Error Rate}
-\label{eq:field_accuracy}
-\end{equation}
-
-wobei $N_{\text{korrekt}}$ die Anzahl der Felder mit exakter Übereinstimmung zwischen OCR-Ausgabe und Ground Truth bezeichnet. Diese Metrik ist strenger als CER, da bereits ein einziger Zeichenfehler das gesamte Feld als inkorrekt klassifiziert.
-
-\subsubsection{Vergleich und Anwendungsbereiche}
-
-Tabelle \ref{tab:ocr_metrics_comparison} fasst die OCR-Metriken und ihre jeweiligen Anwendungsbereiche zusammen.
-
-\begin{table}[H]
-\centering
-\renewcommand{\arraystretch}{1.3}
-\begin{tabular}{|p{2.8cm}|p{2.2cm}|p{4.5cm}|p{3.5cm}|}
-\hline
-\textbf{Metrik} & \textbf{Granularität} & \textbf{Anwendungsfall} & \textbf{Wertebereich} \\
-\hline
-Character Error Rate (CER) & Zeichen & Analyse systematischer Fehler, Homoglyphen-Verwechslungen & $[0, \infty)$, ideal: 0 \\
-\hline
-Word Error Rate (WER) & Wort & Mehrteilige Beschriftungen, Fließtext & $[0, \infty)$, ideal: 0 \\
-\hline
-Feldgenauigkeit & Feld/Label & Identifikatoren, exakte Übereinstimmung erforderlich & $[0, 1]$, ideal: 1 \\
-\hline
-\end{tabular}
-\caption{Vergleich der OCR-Evaluationsmetriken nach Granularität und Anwendungsbereich}
-\label{tab:ocr_metrics_comparison}
-\end{table}
-
-\textbf{Anmerkung zur Metrikauswahl in integrierten Systemen:} Für die isolierte 
-Bewertung von OCR-Komponenten sind zeichenbasierte Metriken wie CER etabliert. 
-In integrierten Extraktionspipelines, bei denen OCR nur eine von mehreren Stufen 
-darstellt (Detektion → OCR → Verknüpfung → Validierung), ist jedoch die 
-\textit{Feldgenauigkeit} oft aussagekräftiger: Sie bewertet, ob das finale 
+Für integrierte Extraktionspipelines, bei denen OCR nur eine von mehreren 
+Stufen darstellt (Detektion → OCR → Verknüpfung → Validierung), ist jedoch 
+eine \textit{End-to-End-Bewertung} aussagekräftiger: Sie misst, ob das finale 
 Extraktionsergebnis korrekt ist, unabhängig davon, in welcher Pipeline-Stufe 
-potenzielle Fehler auftraten oder kompensiert wurden. Die in 
-Kapitel~\ref{chap:evaluation} verwendete End-to-End-Metrik erweitert dieses 
-Prinzip auf das Gesamtsystem.
+Fehler auftraten oder kompensiert wurden. Dieser Ansatz wird in der 
+vorliegenden Arbeit verfolgt (vgl. Kapitel~\ref{chap:evaluation}).
 
 
 \subsection{Herausforderungen bei technischen Zeichnungen}
 \label{subsec:ocr_challenges}
 
-Technische Zeichnungen wie Gleispläne stellen OCR-Systeme vor spezifische Herausforderungen, die über typische Dokumentenscans hinausgehen. Diese Herausforderungen werden in Abbildung \ref{fig:ocr_challenges_fixed_black} visualisiert.
+Technische Zeichnungen wie Gleispläne stellen OCR-Systeme vor spezifische Herausforderungen, die über typische Dokumentenscans hinausgehen. Diese Herausforderungen werden in Abbildung~\ref{fig:ocr_challenges_fixed_black} visualisiert.
 
 \begin{figure}[H]
 \centering
@@ -1089,12 +1004,12 @@ Technische Zeichnungen wie Gleispläne stellen OCR-Systeme vor spezifische Herau
 
 \subsubsection{Variable Textorientierung}
 
-In Gleisplänen folgen Beschriftungen der Topologie der Gleise und können in beliebigen Winkeln $\theta \in [0^\circ, 360^\circ]$ orientiert sein. Standard-OCR-Engines sind primär für horizontalen Text (0°) optimiert und zeigen bei geneigten Texten signifikante Leistungseinbußen \cite{schlagenhauf2022textdetectiontechnicaldrawings}.
+In Gleisplänen folgen Beschriftungen der Topologie der Gleise und können in beliebigen Winkeln $\theta \in [0^\circ, 360^\circ]$ orientiert sein. Standard-OCR-Engines sind primär für horizontalen Text ($0^\circ$) optimiert und zeigen bei geneigten Texten signifikante Leistungseinbußen \cite{schlagenhauf2022textdetectiontechnicaldrawings}.
 
 Lösungsansätze umfassen:
 \begin{itemize}
     \item \textbf{Vorrotation}: Transformation des Bildausschnitts basierend auf dem von der Objekterkennung gelieferten Winkel $\theta$
-    \item \textbf{Multi-Winkel-Inferenz}: Sequenzielle Verarbeitung mit 0°, 90°, 180°, 270° Rotation und Auswahl des konfidentesten Ergebnisses
+    \item \textbf{Multi-Winkel-Inferenz}: Sequenzielle Verarbeitung mit $0^\circ, 90^\circ, 180^\circ, 270^\circ$ Rotation und Auswahl des konfidentesten Ergebnisses
     \item \textbf{Rotationsinvariante Netze}: Verwendung von Spatial Transformer Networks (STN) \cite{Jaderberg2015_STN} zur lernbasierten Entzerrung
 \end{itemize}
 
@@ -1182,7 +1097,7 @@ gleichzeitiger Minimierung falsch-positiver Erkennungen.
 Gleisplan-Beschriftungen folgen standardisierten Formaten, die durch 
 reguläre Ausdrücke (Regular Expressions) formalisiert werden können. 
 Ein erkannter Text gilt als valide, wenn er dem erwarteten Muster 
-der jeweiligen Klasse entspricht. Tabelle \ref{tab:regex_patterns} 
+der jeweiligen Klasse entspricht. Tabelle~\ref{tab:regex_patterns} 
 definiert die Validierungsmuster für die wichtigsten Textklassen. 
 
 \begin{table}[H]
@@ -1207,7 +1122,7 @@ Weiche & \verb|^W\d{2,4}[a-z]?$| & W12, W234a \\
 
 \subsubsection{Homoglyphen-Korrektur}
 
-OCR-Systeme verwechseln häufig visuell ähnliche Zeichen (Homoglyphen). Tabelle \ref{tab:homoglyphs} listet typische Verwechslungen und deren automatische Korrekturfähigkeit.
+OCR-Systeme verwechseln häufig visuell ähnliche Zeichen (Homoglyphen). Tabelle~\ref{tab:homoglyphs} listet typische Verwechslungen und deren automatische Korrekturfähigkeit.
 
 \begin{table}[H]
 \centering
@@ -1259,7 +1174,7 @@ XYZAB & AS102 & 5 & Keine Korrektur (zu verschieden) \\
 
 Dieses Verfahren wird als \textit{Fuzzy-Matching} bezeichnet, da es 
 unscharfe (approximate) Übereinstimmungen erlaubt. Für sicherheitsrelevante Anwendungen wird ein konservativer Schwellenwert von $d_{\text{Lev}} \leq 2$ 
-gewählt, um Fehlkorrekturen zu vermeiden. Automatische Korrektur erfolgt nur bei $d_{\text{Lev}} \leq 2$, da 
+gewählt, um Fehlkorrekturen zu vermeiden. Eine automatische Korrektur wird ausschließlich bei $d_{\text{Lev}} \leq 2$ durchgeführt, da 
 typische OCR-Fehler (Homoglyphen wie O/0, I/1) einzelne Zeichenersetzungen 
 darstellen. Höhere Distanzen deuten auf grundlegend fehlerhafte Erkennungen 
 hin, bei denen automatische Korrektur das Risiko von Fehlzuordnungen erhöht.
@@ -1290,7 +1205,7 @@ Die Extraktion eines ROI für ein erkanntes Symbol mit orientierter Bounding
 Box $(c_x, c_y, w, h, \theta)$ erfordert eine geometrische Transformation 
 zur Horizontalausrichtung des Textes. Die Implementierung verwendet einen 
 Dual-Pfad-Ansatz, bei dem die Wahl der Transformationsmethode von der 
-Textorientierung abhängt (Abbildung \ref{fig:roi_extraction_methods}).
+Textorientierung abhängt (Abbildung~\ref{fig:roi_extraction_methods}).
 
 \begin{figure}[H]
 \centering
@@ -1304,7 +1219,7 @@ Textorientierung abhängt (Abbildung \ref{fig:roi_extraction_methods}).
     % Cardinal path
     \node[box, fill=green!15] (cardinal) at (0, 0) {
         \textbf{Kardinal}\\[0.2cm]
-        $|\theta_{\text{norm}}| \leq 15°$\\[0.2cm]
+        $|\theta_{\text{norm}}| \leq 15^\circ$\\[0.2cm]
         \scriptsize Affine Rotation\\
         \scriptsize \texttt{warpAffine()}
     };
@@ -1388,19 +1303,19 @@ Matrix $\mathbf{H}$ wird aus den vier korrespondierenden Punktpaaren
 
 Die Entscheidung zwischen beiden Methoden basiert auf dem 
 \textit{normalisierten} Winkel $\theta_{\text{norm}}$, der durch die in 
-Abschnitt \ref{subsubsec:winkelnormalisierung} beschriebene Normalisierung aus dem Rohwinkel 
+Abschnitt~\ref{subsubsec:winkelnormalisierung} beschriebene Normalisierung aus dem Rohwinkel 
 gewonnen wird. Der Schwellenwert von $15^\circ$ wurde empirisch bestimmt und 
-bietet einen guten Kompromiss zwischen Recheneffizienz (affine Transformation) und geometrischer Genauigkeit (perspektivische Transformation). Bei größeren Abweichungen führt die affine Rotation zu sichtbaren Verzerrungen an den Texträndern, während kleinere Winkel durch die Multi-Rotations-Inferenz (0°, 90°, 180°, 270°) ausreichend abgedeckt werden.
+bietet einen guten Kompromiss zwischen Recheneffizienz (affine Transformation) und geometrischer Genauigkeit (perspektivische Transformation). Bei größeren Abweichungen führt die affine Rotation zu sichtbaren Verzerrungen an den Texträndern, während kleinere Winkel durch die Multi-Rotations-Inferenz ($0^\circ, 90^\circ, 180^\circ, 270^\circ$) ausreichend abgedeckt werden.
 \subsection{Relevanz für die Gleisplananalyse}
 \label{subsec:ocr_relevanz}
 
-Die beschriebenen OCR-Konzepte bilden die theoretische Grundlage für die in Kapitel \ref{chap:implementierung} (Abschnitt \ref{sec:ocrpipeline}) beschriebene Implementierung. Die konkrete Umsetzung kombiniert:
+Die beschriebenen OCR-Konzepte bilden die theoretische Grundlage für die in Kapitel~\ref{chap:implementierung} (Abschnitt~\ref{sec:ocrpipeline}) beschriebene Implementierung. Die konkrete Umsetzung kombiniert:
 
 \begin{itemize}
     \item \textbf{Multi-Engine-Kaskadierung}: PaddleOCR als primäre Engine 
     aufgrund der integrierten Winkelklassifikation und hohen Geschwindigkeit, 
     mit Tesseract-Fallback für Fälle, in denen PaddleOCR niedrige Konfidenzwerte liefert
-    \item \textbf{Dual-Winkel-Routing}: Unterscheidung zwischen kardinaler Rotation (0°, 90°, 180°, 270°) und beliebigen Winkeln
+    \item \textbf{Dual-Winkel-Routing}: Unterscheidung zwischen kardinaler Rotation ($0^\circ, 90^\circ, 180^\circ, 270^\circ$) und beliebigen Winkeln
     \item \textbf{Klassenspezifische Vorverarbeitung}: Angepasste Padding- und Filterparameter pro Symbolklasse
     \item \textbf{Dreistufige Validierung}: Syntaktisch (Regex), semantisch (Plausibilität), konfidenzbasiert (Schwellenwerte)
 \end{itemize}
@@ -1516,7 +1431,7 @@ Für Ingenieure des Maschinenbaus ist das Konzept aus der Arbeit mit technischen
 
 \subsection{Herausforderung: Rotierte Elemente}
 
-In vielen technischen Zeichnungen folgen Symbole der Geometrie des dargestellten Objekts und können daher in \textbf{beliebigen Winkeln} orientiert sein. Dies stellt eine besondere Herausforderung dar: Die Begriffe \enquote{oberhalb}, \enquote{unterhalb} oder \enquote{rechts von} verlieren bei rotierten Elementen ihre eindeutige Bedeutung im globalen Koordinatensystem. Abbildung~\ref{fig:rotation_problem} illustriert diese Herausforderung: Bei einem horizontal ausgerichteten Symbol ist eindeutig definiert, was \enquote{unterhalb} bedeutet. Bei einem um 45° gedrehten Symbol verliert dieser Begriff jedoch seine eindeutige Bedeutung im globalen Koordinatensystem.
+In vielen technischen Zeichnungen folgen Symbole der Geometrie des dargestellten Objekts und können daher in \textbf{beliebigen Winkeln} orientiert sein. Dies stellt eine besondere Herausforderung dar: Die Begriffe \enquote{oberhalb}, \enquote{unterhalb} oder \enquote{rechts von} verlieren bei rotierten Elementen ihre eindeutige Bedeutung im globalen Koordinatensystem. Abbildung~\ref{fig:rotation_problem} illustriert diese Herausforderung: Bei einem horizontal ausgerichteten Symbol ist eindeutig definiert, was \enquote{unterhalb} bedeutet. Bei einem um $45^\circ$ gedrehten Symbol verliert dieser Begriff jedoch seine eindeutige Bedeutung im globalen Koordinatensystem.
 
 \begin{figure}[H]
 \centering
@@ -1541,7 +1456,7 @@ In vielen technischen Zeichnungen folgen Symbole der Geometrie des dargestellten
     
     % Right: Rotated symbol - ambiguous
     \begin{scope}[xshift=6cm]
-        \node[font=\small\bfseries] at (1.5, 3.5) {Rotiertes Symbol (45°)};
+        \node[font=\small\bfseries] at (1.5, 3.5) {Rotiertes Symbol ($45^\circ$)};
         
         % Symbol (rotated 45 degrees)
         \begin{scope}[rotate around={45:(1.5, 2)}]
@@ -1660,7 +1575,7 @@ Dieses Konzept ist Ingenieuren aus verschiedenen Bereichen vertraut:
 
 
 Wie in Abbildung~\ref{fig:local_coordinates_clear} dargestellt, werden durch die Transformation ins lokale System Richtungsbeziehungen wieder eindeutig: Der Begriff \enquote{oberhalb} bezieht sich nun auf die positive $y_{\text{lokal}}$-Achse, unabhängig von der globalen Orientierung des Symbols.
-Die mathematische Umsetzung dieser Transformation, eine Rotation des Koordinatensystems um den Winkel des Symbols, wird in Kapitel~\ref{chap:implementierung}, Abschnitt \ref{sec:Koordinatentransformation} detailliert beschrieben.
+Die mathematische Umsetzung dieser Transformation, eine Rotation des Koordinatensystems um den Winkel des Symbols, wird in Kapitel~\ref{chap:implementierung}, Abschnitt~\ref{sec:Koordinatentransformation} detailliert beschrieben.
 
 \subsection{Klassenspezifische Suchstrategien}
 
@@ -1803,7 +1718,7 @@ Abbildung~\ref{fig:revision_example} zeigt typische Änderungen zwischen zwei Do
 \hline
 \textbf{Änderungstyp} & \textbf{Definition} & \textbf{Praktisches Beispiel} \\
 \hline
-\textbf{Hinzufügung} & Element existiert nur in der neuen Version & Ein zusätzliches Signal wurde installiert \\
+\textbf{Hinzufügen} & Element existiert nur in der neuen Version & Ein zusätzliches Signal wurde installiert \\
 \hline
 \textbf{Entfernung} & Element existiert nur in der alten Version & Ein Haltepunkt wurde stillgelegt \\
 \hline
@@ -1849,7 +1764,7 @@ Mit eindeutigen Identifikatoren lässt sich die Änderungserkennung konzeptionel
 \label{fig:set_comparison_concept}
 \end{figure}
 
-Für Elemente in der Schnittmenge (gleiche Kennung in beiden Versionen) muss zusätzlich geprüft werden, ob sich ihre Attribute geändert haben. Die algorithmische Umsetzung dieser Konzepte wird in Kapitel~\ref{chap:implementierung}, Abschnitt \ref{subsec:vergleichundänderung} beschrieben.
+Für Elemente in der Schnittmenge (gleiche Kennung in beiden Versionen) muss zusätzlich geprüft werden, ob sich ihre Attribute geändert haben. Die algorithmische Umsetzung dieser Konzepte wird in Kapitel~\ref{chap:implementierung}, Abschnitt~\ref{subsec:vergleichundänderung} beschrieben.
 
 
 %==============================================================================
@@ -1937,7 +1852,7 @@ Abbildung~\ref{fig:domain_variability} verdeutlicht das Problem: Drei verschiede
 Die Lösung besteht in der strikten Trennung zwischen:
 
 \begin{enumerate}
-    \item \textbf{Programmlogik} (Code): Die allgemeinen Algorithmen für Erkennung, Verknüpfung und Validierung, die bleiben für alle Anwendungsfälle gleich
+    \item \textbf{Programmlogik} (Code): Die allgemeinen Algorithmen für Erkennung, Verknüpfung und Validierung, die für alle Anwendungsfälle gleich bleiben
     
     \item \textbf{Domänenwissen} (Konfiguration): Die spezifischen Regeln, Parameter und Erwartungswerte, die werden in einem zentralen Konfigurationsmodul definiert
 \end{enumerate}
@@ -2050,7 +1965,7 @@ Ein wesentliches Merkmal ist die \textbf{klassenspezifische Parametrisierung}: J
 Zusätzlich zur Klassenspezifik werden Parameter nach \textbf{Textorientierung} differenziert. Horizontaler und schräger Text erfordern unterschiedliche OCR-Vorverarbeitung:
 
 \begin{itemize}
-    \item \textbf{Kardinale Orientierung} (0°, 90°, 180°, 270°): Standardparameter für achsparallelen Text
+    \item \textbf{Kardinale Orientierung} ($0^\circ, 90^\circ, 180^\circ, 270^\circ$): Standardparameter für achsparallelen Text
     \item \textbf{Anguläre Orientierung} (schräg): Angepasste Parameter mit erhöhter Vorverarbeitung
 \end{itemize}
 
@@ -2228,12 +2143,12 @@ Die konkrete Implementierung der Validierungslogik und der Benutzerinteraktion w
 Die in diesem Kapitel dargestellten theoretischen Konzepte bilden das Fundament für die praktische Implementierung des Extraktionssystems:
 
 \begin{itemize}
-    \item \textbf{Objekterkennung} (Abschnitt \ref{sec:objekterkennung}): Neuronale Netze für die Detektion von Symbolen
-    \item \textbf{Texterkennung} (Abschnitt \ref{sec:ocr}): OCR-Verfahren für die Extraktion von Beschriftungen
-    \item \textbf{Räumliche Verknüpfung} (Abschnitt \ref{sec:spatial_relations}): Proximale Algorithmen mit lokalen Koordinatensystemen
-    \item \textbf{Änderungserkennung} (Abschnitt \ref{sec:change_detection}): Mengenbasierter Vergleich von Dokumentversionen
-    \item \textbf{Konfigurierbarkeit} (Abschnitt \ref{sec:config_based_adaptation}): Trennung von Code und Domänenwissen
-    \item \textbf{Qualitätssicherung} (Abschnitt \ref{sec:traceability_qa}): Rückverfolgbarkeit und mehrstufige Validierung
+    \item \textbf{Objekterkennung} (Abschnitt~\ref{sec:obb}): Neuronale Netze für die Detektion von Symbolen
+    \item \textbf{Texterkennung} (Abschnitt~\ref{sec:ocr}): OCR-Verfahren für die Extraktion von Beschriftungen
+    \item \textbf{Räumliche Verknüpfung} (Abschnitt~\ref{sec:spatial_relations}): Proximale Algorithmen mit lokalen Koordinatensystemen
+    \item \textbf{Änderungserkennung} (Abschnitt~\ref{sec:change_detection}): Mengenbasierter Vergleich von Dokumentversionen
+    \item \textbf{Konfigurierbarkeit} (Abschnitt~\ref{sec:config_based_adaptation}): Trennung von Code und Domänenwissen
+    \item \textbf{Qualitätssicherung} (Abschnitt~\ref{sec:traceability_qa}): Rückverfolgbarkeit und mehrstufige Validierung
 \end{itemize}
 
-Die folgenden Kapitel konkretisieren diese theoretischen Grundlagen: Kapitel \ref{chap:anforderungen} definiert die funktionalen und nicht-funktionalen Anforderungen, Kapitel \ref{chap:konzeption} beschreibt die Architekturentscheidungen und Kapitel \ref{chap:implementierung} dokumentiert die Implementierung.
+Die folgenden Kapitel konkretisieren diese theoretischen Grundlagen: Kapitel~\ref{chap:anforderungen} definiert die funktionalen und nicht-funktionalen Anforderungen, Kapitel~\ref{chap:konzeption} beschreibt die Architekturentscheidungen und Kapitel~\ref{chap:implementierung} dokumentiert die Implementierung.
