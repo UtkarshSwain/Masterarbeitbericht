@@ -264,7 +264,7 @@ mAP@0.5:0.95 & 92.2\% \\
 Der erreichte Recall von 95.7\% übertrifft die Anforderung \textbf{FA-001} deutlich, die eine Mindesterkennungsrate von 90\% fordert. Die hohe Precision von 97.5\% zeigt, dass das Modell nur wenige Falschdetektionen produziert -- von 100 vorhergesagten Objekten sind durchschnittlich 97-98 korrekt. Der F1-Score von 96.6\% belegt die ausgewogene Leistung zwischen Precision und Recall, was für produktive Anwendungen essentiell ist: Das System findet nahezu alle vorhandenen Objekte (hoher Recall) und produziert dabei nur wenige Fehlalarme (hohe Precision).
 
 Die mAP@0.5 von 98.0\% demonstriert die exzellente Detektionsqualität bei einem IoU-Schwellenwert von 50\%. Dies bedeutet, dass die vorhergesagten Bounding Boxes im Durchschnitt zu mindestens 50\% mit den Ground-Truth-Boxen überlappen, was für nachgelagerte OCR-Verarbeitung ausreichend präzise ist. Die mAP@0.5:0.95 von 92.2\% bestätigt die robuste Leistung auch bei strengeren Überlappungskriterien (IoU von 50\% bis 95\% in 5\%-Schritten gemittelt). Der Abstand von 5.8 Prozentpunkten zwischen mAP@0.5 und mAP@0.5:0.95 ist für orientierte Bounding Boxes typisch und liegt im erwarteten Bereich.
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
     \includegraphics[width=0.85\textwidth]{images/Kapitel7/BoxPR_curve.png}
     \caption{Precision-Recall-Kurven für alle Objektklassen auf dem Validierungsdatensatz. Die Fläche unter jeder Kurve entspricht dem klassenspezifischen AP-Wert. Der Gesamtwert mAP@0.5 beträgt 98,4\,\%.}
@@ -303,9 +303,9 @@ geforderte Mindesterkennungsrate deutlich.
 \textbf{FA-002 (Rotationsinvarianz):} Die OBB-Architektur in Kombination mit der 
 synthetischen Rotationsaugmentation (10 Winkel von $-90^\circ$ bis $+90^\circ$, vgl. 
 §\ref{subsec:Modelltraining}) gewährleistet robuste Erkennung bei beliebigen 
-Symbolorientierungen. Die konstante Detektionsleistung über alle 7 Testpläne -- 
-die Symbole in diversen Orientierungen enthalten -- bestätigt die Rotationsinvarianz 
-empirisch.
+Symbolorientierungen. Die quantitative Analyse in Tabelle~\ref{tab:rotation_analysis} 
+bestätigt dies: 38 Objekte mit Steilrotation ($|\theta| > 30^\circ$) erreichen eine 
+höhere Detektionskonfidenz (0.946) als kardinal orientierte Objekte (0.890).
 
 \textbf{FA-003 (Zielobjekte):} Alle 5 Kernklassen (signal, coordinate, gks\_festkodiert, 
 gks\_gesteuert, gm\_block) werden zuverlässig detektiert. Die zusätzliche Integration 
@@ -407,6 +407,36 @@ Das System erreicht eine End-to-End-Genauigkeit von \textbf{98.76\%} für die Ke
 \textbf{Hinweis zur Generalisierung:} Die evaluierten sieben Testpläne mit 644 Objekten repräsentieren eine aussagekräftige Stichprobe des Leistungsspektrums. Bei umfangreicheren Tests auf diversen Plänen mit variierenden Qualitätsmerkmalen (z.B. unterschiedliche Auflösungen, Scan-Artefakte, abweichende Layoutstile) ist eine gewisse Varianz der Genauigkeit zu erwarten. Basierend auf der beobachteten Fehlerverteilung und unter Berücksichtigung potenzieller Herausforderungen bei komplexeren oder qualitativ schlechteren Eingabedaten wird eine realistische End-to-End-Genauigkeit im Bereich von \textbf{90-95\%} für den produktiven Einsatz erwartet. Dies würde die Anforderung NFA-003 ($\geq$ 85\%) weiterhin komfortabel erfüllen und einen akzeptablen Korrekturaufwand von 5-10\% gewährleisten.
 
 \textbf{Anmerkung:} Die End-to-End Accuracy bezieht sich ausschließlich auf die fünf Kernklassen (\textit{signal}, \textit{coordinate}, \textit{gks\_festkodiert}, \textit{gks\_gesteuert}, \textit{gm\_block}), die für die Planungsaufgaben bei Siemens Mobility essentiell sind. Die acht experimentellen Auxiliarklassen wurden nicht in die E2E-Evaluation einbezogen.
+
+\subsubsection{Rotationsanalyse (Validierung FA-002 und FA-005)}
+
+
+\begin{table}[H]
+\centering
+\caption{Rotationsanalyse}
+\label{tab:rotation_analysis}
+\begin{tabular}{lrrr}
+\toprule
+\textbf{Kategorie} & \textbf{Anzahl} & \textbf{OCR-Erfolg} & \textbf{Ø Konfidenz} \\
+\midrule
+Kardinal ($|\theta| \leq 5^\circ$) & 238 & 96.6\% & 0.890 \\
+Steilrotation ($|\theta| > 30^\circ$) & 38 & 100.0\% & 0.946 \\
+\midrule
+Gesamt & 276 & 97.1\% & 0.898 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Tabelle~\ref{tab:rotation_analysis} zeigt die rotationsabhängige Leistungsanalyse 
+für Plan~1. Von 276 extrahierten Objekten weisen 38 (13.8\%) eine Steilrotation 
+von $|\theta| > 30^\circ$ auf, darunter sieben GKS-Symbole mit Winkeln zwischen 
+$-37.1^\circ$ und $+38.6^\circ$. Die steilrotierten Objekte erreichen eine höhere mittlere 
+Detektionskonfidenz (0.946) als kardinal orientierte Objekte (0.890) sowie eine 
+OCR-Erfolgsrate von 100\% gegenüber 96.6\%. Diese Ergebnisse bestätigen die 
+Wirksamkeit der in Abschnitt~\ref{subsec:Datensatzerstellung} beschriebenen synthetischen 
+Rotationsaugmentation sowie des Angular-Path-Routings im OCR-Modul in Abschnitt \ref{subsec:dualwinkelrouting}.
+
+
 
 \textbf{Detaillierte Ergebnisse pro Testplan:}
 
@@ -576,13 +606,13 @@ Diese Verteilung identifiziert klare Optimierungsansätze in allen drei Hauptkom
 von 98.76\% integriert. Von den 8 aufgetretenen Fehlern sind 3 OCR-bedingt (37.5\%), 
 was einer OCR-spezifischen Fehlerrate von 0.47\% (3/644) entspricht.
 
-\textbf{FA-005 (OCR-Robustheit):} Die Multi-Engine-Kaskade (PaddleOCR → Tesseract → 
-EasyOCR) mit Dual-Winkel-Routing gewährleistet robuste Texterkennung auch unter 
-erschwerten Bedingungen. Das in Abb.~\ref{fig:angular_ocr_example} gezeigte Beispiel 
-eines um $37.5^\circ$ rotierten Koordinatentexts demonstriert die erfolgreiche Verarbeitung 
-nicht-kardinaler Orientierungen. Die klassenspezifische Vorverarbeitung (morphologische 
-Filterung für GKS, Multi-Scale für Koordinaten) adressiert domänenspezifische 
-Herausforderungen wie Linien-Artefakte und niedrige Auflösung.
+Die Robustheit gegenüber Rotation (FA-005) wird durch die Dual-Winkel-Routing-
+Architektur (§\ref{sec:ocrpipeline}) gewährleistet. Die rotationsabhängige 
+Leistungsanalyse für Plan~1 (Tabelle~\ref{tab:rotation_analysis}) zeigt, dass 
+steilrotierte Objekte ($|\theta| > 30^\circ$) sogar bessere Ergebnisse erzielen als 
+kardinal orientierte Objekte (100\% vs. 96.6\% OCR-Erfolg). Das Beispiel in 
+Abbildung~\ref{fig:angular_ocr_example} illustriert den Angular-Path-Routing-Mechanismus 
+bei $\theta = 37{,}5^\circ$.
 
 \textbf{Methodische Anmerkung zu FA-004/FA-005:} Die OCR-Leistung wird bewusst 
 nicht durch isolierte zeichenbasierte Metriken (CER, WER) evaluiert, sondern 
@@ -915,14 +945,14 @@ und~\ref{subsec:e2e_test_eval} (End-to-End-Evaluation) validiert:
 \begin{itemize}
     \item \textbf{FA-001} (Erkennungsrate $\geq$ 90\%): Recall = 95.7\% 
     (Tabelle~\ref{tab:detection_per_class})
-    \item \textbf{FA-002} (Rotationsinvarianz): YOLOv8-OBB Training mit synthetischer 
-    Rotation (§\ref{sec:objekterkennungmityolov8obb})
+    \item \textbf{FA-002} (Rotationsinvarianz): 100\% OCR-Erfolg bei $|\theta|>30^\circ$ 
+    (Tabelle~\ref{tab:rotation_analysis})
     \item \textbf{FA-003} (Zielobjekte): Alle 5 Kernklassen erfolgreich detektiert 
     (Tabelle~\ref{tab:detection_per_class})
     \item \textbf{FA-004} (OCR-Genauigkeit): Integriert in E2E-Genauigkeit von 98.76\% 
     (Tabelle~\ref{tab:e2e_per_class_test})
-    \item \textbf{FA-005} (OCR-Robustheit): Dual-Winkel-Routing, erfolgreiche Extraktion 
-    bei $\theta = 37{,}5^\circ$ (§\ref{sec:ocrpipeline})
+    \item \textbf{FA-005} (OCR-Robustheit): 100\% OCR-Erfolg bei Steilrotation 
+    (Tabelle~\ref{tab:rotation_analysis})
     \item \textbf{FA-006} (Fahrtrichtung): 99.42\% Genauigkeit 
     (Tabelle~\ref{tab:signal_attribute_accuracy})
     \item \textbf{FA-007} (Symbol-Koordinaten-Verknüpfung): 99.69\% Linking-Genauigkeit 
@@ -1004,12 +1034,9 @@ verarbeitet. Die interne Verarbeitungspipeline konvertiert PDFs zunächst
 in hochauflösende Rasterbilder (500 DPI, PNG-Format) mittels PyMuPDF 
 (§\ref{Inferenz}), bevor die YOLO-Inferenz erfolgt. Damit wird die 
 Bildverarbeitungsfähigkeit (PNG/JPG) implizit durch jeden PDF-Test validiert. 
-Die interne Verarbeitungspipeline konvertiert PDFs zunächst in hochauflösende 
-Rasterbilder (500 DPI, PNG-Format) mittels PyMuPDF (§6.2.3), bevor die 
-YOLO-Inferenz erfolgt. Damit wird die Bildverarbeitungsfähigkeit (PNG/JPG) 
-implizit durch jeden PDF-Test validiert. Ein direkter Import von Bilddateien 
-ohne PDF-Konvertierung wurde nicht explizit getestet, ist jedoch aufgrund 
-der identischen nachgelagerten Pipeline-Stufen funktional äquivalent.
+Ein direkter Import von Bilddateien ohne PDF-Konvertierung wurde nicht 
+explizit getestet, ist jedoch aufgrund der identischen nachgelagerten 
+Pipeline-Stufen funktional äquivalent.
 
 \textbf{NFA-011 (Datenquellen):} Der Testsatz besteht ausschließlich aus realen 
 Siemens Mobility Gleisplänen verschiedener Projekte und Komplexitätsstufen 
@@ -1090,10 +1117,10 @@ Tabelle~\ref{tab:anforderungen_erfuellt} fasst die Erfüllung der in Kapitel~\re
 \textbf{Anf.-ID} & \textbf{Anforderung} & \textbf{Erfüllt} \\
 \hline
 FA-001 & Erkennungsrate $\geq$ 90\% & \checkmark (95.7\% Val, 100\% Test) \\
-FA-002 & Rotationsinvarianz & \checkmark \\
+FA-002 & Rotationsinvarianz & \checkmark (100\% bei $|\theta|>30^\circ$) \\
 FA-003 & Zielobjekte detektierbar & \checkmark \\
 FA-004 & OCR-Genauigkeit & \checkmark (integriert in 98.76\% E2E) \\
-FA-005 & OCR-Robustheit & \checkmark \\
+FA-005 & OCR-Robustheit & \checkmark (100\% bei $|\theta|>30^\circ$) \\
 FA-006 & Fahrtrichtungsdetektion & \checkmark (99.42\%) \\
 FA-007 & Symbol-Koordinaten-Verknüpfung & \checkmark (99.69\%)\\
 FA-008 & Manuelle Korrektur & \checkmark \\
@@ -1144,7 +1171,8 @@ Die systematische Evaluation des entwickelten Prototyps auf einem unabhängigen 
     \item Exzellente Detektionsleistung mit mAP@0.5 von 98.0\% auf dem Validierungssatz
     \item 100\% Detektionsrate auf dem Testsatz (kein Symbol übersehen)
     \item 1 Klassifikationsfehler (GKS-Typ-Verwechslung) auf dem Testsatz
-    \item Robuste Rotationsinvarianz durch OBB-Architektur und synthetische Augmentation
+    \item Robuste Rotationsinvarianz: Steilrotierte Objekte ($|\theta|>30^\circ$) erreichen 
+    100\% OCR-Erfolg bei höherer Konfidenz (0.946 vs. 0.890)
     \item Erfolgreiche Anforderungserfüllung FA-001 (Recall 95.7\% $>$ 90\%) und FA-002 (Rotationsinvarianz)
 \end{itemize}
 

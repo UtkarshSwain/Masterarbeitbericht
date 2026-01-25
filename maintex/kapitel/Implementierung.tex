@@ -89,7 +89,7 @@ Symbolklassen erfordert lediglich Anpassungen in \texttt{core/detection.py} und
 Die Objekterkennung bildet die erste und fundamentale Stufe der Extraktionspipeline. Ihre Aufgabe besteht darin, alle relevanten Symbole in den Gleisplänen zu lokalisieren und zu klassifizieren. Die Qualität dieser Detektionen bestimmt maßgeblich die Leistungsfähigkeit der nachfolgenden OCR- und Verknüpfungsmodule. Die Wahl fiel auf YOLOv8 in der Oriented Bounding Box (OBB) Variante, da diese Architektur speziell für die Detektion rotierter Objekte konzipiert wurde und somit optimal für technische Zeichnungen mit beliebig orientierten Symbolen geeignet ist.
 
 \subsection{Datensatzerstellung und Annotation}
-
+\label{subsec:Datensatzerstellung}
 Die Leistungsfähigkeit eines objekterkennenden Modells hängt direkt von der Qualität und Quantität des Trainingsdatensatzes ab. Die Erstellung des Datensatzes erfolgte in einem mehrstufigen Prozess, der sowohl die Vorverarbeitung der Rohdaten als auch die präzise Annotation der Symbole umfasste.
 
 \subsubsection{Vorverarbeitung der Gleispläne}
@@ -170,7 +170,7 @@ Die Daten wurden in eine standardisierte COCO-Verzeichnisstruktur (Abbildung \re
     \label{fig:COCODatenset}
 \end{figure}
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
     \includegraphics[width=0.95\textwidth]{images/Kapitel7/labels.jpg}
     \caption{Charakteristika des Trainingsdatensatzes: (oben links) Klassenverteilung mit absoluten Instanzzahlen, (unten links) räumliche Verteilung der Bounding-Box-Zentren, (unten rechts) Größenverteilung der annotierten Objekte in normalisierten Koordinaten.}
@@ -413,7 +413,7 @@ Nach Abschluss des Trainings wurde das Modell mit den optimalen Gewichten (\text
     % --- KNOTEN ---
     
     % Input
-    \node[data] (pdf) {\textbf{Input:}\\PDF-Gleisplan};
+    \node[data] (pdf) {\textbf{Input:}\\Gleisplan};
 
     % Schritte
     \node[process, below=of pdf] (raster) {Rasterisierung\\(Rendering @ 500 DPI)};
@@ -453,21 +453,89 @@ Nach Abschluss des Trainings wurde das Modell mit den optimalen Gewichten (\text
 \end{figure}
 
 \FloatBarrier
-\subsubsection{PDF-zu-Bild-Konvertierung}
+\subsubsection{Eingabeverarbeitung und Formatnormalisierung}
 
-Der erste Schritt besteht in der Konvertierung der PDF-Gleispläne in hochauflösende Rastergrafiken. Hierzu wird die Bibliothek PyMuPDF (auch bekannt als \texttt{fitz}) verwendet. Für jede Seite des PDF-Dokuments wird eine Transformationsmatrix $\mathbf{M}$ definiert, die die Skalierung von der Standard-PDF-Auflösung von 72 DPI auf die Zielauflösung von 500 DPI beschreibt:
+Der erste Schritt der Inferenz-Pipeline besteht in der Überführung der 
+Eingabedaten in ein einheitliches Rasterformat. Das System unterscheidet 
+dabei zwischen zwei Verarbeitungspfaden entsprechend dem Eingabeformat 
+(Anforderung \textbf{NFA-010}).
+
+\textbf{PDF-Verarbeitung:}
+
+Für PDF-Dateien wird die Bibliothek PyMuPDF (fitz) verwendet. Für jede Seite 
+wird eine Transformationsmatrix definiert, die die Skalierung von der 
+Standard-PDF-Auflösung (72 DPI) auf die Zielauflösung von 500 DPI beschreibt:
 
 \begin{equation}
-\mathbf{M} = \begin{pmatrix}
-\frac{500}{72} & 0 \\
-0 & \frac{500}{72}
-\end{pmatrix} \approx \begin{pmatrix}
-6.94 & 0 \\
-0 & 6.94
-\end{pmatrix}
+\text{Skalierungsfaktor} = \frac{500}{72} \approx 6{,}94
 \end{equation}
 
-Die resultierende Pixmap wird in ein RGB-Array mit den Dimensionen $H \times W \times 3$ überführt, wobei $H$ und $W$ von der Größe des PDF-Dokuments abhängen. Ein typischer A3-Gleisplan resultiert bei 500 DPI in einem Bild von ca. $8000 \times 6000$ Pixeln.
+Die resultierende Pixmap wird in ein RGB-Array überführt. Ein typischer 
+A3-Gleisplan resultiert bei 500 DPI in einem Bild von ca. $8000 \times 6000$ Pixeln.
+
+\textbf{Bildverarbeitung:}
+
+Für Rastergrafiken (PNG, JPEG, TIFF, BMP) werden die nativen Pixeldaten 
+mittels OpenCV direkt geladen. Da das YOLOv8-OBB Modell ausschließlich auf 
+500-DPI-Daten trainiert wurde, ist für das aktuelle Gleisplan-Layout eine 
+Eingabeauflösung von 500 DPI zwingend erforderlich. Bei abweichenden 
+Auflösungen sind erhebliche Erkennungsfehler zu erwarten. Die Unterstützung 
+von Bilddateien dient primär der zukünftigen Erweiterbarkeit für andere 
+Layouts mit potenziell anderen Auflösungsanforderungen.
+
+Abbildung~\ref{fig:format_preprocessing} zeigt den formatabhängigen 
+Verarbeitungspfad vor der einheitlichen Tiling-Pipeline.
+
+% === FIGURE: Format Preprocessing ===
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    scale=0.9, transform shape, font=\small,
+    box/.style={rectangle, draw=blue!60!black, fill=blue!5, text width=3cm, 
+        align=center, minimum height=1cm, rounded corners=2pt, thick},
+    process/.style={rectangle, draw=green!60!black, fill=green!10, text width=3.5cm, 
+        align=center, minimum height=1.2cm, rounded corners=2pt, thick},
+    decision/.style={diamond, draw=orange!60!black, fill=orange!10, text width=1.8cm, 
+        align=center, aspect=2, thick, inner sep=1pt},
+    arrow/.style={->, >=Stealth, thick, draw=black!70}
+]
+
+% Input
+\node[box] (input) at (0,0) {Eingabedatei\\(Gleisplan)};
+
+% Decision
+\node[decision, below=1.2cm of input] (check) {Format?};
+
+% PDF path
+\node[process, below left=1.5cm and 1.5cm of check] (pdf_proc) {PyMuPDF\\Rasterisierung\\$\mathbf{500}$ \textbf{DPI (fix)}};
+
+% Image path
+\node[process, below right=1.5cm and 1.5cm of check] (img_proc) {OpenCV\\Direktes Laden\\(500 DPI erford.)};
+
+% Merge point
+\node[box, below=3.5cm of check] (merge) {RGB-Array\\$H \times W \times 3$};
+
+% Next step
+\node[box, below=1cm of merge, fill=gray!10] (tiling) {Tiling\\(identisch)};
+
+% Arrows
+\draw[arrow] (input) -- (check);
+\draw[arrow] (check) -| node[above left, font=\footnotesize] {.pdf} (pdf_proc);
+\draw[arrow] (check) -| node[above right, font=\footnotesize] {.png/.jpg/...} (img_proc);
+\draw[arrow] (pdf_proc) |- (merge);
+\draw[arrow] (img_proc) |- (merge);
+\draw[arrow] (merge) -- (tiling);
+
+\end{tikzpicture}
+\caption{Formatabhängige Eingabeverarbeitung vor der einheitlichen Tiling-Pipeline.}
+\label{fig:format_preprocessing}
+\end{figure}
+
+\textbf{Einheitliche Weiterverarbeitung:}
+
+Nach der formatspezifischen Eingabeverarbeitung liegt das Bild als RGB-Array vor. 
+Alle nachfolgenden Schritte -- Tiling, YOLO-Inferenz, Koordinaten-Rücktransformation 
+und NMS -- sind unabhängig vom ursprünglichen Eingabeformat identisch.
 
 \subsubsection{Tiling-Strategie}
 \label{subsubsec:tiling_strategie}
@@ -925,7 +993,7 @@ Die Whitelist ist besonders wichtig, da sie die Fehlerrate deutlich reduziert. O
 
 
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \begin{tikzpicture}[
     % Moderne Bibliothek für Positionierung
@@ -1020,7 +1088,7 @@ Die Whitelist ist besonders wichtig, da sie die Fehlerrate deutlich reduziert. O
 \FloatBarrier
 
 \subsection{Dual-Winkel-Routing System}
-
+\label{subsec:dualwinkelrouting}
 Eine zentrale Herausforderung bei der OCR ist die beliebige Rotation der Symbole im Gleisplan. Während einige Symbole horizontal ausgerichtet sind, können andere um $ 45^\circ, 30^\circ$ oder sogar beliebige Winkel gedreht sein. Um diese Vielfalt zu bewältigen, wurde ein Dual-Path-Routing-System implementiert, das zwischen zwei verschiedenen Verarbeitungswegen unterscheidet.
 
 \subsubsection{Cardinal Path und Angular Path}
@@ -1042,7 +1110,7 @@ Die Perspektiventransformation wird mit OpenCV's \texttt{getPerspectiveTransform
 
 Obwohl diese Methode rechenintensiver ist (etwa 2-3 Mal langsamer als eine einfache Rotation), liefert sie bei beliebigen Winkeln deutlich bessere Ergebnisse, da der Text exakt horizontal ausgerichtet wird, nicht nur annähernd.
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \begin{tikzpicture}[
     >=latex, 
@@ -1155,7 +1223,7 @@ GKS-Symbole sind häufig von dünnen Linien umgeben, die die OCR-Qualität beein
 Opening ist eine Kombination aus zwei aufeinanderfolgenden Operationen: Zunächst wird eine \textbf{Erosion} durchgeführt, die kleine helle Strukturen (wie dünne Linien) entfernt. Anschließend wird eine \textbf{Dilation} durchgeführt, die die verbleibenden Strukturen (die Textzeichen) wieder auf ihre ursprüngliche Größe erweitert. Der Effekt ist, dass dünne Linien komplett verschwinden, während dickere Strukturen (Buchstaben und Zahlen) erhalten bleiben.
 
 Der Filter verwendet ein quadratisches strukturierendes Element mit der Größe 3x3 Pixel - also eine Matrix aus 9 Einsen. Diese Größe wurde gewählt, weil sie ausreicht, um typische Störlinien (1-2 Pixel dick) zu entfernen, aber nicht so groß ist, dass sie die Textzeichen selbst beschädigt. Die Anwendung erfolgt auf dem binärisierten Bild, wobei die Pixel entweder komplett weiß (Text) oder komplett schwarz (Hintergrund) sind.
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \begin{tikzpicture}
 
@@ -1210,7 +1278,7 @@ Dieser Ansatz erhöht zwar die Rechenzeit erheblich (die OCR wird dreimal durchg
 
 Vor der eigentlichen OCR-Verarbeitung werden die Bildausschnitte durch eine Reihe von Vorverarbeitungsschritten optimiert, um die Textqualität zu verbessern und störende Elemente zu entfernen.
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \begin{tikzpicture}[scale=0.75]
 
@@ -1357,7 +1425,7 @@ Die drei Komponenten sind:
 \end{itemize}
 
 Die Gewichte (0.5, 0.3, 0.2) wurden empirisch optimiert. Die OCR-Konfidenz wird am stärksten gewichtet (50\%), da sie direkt von der Engine stammt und deren \enquote{Sicherheit} widerspiegelt. Die Regex-Validierung erhält 30\%, da sie strukturelle Korrektheit prüft. Der Längen-Score erhält nur 20\%, da Längenabweichungen manchmal legitim sind (z.B. \enquote{A1} vs. \enquote{A123} - beide gültige Signale).
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \begin{tikzpicture}
 \begin{axis}[
@@ -1499,7 +1567,7 @@ d_{\text{local}} = \sqrt{dx_{\text{local}}^2 + dy_{\text{local}}^2} = \sqrt{dx^2
 Die Implementierung der Koordinatentransformation erfolgt für jedes Symbol-Text-Paar einzeln. Zunächst werden die globalen Koordinaten des Symbols $(x_A, y_A)$ und des Textkandidaten $(x_C, y_C)$ aus den YOLO- bzw. OCR-Ergebnissen extrahiert. Der Rotationswinkel $\theta_A$ des Symbols liegt ebenfalls aus der YOLO-Detektion vor und muss von Gradmaß in Bogenmaß konvertiert werden. Die Berechnung der lokalen Koordinaten erfolgt dann durch direkte Anwendung der Transformationsgleichung (6.3), wobei die trigonometrischen Funktionen numerisch ausgewertet werden. 
 
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \begin{tikzpicture}[scale=1.4]
     
@@ -1770,7 +1838,7 @@ Alle Textkandidaten, deren Positionen innerhalb dieses Fensters liegen, werden a
 Abbildung \ref{fig:adaptive_window} illustriert dieses Verfahren: Ausgehend vom Signal wird die erwartete Textposition durch den mittleren gelernten Offset bestimmt (roter Punkt). Das Suchfenster (rot gestrichelt) umfasst einen $2\sigma$ Bereich um diese Position. Nur Textkandidaten innerhalb dieses Fensters (grün) werden für die Zuordnung berücksichtigt, während außenliegende Kandidaten (schwarz) ignoriert werden
 Die probabilistische Fenstersuche wird nur dann aktiviert, wenn mindestens 10 validierte Links für die entsprechende Symbolklasse vorliegen. Dies stellt sicher, dass die statistischen Schätzer eine ausreichende Präzision besitzen. Für seltene Symbolklassen oder zu Beginn der Verarbeitung, wenn noch wenige Links validiert wurden, greift das System auf die konventionelle Proximity-Suche zurück.
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \begin{tikzpicture}[scale=1.3]
 
@@ -1990,7 +2058,7 @@ jedoch keine domänenspezifischen Plausibilitätsprüfungen.
 
 Die Validierung ist hierarchisch in drei Ebenen organisiert, die aufeinander aufbauen und unterschiedliche Aspekte der Datenqualität adressieren. Diese Strukturierung ermöglicht eine systematische Fehleridentifikation von grundlegenden Formatproblemen bis hin zu komplexen semantischen Inkonsistenzen.
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
     % --- HIER IST DIE ÄNDERUNG ---
     % Ein horizontaler Abstand von 1.5cm schiebt das Bild nach rechts.
@@ -2086,7 +2154,7 @@ Für GKS-Nummern wurde beobachtet, dass OCR-Engines gelegentlich Trennzeichen wi
 
 Die Anwendung automatischer Korrekturen erfolgt nicht undifferenziert, sondern wird durch ein konfidenzbasiertes Bewertungssystem gesteuert. Jede potenzielle Korrektur wird mit einem normalisierten Konfidenzwert im Intervall $[0, 1]$ versehen, der die Zuverlässigkeit der Transformation quantifiziert. Dieser Wert wird aus mehreren Faktoren abgeleitet, insbesondere der Eindeutigkeit der Korrektur, der Häufigkeit des identifizierten Fehlermusters und dem Risiko einer Fehlkorrektur.
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 \centering
 \begin{tikzpicture}[
     scale=0.75, 
@@ -2154,7 +2222,7 @@ Der erste Tab präsentiert die vollständige Liste aller identifizierten Validie
 
 Ein spezialisierter Tab ist den automatisch korrigierbaren Problemen gewidmet und implementiert ein interaktives Auswahlsystem. Jede Zeile in dieser Ansicht repräsentiert einen konkreten Korrekturvorschlag und ist mit einem Auswahlfeld versehen, das dem Benutzer die selektive Auswahl einzelner Korrekturen ermöglicht. Die visuelle Gestaltung unterstützt die Entscheidungsfindung durch eine farbliche Differenzierung: Der aktuelle fehlerhafte Wert wird mit rotem Hintergrund dargestellt, während der vorgeschlagene Korrekturwert grün hinterlegt ist. Die Konfidenz der Korrektur wird numerisch sowie durch Farbcodierung visualisiert, wobei grüne Schrift hohe Konfidenz, orange Schrift mittlere Konfidenz und rote Schrift niedrige Konfidenz signalisiert.
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 \centering
 \includegraphics[width=0.9\textwidth]{images/Kapitel6/Validierungsdialog.png} 
 \caption{Schematische Darstellung der fünfteiligen Tab-Struktur des Validierungsdialogs}
@@ -2165,7 +2233,7 @@ Ein spezialisierter Tab ist den automatisch korrigierbaren Problemen gewidmet un
 
 Weitere Tabs bieten gefilterte Ansichten, die ausschließlich Fehler, Warnungen oder Informationshinweise anzeigen. Diese kategoriespezifischen Ansichten reduzieren die kognitive Last bei der Fehleranalyse, indem sie eine fokussierte Bearbeitung nach Priorität ermöglichen. Kritische Fehler, die zwingend einer Korrektur bedürfen, können somit isoliert betrachtet werden, ohne durch weniger dringende Warnungen oder informative Hinweise überlagert zu werden.
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 \centering
 \begin{tikzpicture}
 
@@ -2196,7 +2264,7 @@ Weitere Tabs bieten gefilterte Ansichten, die ausschließlich Fehler, Warnungen 
 
 Eine wesentliche Herausforderung bei der manuellen Validierung besteht in der effizienten Lokalisierung problematischer Erkennungen im Originaldokument. Das System adressiert dies durch eine integrierte Navigation, die eine direkte Verlinkung zwischen Validierungsproblemen und der entsprechenden Position im PDF-Viewer ermöglicht.
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 \centering
 \includegraphics[width=1.0\textwidth]{images/Kapitel6/Validierungsdialog2.png} 
 \caption{Jump-to-Detection Workflow zwischen Validierungsdialog und Gleisplan-Ansicht}
@@ -2348,7 +2416,7 @@ Für die eindeutige Identifikation extrahierter Objekte über verschiedene Planv
 \begin{equation} \text{UID}(o) = \text{class}(o) \oplus \text{normalize}(\text{content}(o)) \oplus \text{GridIndex}(x, y) \end{equation}
 
 wobei GridIndex(x,y) die Koordinaten auf ein grobes Raster abbildet, um Robustheit gegen minimale Pixelverschiebungen zu gewährleisten, während Identität bei gleicher Semantik an verschiedenen Orten unterschieden wird. $\oplus$ bezeichnet die String-Konkatenation und die Normalisierungsfunktion $\text{normalize}: \Sigma^* \rightarrow \Sigma^*$ Leerzeichen entfernt und Sonderzeichen standardisiert, um konsistente Identifikatoren zu gewährleisten.
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \begin{tikzpicture}[
     node distance=1.5cm,
@@ -2407,7 +2475,7 @@ Der Vergleichsalgorithmus basiert auf mengentheoretischen Operationen zwischen z
 \Delta_{\text{pot}} &= A \cap B \quad \text{(potentiell modifizierte Objekte)}
 \end{align}
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \begin{tikzpicture}[scale=1.2]
     % Draw two bigger circles, adjust position of the second circle
@@ -2465,7 +2533,7 @@ wobei $(x_A, y_A)$ und $(x_B, y_B)$ die Koordinaten der jeweiligen Objektzentroi
 \end{equation}
 
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \begin{tikzpicture}[scale=1.0]
     % Grid
@@ -2559,7 +2627,7 @@ Die automatische Änderungsdetektion identifizierte eine Verschiebung um $\Delta
 \subsection{Rückverfolgbarkeit zur Quelldokumentation}
 
 Die vollständige Rückverfolgbarkeit extrahierter Daten zur Originalquelle ist essentiell für die Validierung und manuelle Nachkorrektur von Extraktionsergebnissen. Hierzu wird für jeden extrahierten Datensatz ein umfassender Metadatensatz persistiert.
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \begin{tikzpicture}[
     scale=0.95, 
@@ -2681,7 +2749,7 @@ Diese Funktionalität reduziert den kognitiven Aufwand bei der manuellen Validie
 \subsection{Persistente Datenhaltung}
 
 Das System verwendet PostgreSQL (Version 14.9) zur persistenten Speicherung von Extraktionsergebnissen, Workspace-Zuständen und Qualitätsmetriken.
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[width=0.9\textwidth]{images/Kapitel6/Postgresql datenbank diagramm .png} 
 \caption{Datenbankschema mit Kardinalitäten (vereinfachte Darstellung)}
@@ -2838,6 +2906,58 @@ manuellen Nachbearbeitung der extrahierten Daten. Sie adressiert die Anforderung
 durch Bounding-Box-Overlays) und \textbf{NFA-001} (On-Premise-Verarbeitung als 
 Desktop-Anwendung).
 
+% === NEW SUBSECTION TO ADD ===
+\subsection{Setup- und Analysedialog}
+\label{subsec:setup_dialog}
+
+Der initiale Einstiegspunkt der Anwendung \enquote{RailDoc Studio} ist der 
+Setup- und Analysedialog (Abbildung~\ref{fig:setup_analyse_dialog}), der einen 
+geführten dreistufigen Workflow zur Initiierung der Datenextraktion implementiert. 
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth]{images/Kapitel6/setup_analyse_dialog.png}
+\caption{Setup- und Analyse-Dialog der Anwendung \enquote{RailDoc Studio}}
+\label{fig:setup_analyse_dialog}
+\end{figure}
+
+Der Workflow gliedert sich in drei sequenzielle Schritte:
+
+\begin{enumerate}
+    \item \textbf{Gleisplan laden:} Auswahl der zu verarbeitenden PDF-Datei 
+    über einen Dateidialog. Das System akzeptiert PDF-Dateien beliebiger Größe 
+    und zeigt einen Hinweis zur empfohlenen Mindestauflösung von 300~DPI an, 
+    wobei 500~DPI für optimale Erkennungsleistung empfohlen werden 
+    (vgl. Anforderung \textbf{NFA-010}).
+    
+    \item \textbf{KI-Modell laden:} Auswahl der trainierten YOLOv8-OBB 
+    Gewichtsdatei (\texttt{best.pt}). Diese explizite Trennung von Anwendung 
+    und Modell erfüllt Anforderung \textbf{NFA-009} (Update-Fähigkeit) und 
+    ermöglicht den Austausch von Modellversionen -- beispielsweise nach einem 
+    Nachtraining mit zusätzlichen Symbolklassen -- ohne Neukompilierung der 
+    Anwendung.
+    
+    \item \textbf{Analyse starten:} Initiierung der automatischen 
+    Verarbeitungspipeline durch Betätigung der Schaltfläche 
+    \enquote{Analyse starten}. Der Fortschrittsbalken visualisiert die drei 
+    Pipeline-Stufen: Symbol-Erkennung (YOLO), Texterkennung (OCR) und 
+    Gleiserkennung (Linking).
+\end{enumerate}
+
+Die Checkbox \enquote{Vollständige Neuanalyse} ermöglicht das Überschreiben 
+bereits in der PostgreSQL-Datenbank gespeicherter Ergebnisse, was für 
+iterative Verbesserungen oder nach Modell-Updates relevant ist. Die 
+Schaltfläche \enquote{Neues Symbol definieren} (rechts oben) öffnet einen 
+Assistenten zur Definition zusätzlicher Symbolklassen und demonstriert die 
+Erweiterbarkeit des Systems gemäß Anforderung \textbf{NFA-008}.
+
+Nach Abschluss der automatischen Analyse wechselt die Anwendung automatisch 
+in den Bearbeitungs- und Korrekturmodus (Abschnitt~\ref{subsec:interaktiveergebnistabelle}), 
+in dem die extrahierten Daten validiert und bei Bedarf manuell korrigiert 
+werden können.
+
+% === END OF NEW SUBSECTION ===
+
 \subsection{Architektur und Designentscheidungen}
 
 Die Architektur der Benutzeroberfläche basiert auf dem Model-View-Controller (MVC) Entwurfsmuster, wobei die Datenhaltung (Model), die Visualisierung (View) und die Ereignisverarbeitung (Controller) klar voneinander getrennt sind. Diese Architektur gewährleistet Wartbarkeit und ermöglicht die unabhängige Weiterentwicklung der einzelnen Schichten.
@@ -2912,7 +3032,7 @@ wobei 72 die Standard-DPI-Referenz für PDF-Dokumente darstellt. Der Zoomfaktor 
 \end{itemize}
 
 \subsection{Interaktive Ergebnistabelle}
-
+\label{subsec:interaktiveergebnistabelle}
 \subsubsection{Hierarchische Datenstruktur}
 
 Die Ergebnisdarstellung erfolgt in einer Baumstruktur mit zweistufiger Hierarchie: Auf der ersten Ebene werden Elemente nach ihrer Klasse gruppiert, auf der zweiten Ebene befinden sich die individuellen Detektionen. Diese Strukturierung ermöglicht sowohl einen schnellen Überblick über die Klassenverteilung als auch detaillierte Einsicht in einzelne Erkennungen. Die Tabellenspalten umfassen:
@@ -2958,7 +3078,7 @@ Abbildung~\ref{fig:complete_ui} zeigt die vollständige Benutzeroberfläche mit 
 \label{fig:complete_ui}
 \end{figure}
 
-Die Abbildung demonstriert die praktische Anwendung der bidirektionalen Verlinkung: Das in der Tabelle selektierte Objekt (GKS 0553 mit Koordinate 15{,}2564, hervorgehoben in cyan) ist im PDF-Viewer durch eine grüne Bounding Box markiert und zentriert. Die farbliche Codierung der Overlays folgt dem definierten Schema (Signale rot, GKS-Platten gelb/orange, GM-Blöcke grün, Koordinaten grün). Die Toolbar am oberen Rand bietet Funktionen zur Datenvalidierung, Erkennungsqualitätsprüfung, manuellen Koordinatenverknüpfung und OCR-Re-Extraktion. Das rechte Panel zeigt Detailinformationen zum selektierten Objekt, einschließlich Klassentyp (gks\_gesteuert), YOLO-Konfidenz (0{,}947), extrahiertem Text und Seitenzuordnung. Diese integrierte Ansicht erfüllt die Anforderungen FA-012 (Visuelle Validierung) und FA-013 (GUI) und ermöglicht eine effiziente Qualitätsprüfung ohne Medienbruch zwischen Originaldokument und strukturierten Daten.
+Die Abbildung demonstriert die praktische Anwendung der bidirektionalen Verlinkung: Das in der Tabelle selektierte Objekt (GKS 0553 mit Koordinate 15{,}2564, hervorgehoben in cyan) ist im PDF-Viewer durch eine grüne Bounding Box markiert und zentriert. Die farbliche Codierung der Overlays folgt dem definierten Schema (Das ausgewählte Element muss rot und die andere Elemente müssen grün sein). Die Toolbar am oberen Rand bietet Funktionen zur Datenvalidierung, Erkennungsqualitätsprüfung, manuellen Koordinatenverknüpfung und OCR-Re-Extraktion. Das rechte Panel zeigt Detailinformationen zum selektierten Objekt, einschließlich Klassentyp (gks\_gesteuert), YOLO-Konfidenz (0{,}947), extrahiertem Text und Seitenzuordnung. Diese integrierte Ansicht erfüllt die Anforderungen FA-012 (Visuelle Validierung) und FA-013 (GUI) und ermöglicht eine effiziente Qualitätsprüfung ohne Medienbruch zwischen Originaldokument und strukturierten Daten.
 \subsection{Validierungs-Dialog}
 
 Der Validierungs-Dialog implementiert eine mehrstufige Fehlerklassifikation basierend auf den Validierungsregeln aus Abschnitt [Referenz zu Validierungskapitel]. Die Fehlertypen umfassen:

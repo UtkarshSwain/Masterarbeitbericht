@@ -285,9 +285,18 @@ Die Datengrundlage bilden reale Gleispläne aus dem Bereich \textit{Trainguard M
 \begin{itemize}
     \item \textbf{NFA-010}\label{req:NFA-010} \textbf{Eingabeformate:} Das System muss folgende Eingabeformate verarbeiten können:
     \begin{itemize}
-        \item PDF-Dateien (Vektor- und Rastergrafiken)
-        \item Bilddateien (PNG, JPG) mit Mindestauflösung $\geq 300$ DPI
+        \item PDF-Dateien (Vektor- und Rastergrafiken) -- werden intern bei 500 DPI gerendert
+        \item Bilddateien (PNG, JPEG, TIFF, BMP) -- erfordern eine native Auflösung von 500 DPI
     \end{itemize}
+    
+    \textbf{Begründung:} Das YOLOv8-OBB Modell wurde ausschließlich auf Bildkacheln 
+    trainiert, die aus bei 500 DPI gerenderten PDFs des aktuellen Gleisplan-Layouts 
+    extrahiert wurden (vgl. Abschnitt~\ref{subsec:Datensatzerstellung}). Eine 
+    Abweichung von dieser Auflösung führt zu signifikant reduzierten 
+    Erkennungsraten, da die gelernten Pixelmuster nicht mehr mit den 
+    Eingabedaten übereinstimmen. Die Unterstützung von Bilddateien ermöglicht 
+    die zukünftige Erweiterung auf andere Gleisplan-Layouts ohne Änderung 
+    der Systemarchitektur.
     
     \item \textbf{NFA-011}\label{req:NFA-011} \textbf{Datenquellen:} Das System muss mit folgenden Datenquellen kompatibel sein:
     \begin{itemize}
@@ -366,7 +375,7 @@ FA-001 & Erkennungsrate $\geq$ 90\% &
 
 FA-002 & Rotationsinvarianz ($0^\circ$--$360^\circ$) & 
 §\ref{sec:objekterkennungmityolov8obb}: OBB-Annotation, synthetische Rotation (10 Winkel) & 
-§\ref{subsec:detection_eval}: Stabile Leistung über alle Testpläne \\
+§\ref{subsec:e2e_test_eval}, Tab.~\ref{tab:rotation_analysis}: 38 Objekte mit $|\theta|>30^\circ$ bei höherer Konfidenz (0.946 vs. 0.890) \\
 \hline
 
 FA-003 & Zielobjekte (5 Kernklassen) & 
@@ -381,7 +390,7 @@ FA-004 & OCR-Genauigkeit (in E2E integriert) &
 
 FA-005 & OCR-Robustheit (Rauschen, Rotation) & 
 §\ref{sec:ocrpipeline}: Dual-Winkel-Routing, CLAHE, Linienentfernung & 
-§\ref{subsec:e2e_test_eval}: Erfolgreiche Extraktion bei $\theta = 37.5^\circ$ (Abb.~\ref{fig:angular_ocr_example}) \\
+§\ref{subsec:e2e_test_eval}, Tab.~\ref{tab:rotation_analysis}: 100\% OCR-Erfolg bei $|\theta|>30^\circ$ (38/38) \\
 \hline
 
 FA-006 & Fahrtrichtungsdetektion & 

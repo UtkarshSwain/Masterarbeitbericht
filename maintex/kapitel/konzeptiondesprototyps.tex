@@ -15,14 +15,109 @@ Das System ist in funktional abgegrenzte Module unterteilt, die über definierte
 
 \subsection{Dateneingabe}
 
-Das System akzeptiert Gleispläne in PDF Format als primäre Eingabe. PDF wurde als Standardformat gewählt, da es in der Praxis neben Bildformaten am häufigsten für den Export technischer Zeichnungen verwendet wird. Funktionale Anforderungen an das Eingabemodul:
+Das System akzeptiert Gleispläne in verschiedenen Formaten als primäre Eingabe 
+\textbf{(Anforderung NFA-010)}. Die Unterstützung mehrerer Formate berücksichtigt 
+sowohl den aktuellen Anwendungsfall als auch die zukünftige Erweiterbarkeit 
+auf andere Gleisplan-Layouts.
+
+\textbf{Unterstützte Eingabeformate:}
 \begin{itemize}
-    \item Hochladen einzelner oder mehrerer PDF Dateien
-    \item Validierung des Dateiformats und der Dateiintegrität
-    \item Extraktion grundlegender Metadaten (Seitenanzahl,Auflösung,Name des Plans)
+    \item \textbf{PDF-Dateien (.pdf):} Standardformat für technische Zeichnungen. 
+    Das System rendert PDFs intern bei einer festen Auflösung von 500 DPI, was 
+    eine konsistente und optimale Bildqualität gewährleistet.
+    
+    \item \textbf{Rastergrafiken (.png, .jpg/.jpeg, .tif/.tiff, .bmp):} Für bereits 
+    rasterisierte Pläne aus Scans oder Bildexporten. Diese werden mit ihrer 
+    nativen Auflösung verarbeitet.
 \end{itemize}
 
+\textbf{Auflösungsanforderung für das aktuelle Layout:}
 
+Für das in dieser Arbeit behandelte Gleisplan-Layout ist eine Auflösung von 
+exakt 500 DPI \textbf{zwingend erforderlich}. Diese strikte Anforderung ergibt 
+sich aus dem Trainingsverfahren des YOLOv8-OBB Modells: Sämtliche Trainingsdaten 
+wurden aus bei 500 DPI gerenderten PDFs extrahiert 
+(vgl. Abschnitt~\ref{subsec:Datensatzerstellung}). Das Modell hat somit 
+Pixelmuster gelernt, die spezifisch für diese Auflösung sind. Bei abweichenden 
+Auflösungen -- selbst bei 300 oder 400 DPI -- stimmen die Symbolgrößen und 
+Detailstrukturen nicht mehr mit den gelernten Mustern überein, was zu 
+erheblichen Erkennungsfehlern führt.
+
+Bei PDF-Eingaben wird die korrekte Auflösung durch die interne Rasterisierung 
+automatisch sichergestellt. Bei Bilddateien muss der Benutzer gewährleisten, 
+dass die Eingabe mit 500 DPI erstellt wurde. Das System zeigt einen entsprechenden 
+Hinweis in der Benutzeroberfläche an.
+
+\textbf{Erweiterbarkeit für zukünftige Layouts:}
+
+Die Unterstützung von Bildformaten neben PDF dient primär der zukünftigen 
+Erweiterbarkeit. Für neue Gleisplan-Layouts mit anderen grafischen 
+Konventionen könnte ein separates YOLO-Modell mit angepasster Trainingsauflösung 
+entwickelt werden. Die flexible Eingabearchitektur ermöglicht dies ohne 
+Änderungen am grundlegenden Systemaufbau.
+
+Abbildung~\ref{fig:input_processing_paths} visualisiert die differenzierte 
+Behandlung der beiden Eingabepfade.
+
+% === FIGURE: Input Processing Paths ===
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    node distance=1.2cm and 2.5cm,
+    font=\small,
+    input/.style={rectangle, draw=blue!60!black, fill=blue!10, text width=2.8cm, 
+        align=center, minimum height=1.2cm, rounded corners=3pt, thick},
+    process/.style={rectangle, draw=green!60!black, fill=green!10, text width=3.2cm, 
+        align=center, minimum height=1cm, rounded corners=3pt, thick},
+    output/.style={rectangle, draw=orange!60!black, fill=orange!10, text width=3cm, 
+        align=center, minimum height=1cm, rounded corners=3pt, thick},
+    arrow/.style={->, >=Stealth, thick, draw=black!70}
+]
+
+% Input nodes
+\node[input] (pdf) {PDF-Datei\\(.pdf)};
+\node[input, right=3.5cm of pdf] (image) {Bilddatei\\(.png, .jpg, .tif, .bmp)};
+
+% Processing nodes
+\node[process, below=1.5cm of pdf] (render) {PyMuPDF\\Rasterisierung\\@500 DPI (fix)};
+\node[process, below=1.5cm of image] (load) {Direktes Laden\\Native Auflösung\\(muss 500 DPI sein)};
+
+% Output node
+\node[output, below=1.5cm of render, xshift=2.8cm] (out) {Einheitliches\\Rasterformat\\für YOLO};
+
+% Arrows
+\draw[arrow] (pdf) -- (render);
+\draw[arrow] (image) -- (load);
+\draw[arrow] (render) -- (out);
+\draw[arrow] (load) -- (out);
+
+% Annotations
+\node[font=\scriptsize, text width=2.5cm, align=center, below=0.05cm of render] 
+    {Automatisch\\korrekt};
+\node[font=\scriptsize, text width=2.5cm, align=center, below=0.05cm of load] 
+    {Benutzer-\\verantwortung};
+
+\end{tikzpicture}
+\caption{Differenzierte Eingabeverarbeitung für PDF- und Bilddateien.}
+\label{fig:input_processing_paths}
+\end{figure}
+
+\textbf{DPI-Konsistenz und Modellkompatibilität:}
+
+Da das YOLOv8-OBB Modell auf Bildausschnitten trainiert wurde, die aus bei 500 DPI 
+gerenderten PDFs stammen, ist die Auflösung der Eingabedaten ein kritischer Faktor 
+für die Erkennungsgenauigkeit. Bei PDF-Eingaben wird dies durch die interne 
+Rasterisierung automatisch sichergestellt. Bei Bilddateien liegt die Verantwortung 
+für eine ausreichende Auflösung beim Benutzer. Das System zeigt daher bei 
+Bildformaten einen Hinweis auf die empfohlene Mindestauflösung an:
+
+\begin{itemize}
+    \item \textbf{Optimal (500 DPI):} Volle Übereinstimmung mit Trainingsdaten, 
+    maximale Erkennungsgenauigkeit
+    \item \textbf{Akzeptabel (300--499 DPI):} Geringfügig reduzierte Genauigkeit, 
+    für die meisten Anwendungsfälle ausreichend
+    \item \textbf{Kritisch ($<$ 300 DPI):} Deutlich erhöhte Fehlerrate, nicht empfohlen
+\end{itemize}
 
 \subsection{Vorverarbeitung}
 Die Vorverarbeitung transformiert die PDF Dokumente in ein für die nachfolgenden KI Module geeignetes Format. Dieser Schritt ist essentiell, weil Deep Learning basierte Objekterkennungsmodelle pixelbasierte Eingaben benötigen. Kernaufgaben des Vorverarbeitungsmoduls: 
@@ -33,6 +128,39 @@ Die Vorverarbeitung transformiert die PDF Dokumente in ein für die nachfolgende
 \end{enumerate}
 Designentscheidungen: Die Größe der Tiles und der Überlappungsgrad sind konfigurierbare Parameter, die je nach Plandichte und Symbolgrößen angepasst werden können.
 
+
+\textbf{Formatunabhängige Weiterverarbeitung:}
+
+Unabhängig vom Eingabeformat (PDF oder Bild) sind alle nachfolgenden 
+Verarbeitungsschritte -- Tiling, YOLO-Inferenz, OCR und Linking -- identisch. 
+Dies wird durch die einheitliche Repräsentation als RGB-Array nach der 
+Eingabeverarbeitung gewährleistet (vgl. Abbildung~\ref{fig:format_preprocessing} 
+in Kapitel~\ref{chap:implementierung}). Die Tile-Größe von $2048 \times 2048$ Pixeln 
+und der Überlappungsgrad von 12{,}5\% bleiben konstant, wobei die absolute 
+Anzahl der Tiles von den Bildabmessungen und damit indirekt von der 
+Eingabeauflösung abhängt.
+
+
+
+\textbf{Differenzierte Behandlung nach Eingabeformat:}
+
+Die Vorverarbeitung unterscheidet zwischen PDF- und Bildeingaben:
+
+\begin{enumerate}
+    \item \textbf{PDF-Eingaben:} Rasterisierung mittels PyMuPDF bei fester Auflösung 
+    von 500 DPI. Die Transformationsmatrix gewährleistet eine deterministische und 
+    reproduzierbare Bildqualität unabhängig von der Original-PDF-Auflösung.
+    
+    \item \textbf{Bildeingaben (PNG, JPEG, TIFF, BMP):} Direkte Verwendung der 
+    nativen Pixeldaten ohne Reskalierung. Dies erhält die Originalqualität, 
+    erfordert aber eine angemessene Eingabeauflösung durch den Benutzer. 
+    Eine Hochskalierung niedrig aufgelöster Bilder wird bewusst vermieden, 
+    da sie keine neuen Informationen generiert und zu Artefakten führen kann.
+\end{enumerate}
+
+Die nachfolgenden Verarbeitungsschritte (Tiling, Normalisierung) sind unabhängig 
+vom Eingabeformat identisch, wodurch eine konsistente Pipeline für alle 
+unterstützten Datentypen gewährleistet wird.
 
 \subsection{Detection \& OCR}
 
