@@ -21,6 +21,8 @@
 \usepackage{algorithm}     % For algorithm environment
 \usepackage{algpseudocode} % For algorithmic environment
 \usepackage{booktabs}      % For better tables
+\usepackage[nohyperlinks]{acronym} % 'printonlyused' only lists acronyms you actually cite in the text
+% OR use \usepackage{acronym} if you want to list ALL acronyms defined, even if not used.
 % --- HINZUGEFÜGT FÜR RICHTLINIEN ---
 \usepackage{helvet} % Verwendet Helvetica als serifenlose Schrift (Arial-Alternative)
 \renewcommand{\familydefault}{\sfdefault} % Setzt serifenlose Schrift als Standard
@@ -99,8 +101,7 @@
        \includegraphics[width=0.2\textwidth]{images/IMW-logo.png}\\[2cm]
 
         % Title
-        {\large \textbf{KI-gestützte Verarbeitung und Analyse von PDF-Gleisplänen 
-        zur automatisierten Symbolinterpretation und Änderungsverfolgung}}\\[2cm]
+        {\large \textbf{KI-gestützter Prototyp zur automatisierten Erkennung und Interpretation von Symbolen und Daten in PDF-basierten Gleisplänen}}\\[2cm]
 
         % Subtitle
         {\large \textbf{Masterarbeit}}\\[3cm]
@@ -206,8 +207,12 @@ Des Weiteren erkläre ich mich \textbf{nicht} damit einverstanden, dass meine Fo
 \listoffigures
 \newpage
 \listoftables
+\input{kapitel/abkuerzungen.tex}
+\newpage
 \input{kapitel/Abstract.tex}
 \newpage
+
+
 % ===== ARABISCHE SEITENZAHLEN AB EINLEITUNG =====
 \pagenumbering{arabic}  % Wechselt zu arabischen Zahlen (1, 2, 3, ...) und setzt Zähler auf 1 zurück
 

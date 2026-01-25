@@ -1,6 +1,6 @@
 \chapter{Implementierung}
 \label{chap:implementierung}
-Dieses Kapitel beschreibt die technische Realisierung des Prototyps. Es werden die Implementierungsdetails der in Kapitel \ref{chap:konzeption} konzipierten Architektur dargelegt, von der Datenaufbereitung über das Modelltraining bis zur finalen Datenaggregation.  
+Dieses Kapitel beschreibt die technische Realisierung des Prototyps. Es werden die Implementierungsdetails der in Kapitel \ref{chap:konzeption} konzipierten Architektur dargelegt, von der Datenaufbereitung über das Modelltraining bis zur finalen Datenaggregation.
 
 \section{Technologiestack und Entwicklungsumgebung}
 
@@ -10,7 +10,7 @@ Die Implementierung des Prototyps basiert auf bewährten Open-Source-Technologie
 
 Die gesamte Implementierung erfolgte in \textbf{Python 3.9}, da diese Sprache ein umfangreiches Ökosystem für maschinelles Lernen, Bildverarbeitung und Datenmanipulation bietet und eine schnelle Prototypenentwicklung ermöglicht.
 
-\begin{table}[h]
+\begin{table}[H]
 \centering
 \small
 \begin{tabular}{|l|l|l|p{7cm}|}
@@ -116,7 +116,7 @@ Der finale Datensatz umfasst insgesamt 13 Symbolklassen, darunter Signale, versc
 
 Die Verteilung der Objektinstanzen über die Klassen hinweg zeigt Tabelle \ref{tab:dataset_distribution}:
 
-\begin{table}[h]
+\begin{table}[H]
 \centering
 \begin{tabular}{|l|r|r|}
 \hline
@@ -184,14 +184,14 @@ Um die Robustheit des Modells gegenüber beliebigen Symbolorientierungen zu verb
 \begin{enumerate}
     \item \textbf{Klassenungleichgewicht}: Die natürliche Verteilung der Symbolklassen im Datensatz ist stark unausgeglichen (vgl. Tabelle~\ref{tab:dataset_distribution}), mit dominierenden Klassen wie \textit{coordinate} (629 Instanzen) und unterrepräsentierten Klassen wie \textit{endeweichen} (4 Instanzen).
     
-    \item \textbf{Orientierungsvielfalt}: Obwohl technische Zeichnungen Symbole in verschiedenen Winkeln enthalten, sind bestimmte Orientierungen (insbesondere $0°$ und $90°$) überrepräsentiert, während diagonale Ausrichtungen seltener auftreten.
+    \item \textbf{Orientierungsvielfalt}: Obwohl technische Zeichnungen Symbole in verschiedenen Winkeln enthalten, sind bestimmte Orientierungen (insbesondere $0^\circ$ und $90^\circ$) überrepräsentiert, während diagonale Ausrichtungen seltener auftreten.
 \end{enumerate}
 
 \textbf{Augmentationsstrategie:}
 
 Die synthetische Rotation wurde selektiv auf unterrepräsentierte Klassen angewendet. Für jede Instanz einer Zielklasse wurden systematische Rotationen um folgende Winkel durchgeführt:
 
-$$\Theta_{\text{aug}} = \{-90°, -60°, -45°, -30°, -15°, +15°, +30°, +45°, +60°, +90°\}$$
+$$\Theta_{\text{aug}} = \{-90^\circ, -60^\circ, -45^\circ, -30^\circ, -15^\circ, +15^\circ, +30^\circ, +45^\circ, +60^\circ, +90^\circ\}$$
 
 Die Rotation erfolgte um den Zentroid $(c_x, c_y)$ der Oriented Bounding Box, wobei sowohl die Bildregion als auch die OBB-Koordinaten entsprechend transformiert wurden. Die Rotationsmatrix für einen Winkel $\theta$ lautet:
 
@@ -220,29 +220,29 @@ Die Anzahl der generierten synthetischen Samples wurde klassenabhängig gesteuer
 \hline
 \multicolumn{5}{|c|}{\textit{Kernklassen}} \\
 \hline
-coordinate & 629 & 300 & 929 & 1.48× \\
-signal & 218 & 382 & 600 & 2.75× \\
-gks\_gesteuert & 69 & 531 & 600 & 8.70× \\
-gm\_block & 91 & 509 & 600 & 6.59× \\
-gks\_festkodiert & 60 & 540 & 600 & 10.00× \\
+coordinate & 629 & 300 & 929 & 1.48x\\
+signal & 218 & 382 & 600 & 2.75x \\
+gks\_gesteuert & 69 & 531 & 600 & 8.70x \\
+gm\_block & 91 & 509 & 600 & 6.59x \\
+gks\_festkodiert & 60 & 540 & 600 & 10.00x \\
 \hline
 \textbf{Summe Kernklassen} & \textbf{1.067} & \textbf{2.262} & \textbf{3.329} & --- \\
 \hline
 \multicolumn{5}{|c|}{\textit{Auxiliarklassen}} \\
 \hline
-sverbinder & 85 & 515 & 600 & 7.06× \\
-haltepunkt & 47 & 553 & 600 & 12.77× \\
-weichen\_block & 39 & 561 & 600 & 15.38× \\
-isolierstoß & 27 & 573 & 600 & 22.22× \\
-prellblock & 16 & 584 & 600 & 37.50× \\
-haltetafel & 11 & 589 & 600 & 54.55× \\
-endeweichen & 4 & 596 & 600 & 150.00× \\
-weichengruppeende & 9 & 591 & 600 & 66.67× \\
+sverbinder & 85 & 515 & 600 & 7.06x\\
+haltepunkt & 47 & 553 & 600 & 12.77x\\
+weichen\_block & 39 & 561 & 600 & 15.38x\\
+isolierstoß & 27 & 573 & 600 & 22.22x \\
+prellblock & 16 & 584 & 600 & 37.50x \\
+haltetafel & 11 & 589 & 600 & 54.55x \\
+endeweichen & 4 & 596 & 600 & 150.00x \\
+weichengruppeende & 9 & 591 & 600 & 66.67x \\
 \hline
 \textbf{Summe Auxiliarklassen} & \textbf{238} & \textbf{4.462} & \textbf{4.700} & --- \\
 \hline
 \hline
-\textbf{Gesamt} & \textbf{1.305} & \textbf{6.724} & \textbf{8.029} & \textbf{6.15×} \\
+\textbf{Gesamt} & \textbf{1.305} & \textbf{6.724} & \textbf{8.029} & \textbf{6.15x} \\
 \hline
 \end{tabular}
 \caption{Verteilung der Instanzen vor und nach synthetischer Rotation, unterteilt nach Kern- und Auxiliarklassen}
@@ -250,7 +250,7 @@ weichengruppeende & 9 & 591 & 600 & 66.67× \\
 \end{table}
 
 \textbf{Technische Umsetzung:}
-Die hohen Augmentationsfaktoren für seltene Klassen (z.B. 150× für \textit{endeweichen}) sind gerechtfertigt, da diese Symbole in realen Gleisplänen tatsächlich sehr selten vorkommen, das Modell aber dennoch in der Lage sein muss, sie zuverlässig zu erkennen. Die synthetische Rotation simuliert realistische Orientierungsvariationen und verhindert Overfitting auf die wenigen Original-Samples. 
+Die hohen Augmentationsfaktoren für seltene Klassen (z.B. 150x für \textit{endeweichen}) sind gerechtfertigt, da diese Symbole in realen Gleisplänen tatsächlich sehr selten vorkommen, das Modell aber dennoch in der Lage sein muss, sie zuverlässig zu erkennen. Die synthetische Rotation simuliert realistische Orientierungsvariationen und verhindert Overfitting auf die wenigen Original-Samples. 
 
 Die finale Datensatzaufteilung erfolgte automatisch durch YOLOv8s integrierte Split-Funktion mit einem 80/20-Verhältnis, was zu 923 Trainings- und 208 Validierungsbildern führte. Nach manueller Filterung leerer oder irrelevanter Tiles verblieben 115 Validierungsbilder (1.305 Instanzen), die als dedizierter Testdatensatz für die Evaluation in Kapitel~\ref{chap:evaluation} dienen.
 Die Rotation wurde in einem Preprocessing-Schritt vor dem Training durchgeführt und die augmentierten Samples wurden als separate Einträge im Trainingsdatensatz gespeichert. Dies ermöglicht eine deterministische Reproduzierbarkeit der Augmentation. Die Implementation erfolgte mittels OpenCV's \texttt{cv2.getRotationMatrix2D()} und \texttt{cv2.warpAffine()}, wobei die Bildgröße dynamisch angepasst wurde, um ein Abschneiden rotierter Objekte zu vermeiden.
@@ -268,7 +268,7 @@ Als Basismodell wurde YOLOv8l-OBB gewählt, die \enquote{Large}-Variante von YOL
 
 Die vollständige Konfiguration der Trainingsparameter ist in Tabelle \ref{tab:yolo_training_params} dargestellt:
 
-\begin{table}[h]
+\begin{table}[H]
 \centering
 \begin{tabular}{|l|r|p{6cm}|}
 \hline
@@ -300,16 +300,16 @@ Die Learning Rate wurde mittels Cosine Annealing Scheduler von einem initialen W
 
 Um die Robustheit des Modells gegenüber Variationen in den Eingangsdaten zu erhöhen und Overfitting zu vermeiden, wurden verschiedene Augmentierungstechniken angewendet. Die Konfiguration der Augmentierungsparameter zeigt Tabelle \ref{tab:augmentation}:
 
-\begin{table}[h]
+\begin{table}[H]
 \centering
 \begin{tabular}{|l|r|p{7cm}|}
 \hline
 \textbf{Augmentation} & \textbf{Parameter} & \textbf{Beschreibung} \\
 \hline
-Rotation & 0.0° & Deaktiviert, da OBB bereits Rotationsinvarianz bietet \\
+Rotation & $0.0^\circ$ & Deaktiviert, da OBB bereits Rotationsinvarianz bietet \\
 Translation & $\pm 5\%$ & Horizontale und vertikale Verschiebung um bis zu 5\% der Bildgröße \\
 Skalierung & $\pm 20\%$ & Zufällige Vergrößerung oder Verkleinerung um bis zu 20\% \\
-Scherung & 0.0° & Deaktiviert, um geometrische Integrität zu bewahren \\
+Scherung & $0.0^\circ$ & Deaktiviert, um geometrische Integrität zu bewahren \\
 Perspektive & 0.0 & Deaktiviert aus gleichem Grund \\
 Horizontal Flip & 20\% & Spiegelung mit 20\% Wahrscheinlichkeit \\
 Vertical Flip & 0\% & Deaktiviert, da vertikale Orientierung semantisch relevant ist \\
@@ -323,7 +323,7 @@ Mixup & 10\% & Lineare Überlagerung zweier Bilder mit 10\% Wahrscheinlichkeit \
 
 Die Deaktivierung der Rotationsaugmentation mag zunächst kontraintuitiv erscheinen, da die OBB-Architektur explizit für rotierte Objekte entwickelt wurde. Jedoch sind die Rotationswinkel der Symbole bereits in den OBB-Annotationen kodiert, sodass eine zusätzliche künstliche Rotation redundant wäre. Stattdessen lernt das Modell, die Orientierung direkt aus den rotierten Bounding Boxes zu extrahieren.
 
-Die Mosaic-Augmentation kombiniert vier zufällig ausgewählte Trainingsbilder zu einem neuen Bild, indem sie in einem 2×2-Raster angeordnet werden. Diese Technik zwingt das Modell, Objekte auch in ungewöhnlichen Kontexten und bei veränderten Größenverhältnissen zu erkennen. Die Deaktivierung der Mosaic-Augmentation in den letzten 10 Epochen (close\_mosaic = 10) ermöglicht dem Modell, sich in der Feinabstimmungsphase auf realistische, unveränderte Bilder zu fokussieren.
+Die Mosaic-Augmentation kombiniert vier zufällig ausgewählte Trainingsbilder zu einem neuen Bild, indem sie in einem 2x2-Raster angeordnet werden. Diese Technik zwingt das Modell, Objekte auch in ungewöhnlichen Kontexten und bei veränderten Größenverhältnissen zu erkennen. Die Deaktivierung der Mosaic-Augmentation in den letzten 10 Epochen (close\_mosaic = 10) ermöglicht dem Modell, sich in der Feinabstimmungsphase auf realistische, unveränderte Bilder zu fokussieren.
 
 Die Trainingsdauer betrug insgesamt ca. 8 Stunden bei kontinuierlicher GPU-Auslastung von nahezu 100\%.
 
@@ -364,7 +364,7 @@ Konfusionsmatrix erfolgen in Kapitel \ref{chap:evaluation}.
 \subsection{Inferenz-Pipeline Implementierung}
 \label{Inferenz}
 Nach Abschluss des Trainings wurde das Modell mit den optimalen Gewichten (\texttt{best.pt}) in die produktive Extraktionspipeline integriert. Die Inferenz auf neuen, zuvor ungesehenen Gleisplänen erfolgt in mehreren aufeinander aufbauenden Schritten. Abbildung \ref{fig:pipeline_flowchart} zeigt den vollständigen Ablauf der Inferenz-Pipeline von der PDF-Eingabe über das Tiling bis zur Rücktransformation der globalen Koordinaten.
-\begin{figure}[ht]
+\begin{figure}[H]
     \centering
     \begin{tikzpicture}[
         node distance=0.8cm, % Abstand zwischen den Boxen
@@ -473,7 +473,7 @@ Die resultierende Pixmap wird in ein RGB-Array mit den Dimensionen $H \times W \
 \label{subsubsec:tiling_strategie}
 Da die resultierenden Bilder mit mehreren Millionen Pixeln die Eingabegröße des YOLO-Modells ($1024 \times 1024$) bei weitem überschreiten, wird das Vollbild in überlappende Kacheln (Tiles) zerlegt. Die Tile-Größe beträgt $T = 2048 \times 2048$ Pixel, was eine Verarbeitung auf gängigen GPUs ermöglicht und gleichzeitig ausreichend Kontext für die Detektion bietet.Die extrahierten Tiles mit einer Größe von $2048 \times 2048$ Pixeln werden vor der YOLO-Inferenz auf die Trainingsgröße von $1024 \times 1024$ Pixeln herunterskaliert (Downsampling). Die resultierenden Bounding-Box-Koordinaten werden anschließend mit dem Faktor 2 multipliziert, um die korrekten Positionen im Originaltile zu erhalten. Dieses Vorgehen ermöglicht eine höhere effektive Auflösung bei der Symbolerkennung, da feinere Details im größeren Eingabebild erhalten bleiben, bevor das Downsampling erfolgt.
 
-\begin{figure}[ht]
+\begin{figure}[H]
     \centering
     \begin{tikzpicture}[
         scale=0.85, 
@@ -627,7 +627,7 @@ Der Halo stellt zusätzlichen Kontext für Symbole am Tile-Rand bereit, wird jed
 
 wobei $(c_x, c_y)$ das Zentrum der detektierten Bounding Box bezeichnet.
 Abbildung \ref{fig:halo_tiling} veranschaulicht dieses Prinzip: Das neuronale Netz (YOLO) erhält einen erweiterten Bildausschnitt (grau dargestellt), um angeschnittene Objekte am Rand korrekt zu erkennen. Gewertet werden jedoch nur Detektionen, deren Zentrum im inneren Bereich (grün dargestellt) liegt.
-\begin{figure}[ht]
+\begin{figure}[H]
     \centering
     \begin{tikzpicture}[
         scale=1.5, 
@@ -699,15 +699,15 @@ Basierend auf dem normalisierten Winkel $\theta_{\text{norm}}$ wird entschieden,
 
 \begin{equation}
 \text{Orientierung} = \begin{cases}
-\text{Horizontal}, & \text{falls } |\theta_{\text{norm}}| < 15° \text{ oder } |\theta_{\text{norm}} - 180°| < 15° \\
-\text{Vertikal}, & \text{falls } |\theta_{\text{norm}} - 90°| < 15° \text{ oder } |\theta_{\text{norm}} - 270°| < 15° \\
+\text{Horizontal}, & \text{falls } |\theta_{\text{norm}}| < 15^\circ \text{ oder } |\theta_{\text{norm}} - 180^\circ| < 15^\circ \\
+\text{Vertikal}, & \text{falls } |\theta_{\text{norm}} - 90^\circ| < 15^\circ \text{ oder } |\theta_{\text{norm}} - 270^\circ| < 15^\circ \\
 \text{Angular}, & \text{sonst}
 \end{cases}
 \end{equation}
 
 Für jede Orientierung werden unterschiedliche Expansionsfaktoren $(e_x, e_y)$ und Padding-Werte $p$ angewendet:
 
-\begin{table}[h]
+\begin{table}[H]
 \centering
 \begin{tabular}{|l|c|c|c|}
 \hline
@@ -733,7 +733,7 @@ h_{\text{eff}} &= h_{\text{norm}} \cdot e_y + 2p
 
 Diese Anpassung ist kritisch für die nachfolgende OCR, da bei horizontal orientierten Texten mehr horizontaler Kontext benötigt wird (z.B. für Texte wie \enquote{Signal A123}), während bei vertikal orientierten Texten mehr vertikaler Kontext erforderlich ist. Angular orientierte Objekte erhalten symmetrische Expansion und erhöhtes Padding, um Rotationseffekte auszugleichen.
 
-\begin{figure}[ht]
+\begin{figure}[H]
     \centering
     \begin{tikzpicture}[
         scale=1.0, 
@@ -834,7 +834,7 @@ Der NMS-Algorithmus funktioniert wie folgt:
 
 Die NMS-Schwellenwerte sind klassenspezifisch konfiguriert:
 
-\begin{table}[h]
+\begin{table}[H]
 \centering
 \begin{tabular}{|l|r|p{7cm}|}
 \hline
@@ -886,13 +886,13 @@ Das System implementiert eine kaskadierende Architektur mit drei OCR-Engines: Pa
 
 \subsubsection{Funktionsweise der Kaskadierung}
 
-Die Kaskadierung funktioniert nach einem sequenziellen Prinzip. Zunächst wird PaddleOCR auf dem Bildausschnitt ausgeführt, und zwar viermal mit unterschiedlichen Rotationswinkeln: 0°, 90°, 180° und 270°. Der Grund für diese vier Rotationen ist, dass PaddleOCR am besten mit horizontal ausgerichtetem Text funktioniert. Durch das Ausprobieren aller vier Hauptrichtungen wird sichergestellt, dass mindestens eine Rotation den Text horizontal ausrichtet.
+Die Kaskadierung funktioniert nach einem sequenziellen Prinzip. Zunächst wird PaddleOCR auf dem Bildausschnitt ausgeführt, und zwar viermal mit unterschiedlichen Rotationswinkeln: $0^\circ, 90^\circ, 180^\circ und 270^\circ$. Der Grund für diese vier Rotationen ist, dass PaddleOCR am besten mit horizontal ausgerichtetem Text funktioniert. Durch das Ausprobieren aller vier Hauptrichtungen wird sichergestellt, dass mindestens eine Rotation den Text horizontal ausrichtet.
 
 Für jede dieser Rotationen wird das OCR-Ergebnis durch eine klassenspezifische Validierungsfunktion geprüft. Diese Validierung überprüft, ob der erkannte Text dem erwarteten Muster der jeweiligen Symbolklasse entspricht. Beispielsweise muss ein Signal-Text mit einem Großbuchstaben beginnen, gefolgt von 1-3 Ziffern (wie \enquote{A12} oder \enquote{B234}). Zusätzlich zur Mustererkennung wird der Konfidenz-Wert (Vertrauenswert) des OCR-Ergebnisses überprüft.
 
 Der Konfidenz-Wert von PaddleOCR liegt typischerweise zwischen 0 und etwa 2, wobei höhere Werte eine größere Sicherheit bedeuten. Ein empirisch bestimmter Schwellenwert von 1.3 hat sich als optimal erwiesen: Ergebnisse über diesem Wert sind in der Regel korrekt, während niedrigere Werte oft Fehler enthalten. Dieser Schwellenwert wurde durch Tests auf dem Trainingsdatensatz bestimmt und stellt einen guten Kompromiss zwischen Präzision (wie viele der als \enquote{korrekt} markierten Ergebnisse wirklich korrekt sind) und Recall (wie viele der tatsächlich vorhandenen Texte erkannt werden) dar.
 
-Wenn PaddleOCR bei keiner der vier Rotationen ein validiertes Ergebnis mit ausreichender Konfidenz liefert, wird Tesseract als Fallback-Engine aktiviert. Tesseract verwendet einen anderen Algorithmus als PaddleOCR und ist besonders robust gegenüber verrauschten oder pixeligen Bildern. Tesseract wird mit dem Page Segmentation Mode 7 konfiguriert, der das Bild als einzelne Textzeile behandelt – eine Annahme, die für die kurzen Symbol-Beschriftungen im Gleisplan zutreffend ist.
+Wenn PaddleOCR bei keiner der vier Rotationen ein validiertes Ergebnis mit ausreichender Konfidenz liefert, wird Tesseract als Fallback-Engine aktiviert. Tesseract verwendet einen anderen Algorithmus als PaddleOCR und ist besonders robust gegenüber verrauschten oder pixeligen Bildern. Tesseract wird mit dem Page Segmentation Mode 7 konfiguriert, der das Bild als einzelne Textzeile behandelt-eine Annahme, die für die kurzen Symbol-Beschriftungen im Gleisplan zutreffend ist.
 
 Falls auch Tesseract kein valides Ergebnis liefert und die optionale dritte Engine EasyOCR aktiviert ist, wird diese als letzte Instanz aufgerufen. EasyOCR ist besonders gut bei stark geneigten oder perspektivisch verzerrten Texten, benötigt aber erheblich mehr Rechenzeit (etwa 5-10 Mal langsamer als PaddleOCR).
 
@@ -902,25 +902,25 @@ Jede OCR-Engine wurde mit spezifischen Parametern konfiguriert, um optimale Erge
 
 \textbf{PaddleOCR} wurde mit den folgenden Einstellungen verwendet:
 \begin{itemize}
-    \item \textbf{Detection Model}: \enquote{ch\_PP-OCRv4\_det} – ein vortrainiertes Modell zur Textlokalisierung, das ursprünglich für chinesische Dokumente entwickelt wurde, aber auch für deutsche/englische Texte ausgezeichnet funktioniert
-    \item \textbf{Recognition Model}: \enquote{ch\_PP-OCRv4\_rec} – das zugehörige Erkennungsmodell für die eigentliche Zeichenerkennung
-    \item \textbf{Angle Classification}: Aktiviert – ermöglicht automatische Erkennung und Korrektur der Textorientierung
-    \item \textbf{Sprache}: \enquote{en} (Englisch) – da die meisten Beschriftungen alphanumerisch sind
+    \item \textbf{Detection Model}: \enquote{ch\_PP-OCRv4\_det} - ein vortrainiertes Modell zur Textlokalisierung, das ursprünglich für chinesische Dokumente entwickelt wurde, aber auch für deutsche/englische Texte ausgezeichnet funktioniert
+    \item \textbf{Recognition Model}: \enquote{ch\_PP-OCRv4\_rec} - das zugehörige Erkennungsmodell für die eigentliche Zeichenerkennung
+    \item \textbf{Angle Classification}: Aktiviert - ermöglicht automatische Erkennung und Korrektur der Textorientierung
+    \item \textbf{Sprache}: \enquote{en} (Englisch) - da die meisten Beschriftungen alphanumerisch sind
 \end{itemize}
 
 \textbf{Tesseract} wurde mit den folgenden Parametern konfiguriert:
 \begin{itemize}
-    \item \textbf{Page Segmentation Mode (psm)}: 7 – behandelt das Bild als einzelne Textzeile, was für kurze Symbol-Beschriftungen optimal ist
-    \item \textbf{OCR Engine Mode (oem)}: 3 – verwendet den LSTM-basierten neuronalen Netzwerk-Modus, der die beste Genauigkeit bietet
-    \item \textbf{Character Whitelist}: Beschränkt auf \enquote{0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ+-.} – dies verhindert, dass Tesseract falsche Sonderzeichen oder Kleinbuchstaben erkennt, die in den meisten Symbolklassen nicht vorkommen
+    \item \textbf{Page Segmentation Mode (psm)}: 7 - behandelt das Bild als einzelne Textzeile, was für kurze Symbol-Beschriftungen optimal ist
+    \item \textbf{OCR Engine Mode (oem)}: 3 - verwendet den LSTM-basierten neuronalen Netzwerk-Modus, der die beste Genauigkeit bietet
+    \item \textbf{Character Whitelist}: Beschränkt auf \enquote{0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ+-.} - dies verhindert, dass Tesseract falsche Sonderzeichen oder Kleinbuchstaben erkennt, die in den meisten Symbolklassen nicht vorkommen
 \end{itemize}
 
 Die Whitelist ist besonders wichtig, da sie die Fehlerrate deutlich reduziert. Ohne diese Einschränkung würde Tesseract manchmal exotische Sonderzeichen oder Umlaute erkennen, die in technischen Gleisplänen nie vorkommen.
 
 \textbf{EasyOCR} wurde mit minimaler Konfiguration verwendet:
 \begin{itemize}
-    \item \textbf{Sprachen}: [\enquote{en}] – Englisch als Basissprache
-    \item \textbf{GPU-Nutzung}: Aktiviert – beschleunigt die Verarbeitung erheblich, wenn eine GPU verfügbar ist
+    \item \textbf{Sprachen}: [\enquote{en}] - Englisch als Basissprache
+    \item \textbf{GPU-Nutzung}: Aktiviert - beschleunigt die Verarbeitung erheblich, wenn eine GPU verfügbar ist
 \end{itemize}
 
 
@@ -1021,23 +1021,24 @@ Die Whitelist ist besonders wichtig, da sie die Fehlerrate deutlich reduziert. O
 
 \subsection{Dual-Winkel-Routing System}
 
-Eine zentrale Herausforderung bei der OCR ist die beliebige Rotation der Symbole im Gleisplan. Während einige Symbole horizontal ausgerichtet sind, können andere um 45°, 30° oder sogar beliebige Winkel gedreht sein. Um diese Vielfalt zu bewältigen, wurde ein Dual-Path-Routing-System implementiert, das zwischen zwei verschiedenen Verarbeitungswegen unterscheidet.
+Eine zentrale Herausforderung bei der OCR ist die beliebige Rotation der Symbole im Gleisplan. Während einige Symbole horizontal ausgerichtet sind, können andere um $ 45^\circ, 30^\circ$ oder sogar beliebige Winkel gedreht sein. Um diese Vielfalt zu bewältigen, wurde ein Dual-Path-Routing-System implementiert, das zwischen zwei verschiedenen Verarbeitungswegen unterscheidet.
 
 \subsubsection{Cardinal Path und Angular Path}
 
 Das System unterscheidet zwischen dem \textbf{Cardinal Path} (für nahezu horizontal/vertikal ausgerichtete Texte) und dem \textbf{Angular Path} (für beliebig gedrehte Texte). Die Entscheidung, welcher Pfad verwendet wird, basiert auf dem Rotationswinkel der Bounding Box.
 
-Zunächst wird der von YOLO gelieferte Winkel normalisiert. Da YOLO Winkel im Bereich von 0° bis 360° liefern kann, werden Winkel über 180° durch Subtraktion von 360° in den Bereich -180° bis 180° transformiert. Ein Winkel von 270° wird beispielsweise zu -90°. Dies vereinfacht die Logik erheblich, da nun positive Winkel eine Drehung gegen den Uhrzeigersinn und negative Winkel eine Drehung im Uhrzeigersinn darstellen.
+Zunächst wird der von YOLO gelieferte Winkel normalisiert. Da YOLO Winkel im Bereich von $0^\circ$ bis $360^\circ$ liefern kann, werden Winkel über $180^\circ$ durch Subtraktion von $360^\circ$ in den Bereich $-180^\circ$ bis $180^\circ$ transformiert. Ein Winkel von $270^\circ$ wird beispielsweise zu $-90^\circ$. Dies vereinfacht die Logik erheblich, da nun positive Winkel eine Drehung gegen den Uhrzeigersinn und negative Winkel eine Drehung im Uhrzeigersinn darstellen.
 
-Anschließend wird geprüft, ob der Absolutwert des normalisierten Winkels unter 15° liegt. Diese 15° wurden empirisch durch Experimente bestimmt: Bei Winkeln bis zu dieser Größe liefert eine einfache Rotation auf den nächsten kardinalen Winkel (0°, 90°, 180° oder 270°) bessere Ergebnisse als eine komplexe Perspektiventransformation. Der Grund ist, dass bei kleinen Winkeln die Perspektiventransformation zu leichten Verzerrungen führen kann, während die diskrete Rotation verlustfrei ist.
+Anschließend wird geprüft, ob der Absolutwert des normalisierten Winkels unter $15^\circ$ liegt. Diese $15^\circ$ wurden empirisch durch Experimente bestimmt: Bei Winkeln bis zu dieser Größe liefert eine einfache Rotation auf den nächsten kardinalen Winkel ($0^\circ, 90^\circ, 180^\circ$ oder $270^\circ$) bessere Ergebnisse als eine komplexe Perspektiventransformation. Der Grund ist, dass bei kleinen Winkeln die Perspektiventransformation zu leichten Verzerrungen führen kann, während die diskrete Rotation verlustfrei ist.
 
-\textbf{Cardinal Path (Winkel $\leq$ 15°):} Wenn der Winkel nahe an einem kardinalen Wert liegt, wird der Bildausschnitt einfach auf den nächstgelegenen kardinalen Winkel rotiert. Die Rotation erfolgt mittels einer Standard-Rotationsmatrix, die das Bild um den Mittelpunkt dreht. Diese Methode ist schnell, einfach und vermeidet Interpolationsartefakte, da nur 90°-Schritte verwendet werden.
+\textbf{Cardinal Path (Winkel $\leq$ $15^\circ$):} Wenn der Winkel nahe an einem kardinalen Wert liegt, wird der Bildausschnitt einfach auf den nächstgelegenen kardinalen Winkel rotiert. Die Rotation erfolgt mittels einer Standard-Rotationsmatrix, die das Bild um den Mittelpunkt dreht. Diese Methode ist schnell, einfach und vermeidet Interpolationsartefakte, da nur $90^\circ$ Schritte verwendet werden.
 
-Konkret wird aus den vier Kandidaten (0°, 90°, 180°, 270°) derjenige gewählt, der die kleinste Winkeldifferenz zum normalisierten Winkel hat. Ein Winkel von 12° wird also auf 0° rotiert, ein Winkel von 85° auf 90°, und so weiter.
+Konkret wird aus den vier Kandidaten ($0^\circ, 90^\circ, 180^\circ, 270^\circ$) derjenige gewählt, der die kleinste Winkeldifferenz zum normalisierten Winkel hat. Ein Winkel von $12^\circ$ wird also auf $0^\circ$ rotiert, ein Winkel von $85^\circ$ auf $90^\circ$, und so weiter.
 
-\textbf{Angular Path (Winkel > 15°):} Bei größeren Abweichungen von den kardinalen Winkeln wird eine Perspektiventransformation verwendet. Diese Methode nutzt die vier Eckpunkte der Oriented Bounding Box (OBB), um eine Transformationsmatrix zu berechnen. Die Transformation wandelt die gedrehte OBB in ein achsenparalleles Rechteck um, wodurch der Text horizontal ausgerichtet wird.
 
-Die Perspektiventransformation wird mit OpenCV's \texttt{getPerspectiveTransform()}-Funktion implementiert. Diese Funktion benötigt zwei Sätze von je vier Punkten: die Quellpunkte (die vier Ecken der gedrehten OBB) und die Zielpunkte (die vier Ecken eines aufrechten Rechtecks). Aus diesen acht Punkten berechnet die Funktion eine 3×3-Transformationsmatrix, die dann mit \texttt{warpPerspective()} auf das Bild angewendet wird.
+\textbf{Angular Path (Winkel > $15^\circ$):} Bei größeren Abweichungen von den kardinalen Winkeln wird eine Perspektiventransformation verwendet. Diese Methode nutzt die vier Eckpunkte der Oriented Bounding Box (OBB), um eine Transformationsmatrix zu berechnen. Die Transformation wandelt die gedrehte OBB in ein achsenparalleles Rechteck um, wodurch der Text horizontal ausgerichtet wird.
+
+Die Perspektiventransformation wird mit OpenCV's \texttt{getPerspectiveTransform()}-Funktion implementiert. Diese Funktion benötigt zwei Sätze von je vier Punkten: die Quellpunkte (die vier Ecken der gedrehten OBB) und die Zielpunkte (die vier Ecken eines aufrechten Rechtecks). Aus diesen acht Punkten berechnet die Funktion eine 3x3-Transformationsmatrix, die dann mit \texttt{warpPerspective()} auf das Bild angewendet wird.
 
 Obwohl diese Methode rechenintensiver ist (etwa 2-3 Mal langsamer als eine einfache Rotation), liefert sie bei beliebigen Winkeln deutlich bessere Ergebnisse, da der Text exakt horizontal ausgerichtet wird, nicht nur annähernd.
 
@@ -1098,16 +1099,16 @@ Obwohl diese Methode rechenintensiver ist (etwa 2-3 Mal langsamer als eine einfa
 \caption{Vergleich: Cardinal Path vs. Angular Path Rotationsstrategien}
 \label{fig:dual_path}
 \end{figure}
-Abbildung~\ref{fig:angular_ocr_example} demonstriert die erfolgreiche Verarbeitung eines um 37,5° rotierten Koordinatentexts durch den Angular Path.
+Abbildung~\ref{fig:angular_ocr_example} demonstriert die erfolgreiche Verarbeitung eines um $37,5^\circ$ rotierten Koordinatentexts durch den Angular Path.
 
 
 
-Das System erkannte den Koordinatentext \texttt{0.0629} korrekt trotz der nicht-kardinalen Orientierung von $\theta = -37{,}5°$. Die Perspektiventransformation richtete die gedrehte Oriented Bounding Box horizontal aus, wodurch PaddleOCR mit einer Konfidenz von 0.95 den Text extrahieren konnte. Die erfolgreiche Verknüpfung mit dem benachbarten Symbol (Gl.112) validiert sowohl die OCR-Robustheit (FA-005) als auch die Rotationsinvarianz (FA-002) für beliebige Winkel außerhalb der kardinalen Orientierungen.
+Das System erkannte den Koordinatentext \texttt{0.0629} korrekt trotz der nicht-kardinalen Orientierung von $\theta = -37{,}5^\circ$. Die Perspektiventransformation richtete die gedrehte Oriented Bounding Box horizontal aus, wodurch PaddleOCR mit einer Konfidenz von 0.95 den Text extrahieren konnte. Die erfolgreiche Verknüpfung mit dem benachbarten Symbol (Gl.112) validiert sowohl die OCR-Robustheit (FA-005) als auch die Rotationsinvarianz (FA-002) für beliebige Winkel außerhalb der kardinalen Orientierungen.
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.65\textwidth]{images/Kapitel6/angulartextv1.png}
-\caption{Verarbeitung eines um 37,5° rotierten Elemente durch Angular-Path-OCR}
+\caption{Verarbeitung eines um $37,5^\circ$ rotierten Elemente durch Angular-Path-OCR}
 \label{fig:angular_ocr_example}
 \end{figure}
 \subsection{Klassenspezifische Strategien}
@@ -1128,7 +1129,7 @@ wobei $p_x$ das horizontale Padding (in Pixeln), $p_y$ das vertikale Padding (in
 
 Die folgende Tabelle zeigt die optimierten Faktoren für jede Symbolklasse:
 
-\begin{table}[h]
+\begin{table}[H]
 \centering
 \begin{tabular}{|l|c|c|p{5cm}|}
 \hline
@@ -1153,7 +1154,7 @@ GKS-Symbole sind häufig von dünnen Linien umgeben, die die OCR-Qualität beein
 
 Opening ist eine Kombination aus zwei aufeinanderfolgenden Operationen: Zunächst wird eine \textbf{Erosion} durchgeführt, die kleine helle Strukturen (wie dünne Linien) entfernt. Anschließend wird eine \textbf{Dilation} durchgeführt, die die verbleibenden Strukturen (die Textzeichen) wieder auf ihre ursprüngliche Größe erweitert. Der Effekt ist, dass dünne Linien komplett verschwinden, während dickere Strukturen (Buchstaben und Zahlen) erhalten bleiben.
 
-Der Filter verwendet ein quadratisches strukturierendes Element mit der Größe 3×3 Pixel – also eine Matrix aus 9 Einsen. Diese Größe wurde gewählt, weil sie ausreicht, um typische Störlinien (1-2 Pixel dick) zu entfernen, aber nicht so groß ist, dass sie die Textzeichen selbst beschädigt. Die Anwendung erfolgt auf dem binärisierten Bild, wobei die Pixel entweder komplett weiß (Text) oder komplett schwarz (Hintergrund) sind.
+Der Filter verwendet ein quadratisches strukturierendes Element mit der Größe 3x3 Pixel - also eine Matrix aus 9 Einsen. Diese Größe wurde gewählt, weil sie ausreicht, um typische Störlinien (1-2 Pixel dick) zu entfernen, aber nicht so groß ist, dass sie die Textzeichen selbst beschädigt. Die Anwendung erfolgt auf dem binärisierten Bild, wobei die Pixel entweder komplett weiß (Text) oder komplett schwarz (Hintergrund) sind.
 \begin{figure}[h]
 \centering
 \begin{tikzpicture}
@@ -1199,7 +1200,7 @@ Der Filter verwendet ein quadratisches strukturierendes Element mit der Größe 
 
 Koordinaten-Beschriftungen sind oft klein und können bei niedriger Bildauflösung schwer lesbar sein. Ein typisches Problem: Bei einem eingescannten Gleisplan mit 150 DPI kann eine Koordinaten-Beschriftung nur 15-20 Pixel hoch sein, was für OCR-Engines an der Grenze der Lesbarkeit liegt.
 
-Um dies zu kompensieren, wird ein Multi-Scale-Ansatz verwendet: Das Bild wird mit drei verschiedenen Skalierungsfaktoren vergrößert – 1.5× (50\% größer), 2.0× (doppelte Größe) und 2.5× (2.5-fache Größe). Die OCR wird auf allen drei Skalen durchgeführt, und am Ende wird das Ergebnis mit der höchsten Konfidenz ausgewählt.
+Um dies zu kompensieren, wird ein Multi-Scale-Ansatz verwendet: Das Bild wird mit drei verschiedenen Skalierungsfaktoren vergrößert - 1.5x (50\% größer), 2.0x (doppelte Größe) und 2.5x (2.5-fache Größe). Die OCR wird auf allen drei Skalen durchgeführt, und am Ende wird das Ergebnis mit der höchsten Konfidenz ausgewählt.
 
 Die Skalierung erfolgt mit Lanczos-Interpolation, einem hochwertigen Algorithmus, der scharfe Kanten erhält und keine Treppeneffekte oder Blockbildung verursacht. Lanczos ist zwar rechenintensiver als einfachere Methoden (wie bilineare Interpolation), liefert aber deutlich schärfere Ergebnisse, was bei der Vergrößerung kleiner Texte entscheidend ist.
 
@@ -1264,7 +1265,7 @@ Vor der eigentlichen OCR-Verarbeitung werden die Bildausschnitte durch eine Reih
 
 \subsubsection{Orientierte Linienentfernung}
 
-Gleispläne enthalten zahlreiche Linien (Gleise, Verbindungen, Umrandungen), die oft direkt über oder neben den Textbeschriftungen verlaufen. Diese Linien können die OCR-Engines verwirren, da sie fälschlicherweise als Buchstaben interpretiert werden können – typischerweise als \enquote{I}, \enquote{l} oder \enquote{1}.
+Gleispläne enthalten zahlreiche Linien (Gleise, Verbindungen, Umrandungen), die oft direkt über oder neben den Textbeschriftungen verlaufen. Diese Linien können die OCR-Engines verwirren, da sie fälschlicherweise als Buchstaben interpretiert werden können - typischerweise als \enquote{I}, \enquote{l} oder \enquote{1}.
 
 Die Linienentfernung erfolgt in mehreren Schritten und berücksichtigt die Orientierung der Bounding Box:
 
@@ -1275,7 +1276,7 @@ Die Linienentfernung erfolgt in mehreren Schritten und berücksichtigt die Orien
     
     \item \textbf{Horizontale Linienentfernung}: Es wird ein strukturierendes Element verwendet, das eine horizontale Linie mit 25 Pixeln Länge darstellt. Dieses Element wird um den Winkel der Bounding Box rotiert, um die Gleislinien zu erfassen, die parallel zur Textrichtung verlaufen. Eine morphologische Opening-Operation mit diesem Element entfernt alle entsprechenden Linien.
     
-    \item \textbf{Vertikale Linienentfernung}: Analog wird ein vertikales strukturierendes Element (ebenfalls 25 Pixel lang) verwendet, das um 90° zusätzlich gedreht wird, um senkrechte Linien zu entfernen.
+    \item \textbf{Vertikale Linienentfernung}: Analog wird ein vertikales strukturierendes Element (ebenfalls 25 Pixel lang) verwendet, das um $90^\circ$ zusätzlich gedreht wird, um senkrechte Linien zu entfernen.
     
     \item \textbf{Inpainting}: Die detektierten Linien werden zu einer Maske kombiniert. Diese Maske wird verwendet, um die Linien durch Inpainting aus dem Originalbild zu entfernen. Inpainting ist ein Algorithmus, der fehlende oder beschädigte Bildbereiche durch plausible Pixel aus der Umgebung ersetzt. Konkret wird der TELEA-Algorithmus mit einem Radius von 3 Pixeln verwendet.
 \end{enumerate}
@@ -1350,12 +1351,12 @@ Die drei Komponenten sind:
 \begin{itemize}
     \item $\gamma_{\text{OCR}}$: Die von der OCR-Engine gelieferte Konfidenz, normalisiert auf den Bereich 0 bis 1. PaddleOCR liefert Werte zwischen 0 und \textasciitilde2, die durch Division durch 2 normalisiert werden.
     
-    \item $S_{\text{regex}}$: Regex-Übereinstimmung – Wert 1, falls das Pattern passt, sonst 0.
+    \item $S_{\text{regex}}$: Regex-Übereinstimmung - Wert 1, falls das Pattern passt, sonst 0.
     
     \item $S_{\text{length}}$: Wie gut passt die Textlänge zur erwarteten Länge dieser Klasse? Berechnet mit einer Gauß-Kurve: Je näher die Länge am Erwartungswert, desto höher der Score.
 \end{itemize}
 
-Die Gewichte (0.5, 0.3, 0.2) wurden empirisch optimiert. Die OCR-Konfidenz wird am stärksten gewichtet (50\%), da sie direkt von der Engine stammt und deren \enquote{Sicherheit} widerspiegelt. Die Regex-Validierung erhält 30\%, da sie strukturelle Korrektheit prüft. Der Längen-Score erhält nur 20\%, da Längenabweichungen manchmal legitim sind (z.B. \enquote{A1} vs. \enquote{A123} – beide gültige Signale).
+Die Gewichte (0.5, 0.3, 0.2) wurden empirisch optimiert. Die OCR-Konfidenz wird am stärksten gewichtet (50\%), da sie direkt von der Engine stammt und deren \enquote{Sicherheit} widerspiegelt. Die Regex-Validierung erhält 30\%, da sie strukturelle Korrektheit prüft. Der Längen-Score erhält nur 20\%, da Längenabweichungen manchmal legitim sind (z.B. \enquote{A1} vs. \enquote{A123} - beide gültige Signale).
 \begin{figure}[h]
 \centering
 \begin{tikzpicture}
@@ -1413,13 +1414,13 @@ Die gesamte OCR-Pipeline wird als modulare Funktion implementiert, die eine List
 \begin{enumerate}
     \item \textbf{Bildausschnitt extrahieren}: Basierend auf den Koordinaten $(x, y)$, der Größe $(w, h)$ und dem Winkel $\theta$ der Bounding Box wird der relevante Bereich aus dem Originalbild ausgeschnitten.
     
-    \item \textbf{Klassenspezifisches Preprocessing}: Je nach Symbolklasse werden die entsprechenden Vorverarbeitungsschritte angewendet – adaptive Padding-Berechnung, morphologische Filterung für GKS, oder Multi-Scale-Processing für Koordinaten.
+    \item \textbf{Klassenspezifisches Preprocessing}: Je nach Symbolklasse werden die entsprechenden Vorverarbeitungsschritte angewendet - adaptive Padding-Berechnung, morphologische Filterung für GKS, oder Multi-Scale-Processing für Koordinaten.
     
-    \item \textbf{Dual-Angle Routing}: Basierend auf dem Rotationswinkel wird entweder der Cardinal Path (bei Winkeln $\leq$ 15°) oder der Angular Path (bei Winkeln >15°) gewählt und die entsprechende Transformation (diskrete Rotation oder Perspektiventransformation) durchgeführt.
+    \item \textbf{Dual-Angle Routing}: Basierend auf dem Rotationswinkel wird entweder der Cardinal Path (bei Winkeln $\leq$ $15^\circ$) oder der Angular Path (bei Winkeln >$15^\circ$) gewählt und die entsprechende Transformation (diskrete Rotation oder Perspektiventransformation) durchgeführt.
     
     \item \textbf{Multi-Engine OCR}: Der vorverarbeitete Bildausschnitt wird durch die kaskadierende OCR-Pipeline geschickt. Zuerst PaddleOCR mit vier Rotationen, dann bei Bedarf Tesseract, und optional EasyOCR.
     
-    \item \textbf{Post-Processing}: Das OCR-Ergebnis wird bereinigt – führende/nachfolgende Leerzeichen werden entfernt, und die Groß-/Kleinschreibung wird bei Bedarf normalisiert.
+    \item \textbf{Post-Processing}: Das OCR-Ergebnis wird bereinigt - führende/nachfolgende Leerzeichen werden entfernt, und die Groß-/Kleinschreibung wird bei Bedarf normalisiert.
     
     \item \textbf{Validierung und Scoring}: Das Ergebnis wird gegen das klassenspezifische Regex-Muster validiert, und der kombinierte Konfidenz-Score wird berechnet.
     
@@ -1438,7 +1439,7 @@ Symbolen. Diese Verknüpfung ist essenziell für die Generierung semantisch korr
 Datensätze aus den Gleisplänen und adressiert die Anforderungen \textbf{FA-006} 
 (Fahrtrichtungsdetektion) und \textbf{FA-007} (Symbol-Koordinaten-Verknüpfung).
 
-Die naive Anwendung rein distanzbasierter Proximity-Algorithmen -- bei denen einfach der nächstgelegene Text einem Symbol zugeordnet wird -- führt bei rotierten Symbolen zu systematischen Fehlzuordnungen. Ein Signal, das beispielsweise um 45° gedreht ist, besitzt eine eigene lokale Orientierung, und der zugehörige Text befindet sich typischerweise \enquote{unterhalb} des Signals in dessen lokaler Ausrichtung, nicht notwendigerweise in globalen Bildkoordinaten. Die Implementierung muss daher rotationsinvariante Algorithmen einsetzen, die geometrische Transformationen nutzen, um die semantische räumliche Beziehung zwischen Symbolen und Texten korrekt zu erfassen.
+Die naive Anwendung rein distanzbasierter Proximity-Algorithmen -- bei denen einfach der nächstgelegene Text einem Symbol zugeordnet wird -- führt bei rotierten Symbolen zu systematischen Fehlzuordnungen. Ein Signal, das beispielsweise um $45^\circ$ gedreht ist, besitzt eine eigene lokale Orientierung, und der zugehörige Text befindet sich typischerweise \enquote{unterhalb} des Signals in dessen lokaler Ausrichtung, nicht notwendigerweise in globalen Bildkoordinaten. Die Implementierung muss daher rotationsinvariante Algorithmen einsetzen, die geometrische Transformationen nutzen, um die semantische räumliche Beziehung zwischen Symbolen und Texten korrekt zu erfassen.
 
 \subsection{Rotationsinvariante Koordinatentransformation}
 \label{sec:Koordinatentransformation}
@@ -1661,7 +1662,7 @@ GKS-Proximity & $d_{\text{max}}$ & 250 px & Euklidische Distanz zur GKS \\
 \hline
 \multicolumn{4}{|c|}{\textit{Fallback-Mechanismen}} \\
 \hline
-Isolierstoß & $r_{\text{max}}$ & 300 px & 360°-Suchradius bei fehlender Zuordnung \\
+Isolierstoß & $r_{\text{max}}$ & 300 px & $360^\circ$-Suchradius bei fehlender Zuordnung \\
 Gleismittellinie & $d_{\text{ray}}$ & 1500 px & Sicherheitslimit für Ray-Casting \\
 \hline
 \end{tabular}
@@ -2506,7 +2507,7 @@ Der empirisch ermittelte Schwellenwert $\tau_{\text{dist}} = 50$ Pixel berücksi
 
 Die identifizierten Änderungen werden in einem strukturierten Change Report dokumentiert, der als Excel-Datei exportiert wird und folgende Informationen je Änderung enthält:
 
-\begin{table}[h]
+\begin{table}[H]
 \centering
 \small
 \begin{tabular}{|l|l|p{3.5cm}|p{3.5cm}|}
@@ -3205,7 +3206,7 @@ Die PyQt5-basierte Benutzeroberfläche integriert die Pipeline-Komponenten in ei
 
 Die Gesamtimplementierung umfasst folgende Modulgrößen:
 
-\begin{table}[h]
+\begin{table}[H]
 \centering
 \begin{tabular}{|l|r|}
 \hline

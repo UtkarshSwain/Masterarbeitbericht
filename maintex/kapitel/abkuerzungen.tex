@@ -1,0 +1,181 @@
+\chapter*{Formelzeichen- und Abkürzungsverzeichnis}
+\addcontentsline{toc}{chapter}{Formelzeichen- und Abkürzungsverzeichnis}
+
+% Parameter [M_affin] sets the width of the left column. 
+% Adjust if symbols overlap with text.
+\begin{acronym}[NASA-TLX] 
+
+    % --- FORMELZEICHEN (SYMBOLS) ---
+    % Using \acro{KEY}[SYMBOL]{Description} format
+    % We use a dummy item to create a header inside the list
+    \item[] \textbf{Formelzeichen}
+    
+    \acro{A}[$A$]{Menge (z. B. Symbolmenge Version A)}
+    \acro{alpha}[$\alpha$]{Skalierungsfaktor für Padding}
+    \acro{B}[$B$]{Menge (z. B. Symbolmenge Version B) oder Bounding Box}
+    \acro{beta}[$\beta$]{Skalierungsfaktor für Padding}
+    \acro{B_gt}[$B_{\text{gt}}$]{Ground Truth Bounding Box}
+    \acro{B_pred}[$B_{\text{pred}}$]{Vorhergesagte Bounding Box}
+    \acro{c}[$c$]{Konfidenzwert (Wahrscheinlichkeit)}
+    \acro{cx_cy}[$c_x, c_y$]{Zentrumskoordinaten einer Bounding Box}
+    \acro{d}[$d$]{Euklidische Distanz}
+    \acro{d_vec}[$\vec{d}$]{Distanzvektor}
+    \acro{dk}[$d_k$]{Dimensionalität der Key-Vektoren}
+    \acro{dLev}[$d_{\text{Lev}}$]{Levenshtein-Distanz}
+    \acro{delta}[$\delta$]{Abweichungsschwellenwert}
+    \acro{Delta}[$\Delta$]{Differenzmenge oder Versatz}
+    \acro{dx_dy}[$dx, dy$]{Distanzkomponenten}
+    \acro{epsilon}[$\epsilon$]{Toleranzwert}
+    \acro{ex_ey}[$e_x, e_y$]{Expansionsfaktoren für Bounding Boxes}
+    \acro{f}[$f$]{Dateiname oder Feldbezeichner}
+    \acro{gamma}[$\gamma$]{Normalisierte Konfidenz (OCR)}
+    \acro{h}[$h$]{Höhe (Bounding Box oder Objekt)}
+    \acro{hc}[$h_c$]{Resultierende Zeichenhöhe in Pixeln}
+    \acro{H_mat}[$\mathbf{H}$]{Homographie-Matrix}
+    \acro{H}[$H$]{Gesamthöhe des Bildes}
+    \acro{k}[$k$]{Verhältnisfaktor (Schrifthöhe)}
+    \acro{k_dx}[$k_{dx}, k_{dy}$]{Klassenspezifische Multiplikatoren}
+    \acro{K}[$K$]{Key-Matrix (Attention)}
+    \acro{L}[$\mathcal{L}$]{Verlustfunktion (Loss)}
+    \acro{lambda}[$\lambda$]{Gewichtungsfaktor in der Verlustfunktion}
+    \acro{mu}[$\mu$]{Erwartungswert / Mittelwert}
+    \acro{M}[$\mathbf{M}$]{Transformationsmatrix}
+    \acro{M_affin}[$\mathbf{M}_{\text{affin}}$]{Affine Rotationsmatrix}
+    \acro{N}[$N$]{Anzahl (z. B. Objekte, Klassen)}
+    \acro{O}[$O$]{Überlappung (Overlap)}
+    \acro{p}[$p$]{Padding}
+    \acro{P}[$P$]{Wahrscheinlichkeit}
+    \acro{pi}[$\pi$]{Pfad im CTC-Algorithmus}
+    \acro{Q}[$Q$]{Query-Matrix (Attention)}
+    \acro{r}[$r$]{Auflösung oder Radius}
+    \acro{R}[$\mathbf{R}$]{Rotationsmatrix}
+    \acro{s}[$s$]{Schriftgröße oder Scrollposition}
+    \acro{S}[$S$]{Schrittweite (Stride) oder Score}
+    \acro{sigma}[$\sigma$]{Standardabweichung}
+    \acro{t}[$t$]{Zeitindex oder Zeitdauer}
+    \acro{tau}[$\tau$]{Schwellenwert (Threshold)}
+    \acro{theta}[$\theta$]{Rotationswinkel}
+    \acro{tx_ty}[$t_x, t_y$]{Translationskomponenten}
+    \acro{T}[$T$]{Länge einer Sequenz oder Tile-Größe}
+    \acro{v}[$v$]{Wert eines Datenfeldes}
+    \acro{V}[$V$]{Value-Matrix (Attention)}
+    \acro{w}[$w$]{Breite (Bounding Box oder Objekt)}
+    \acro{W}[$W$]{Gesamtbreite des Bildes}
+    \acro{x_y}[$x, y$]{Kartesische Koordinaten}
+    \acro{z}[$z$]{Zoomfaktor}
+    % Mathematical Operators
+    \acro{concat}[$\oplus$]{Konkatenation}
+    \acro{setops}[$\cap, \cup, \setminus$]{Mengenoperationen}
+
+    % --- ABKÜRZUNGEN (ACRONYMS) ---
+    \item[] \textbf{Abkürzungen}
+
+    \acro{AABB}{Axis-Aligned Bounding Box}
+    \acro{ACID}{Atomicity, Consistency, Isolation, Durability}
+    \acro{AGPL}{Affero General Public License}
+    \acro{AP}{Average Precision}
+    \acro{API}{Application Programming Interface}
+    \acro{ASCII}{American Standard Code for Information Interchange}
+    \acro{AWS}{Amazon Web Services}
+    \acro{BOM}{Bill of Materials}
+    \acro{BSD}{Berkeley Software Distribution}
+    \acro{BYTEA}{Byte Array}
+    \acro{CAD}{Computer-Aided Design}
+    \acro{CER}{Character Error Rate}
+    \acro{CLI}{Command Line Interface}
+    \acro{CNN}{Convolutional Neural Network}
+    \acro{COCO}{Common Objects in Context}
+    \acro{CPU}{Central Processing Unit}
+    \acro{CRNN}{Convolutional Recurrent Neural Network}
+    \acro{CSV}{Comma-Separated Values}
+    \acro{CTC}{Connectionist Temporal Classification}
+    \acro{CVAT}{Computer Vision Annotation Tool}
+    \acro{DB}{Differentiable Binarization} 
+    \acro{DETR}{Detection Transformer}
+    \acro{DFL}{Distribution Focal Loss}
+    \acro{DIN}{Deutsches Institut für Normung}
+    \acro{DINOv2}{Self-supervised Vision Transformer}
+    \acro{DPI}{Dots Per Inch}
+    \acro{EN}{Europäische Norm}
+    \acro{ERP}{Enterprise Resource Planning}
+    \acro{FA}{Funktionale Anforderung}
+    \acro{FDA}{Food and Drug Administration}
+    \acro{FEM}{Finite Element Method}
+    \acro{FN}{False Negative}
+    \acro{FP}{False Positive}
+    \acro{FPN}{Feature Pyramid Network}
+    \acro{FPS}{Frames Per Second}
+    \acro{GIN}{Generalized Inverted Index}
+    \acro{GKS}{Gleiskoppelspule}
+    \acro{GM}{Gleismagnet}
+    \acro{GmbH}{Gesellschaft mit beschränkter Haftung}
+    \acro{GPU}{Graphics Processing Unit}
+    \acro{GUI}{Graphical User Interface}
+    \acro{HBB}{Horizontal Bounding Box}
+    \acro{HMM}{Hidden Markov Model}
+    \acro{HOG}{Histogram of Oriented Gradients}
+    \acro{ID}{Identifier}
+    \acro{IO}{Input/Output}
+    \acro{IoU}{Intersection over Union}
+    \acro{ISO}{International Organization for Standardization}
+    \acro{JPEG}{Joint Photographic Experts Group}
+    \acro{JPG}{Joint Photographic Experts Group}
+    \acro{JS}{JavaScript}
+    \acro{JSON}{JavaScript Object Notation}
+    \acro{JSONB}{JSON Binary}
+    \acro{KI}{Künstliche Intelligenz}
+    \acro{km}{Kilometer}
+    \acro{LCAD}{Legacy Computer-Aided Design}
+    \acro{LOC}{Lines of Code}
+    \acro{LSTM}{Long Short-Term Memory}
+    \acro{mAP}{mean Average Precision}
+    \acro{MIT}{Massachusetts Institute of Technology License}
+    \acro{ML}{Machine Learning}
+    \acro{MVC}{Model-View-Controller}
+    \acro{NASA-TLX}{NASA Task Load Index}
+    \acro{NFA}{Nicht-funktionale Anforderung}
+    \acro{NMS}{Non-Maximum Suppression}
+    \acro{OBB}{Oriented Bounding Box}
+    \acro{OCR}{Optical Character Recognition}
+    \acro{OOM}{Out of Memory}
+    \acro{OpenGL}{Open Graphics Library}
+    \acro{ORDBMS}{Object-Relational Database Management System}
+    \acro{ORM}{Object-Relational Mapping}
+    \acro{PANet}{Path Aggregation Network}
+    \acro{PDF}{Portable Document Format}
+    \acro{PIL}{Python Imaging Library}
+    \acro{PNG}{Portable Network Graphics}
+    \acro{PSM}{Page Segmentation Mode}
+    \acro{PyQt}{Python bindings for Qt}
+    \acro{QA}{Quality Assurance}
+    \acro{RandI}{Rohrleitungs- und Instrumentenfließschema}
+    \acro{RAM}{Random Access Memory}
+    \acro{RGB}{Red Green Blue}
+    \acro{RNN}{Recurrent Neural Network}
+    \acro{ROI}{Region of Interest}
+    \acro{RPN}{Region Proposal Network}
+    \acro{RTMDet}{Real-time Object Detection}
+    \acro{SGD}{Stochastic Gradient Descent}
+    \acro{SPS}{Speicherprogrammierbare Steuerung}
+    \acro{SQL}{Structured Query Language}
+    \acro{STN}{Spatial Transformer Network}
+    \acro{SUS}{System Usability Scale}
+    \acro{SVM}{Support Vector Machine}
+    \acro{TCP}{Tool Center Point}
+    \acro{TP}{True Positive}
+    \acro{UCS}{User Coordinate System}
+    \acro{UI}{User Interface}
+    \acro{UID}{Unique Identifier}
+    \acro{UPSERT}{Update or Insert}
+    \acro{UX}{User Experience}
+    \acro{VDI}{Verein Deutscher Ingenieure}
+    \acro{ViT}{Vision Transformer}
+    \acro{VRAM}{Video Random Access Memory}
+    \acro{WER}{Word Error Rate}
+    \acro{XLSX}{Excel Open XML Spreadsheet}
+    \acro{XML}{Extensible Markup Language}
+    \acro{XSS}{Cross-Site Scripting}
+    \acro{YAML}{YAML Ain't Markup Language}
+    \acro{YOLO}{You Only Look Once}
+
+\end{acronym}

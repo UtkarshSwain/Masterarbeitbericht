@@ -176,7 +176,7 @@ Projektierungsaufgaben bei Siemens Mobility.
         \item Rotierte Beschriftungen in kardinalen Orientierungen ($0^\circ, 90^\circ, 180^\circ, 270^\circ$) sowie Abweichungen bis $\pm 15^\circ$ durch manuelle Platzierung oder Export-Toleranzen.
         \item Überlagerungen durch Führungslinien oder andere grafische Elemente.
     \end{itemize}
-    \begin{figure}[h]
+    \begin{figure}[H]
     \centering
     \includegraphics[width=5cm]{images/Kapitel4/OCRsample.png} 
     \caption{Beispielhafte Extraktion von Text und Position am Symbol GKS}
@@ -364,7 +364,7 @@ FA-001 & Erkennungsrate $\geq$ 90\% &
 §\ref{subsec:detection_eval}: Recall = 95.7\% (Val), 100\% (Test) \\
 \hline
 
-FA-002 & Rotationsinvarianz ($0°$--$360°$) & 
+FA-002 & Rotationsinvarianz ($0^\circ$--$360^\circ$) & 
 §\ref{sec:objekterkennungmityolov8obb}: OBB-Annotation, synthetische Rotation (10 Winkel) & 
 §\ref{subsec:detection_eval}: Stabile Leistung über alle Testpläne \\
 \hline
@@ -381,7 +381,7 @@ FA-004 & OCR-Genauigkeit (in E2E integriert) &
 
 FA-005 & OCR-Robustheit (Rauschen, Rotation) & 
 §\ref{sec:ocrpipeline}: Dual-Winkel-Routing, CLAHE, Linienentfernung & 
-§\ref{subsec:e2e_test_eval}: Erfolgreiche Extraktion bei $\theta = 37.5°$ (Abb.~\ref{fig:angular_ocr_example}) \\
+§\ref{subsec:e2e_test_eval}: Erfolgreiche Extraktion bei $\theta = 37.5^\circ$ (Abb.~\ref{fig:angular_ocr_example}) \\
 \hline
 
 FA-006 & Fahrtrichtungsdetektion & 
