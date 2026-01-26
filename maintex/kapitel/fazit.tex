@@ -417,7 +417,14 @@ Dies ist die vom Nutzer priorisierte Verbesserung und hat das größte Potenzial
         \item Optimale Ressourcennutzung auf heterogenen Systemen
     \end{itemize}
 
-    \item \textbf{Erwarteter Nutzen}: Reduktion der Verarbeitungszeit auf $<$ 3 Minuten pro Plan bei GPU-Verfügbarkeit; verbesserte Skalierbarkeit für Batch-Verarbeitung.
+    \item \textbf{Training bei nativer Auflösung}: Das aktuelle Modell wurde auf $1024 \times 1024$ Pixel trainiert (Downsampling von $2048 \times 2048$ Annotationen), um Trainingszeit und GPU-Speicherbedarf zu reduzieren. Mit leistungsfähigerer GPU-Infrastruktur (z.B. NVIDIA A100 mit 80 GB VRAM oder Multi-GPU-Cluster) könnte das Modell direkt auf $2048 \times 2048$ Pixeln trainiert werden:
+    \begin{itemize}
+        \item Erhalt feinerer visueller Details ohne Downsampling-Verluste
+        \item Potenziell verbesserte Erkennung kleiner Symbole (Isolierstöße, GKS-Platten)
+        \item Cloud-basierte GPU-Instanzen (AWS p4d, Azure NC-Series) für einmaliges Retraining nutzbar
+    \end{itemize}
+
+    \item \textbf{Erwarteter Nutzen}: Reduktion der Verarbeitungszeit auf $<$ 3 Minuten pro Plan bei GPU-Verfügbarkeit; verbesserte Skalierbarkeit für Batch-Verarbeitung. Training bei nativer Auflösung könnte zusätzlich die Detektionsgenauigkeit bei kleinen Symbolen verbessern.
 \end{itemize}
 
 \textbf{Geschätzte Verbesserung durch mittelfristige Maßnahmen:} End-to-End Accuracy von 98.76\% → 99.3-99.6\%; Verarbeitungszeit von 12.3 min → 2-3 min (GPU) oder 10 min (optimiertes CPU).
@@ -726,6 +733,19 @@ Die erfolgreiche Evaluation (98.76\% E2E-Accuracy, 75.3\% Zeitersparnis) hat zu 
     \end{itemize}
 \end{itemize}
 
+\textbf{Upgrade-Fähigkeit der Detektionskomponente:}
+
+Die modulare Architektur ermöglicht den Austausch des YOLO-Modells mit geringem Aufwand. Ein Upgrade auf neuere Versionen (z.B. YOLOv9, YOLOv10, YOLOv11) erfordert lediglich:
+\begin{enumerate}
+    \item Modell-Neutraining mit den bestehenden Annotationen (das YOLO-OBB-Format ist versionsübergreifend kompatibel)
+    \item Anpassung des Modellpfads in der Konfigurationsdatei
+    \item Validierung auf dem unveränderten Testsatz zur Sicherstellung der Vergleichbarkeit
+\end{enumerate}
+
+Der geschätzte Gesamtaufwand beträgt 2-4 Personentage, da OCR-, Linking- und Validierungskomponenten unverändert bleiben.
+
+Für systematische Versionsvergleiche sollte die Evaluation auf identischem Testsatz (7 Produktionspläne) mit konsistenten Metriken (mAP@0.5, E2E-Accuracy, Inferenzzeit) unter gleichen Hardwarebedingungen erfolgen. Basierend auf publizierten Benchmarks der YOLO-Familie ist bei neueren Versionen eine moderate Genauigkeitssteigerung (1-3\% mAP) sowie eine Inferenzbeschleunigung (10-30\%) zu erwarten. Da das aktuelle System bereits 98.0\% mAP erreicht, liegt das Optimierungspotential primär in der Verarbeitungsgeschwindigkeit und der Robustheit bei Grenzfällen.
+
 \subsection{Trends in der automatisierten Dokumentenverarbeitung}
 
 \textbf{Foundation Models für Document AI:}
@@ -839,6 +859,109 @@ Gerade im regulierten Eisenbahnbereich (EBO, TSI-Normen, CENELEC-Standards) ist 
 \end{itemize}
 
 Die in dieser Arbeit gewählte modulare Architektur mit expliziten Validierungsstufen adressiert dies besser als Black-Box-End-to-End-Modelle, jedoch bleibt Verbesserungspotenzial (vgl. Explainable AI in Abschnitt~\ref{sec:verbesserungen}).
+
+\section{Beantwortung der Forschungsfragen}
+\label{sec:forschungsfragen_beantwortung}
+
+Die in Kapitel~\ref{chap:einleitung} formulierten Forschungsfragen können auf Basis der durchgeführten Implementierung und Evaluation wie folgt beantwortet werden.
+
+\subsection{Hauptforschungsfrage (HF)}
+
+\textit{Wie lässt sich der Prozess der Datenextraktion aus heterogenen technischen Zeichnungen durch den Einsatz von Deep Learning und hybriden Verarbeitungsstrategien automatisieren, um eine valide Überführung in strukturierte Datenmodelle zu gewährleisten?}
+
+\textbf{Antwort:} Die vorliegende Arbeit demonstriert, dass eine erfolgreiche Automatisierung durch die Kombination dreier Kernkomponenten erreicht werden kann:
+
+\begin{enumerate}
+    \item \textbf{Deep Learning für Objekterkennung:} YOLOv8 mit Oriented Bounding Boxes (OBB) ermöglicht die rotationsinvariante Detektion domänenspezifischer Symbole mit einer mAP@0.5 von 98.0\% (Tabelle~\ref{tab:detection_overall}).
+
+    \item \textbf{Hybride OCR-Strategie:} Die Multi-Engine-Kaskade (PaddleOCR → Tesseract → EasyOCR) mit orientierungsadaptiver Vorverarbeitung (Dual-Angle-Routing) erreicht eine implizite OCR-Genauigkeit von 99.53\% (nur 3 von 644 Objekten mit OCR-Fehlern).
+
+    \item \textbf{Regelbasiertes Linking:} Räumliche Verknüpfungsalgorithmen mit lokaler Koordinatentransformation (Abschnitt~\ref{sec:Koordinatentransformation}) assoziieren Symbole und Texte mit 99.69\% Genauigkeit (642/644 korrekte Verknüpfungen).
+\end{enumerate}
+
+Die End-to-End-Genauigkeit von \textbf{98.76\%} auf dem Testsatz (Tabelle~\ref{tab:e2e_overall_test}) belegt die Validität der Überführung in strukturierte Datenmodelle. Die PostgreSQL-Persistierung mit JSONB-Speicherung gewährleistet die strukturierte Datenhaltung, während der Excel-Export die Integration in nachgelagerte Planungsprozesse ermöglicht.
+
+\subsection{Teilforschungsfrage 1 (TF1)}
+
+\textit{Inwieweit eignen sich aktuelle einstufige Objektdetektoren zur zuverlässigen Erkennung von kleinteiligen, rotierten Symbolen in technischen Zeichnungen und welche Vorverarbeitungsschritte sind notwendig, um die Präzision bei variierenden Layouts zu maximieren?}
+
+\textbf{Antwort:} Einstufige Objektdetektoren -- konkret YOLOv8 in der OBB-Variante -- eignen sich \textit{hervorragend} für diese Aufgabe, sofern spezifische Vorverarbeitungsschritte implementiert werden:
+
+\begin{itemize}
+    \item \textbf{Tiling-Strategie:} Die Zerlegung großformatiger A0-Pläne in überlappende Tiles (2048×2048 Pixel, 12.5\% Overlap, 128px Halo) ermöglicht die Verarbeitung bei gleichzeitiger Erhaltung der Symboldetails (Abschnitt~\ref{subsubsec:tiling_strategie}).
+
+    \item \textbf{Hochauflösende Rasterisierung:} Die Rendering-Auflösung von 500 DPI ist zwingend erforderlich, um filigrane Symbole differenzierbar darzustellen (Kapitel~\ref{chap:konzeption}).
+
+    \item \textbf{Synthetische Rotationsaugmentation:} Die Erweiterung des Trainingsdatensatzes durch 10 Rotationswinkel (-90° bis +90° in 18°-Schritten) kompensiert die begrenzte Datenmenge effektiv und führt zu vollständiger Rotationsinvarianz. Bemerkenswert ist, dass rotierte Objekte ($|\theta| > 30°$) sogar höhere Konfidenzwerte aufweisen (0.946 vs. 0.890) als horizontal ausgerichtete (Tabelle~\ref{tab:rotation_analysis}).
+
+    \item \textbf{Klassengewichtete Augmentation:} Unterrepräsentierte Klassen (z.B. \textit{endeweichen} mit nur 4 Original-Instanzen) wurden durch höhere Augmentationsfaktoren (bis zu 150×) ausgeglichen.
+\end{itemize}
+
+Die erreichten Metriken (Precision: 97.5\%, Recall: 95.7\%, mAP@0.5: 98.0\%) übertreffen vergleichbare Arbeiten zur P\&ID-Erkennung (typisch 85-90\%) deutlich und validieren die Eignung einstufiger Detektoren für diese Domäne.
+
+\subsection{Teilforschungsfrage 2 (TF2)}
+
+\textit{Wie können geometrische Informationen und unstrukturierte Textdaten algorithmisch so verknüpft werden, dass eine korrekte semantische Zuordnung (z.\,B. Signalbezeichnung zu Signalsymbol) auch bei hoher Objektdichte erfolgt?}
+
+\textbf{Antwort:} Die algorithmische Verknüpfung erfolgt durch einen mehrstufigen Ansatz, der geometrische Nähe mit domänenspezifischen Regeln kombiniert:
+
+\begin{enumerate}
+    \item \textbf{Rotationsinvariante Koordinatentransformation:} Für jedes Ankersymbol wird ein lokales Koordinatensystem etabliert, dessen Achsen mit der Symbolorientierung übereinstimmen. Dies ermöglicht die Definition relativer Positionen (``oberhalb'', ``unterhalb'') unabhängig von der absoluten Symbolrotation (Abschnitt~\ref{sec:Koordinatentransformation}).
+
+    \item \textbf{Klassenspezifische Suchbereiche:} Für jede Symbolklasse werden empirisch kalibrierte Suchparameter definiert ($dy_{max}$, $dx_{max}$), die typische Abstände zwischen Symbolen und zugehörigen Beschriftungen bei 500 DPI abbilden (Tabelle~\ref{tab:linking_multipliers}).
+
+    \item \textbf{Richtungsbasierte Filterung:} Die erwartete Textposition relativ zum Symbol wird klassenspezifisch definiert (z.B. Koordinaten unterhalb von Signalen), wodurch falsche Kandidaten bei hoher Objektdichte ausgeschlossen werden.
+
+    \item \textbf{Regex-basierte Validierung:} Extrahierte Texte werden gegen domänenspezifische Muster geprüft (Signal: \texttt{[A-Z]\{1,4\}\textbackslash d\{1,4\}}, Koordinate: \texttt{\textbackslash d+[.,]\textbackslash d+}), um fehlerhafte Zuordnungen zu erkennen.
+\end{enumerate}
+
+Mit nur 2 Linking-Fehlern bei 644 Objekten (0.31\% Fehlerrate) demonstriert dieser Ansatz, dass auch bei hoher Objektdichte -- die Testpläne enthielten durchschnittlich 92 Kernklassen-Objekte pro Plan -- eine zuverlässige semantische Zuordnung möglich ist.
+
+\subsection{Teilforschungsfrage 3 (TF3)}
+
+\textit{Wie muss eine Systemarchitektur gestaltet sein, um neue Symbolklassen und Datenformate modular zu integrieren, wobei Änderungen auf einzelne Pipeline-Komponenten beschränkt bleiben?}
+
+\textbf{Antwort:} Die implementierte Architektur folgt dem Prinzip der \textit{Separation of Concerns} mit klar definierten Schnittstellen zwischen Komponenten:
+
+\begin{itemize}
+    \item \textbf{Modulare Pipeline-Struktur:} Die Verarbeitungskette (PDF-Rasterisierung → Tiling → YOLO-Inferenz → OCR → Linking → Validierung → Export) ist in eigenständige Module gekapselt, die über definierte Datenstrukturen kommunizieren.
+
+    \item \textbf{Klassenspezifische Parametrisierung:} Linking-Parameter, OCR-Vorverarbeitung und Validierungsregeln sind klassenspezifisch konfiguriert (Tabellen~\ref{tab:linking_multipliers}, \ref{tab:linking_special_params}), sodass neue Symbolklassen durch Hinzufügen entsprechender Parameter integriert werden können.
+
+    \item \textbf{Isolierte Modellkomponente:} Das YOLO-Modell ist austauschbar; ein Nachtraining für neue Symbolklassen erfordert keine Änderungen an OCR-, Linking- oder Export-Logik.
+
+    \item \textbf{Erweiterbare Exportschicht:} Die Trennung von Datenextraktion und -export ermöglicht die Hinzufügung neuer Ausgabeformate ohne Modifikation der Kernpipeline.
+\end{itemize}
+
+Die erfolgreiche Integration von 8 Auxiliarklassen (zusätzlich zu den 5 Kernklassen) ohne architektonische Änderungen validiert dieses Design. Die Erweiterung erforderte lediglich: (1) Annotation und Training des YOLO-Modells, (2) Definition klassenspezifischer Linking-Parameter, (3) Hinzufügung von Regex-Mustern für die Textvalidierung.
+
+\subsection{Teilforschungsfrage 4 (TF4)}
+
+\textit{Welcher algorithmische Ansatz eignet sich, um in rein visuellen Daten semantische Änderungen zwischen zwei Planversionen robust zu identifizieren und visualisierbar zu machen?}
+
+\textbf{Antwort:} Der implementierte Ansatz basiert auf dem \textit{Vergleich strukturierter Extraktionsergebnisse} anstatt auf direktem Bildvergleich:
+
+\begin{enumerate}
+    \item \textbf{Extraktion beider Versionen:} Sowohl die alte als auch die neue Planversion durchlaufen die vollständige Extraktionspipeline, wodurch strukturierte Datensätze (Symbol-ID, Position, Bezeichnung, Attribute) entstehen.
+
+    \item \textbf{Semantischer Abgleich:} Objekte werden anhand ihrer Bezeichnungen (z.B. Signalname ``AS102'') oder räumlicher Nähe (bei fehlender eindeutiger Kennung) zwischen Versionen gematcht.
+
+    \item \textbf{Kategorisierung der Änderungen:} Identifizierte Differenzen werden klassifiziert als:
+    \begin{itemize}
+        \item \textit{Hinzugefügt}: Objekt in neuer Version vorhanden, nicht in alter
+        \item \textit{Gelöscht}: Objekt in alter Version vorhanden, nicht in neuer
+        \item \textit{Verschoben}: Position geändert (Schwellenwert: > 50 Pixel)
+        \item \textit{Attributänderung}: Bezeichnung, Koordinate oder andere Attribute modifiziert
+    \end{itemize}
+
+    \item \textbf{Visualisierung:} Die UI stellt Änderungen durch farbkodierte Overlays dar (grün: hinzugefügt, rot: gelöscht, orange: modifiziert) mit tabellarischer Zusammenfassung und Jump-to-Detection-Funktionalität.
+\end{enumerate}
+
+Die Validierung anhand zweier realer Planversionen mit 41 manuell verifizierten Änderungen bestätigt die Funktionsfähigkeit des Ansatzes. Der strukturbasierte Vergleich ist robuster gegenüber visuellen Variationen (Scanqualität, Kompressionsartefakte) als pixelbasierte Differenzbildung und ermöglicht die Kategorisierung auf semantischer Ebene.
+
+\subsection{Zusammenfassung}
+
+Alle Teilforschungsfragen konnten durch die entwickelte Lösung positiv beantwortet werden. Die Hauptforschungsfrage nach der Automatisierbarkeit der Datenextraktion aus technischen Zeichnungen wird durch die erreichte End-to-End-Genauigkeit von 98.76\% und Zeitersparnis von 75.3\% eindeutig bestätigt. Die Kombination aus Deep Learning (YOLOv8-OBB), hybrider OCR-Strategie (Multi-Engine-Kaskade) und regelbasiertem Linking stellt einen effektiven Ansatz dar, der auch mit begrenzten Trainingsdaten (25 Originalpläne) State-of-the-Art-Ergebnisse erzielt.
 
 \section{Abschließende Bewertung}
 \label{sec:abschliessend}

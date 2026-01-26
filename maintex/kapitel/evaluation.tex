@@ -205,7 +205,7 @@ Die Evaluation wurde auf einer standardisierten Hardware- und Softwarekonfigurat
 \hline
 \multicolumn{2}{|c|}{\textit{Hardware (Inferenz)}} \\
 \hline
-CPU & Intel Core i7-10700 (8 Kerne, 2.9 GHz) \\
+CPU & AMD Ryzen 5 PRO 5650U (6 Kerne, 2.3 GHz) \\
 RAM & 32 GB DDR4 \\
 GPU & Keine (CPU-only Inferenz) \\
 Speicher & 512 GB SSD \\
@@ -635,14 +635,6 @@ basiert auf folgenden Überlegungen:
     was einer OCR-spezifischen Fehlerrate von 0.47\% (3/644) entspricht.
 \end{itemize}
 
-Die Robustheit gegenüber Rotation (FA-005) wird durch die Dual-Winkel-Routing-
-Architektur (§\ref{sec:ocrpipeline}) gewährleistet. Abbildung~\ref{fig:angular_ocr_example} 
-demonstriert die erfolgreiche Extraktion bei $\theta = 37{,}5^\circ$. Die konstante 
-E2E-Genauigkeit über alle 7 Testpläne -- die Symbole in diversen Orientierungen 
-enthalten -- bestätigt die Rotationsrobustheit empirisch, auch wenn keine 
-dedizierte Winkel-Stratifizierung durchgeführt wurde.
-
-
 \textbf{Leistung nach Plankomplexität:}
 
 Die Testpläne wurden gemäß Tabelle~\ref{tab:complexity_categories} in drei 
@@ -772,6 +764,8 @@ Der typische Korrektur-Workflow für einen extrahierten Gleisplan umfasst:
 \end{enumerate}
 
 Dieser Workflow gewährleistet, dass selbst bei erwarteten Genauigkeiten von 90-95\% im produktiven Einsatz die Qualitätssicherung effizient und systematisch erfolgen kann.
+
+
 \textbf{Validierung FA-008, NFA-004 und NFA-005:}
 
 \textbf{FA-008 (Manuelle Korrektur):} Der Validierungsdialog (Abb.~\ref{fig:validation_dialog_ui}) 
@@ -790,7 +784,7 @@ ermöglichen eine lückenlose Rückverfolgbarkeit jeder Extraktion zur Quelldoku
 \subsubsection{Verarbeitungszeit-Analyse}
 \label{subsubsec:processing_time}
 
-Die Verarbeitungszeit ist ein kritischer Faktor für die praktische Nutzbarkeit des Systems und validiert die Anforderung \textbf{NFA-007} (Ressourceneffizienz). Die Zeitmessungen wurden auf der in Abschnitt~\ref{subsec:testumgebung} beschriebenen Standard-Workstation (Intel i7-10700, CPU-only, kein GPU) für alle sieben Testpläne durchgeführt.
+Die Verarbeitungszeit ist ein kritischer Faktor für die praktische Nutzbarkeit des Systems und validiert die Anforderung \textbf{NFA-007} (Ressourceneffizienz). Die Zeitmessungen wurden auf der in Abschnitt~\ref{subsec:testumgebung} beschriebenen Standard-Workstation (AMD Ryzen 5 PRO 5650U, CPU-only, ohne GPU) für alle sieben Testpläne durchgeführt.
 
 \textbf{Gesamtverarbeitungszeiten nach Plankomplexität:}
 
@@ -827,7 +821,7 @@ Plan 7 & 141 & 138 & 17.0 min (1022s) & 7.2s \\
 \textbf{Gesamt (7 Pläne)} & \textbf{92 Ø} & \textbf{102 Ø} & \textbf{12.3 min (739s)} & \textbf{8.4s} \\
 \hline
 \end{tabular}
-\caption{Verarbeitungszeiten nach Plankomplexität (CPU-only, Intel i7-10700)}
+\caption{Verarbeitungszeiten nach Plankomplexität (CPU-only, AMD Ryzen 5 PRO 5650U)}
 \label{tab:processing_time_overall}
 \end{table}
 
@@ -922,6 +916,8 @@ Die gemessenen Zeiten basieren auf CPU-only Verarbeitung gemäß Anforderung NFA
 \end{itemize}
 
 Die CPU-basierte Verarbeitung erfüllt jedoch bereits die Anforderung NFA-007, sodass eine GPU-Investition optional bleibt. Die aktuelle Implementierung ermöglicht den Einsatz auf Standard-Workstations ohne spezielle Hardware-Anforderungen.
+
+
 \textbf{Validierung NFA-006 und NFA-007:}
 
 \textbf{NFA-006 (Prozessoptimierung):} Der KI-gestützte Workflow reduziert den 
@@ -930,7 +926,7 @@ Bei einem durchschnittlichen Plan mit 92 Objekten entspricht dies einer Zeitersp
 von 48 Minuten pro Plan.
 
 \textbf{NFA-007 (Ressourceneffizienz):} Die durchschnittliche Verarbeitungszeit von 
-12.3 Minuten pro A0-Plan auf Standard-CPU-Hardware (Intel i7-10700, ohne GPU) erfüllt 
+12.3 Minuten pro A0-Plan auf Standard-CPU-Hardware (AMD Ryzen 5 PRO 5650U, 6 Kerne, 32 GB RAM, ohne GPU) erfüllt 
 die Anforderung einer Verarbeitung in \enquote{wenigen Minuten} und ermöglicht den 
 Einsatz auf typischen Engineering-Workstations.
 \subsection{Validierung weiterer funktionaler Anforderungen}

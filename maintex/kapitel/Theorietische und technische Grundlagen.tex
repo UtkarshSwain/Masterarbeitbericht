@@ -14,8 +14,8 @@ Lagepläne (topografisch, bautechnisch) und schematische Übersichtspläne
 (topologisch, sicherungstechnisch). Diese Arbeit fokussiert letztere, da sie 
 die logischen Fahrwegbeziehungen priorisieren und die Grundlage für die Stellwerksplanung bilden.
 
-Gleispläne enthalten drei Symbolkategorien: (1) Fahrwegelemente (Gleise, Weichen), 
-(2) Sicherungstechnik (Signale, Achszähler), (3) Metadaten (Bezeichner, 
+Gleispläne enthalten drei Symbolkategorien \cite{Pachl}: (1) Fahrwegelemente (Gleise, Weichen),
+(2) Sicherungstechnik (Signale, Achszähler), (3) Metadaten (Bezeichner,
 Kilometrierung). Jedes Element trägt eindeutige Labels zur Identifikation.
 
 Obwohl diese Pläne in der heutigen Ingenieurspraxis mittels CAD-Systemen (Computer Aided Design) erstellt werden, liegt die primäre Herausforderung für eine automatisierte Auswertung nicht im Dateiformat, sondern in der korrekten semantischen Interpretation dieser abstrahierten Symbolik und ihrer logischen Verknüpfung \cite{Pachl}.
@@ -42,17 +42,10 @@ Kategorien (siehe Tabelle~\ref{tab:symbol_categories}):
 Infrastruktur & \textbf{Signale}: Fahrterlaubnis und Geschwindigkeitsvorgabe\cite{Pachl}. 
 \textbf{Weichen}: Fahrwegverzweigungen\cite{Pachl}. \\
 \hline
-Zugbeeinflussung & \textbf{Balisen}: Übertragung von Fahrt-/Haltinformationen, 
-Geschwindigkeitsinformationen und weiteren Daten des Stellwerkes an den Zug\cite{Pachl}. 
-\textbf{Gleismagnete}: Übertragung von Fahrt-/Haltinformationen, 
-Geschwindigkeitsinformationen und weiteren Daten des Stellwerkes an den Zug\cite{Pachl}. 
-\textbf{Gleiskoppelspulen}: Übertragung von Fahrt-/Haltinformationen, 
-Geschwindigkeitsinformationen und weiteren Daten des Stellwerkes an den Zug\cite{Pachl}. \\
+Zugbeeinflussung & \textbf{Balisen}, \textbf{Gleismagnete (GM)}, \textbf{Gleiskoppelspulen (GKS)}: Übertragung von Informationen (Fahrt-/Haltinformationen, ggf. auch Geschwindigkeitsvorgaben und weitere Daten) vom Stellwerk an den Zug\cite{Pachl}. \\
 \hline
-Belegungserkennung & \textbf{Isolierstöße}: Elektrische Gleistrennung zur 
-Definition von Gleisstromkreisen für die Belegungserkennung\cite{Pachl}. 
-\textbf{Achszähler}: Zählpunktbasierte Belegungserkennung durch Erfassung 
-ein- und ausfahrender Achsen\cite{Pachl}. \\
+Belegungserkennung & \textbf{Isolierstöße}: Abgrenzung von Gleisabschnitten zur Belegungserkennung mittels Gleisstromkreisen\cite{Pachl}.
+\textbf{Achszähler}: Zählpunktbasierte Belegungserkennung durch Erfassung ein- und ausfahrender Achsen\cite{Pachl}. \\
 \hline
 Metadaten & \textbf{Positionsangaben}: Kilometrierung, Lagepunkte\cite{DB2008Regelwerk}. 
 \textbf{Gleisabschnittsnamen}: Eindeutige Gleisidentifikation\cite{DB2008Regelwerk}. \\
@@ -61,6 +54,8 @@ Metadaten & \textbf{Positionsangaben}: Kilometrierung, Lagepunkte\cite{DB2008Reg
 \caption{Klassifikation bahntechnischer Symbole}
 \label{tab:symbol_categories}
 \end{table}
+
+\textbf{Hinweis zur Umsetzung:} Diese theoretische Klassifikation dient als Ausgangspunkt für die Anforderungsanalyse. Die konkrete Auswahl der zu erkennenden Symbolklassen -- unterteilt in fünf produktionsrelevante \textit{Kernklassen} und acht experimentelle \textit{Auxiliarklassen} -- wird in Kapitel~\ref{chap:anforderungen} (Tabellen~\ref{tab:kernklassen} und \ref{tab:auxiliarklassen}) basierend auf den Projektanforderungen bei Siemens Mobility definiert.
 
 Die automatisierte Analyse visueller Informationen bildet das Fundament zahlreicher technischer Anwendungen von der Qualitätskontrolle in der industriellen Fertigung über die medizinische Bildanalyse bis hin zur autonomen Navigation. Während Menschen mühelos in der Lage sind, Objekte in Bildern zu identifizieren und zu lokalisieren, erfordert die Replikation dieser Fähigkeit in Maschinen die Lösung komplexer Teilprobleme. Historisch wurde diese Aufgabe durch explizite Programmierung von Erkennungsregeln adressiert. Der konzeptionelle Durchbruch gelang durch maschinelles Lernen, insbesondere durch tiefe neuronale Netze, die relevante Merkmale selbstständig aus Trainingsdaten extrahieren können \cite{LeCun1998_GradientBasedLearning,Krizhevsky2012_AlexNet}.
 
@@ -73,9 +68,9 @@ Im Gegensatz zu natürlichen Szenen weisen technische Konstruktionszeichnungen s
 
 \subsubsection{Domänenspezifische Eigenschaften}
 
-Technische Zeichnungen unterscheiden sich fundamental von natürlichen Bildern in ihrer Entstehung und Struktur. CAD-Systeme (Computer-Aided Design) erzeugen vektorbasierte Repräsentationen, die geometrische Primitive wie Linien, Kreise und Polylinien sowie zugeordnete Metadaten enthalten. Die Konvertierung in Rasterformate (PDF, PNG) für ML-basierte Analyse führt jedoch zu einem Informationsverlust hinsichtlich topologischer Beziehungen und semantischer Layer-Informationen. Topologische Beziehungen beschreiben die Verbindungsstruktur zwischen Elementen -- etwa welche Gleisabschnitte durch eine Weiche verbunden sind oder welches Signal zu welchem Gleis gehört. Semantische Layer-Informationen kodieren die funktionale Zuordnung von Objekten zu Kategorien wie Gleisführung, Signaltechnik oder Oberleitung. Bei der Rasterisierung werden diese Strukturinformationen eliminiert; das Bild wird zu einer Ansammlung von Pixeln ohne inhärente Bedeutung. Diese Transformation von strukturierten zu unstrukturierten Daten motiviert den Einsatz von Deep-Learning-Verfahren, die robuste Mustererkennung auch ohne explizite topologische Information ermöglichen.
+Technische Zeichnungen unterscheiden sich fundamental von natürlichen Bildern in ihrer Entstehung und Struktur \cite{Zeid2005}. CAD-Systeme (Computer-Aided Design) erzeugen vektorbasierte Repräsentationen, die geometrische Primitive wie Linien, Kreise und Polylinien sowie zugeordnete Metadaten enthalten. Die Konvertierung in Rasterformate (PDF, PNG) für ML-basierte Analyse führt jedoch zu einem Informationsverlust hinsichtlich topologischer Beziehungen und semantischer Layer-Informationen. Topologische Beziehungen beschreiben die Verbindungsstruktur zwischen Elementen -- etwa welche Gleisabschnitte durch eine Weiche verbunden sind oder welches Signal zu welchem Gleis gehört. Semantische Layer-Informationen kodieren die funktionale Zuordnung von Objekten zu Kategorien wie Gleisführung, Signaltechnik oder Oberleitung. Bei der Rasterisierung werden diese Strukturinformationen eliminiert; das Bild wird zu einer Ansammlung von Pixeln ohne inhärente Bedeutung. Diese Transformation von strukturierten zu unstrukturierten Daten motiviert den Einsatz von Deep-Learning-Verfahren, die robuste Mustererkennung auch ohne explizite topologische Information ermöglichen.
 
-Bahntechnische Symbole folgen standardisierten Bibliotheken gemäß EN-Normen oder kundenspezifischen Richtlinien. Die Variabilität innerhalb einer Symbolklasse ist somit deutlich geringer als bei natürlichen Objekten wie Fahrzeugen oder Personen, jedoch erschweren kundenspezifische Anpassungen die Generalisierung über verschiedene Planungsunternehmen hinweg. Ein durchschnittlicher Bahnhofsgleisplan enthält zwischen 500 und 2000 individuelle Symbole auf einer Fläche von wenigen Quadratmetern, was eine deutlich höhere Objektdichte als in typischen Computer-Vision-Benchmark-Datensätzen wie COCO \cite{Lin2014_COCO} oder Pascal VOC \cite{Everingham2010_PascalVOC} darstellt. Zum Vergleich: COCO-Bilder enthalten im Durchschnitt 7 bis 10 Objekte, während ein Gleisplanausschnitt von vergleichbarer Pixelgröße 50 bis 100 Symbole aufweisen kann.
+Bahntechnische Symbole folgen standardisierten Bibliotheken gemäß EN-Normen \cite{DIN_ISO_128} oder kundenspezifischen Richtlinien. Die Variabilität innerhalb einer Symbolklasse ist somit deutlich geringer als bei natürlichen Objekten wie Fahrzeugen oder Personen, jedoch erschweren kundenspezifische Anpassungen die Generalisierung über verschiedene Planungsunternehmen hinweg. Ein durchschnittlicher Bahnhofsgleisplan enthält zwischen 100 und 300 relevante Symbole (Signale, Zugbeeinflussungselemente, Koordinaten) auf einer Fläche von wenigen Quadratmetern, was eine deutlich höhere Objektdichte als in typischen Computer-Vision-Benchmark-Datensätzen wie COCO \cite{Lin2014_COCO} oder Pascal VOC \cite{Everingham2010_PascalVOC} darstellt. Zum Vergleich: COCO-Bilder enthalten im Durchschnitt 7 bis 10 Objekte, während ein Gleisplanausschnitt von vergleichbarer Pixelgröße 50 bis 100 Symbole aufweisen kann.
 
 Anders als bei Objekten mit kanonischer Orientierung -- etwa Straßenverkehrsschilder (typischerweise frontal) oder Fußgänger (vertikal stehend) -- können bahntechnische Symbole und Textannotationen entlang der Gleisachsen in beliebigen Winkeln orientiert sein. Ein Weichensymbol kann beispielsweise in 16 verschiedenen Rotationen auftreten, die jeweils $22,5^\circ$ Schritte zwischen $0^\circ$ und $360^\circ$ abdecken. Signale werden parallel zur Gleisachse positioniert, Gleisnummern folgen der Krümmung des Gleises. Diese Rotationsvariabilität ohne bevorzugte Ausrichtung erfordert rotationsinvariante Detektionsarchitekturen, deren Notwendigkeit in Abschnitt~\ref{sec:obb} detailliert erläutert wird.
 
@@ -102,7 +97,7 @@ Verfahren (vgl. Kapitel~\ref{chap:konzeption}, Tabelle~\ref{tab:Alternative_Dete
 \subsection{Architekturen für Deep-Learning-basierte Objekterkennung}
 \label{subsec:dl_architekturen}
 
-Die Implementierung von CNN-basierten Objektdetektoren lässt sich in zwei Architekturparadigmen unterteilen, die sich in ihrer Balance zwischen Detektionsgenauigkeit und Recheneffizienz unterscheiden. Die Wahl der Architektur hat direkte Auswirkungen auf die Praxistauglichkeit des Systems.
+Die Implementierung von CNN-basierten Objektdetektoren lässt sich in zwei Architekturparadigmen unterteilen, die sich in ihrer Balance zwischen Detektionsgenauigkeit und Recheneffizienz unterscheiden \cite{Zou2019_ObjectDetectionSurvey}. Die Wahl der Architektur hat direkte Auswirkungen auf die Praxistauglichkeit des Systems.
 
 \subsubsection{Zweistufige vs. einstufige Detektoren}
 
@@ -234,7 +229,7 @@ Die Mean Average Precision (mAP) \cite{Everingham2010_PascalVOC,Lin2014_COCO} ag
 
 wobei $N$ die Anzahl der Objektklassen bezeichnet. Üblich ist die Angabe von mAP@0.5 (IoU-Schwelle 50\%) sowie mAP@[0.5:0.95] (Mittelwert über IoU-Schwellen von 50\% bis 95\% in 5\%-Schritten). Die letztere Metrik ist deutlich strenger und fordert präzisere Lokalisierung. Für diese Arbeit wird primär mAP@0.5 verwendet (siehe Kapitel~\ref{chap:evaluation}), da leichte Ungenauigkeiten in der Boxlokalisierung durch nachgelagerte Validierung kompensiert werden können. Ein Signal, das mit $45^\circ$ statt exakt $47^\circ$ Rotation detektiert wird, ist für die Planungsaufgabe dennoch korrekt identifiziert.
 
-Die in diesem Abschnitt dargestellten Verfahren -- von zweistufigen Detektoren wie Faster R-CNN bis zu einstufigen Architekturen wie YOLO -- verwenden achsenparallele Begrenzungsrahmen (Axis-Aligned Bounding Boxes, AABB). Diese Boxen sind durch vier Parameter definiert und ihre Kanten verlaufen stets horizontal und vertikal zum Bildrand. Für viele Anwendungen wie Fußgängererkennung oder Fahrzeugdetektion, bei denen Objekte typischerweise aufrechte oder horizontale Orientierung aufweisen, ist dies ausreichend. Technische Zeichnungen mit beliebig rotierten Symbolen und Textannotationen stellen jedoch besondere Anforderungen, die achsenparallele Boxen nur unzureichend erfüllen. Abschnitt~\ref{sec:obb} führt daher orientierte Begrenzungsrahmen (Oriented Bounding Boxes, OBB) ein, die durch einen zusätzlichen Rotationsparameter präzisere Lokalisierung rotierter Objekte ermöglichen.
+Die in diesem Abschnitt dargestellten Verfahren, von zweistufigen Detektoren wie Faster R-CNN bis zu einstufigen Architekturen wie YOLO, verwenden achsenparallele Begrenzungsrahmen (Axis-Aligned Bounding Boxes, AABB). Diese Boxen sind durch vier Parameter definiert und ihre Kanten verlaufen stets horizontal und vertikal zum Bildrand. Für viele Anwendungen wie Fußgängererkennung oder Fahrzeugdetektion, bei denen Objekte typischerweise aufrechte oder horizontale Orientierung aufweisen, ist dies ausreichend. Technische Zeichnungen mit beliebig rotierten Symbolen und Textannotationen stellen jedoch besondere Anforderungen, die achsenparallele Boxen nur unzureichend erfüllen. Abschnitt~\ref{sec:obb} führt daher orientierte Begrenzungsrahmen (Oriented Bounding Boxes, OBB) ein, die durch einen zusätzlichen Rotationsparameter präzisere Lokalisierung rotierter Objekte ermöglichen.
 \section{Oriented Object Detection für rotierte Objekte}
 \label{sec:obb}
 
@@ -350,7 +345,7 @@ wobei $(c_x, c_y)$ das Zentrum, $w$ und $h$ die Dimensionen entlang der lokalen 
 
 \subsubsection{Vorteile für rotierte Objekte}
 
-Die präzisere geometrische Modellierung durch OBB bietet mehrere Vorteile. Bei perfekter Ausrichtung der OBB mit dem Objekt minimiert sich der Hintergrundanteil, während AABB bei starker Rotation erhebliche Hintergrundbereiche umschließen. Die IoU zwischen OBB reflektiert die tatsächliche Objektüberlappung, wodurch Fehlunterdrückungen bei NMS vermieden werden. Dies ist besonders wichtig bei dicht gruppierten Objekten, wo AABB fälschlicherweise hohe Überlappungen anzeigen würden. Zudem kodiert der Parameter $\theta$ explizit die Objektorientierung, was für nachgelagerte Prozesse wie orientierungsabhängige OCR wertvoll ist. Für die Domäne der Gleisplananalyse sind diese Eigenschaften besonders relevant, da Symbole entlang der Gleisachsen in beliebigen Winkeln angeordnet sind und oft dicht gruppiert auftreten.
+Die präzisere geometrische Modellierung durch OBB bietet mehrere Vorteile \cite{Xie2021OrientedRD}. Bei perfekter Ausrichtung der OBB mit dem Objekt minimiert sich der Hintergrundanteil, während AABB bei starker Rotation erhebliche Hintergrundbereiche umschließen. Die IoU zwischen OBB reflektiert die tatsächliche Objektüberlappung, wodurch Fehlunterdrückungen bei NMS vermieden werden. Dies ist besonders wichtig bei dicht gruppierten Objekten, wo AABB fälschlicherweise hohe Überlappungen anzeigen würden. Zudem kodiert der Parameter $\theta$ explizit die Objektorientierung, was für nachgelagerte Prozesse wie orientierungsabhängige OCR wertvoll ist. Für die Domäne der Gleisplananalyse sind diese Eigenschaften besonders relevant, da Symbole entlang der Gleisachsen in beliebigen Winkeln angeordnet sind und oft dicht gruppiert auftreten.
 
 \subsection{Herausforderungen bei der Verwendung von OBB}
 
@@ -725,7 +720,7 @@ Für Maschinenbau-Ingenieure lässt sich die CTC-Funktionsweise anschaulich erkl
 
 \subsubsection{Transformer-basierte OCR}
 
-Neuere Ansätze ersetzen die RNN-Komponente durch Transformer-Architekturen \cite{Vaswani2017_Attention}. Der TrOCR-Ansatz \cite{li2022trocrtransformerbasedopticalcharacter} verwendet einen Vision Transformer (ViT) als Encoder und einen Text Transformer als Decoder. Vision Transformer ist ein Transformer Modell, das Bilder als Sequenz von Patches verarbeitet\cite{Dosovitskiy2021_ViT} Der zentrale Mechanismus ist die Self-Attention:
+Neuere Ansätze ersetzen die RNN-Komponente durch Transformer-Architekturen \cite{Vaswani2017_Attention}. Der TrOCR-Ansatz \cite{li2022trocrtransformerbasedopticalcharacter} verwendet einen Vision Transformer (ViT) als Encoder und einen Text Transformer als Decoder. Vision Transformer ist ein Transformer Modell, das Bilder als Sequenz von Patches verarbeitet\cite{Dosovitskiy2021_ViT}. Der zentrale Mechanismus ist die Self-Attention:
 
 \begin{equation}
 \text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right) V
@@ -839,7 +834,7 @@ Tabelle~\ref{tab:ocr_systems_comparison} vergleicht die für technische Zeichnun
 \centering
 \small
 \renewcommand{\arraystretch}{1.3}
-\begin{tabular}{|p{2cm}|p{2.5cm}|p{4.5cm}|p{4.5cm}|}
+\begin{tabular}{|p{2cm}|p{2.7cm}|p{4.5cm}|p{4.5cm}|}
 \hline
 \textbf{System} & \textbf{Architektur} & \textbf{Stärken} & \textbf{Schwächen} \\
 \hline
@@ -1775,7 +1770,7 @@ Ein wesentliches Qualitätsmerkmal technischer Software ist ihre \textbf{Anpassb
 
 \subsection{Das Problem der Domänenspezifität}
 
-Technische Zeichnungen folgen zwar grundlegenden Normen (z.\,B. DIN für Zeichnungselemente), weisen aber in der Praxis erhebliche Variabilität auf:
+Technische Zeichnungen folgen zwar grundlegenden Normen (z.\,B. DIN für Zeichnungselemente) \cite{DIN_ISO_128, Hoischen2022}, weisen aber in der Praxis erhebliche Variabilität auf:
 
 \begin{itemize}
     \item \textbf{Kundenspezifische Symbole}: Verschiedene Unternehmen verwenden unterschiedliche Darstellungen für dieselbe technische Funktion

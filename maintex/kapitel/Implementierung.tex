@@ -58,7 +58,7 @@ durchgeführt \cite{cvat}. Abhängigkeiten sind in \texttt{requirements.txt} dok
 
 \subsection{Hardware-Infrastruktur}
 
-Das YOLOv8-Training erfolgte auf einer GPU-Instanz (NVIDIA, AWS Instance g4dn.xlarge, 16 GB VRAM). Die finale Anwendung ist CPU-kompatibel (Intel Core i7, 32 GB RAM), um eine breite Einsetzbarkeit ohne spezialisierte Hardware zu gewährleisten.
+Das YOLOv8-Training erfolgte auf einer GPU-Instanz (NVIDIA, AWS Instance g4dn.xlarge, 16 GB VRAM). Die finale Anwendung ist CPU-kompatibel (AMD Ryzen 5 PRO 5650U, 32 GB RAM), um eine breite Einsetzbarkeit ohne spezialisierte Hardware zu gewährleisten.
 
 \subsection{Projektstruktur}
 
@@ -96,7 +96,7 @@ Die Leistungsfähigkeit eines objekterkennenden Modells hängt direkt von der Qu
 
 Die initialen Gleispläne lagen im PDF-Format vor und mussten zunächst in ein für die Annotation geeignetes Bildformat überführt werden. Hierzu wurde die Python-Bibliothek PyMuPDF eingesetzt, welche eine zuverlässige Rasterisierung von PDF-Dokumenten ermöglicht. Die Konvertierung erfolgte mit einer Auflösung von 500 DPI (dots per inch), was einem Skalierungsfaktor von $\frac{500}{72} \approx 6.94$ gegenüber der Standard-PDF-Auflösung entspricht. Diese hohe Auflösung wurde gewählt, um auch kleine Symbole wie Gleiskoppelspulenplatten oder Isolierstöße mit ausreichender Detailgenauigkeit darzustellen.
 
-Nach der Rasterisierung wurden die hochauflösenden Bilder in kleinere, überlappende Bildausschnitte segmentiert. Die gewählte Segmentgröße für die Annotation und das Training betrug $1024 \times 1024$ Pixel, entsprechend der YOLO-Eingabegröße. Für die Inferenz werden größere Tiles ($2048 \times 2048$ Pixel) verwendet und vor der Modellverarbeitung auf $1024 \times 1024$ Pixel herunterskaliert (siehe Abschnitt~\ref{Inferenz}). Diese Dimensionierung stellt einen Kompromiss dar zwischen ausreichendem Kontext für die Objekterkennung und der effizienten Verarbeitung auf GPU-Systemen mit begrenztem Videospeicher. Größere Tiles würden zwar mehr Kontext bieten, jedoch den verfügbaren VRAM der Trainings-GPU (NVIDIA, AWS Instance g4dn.xlarge, 16 GB VRAM) überschreiten und damit das Training unmöglich machen oder die Batch-Größe unzulässig reduzieren.
+Nach der Rasterisierung wurden die hochauflösenden Bilder in kleinere, überlappende Bildausschnitte segmentiert. Die gewählte Segmentgröße für die Annotation betrug $2048 \times 2048$ Pixel, um ausreichend Kontext für die präzise Markierung von Symbolen und deren räumliche Beziehungen zu gewährleisten. Für das Training und die Inferenz werden diese Tiles auf $1024 \times 1024$ Pixel herunterskaliert (Downsampling), was der YOLO-Eingabegröße entspricht. Diese Strategie kombiniert die Vorteile großflächiger Annotation mit effizienter Modellverarbeitung: Die Annotationen auf 2048×2048 Pixeln erfassen mehr Kontextinformation, während das Downsampling die Rechenzeit signifikant reduziert -- ein Tile mit $2048 \times 2048$ Pixeln enthält viermal so viele Pixel wie eines mit $1024 \times 1024$, was zu einer entsprechend längeren Inferenzzeit führt. Zudem reduziert die kleinere Eingabegröße den GPU-Speicherbedarf während des Trainings erheblich, was größere Batch-Größen und damit stabilere Gradientenschätzungen ermöglicht. Bei ausreichender Symbolauflösung (die bei 500 DPI Renderauflösung gegeben ist) bleiben die relevanten visuellen Merkmale auch nach dem Downsampling differenzierbar. Diese Dimensionierung stellt somit einen Kompromiss dar zwischen Annotationsqualität und effizienter Verarbeitung auf GPU-Systemen mit begrenztem Videospeicher (NVIDIA, AWS Instance g4dn.xlarge, 16 GB VRAM).
 
 \subsubsection{Annotationsprozess}
 
@@ -275,7 +275,7 @@ Die vollständige Konfiguration der Trainingsparameter ist in Tabelle \ref{tab:y
 \textbf{Parameter} & \textbf{Wert} & \textbf{Begründung} \\
 \hline
 Modellgröße & YOLOv8l-OBB & Balance zwischen Präzision und Inferenzgeschwindigkeit \\
-Eingabeauflösung & $1024 \times 1024$ & Angepasst an Tile-Größe der Annotationen \\
+Eingabeauflösung & $1024 \times 1024$ & Downsampling von 2048×2048 Annotationen; 4× Reduktion der Pixelanzahl für effiziente Verarbeitung \\
 Epochen & 120 & Ausreichend für vollständige Konvergenz ohne Overfitting \\
 Batch Size & 6 & Maximal mögliche Größe bei 16 GB VRAM der T4 GPU \\
 Optimizer & SGD & Momentum = 0.937, Weight Decay = 0.0005 \\
@@ -470,8 +470,8 @@ Standard-PDF-Auflösung (72 DPI) auf die Zielauflösung von 500 DPI beschreibt:
 \text{Skalierungsfaktor} = \frac{500}{72} \approx 6{,}94
 \end{equation}
 
-Die resultierende Pixmap wird in ein RGB-Array überführt. Ein typischer 
-A3-Gleisplan resultiert bei 500 DPI in einem Bild von ca. $8000 \times 6000$ Pixeln.
+Die resultierende Pixmap wird in ein RGB-Array überführt. Ein typischer
+A0-Gleisplan resultiert bei 500 DPI in einem Bild von ca. $30000 \times 5000$ bis $90000 \times 7000$ Pixeln.
 
 \textbf{Bildverarbeitung:}
 
@@ -539,7 +539,11 @@ und NMS -- sind unabhängig vom ursprünglichen Eingabeformat identisch.
 
 \subsubsection{Tiling-Strategie}
 \label{subsubsec:tiling_strategie}
-Da die resultierenden Bilder mit mehreren Millionen Pixeln die Eingabegröße des YOLO-Modells ($1024 \times 1024$) bei weitem überschreiten, wird das Vollbild in überlappende Kacheln (Tiles) zerlegt. Die Tile-Größe beträgt $T = 2048 \times 2048$ Pixel, was eine Verarbeitung auf gängigen GPUs ermöglicht und gleichzeitig ausreichend Kontext für die Detektion bietet.Die extrahierten Tiles mit einer Größe von $2048 \times 2048$ Pixeln werden vor der YOLO-Inferenz auf die Trainingsgröße von $1024 \times 1024$ Pixeln herunterskaliert (Downsampling). Die resultierenden Bounding-Box-Koordinaten werden anschließend mit dem Faktor 2 multipliziert, um die korrekten Positionen im Originaltile zu erhalten. Dieses Vorgehen ermöglicht eine höhere effektive Auflösung bei der Symbolerkennung, da feinere Details im größeren Eingabebild erhalten bleiben, bevor das Downsampling erfolgt.
+Da die resultierenden Bilder mit mehreren Millionen Pixeln die Eingabegröße des YOLO-Modells ($1024 \times 1024$) bei weitem überschreiten, wird das Vollbild in überlappende Kacheln (Tiles) zerlegt. Die Tile-Größe beträgt $T = 2048 \times 2048$ Pixel, was eine Verarbeitung auf gängigen GPUs ermöglicht und gleichzeitig ausreichend Kontext für die Detektion bietet.
+
+\textbf{Downsampling:} Die extrahierten Tiles mit einer Größe von $2048 \times 2048$ Pixeln werden vor der YOLO-Inferenz auf die Trainingsgröße von $1024 \times 1024$ Pixeln herunterskaliert. Downsampling (auch Unterabtastung oder Dezimation genannt) bezeichnet in der digitalen Bildverarbeitung die Reduktion der räumlichen Auflösung eines Bildes durch Verringerung der Pixelanzahl \cite{Gonzalez}. Bei einem Skalierungsfaktor von 2 wird jedes $2 \times 2$ Pixelfeld des Originalbildes zu einem einzelnen Pixel im Zielbild zusammengefasst, wobei typischerweise Interpolationsverfahren wie bilineare oder bikubische Interpolation zum Einsatz kommen, um Aliasing-Artefakte zu minimieren.
+
+Die resultierenden Bounding-Box-Koordinaten werden anschließend mit dem Faktor 2 multipliziert, um die korrekten Positionen im Originaltile zu erhalten. Dieses Vorgehen ermöglicht eine höhere effektive Auflösung bei der Symbolerkennung, da feinere Details im größeren Eingabebild erhalten bleiben, bevor das Downsampling erfolgt.
 
 \begin{figure}[H]
     \centering
@@ -937,7 +941,7 @@ Diese strukturierte Repräsentation dient als Eingabe für die nachfolgende OCR-
 
 \subsubsection{Performance-Charakteristika}
 
-Die durchschnittliche Inferenzzeit pro Tile beträgt ca. 120 ms auf einer Standard-CPU (Intel Core i7 der 10. Generation). Für einen typischen A3-Gleisplan mit ca. 12-16 Tiles ergibt sich eine Gesamtverarbeitungszeit von ca. 15-20 Sekunden für die Objekterkennungsstufe. Diese CPU-basierte Inferenz wurde bewusst gewählt, um die Einsetzbarkeit der Software auf Standard-Workstations ohne dedizierte GPU zu gewährleisten, was die Verbreitung und Nutzung im Produktivumfeld erleichtert.
+Die durchschnittliche Inferenzzeit pro Tile beträgt ca. 120 ms auf einer Standard-CPU (AMD Ryzen 5 PRO 5650U, 6 Kerne, 32 GB RAM). Für einen typischen A0-Gleisplan mit ca. 40-50 Tiles ergibt sich eine Gesamtverarbeitungszeit von ca. 5-6 Sekunden für die reine YOLO-Inferenz; die vollständige Pipeline inklusive OCR und Linking benötigt durchschnittlich 12.3 Minuten (vgl. Kapitel~\ref{chap:evaluation}). Diese CPU-basierte Inferenz wurde bewusst gewählt, um die Einsetzbarkeit der Software auf Standard-Workstations ohne dedizierte GPU zu gewährleisten, was die Verbreitung und Nutzung im Produktivumfeld erleichtert.
 
 \section{Orientierungsadaptive OCR-Pipeline}
 \label{sec:ocrpipeline}
@@ -954,7 +958,7 @@ Das System implementiert eine kaskadierende Architektur mit drei OCR-Engines: Pa
 
 \subsubsection{Funktionsweise der Kaskadierung}
 
-Die Kaskadierung funktioniert nach einem sequenziellen Prinzip. Zunächst wird PaddleOCR auf dem Bildausschnitt ausgeführt, und zwar viermal mit unterschiedlichen Rotationswinkeln: $0^\circ, 90^\circ, 180^\circ und 270^\circ$. Der Grund für diese vier Rotationen ist, dass PaddleOCR am besten mit horizontal ausgerichtetem Text funktioniert. Durch das Ausprobieren aller vier Hauptrichtungen wird sichergestellt, dass mindestens eine Rotation den Text horizontal ausrichtet.
+Die Kaskadierung funktioniert nach einem sequenziellen Prinzip. Zunächst wird PaddleOCR auf dem Bildausschnitt ausgeführt, und zwar viermal mit unterschiedlichen Rotationswinkeln: $0^\circ, 90^\circ, 180^\circ$ und $270^\circ$. Der Grund für diese vier Rotationen ist, dass PaddleOCR am besten mit horizontal ausgerichtetem Text funktioniert. Durch das Ausprobieren aller vier Hauptrichtungen wird sichergestellt, dass mindestens eine Rotation den Text horizontal ausrichtet.
 
 Für jede dieser Rotationen wird das OCR-Ergebnis durch eine klassenspezifische Validierungsfunktion geprüft. Diese Validierung überprüft, ob der erkannte Text dem erwarteten Muster der jeweiligen Symbolklasse entspricht. Beispielsweise muss ein Signal-Text mit einem Großbuchstaben beginnen, gefolgt von 1-3 Ziffern (wie \enquote{A12} oder \enquote{B234}). Zusätzlich zur Mustererkennung wird der Konfidenz-Wert (Vertrauenswert) des OCR-Ergebnisses überprüft.
 

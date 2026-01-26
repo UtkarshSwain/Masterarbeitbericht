@@ -39,7 +39,7 @@ sich aus dem Trainingsverfahren des YOLOv8-OBB Modells: Sämtliche Trainingsdate
 wurden aus bei 500 DPI gerenderten PDFs extrahiert 
 (vgl. Abschnitt~\ref{subsec:Datensatzerstellung}). Das Modell hat somit 
 Pixelmuster gelernt, die spezifisch für diese Auflösung sind. Bei abweichenden 
-Auflösungen -- selbst bei 300 oder 400 DPI -- stimmen die Symbolgrößen und 
+Auflösungen, selbst bei 300 oder 400 DPI, stimmen die Symbolgrößen und 
 Detailstrukturen nicht mehr mit den gelernten Mustern überein, was zu 
 erheblichen Erkennungsfehlern führt.
 
@@ -132,7 +132,7 @@ Designentscheidungen: Die Größe der Tiles und der Überlappungsgrad sind konfi
 \textbf{Formatunabhängige Weiterverarbeitung:}
 
 Unabhängig vom Eingabeformat (PDF oder Bild) sind alle nachfolgenden 
-Verarbeitungsschritte -- Tiling, YOLO-Inferenz, OCR und Linking -- identisch. 
+Verarbeitungsschritte (Tiling, YOLO-Inferenz, OCR und Linking) identisch. 
 Dies wird durch die einheitliche Repräsentation als RGB-Array nach der 
 Eingabeverarbeitung gewährleistet (vgl. Abbildung~\ref{fig:format_preprocessing} 
 in Kapitel~\ref{chap:implementierung}). Die Tile-Größe von $2048 \times 2048$ Pixeln 
@@ -182,7 +182,7 @@ Dieses Modul bildet das technologische Herzstück des Systems und kombiniert zwe
 Die Rohausgaben der Erkennungsmodule erfordern weitere Verarbeitungsschritte, um strukturierte und semantisch korrekte Daten zu erzeugen:
 \begin{enumerate}
     \item \textbf{Datenbereinigung:} Rohe OCR Ergebnisse enthalten häufig Artefakte, Formatierungsfehler oder unerwünschte Zeichen. Regelbasierte Filter (z.B. mittels parametrischer Beziehungen) normalisieren die extrahierten Texte gemäß erwarteten Mustern.
-    \item \textbf{Zusammenführung:} Die im Schritt erzeugten überlappenden Kacheln müssen wieder zu einem Gesamtbild zusammengefügt werden. Dabei werden Duplikate in den Überlappungsbereichen durch Non Maximum Suppression(NMS) eliminiert. 
+    \item \textbf{Zusammenführung:} Die im Schritt erzeugten überlappenden Kacheln müssen wieder zu einem Gesamtbild zusammengefügt werden. Dabei werden Duplikate in den Überlappungsbereichen durch Non Maximum Suppression (NMS) eliminiert \cite{Bodla2017_SoftNMS}. 
     \item \textbf{Semantisches Mapping:} Die erkannten Symbole und Texte werden in einen semantischen Kontext überführt. Beispielsweise wird ein detektiertes Symbol der Klasse \enquote{Signal} mit dem dazugehörigen OCR Text zu einer logischen Einheit verknüpft.
 \end{enumerate}
 \subsection{Speicherung}
@@ -251,7 +251,7 @@ Das Backend orchestriert die automatisierte Analysepipeline. Die Prozessschritte
     
     \item \textbf{OCR:} Extraktion von Textinformationen aus identifizierten Symbolbereichen
     
-    \item \textbf{Postprocessing \& Merge:} Zusammenführung der Tile-Ergebnisse zu einem Gesamtbild und Eliminierung von Duplikaten in Überlappungsbereichen durch Non-Maximum-Suppression (NMS). Rohe OCR-Ergebnisse werden durch regelbasierte Filter bereinigt.
+    \item \textbf{Postprocessing \& Merge:} Zusammenführung der Tile-Ergebnisse zu einem Gesamtbild und Eliminierung von Duplikaten in Überlappungsbereichen durch Non-Maximum-Suppression (NMS) \cite{Bodla2017_SoftNMS}. Rohe OCR-Ergebnisse werden durch regelbasierte Filter bereinigt.
     
     \item \textbf{Linking \& Semantisches Mapping:} Verknüpfung erkannter Symbole mit zugehörigen Texten (IDs, Koordinaten) zu logischen Einheiten. Beispielsweise wird ein detektiertes Symbol der Klasse \enquote{Signal} mit dem dazugehörigen OCR-Text zu einer semantisch interpretierbaren Entität verbunden. Die konzeptionellen Strategien hierfür werden in Abschnitt \ref{sec:linkingassociationmodul} detailliert beschrieben.
     
@@ -308,7 +308,7 @@ Die Auswahl wurde gegen populäre Alternativen validiert. Die folgende Tabelle f
     \hline
     \textbf{Alternative} & \textbf{Nachteil / Ausschlussgrund}\\
     \hline
-    \textbf{PyMuPDF (fitz)} & \textit{Lizenzrisiko:} Obwohl PyMuPDF performant ist, unterliegt es der \textbf{AGPL-Lizenz}. Für eine kommerzielle Nutzung innerhalb von Siemens Mobility würde dies eine Offenlegung des gesamten Quellcodes erzwingen (Copyleft-Effekt), was für interne Tools oft ausgeschlossen ist.\\
+    \textbf{PyMuPDF (fitz)} & \textit{Lizenzrisiko:} Obwohl PyMuPDF performant ist, unterliegt es der \textbf{AGPL-Lizenz} \cite{PyMuPDF2024}. Für eine kommerzielle Nutzung innerhalb von Siemens Mobility würde dies eine Offenlegung des gesamten Quellcodes erzwingen (Copyleft-Effekt), was für interne Tools oft ausgeschlossen ist.\\
     \hline
     \textbf{PDFminer} & \textit{Falscher Fokus:} PDFminer extrahiert die Dokumentenstruktur (Text, Metadaten), ist aber nicht in der Lage, komplexe Vektorgrafiken visuell korrekt zu rasterisieren. Für visuelle Objekterkennung ist es daher ungeeignet \cite{Shinyama2022}.\\
     \hline
@@ -510,7 +510,7 @@ Die Entscheidung für diesen Ansatz stützt sich auf drei zentrale Gründe:
         \hline
         \textbf{Alternative} & \textbf{Nachteil / Ausschlussgrund}\\
         \hline
-        \textbf{XlsxWriter} & Reine \textit{Write-Only}-Bibliothek. Sie ist zwar performant, kann aber existierende \texttt{.xlsx}-Dateien nicht einlesen oder bearbeiten, was die Nutzung von Vorlagen (Templates) verhindert.\\
+        \textbf{XlsxWriter} & Reine \textit{Write-Only}-Bibliothek \cite{XlsxWriter2024}. Sie ist zwar performant, kann aber existierende \texttt{.xlsx}-Dateien nicht einlesen oder bearbeiten, was die Nutzung von Vorlagen (Templates) verhindert.\\
         \hline
         \textbf{CSV (Textdatei)} & Keine Unterstützung für Formatierungen, Formeln oder mehrere Arbeitsblätter. Zudem bestehen Risiken durch Encoding-Probleme (UTF-8 vs. ANSI) und Trennzeichen-Konflikte.\\
         \hline
@@ -616,9 +616,9 @@ Für die Benutzeroberfläche wurde das Framework PyQt5 aus der Python-Bibliothek
         \hline
         \textbf{Alternative} & \textbf{Technologie} & \textbf{Hauptgrund für den Ausschluss} \\ \hline
         Streamlit & Python Web-Wrapper & Kein Multi-Window Support- Statelessness erzwingt ständiges Neuladen (Rerun) bei Interaktionen, was bei großen Bildern zu inakzeptablen Wartezeiten führt.\cite{StreamlitSecurity} \\ \hline
-        Flask / Django & Web Backend & Overhead \& Komplexität- Erfordert lokalen Webserver und Browser; keine native Integration in das Dateisystem (Drag \& Drop, native Dialoge).\\ \hline
-        Electron & JS/Chromium & Ressourcenverbrauch- Hoher Speicherbedarf durch gebündelte Chromium Instanz; Sicherheitsrisiken durch JavaScript Bibliotheken; Performance bei 60k Pixel Bildern unterlegen.\\ \hline
-        Tkinter & Python Native & Veraltete UX; Fehlende GPU-Beschleunigung für Canvas-Elemente; keine moderne HiDPI-Skalierung (\enquote{blurry} Text auf 4K-Monitoren).\\ \hline
+        Flask / Django & Web Backend & Overhead \& Komplexität \cite{Flask2024}- Erfordert lokalen Webserver und Browser; keine native Integration in das Dateisystem (Drag \& Drop, native Dialoge).\\ \hline
+        Electron & JS/Chromium & Ressourcenverbrauch \cite{Electron2024}- Hoher Speicherbedarf durch gebündelte Chromium Instanz; Sicherheitsrisiken durch JavaScript Bibliotheken; Performance bei 60k Pixel Bildern unterlegen.\\ \hline
+        Tkinter & Python Native & Veraltete UX \cite{Tkinter2024}; Fehlende GPU-Beschleunigung für Canvas-Elemente; keine moderne HiDPI-Skalierung (\enquote{blurry} Text auf 4K-Monitoren).\\ \hline
     \end{tabular}
     \caption{Alternative zu PyQt5}
     \label{tab:Alternative6}
@@ -643,7 +643,7 @@ Für die dauerhafte Speicherung der Analyseergebnisse und Gleisplandaten wurde d
         \hline
         \textbf{Alternative} & \textbf{Evaluationsergebnis} & \textbf{Begründung der Ablehnung} \\ \hline
         SQLite & Bedingt geeignet & Obwohl leichtgewichtig, fehlt SQLite eine robuste Multi-User-Unterstützung (Database Locking bei Schreibzugriffen) und die JSON-Abfragefunktionen sind weniger performant als die GIN-Indizierung von PostgreSQL.\cite{SQLiteVsPostgres} \\ \hline
-        MongoDB & Nicht gewählt & Als native NoSQL-DB wäre sie für JSON gut geeignet, bietet jedoch schwächere Garantien für relationale Integrität (z. B. Foreign Keys für user\_corrections) und erhöht die Komplexität im Deployment (zusätzliche Infrastruktur-Komponente).\\ \hline
+        MongoDB & Nicht gewählt & Als native NoSQL-DB wäre sie für JSON gut geeignet \cite{MongoDB2024}, bietet jedoch schwächere Garantien für relationale Integrität (z. B. Foreign Keys für user\_corrections) und erhöht die Komplexität im Deployment (zusätzliche Infrastruktur-Komponente).\\ \hline
         JSON-Files & Ungenügend & Die Speicherung in reinen Textdateien bietet keine Transaktionssicherheit (ACID), keine Indizierung für schnelle Suchen und führt bei parallelen Zugriffen zu \enquote{Race Conditions}.\\ \hline
     \end{tabular}
     \caption{Alternativen zu PostgreSQL}

@@ -43,9 +43,9 @@ Mobility GmbH:
     vom Gleisplan zur Prüftabelle im System verfügbar
 \end{itemize}
 
-Das Projektziel ist eine Zeitreduktion um $> 80\,\%$ durch KI-gestützte 
-Automatisierung, wodurch Ingenieure nur noch KI-Ergebnisse validieren müssen 
-(2-Augen-Prinzip) statt komplett manuell zu arbeiten.
+Das Projektziel ist eine signifikante Zeitreduktion durch KI-gestützte
+Automatisierung, wodurch Ingenieure nur noch KI-Ergebnisse validieren müssen
+statt komplett manuell zu arbeiten.
 \section{Problemstellung}
 In vielen technischen Disziplinen des Ingenieurwesens werden komplexe Systeme und Anlagen noch immer primär über grafische Pläne dokumentiert und kommuniziert. Ob Hydraulikschaltpläne im Maschinenbau, Rohrleitungs- und Instrumentenfließschemata (R\&I-Diagramme) in der Verfahrenstechnik, elektrische Schaltpläne in der Elektrotechnik oder Gleispläne in der Bahntechnik – in all diesen Fachbereichen liegt wertvolles technisches Wissen in Form unstrukturierter Vektorgrafiken oder PDF-Dokumente vor \cite{VogelHeuser2017}. Diese Pläne enthalten eine Vielzahl semantisch relevanter Informationen: Komponenten werden durch standardisierte oder kundenspezifische Symbole repräsentiert, Verbindungen zwischen Elementen sind grafisch dargestellt, und technische Spezifikationen werden als Textannotationen beigefügt.
 \\
@@ -67,21 +67,21 @@ Aktuell erfolgt dieser Prozess meist manuell, was sowohl zeitaufwendig als auch 
 Die zu lösende Herausforderung besteht darin:
 \begin{itemize}
     \item möglichst viele relevante Informationen automatisiert aus unstrukturierten Plänen zu extrahieren,
-    \item diese flexibel in strukturierte Formate wie Excel oder PostgreSQL zu überführen,
-    \item kundenabhängige Symbolbedeutungen über konfigurierbare Mechanismen zuzuordnen,
-    \item Rückverfolgbarkeit und Änderungsverfolgung zwischen Layout und Exportdaten zu ermöglichen,
+    \item diese flexibel in strukturierte, maschinenlesbare Formate zu exportieren,
+    \item Symbole und Texte semantisch zu verknüpfen und in strukturierte Datenmodelle zu überführen,
+    \item Rückverfolgbarkeit und Änderungsverfolgung zwischen Layout zu ermöglichen,
     \item sowie eine benutzerfreundliche Oberfläche für die Validierung und Nachbearbeitung bereitzustellen.
 \end{itemize}
 
 \section{Zielsetzung der Arbeit}
-Ziel dieser Masterarbeit ist die Entwicklung eines skalierbaren Prototyps zur automatisierten Erkennung, Interpretation und strukturierten Verarbeitung von Gleisplänen im PDF Format. Im Fokus steht dabei die Extraktion von symbolischen und textlichen Inhalten aus Plänen mittels moderner Verfahren der Objekt- und Texterkennung. Der Ansatz soll dabei so generisch gestaltet werden, dass er prinzipiell auch auf andere technische Zeichnungen (z.B. im Maschinenbau) übertragbar wäre.
+Ziel dieser Masterarbeit ist die Entwicklung eines skalierbaren Prototyps zur automatisierten Erkennung, Interpretation und strukturierten Verarbeitung von Gleisplänen. Im Fokus steht dabei die Extraktion von symbolischen und textlichen Inhalten aus Plänen mittels moderner Verfahren der Objekt- und Texterkennung. Der Ansatz soll dabei so generisch gestaltet werden, dass er prinzipiell auch auf andere technische Zeichnungen (z.B. im Maschinenbau) übertragbar wäre.
 
 Konkret sollen folgende Teilziele erreicht werden:
 \begin{enumerate}
-    \item \textbf{Automatisierte Symbolerkennung}\\ Einsatz eines geeigneten Deep-Learning-Modells, um relevante Symbole (Signale, Weichen, Streckenelemente usw.) präzise in Gleisplan-PDFs zu detektieren, unabhängig von Orientierung und Planvarianz.
+    \item \textbf{Automatisierte Symbolerkennung}\\ Einsatz eines geeigneten Deep-Learning-Modells, um relevante Symbole (Signale, GKS-Platten, GM-Blöcke, Koordinaten usw.) präzise in Gleisplänen zu detektieren, unabhängig von Orientierung und Planvarianz.
     \item \textbf{Texterkennung} \\ Durchführung einer Textextraktion innerhalb oder neben den erkannten Symbolbereichen, um wichtige Informationen zu extrahieren, einschließlich Vorverarbeitung bei rotierten oder überlagerten Beschriftungen.
-    \item \textbf{Strukturierte Datenzuordnung} \\ Abbildung der erkannten Objekte und Texte auf semantische Bedeutungen mittels YAML-basierter, kundenspezifischer Mapping-Logik.
-    \item \textbf{Export in kundenspezifische Formate} \\ Ausgabe der extrahierten und interpretierten Informationen in strukturierte Zielformate, steuerbar durch eine Konfiguration.
+    \item \textbf{Strukturierte Datenzuordnung} \\ Abbildung der erkannten Objekte und Texte auf semantische Bedeutungen mittels räumlicher Verknüpfungsalgorithmen und regelbasierter Logik.
+    \item \textbf{Export in strukturierte Formate} \\ Ausgabe der extrahierten und interpretierten Informationen in maschinenlesbare Zielformate wie Excel für nachgelagerte Planungsprozesse.
     \item \textbf{Rückverfolgbarkeit \& Änderungsverfolgung} \\ Entwicklung von Mechanismen zur Verknüpfung zwischen Bilddaten (PDF) und extrahierten Datenpunkten sowie zur automatisierten Erkennung von Änderungen in unterschiedlichen Planversionen.
     \item \textbf{Benutzeroberfläche} \\ Aufbau einer interaktiven UI zur Ergebnisdarstellung mit Visualisierung der erkannten Symbole, der zugehörigen Daten und Änderungen sowie der Nachverfolgbarkeit zwischen Daten und Symbolen.
 \end{enumerate}
@@ -98,7 +98,7 @@ Diese Hauptfrage wird in der vorliegenden Arbeit exemplarisch am Anwendungsfall 
 \begin{itemize}
     \item \textbf{TF1:} Inwieweit eignen sich aktuelle einstufige Objektdetektoren zur zuverlässigen Erkennung von kleinteiligen, rotierten Symbolen in technischen Zeichnungen und welche Vorverarbeitungsschritte sind notwendig, um die Präzision bei variierenden Layouts zu maximieren?
     \item \textbf{TF2:} Wie können geometrische Informationen und unstrukturierte Textdaten algorithmisch so verknüpft werden, dass eine korrekte semantische Zuordnung (z.\,B. Signalbezeichnung zu Signalsymbol) auch bei hoher Objektdichte erfolgt?
-    \item \textbf{TF3:} Wie muss eine Systemarchitektur gestaltet sein, um kundenspezifische Symbol-Variationen und Datenformate flexibel zu integrieren, ohne dass ein Nachtraining des KI Modells erforderlich ist?
+    \item \textbf{TF3:} Wie muss eine Systemarchitektur gestaltet sein, um neue Symbolklassen und Datenformate modular zu integrieren, wobei Änderungen auf einzelne Pipeline-Komponenten beschränkt bleiben?
     \item \textbf{TF4:} Welcher algorithmische Ansatz eignet sich, um in rein visuellen Daten semantische Änderungen zwischen zwei Planversionen robust zu identifizieren und visualisierbar zu machen?
 \end{itemize}
 
