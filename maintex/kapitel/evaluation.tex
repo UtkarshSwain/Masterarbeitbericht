@@ -64,9 +64,11 @@ Auflösungsbereich (Original-PDFs) & 500 DPI \\
 
 Für die Evaluation der vollständigen Extraktionspipeline (Detektion → OCR → Linking → Validierung) wurde ein Testsatz aus realen Siemens Mobility Gleisplänen ausgewählt. 
 
+\textbf{Datensatztrennung:} Die sieben Testpläne wurden zufällig aus einem separaten Datenpool ausgewählt, der zu keinem Zeitpunkt für Training oder Validierung des YOLO-Modells verwendet wurde. Diese strikte Trennung gewährleistet eine vollständig unabhängige Evaluation der Systemleistung.
+
 \textbf{Methodische Einschränkung:} Aufgrund des erheblichen manuellen Aufwands zur Erstellung vollständiger Ground-Truth-Daten für A0-Gleispläne (durchschnittlich 2-3 Stunden pro Plan) sowie der begrenzten Verfügbarkeit weiterer ungesehener Pläne wurden sieben Pläne unterschiedlicher Komplexität für die End-to-End-Evaluation ausgewählt. Diese Pläne repräsentieren verschiedene Komplexitätsstufen und ermöglichen eine realistische Bewertung der Systemleistung. Für eine vollständig unabhängige Evaluation wären zusätzliche, komplett ungesehene Pläne wünschenswert gewesen, was im Zeitrahmen dieser Masterarbeit jedoch nicht realisierbar war.
 
-\textbf{Evaluationsumfang:} Die End-to-End-Evaluation fokussiert sich auf die fünf Kernklassen (\textit{signal}, \textit{coordinate}, \textit{gks\_festkodiert}, \textit{gks\_gesteuert}, \textit{gm\_block}), die für die Planungsaufgaben bei Siemens Mobility essentiell sind. Die acht zusätzlich implementierten Auxiliarklassen dienten primär der Demonstration der Systemerweiterbarkeit und werden nicht detailliert evaluiert.
+\textbf{Evaluationsumfang:} Die End-to-End-Evaluation fokussiert sich auf die vier Ankersymbol-Klassen (\textit{signal}, \textit{gks\_festkodiert}, \textit{gks\_gesteuert}, \textit{gm\_block}), die für die Planungsaufgaben bei Siemens Mobility essentiell sind. Die Klasse \textit{coordinate} wurde vollständig annotiert und trainiert, um Datenhomogenität zu gewährleisten; in der E2E-Evaluation werden Koordinaten jedoch nur als verknüpfte Attribute der Ankersymbole bewertet -- d.h. eine Koordinate gilt als korrekt, wenn sie dem richtigen Signal oder der richtigen GKS-Platte zugeordnet wurde. Die acht zusätzlich implementierten Auxiliarklassen dienten primär der Demonstration der Systemerweiterbarkeit; deren Koordinatenverknüpfung ist experimentell und wird nicht detailliert evaluiert.
 
 \begin{table}[H]
 \centering
@@ -78,7 +80,7 @@ Anzahl Gleispläne & 7 \\
 Seitengröße & A0 (841 × 1189 mm) \\
 Seiten pro Plan & 1 \\
 Herkunft & Siemens Mobility Projekte \\
-Komplexitätsstufen & Einfach (2), Mittel (3), Komplex (2) \\
+Komplexitätsstufen & Einfach (2), Mittel (2), Komplex (3) \\
 \hline
 \multicolumn{2}{|l|}{\textit{Durchschnittliche Symbolanzahl pro Plan}} \\
 \hline
@@ -267,7 +269,7 @@ Die mAP@0.5 von 98.0\% demonstriert die exzellente Detektionsqualität bei einem
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.85\textwidth]{images/Kapitel7/BoxPR_curve.png}
-    \caption{Precision-Recall-Kurven für alle Objektklassen auf dem Validierungsdatensatz. Die Fläche unter jeder Kurve entspricht dem klassenspezifischen AP-Wert. Der Gesamtwert mAP@0.5 beträgt 98,4\,\%.}
+    \caption{Precision-Recall-Kurven für alle Objektklassen auf dem Validierungsdatensatz. Die Fläche unter jeder Kurve entspricht dem klassenspezifischen AP-Wert. Der Gesamtwert mAP@0.5 beträgt 98,0\,\%.}
     \label{fig:pr_curve}
 \end{figure}
 
