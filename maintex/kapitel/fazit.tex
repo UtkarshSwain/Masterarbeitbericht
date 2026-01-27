@@ -43,7 +43,7 @@ Jedoch ist unklar, wie das System auf fundamental unterschiedliche Szenarien rea
     \item CAD-Exporte aus verschiedenen Zeichnungssystemen (AutoCAD vs. LCAD vs. MicroStation)
 \end{itemize}
 
-Die synthetische Augmentation durch Rotation (10 Winkelschritte à 36°) kompensiert die geringe Datenmenge effektiv für \textit{geometrische} Variationen, führt jedoch zu einer künstlichen Überrepräsentation geometrischer Variabilität bei gleichzeitiger Unterrepräsentation \textit{semantischer} Variationen (z.B. unterschiedliche Symboldesigns für dasselbe Element, variierende Beschriftungsstile, Zeichnungskonventionen verschiedener Planer). Dies erklärt möglicherweise, warum das System innerhalb des bekannten Layouts exzellent funktioniert, jedoch bei fundamentalen Layout-Änderungen wahrscheinlich Nachtraining benötigen würde.
+Die synthetische Augmentation durch Rotation (10 Winkelschritte à $36^\circ$) kompensiert die geringe Datenmenge effektiv für \textit{geometrische} Variationen, führt jedoch zu einer künstlichen Überrepräsentation geometrischer Variabilität bei gleichzeitiger Unterrepräsentation \textit{semantischer} Variationen (z.B. unterschiedliche Symboldesigns für dasselbe Element, variierende Beschriftungsstile, Zeichnungskonventionen verschiedener Planer). Dies erklärt möglicherweise, warum das System innerhalb des bekannten Layouts exzellent funktioniert, jedoch bei fundamentalen Layout-Änderungen wahrscheinlich Nachtraining benötigen würde.
 
 \textbf{Validierungssatz vs. Testsatz:} Die Verwendung des Validierungssatzes zur Berichterstattung der YOLO-Detektionsmetriken (mAP, Precision, Recall) ist methodisch korrekt, jedoch ist dieser Datensatz nicht vollständig unabhängig vom Trainingsprozess, da er zur Hyperparameter-Optimierung (Learning Rate, Augmentationsparameter) und Early Stopping verwendet wurde. Die mögliche Überoptimierung auf den Validierungssatz wird teilweise durch die separaten Testsatz-Evaluationen für End-to-End-Metriken adressiert, dennoch wäre eine komplett dreifache Aufteilung (Train/Val/Test mit jeweils 50\%, 25\%, 25\% der Daten) mit größerem Gesamtdatensatz wissenschaftlich noch robuster gewesen.
 
@@ -55,7 +55,7 @@ Dies war jedoch im Zeitrahmen einer Masterarbeit nicht realisierbar. Die Plausib
 
 \subsection{Systemarchitektur und Design-Entscheidungen}
 
-\textbf{Modulare vs. End-to-End Architektur:} Die gewählte modulare Pipeline-Architektur (YOLO → OCR → Linking → Validierung) bietet hohe Interpretierbarkeit und Debuggability: Fehler können eindeutig einer Komponente zugeordnet werden, wie die Fehleranalyse in Tabelle~\ref{tab:e2e_error_breakdown} zeigt. Diese Transparenz ist für sicherheitskritische Anwendungen essenziell.
+\textbf{Modulare vs. End-to-End Architektur:} Die gewählte modulare Pipeline-Architektur (YOLO → OCR → Linking → Validierung) bietet hohe Interpretierbarkeit und Debuggability: Fehler können eindeutig einer Komponente zugeordnet werden, wie die Fehleranalyse in Tabelle~\ref{tab:error_source_analysis_test} zeigt. Diese Transparenz ist für sicherheitskritische Anwendungen essenziell.
 
 Jedoch propagieren sich Fehler zwischen den Stufen: Ein fehlerhaft rotierter Bounding-Box-Winkel aus YOLO führt zu falscher Textausrichtung in der OCR-Komponente, was wiederum die Linking-Qualität beeinträchtigt. Die Fehleranalyse zeigt, dass 2 der 8 Fehler (25\%) auf solche Kaskadeneffekte zurückzuführen sind.
 
@@ -80,7 +80,7 @@ Ein vollständig neuronaler Ansatz -- beispielsweise Graph Neural Networks (GNNs
 
 Die gewählte hybride Strategie stellt einen pragmatischen Kompromiss dar und erreicht bereits 99.69\% Linking-Genauigkeit. Die verbleibenden 0.31\% Fehler könnten durch erweiterte Heuristiken (z.B. Berücksichtigung von Gleisverläufen als topologische Constraints) weiter reduziert werden, ohne die Datenkomplexität zu erhöhen.
 
-\textbf{CPU vs. GPU Inferenz:} Die Entscheidung für CPU-basierte Inferenz erfüllt die Anforderung NFA-001 (On-Premise auf Standard-Hardware ohne spezielle Beschleuniger), führt jedoch zu Verarbeitungszeiten von durchschnittlich 12.3 Minuten pro Plan. Die Zeitanalyse in Tabelle~\ref{tab:processing_time_breakdown} zeigt, dass 75.3\% dieser Zeit auf die YOLO-Inferenz entfallen.
+\textbf{CPU vs. GPU Inferenz:} Die Entscheidung für CPU-basierte Inferenz erfüllt die Anforderung NFA-001 (On-Premise auf Standard-Hardware ohne spezielle Beschleuniger), führt jedoch zu Verarbeitungszeiten von durchschnittlich 12.3 Minuten pro Plan. Die Zeitanalyse in Tabelle~\ref{tab:time_breakdown} zeigt, dass 75.3\% dieser Zeit auf die YOLO-Inferenz entfallen.
 
 Eine GPU-beschleunigte Version (z.B. NVIDIA RTX 3060 mit 12 GB VRAM) könnte die YOLO-Inferenzzeit von durchschnittlich 9.3 Minuten auf geschätzt 50-100 Sekunden reduzieren, was die Gesamtzeit auf unter 3 Minuten pro Plan senken würde. Dies würde die Anforderung NFA-007 (\\enquote{wenige Minuten}) noch deutlicher erfüllen und die Benutzerakzeptanz erhöhen.
 
@@ -562,7 +562,7 @@ Die entwickelte Pipeline-Architektur ist konzeptionell nicht auf Gleispläne bes
     \begin{itemize}
         \item Training auf P\&ID-Symboldatensatz (geschätzt 30-50 Klassen)
         \item Erweiterte Linking-Heuristiken für Rohrleitungsverfolgung (Line-Tracing-Algorithmus)
-        \item OCR-Validierung für numerische Werte mit Einheiten (z.B. \\enquote{150 bar}, \\enquote{80°C})
+        \item OCR-Validierung für numerische Werte mit Einheiten (z.B. \\enquote{150 bar}, \\enquote{$80^\circ$C})
     \end{itemize}
 
     \item \textbf{Geschätzter Aufwand}: 2-3 Personenmonate für Anpassung und 50-100 annotierte Pläne
@@ -612,7 +612,7 @@ Mehrere Aspekte des Systems haben domänenübergreifende Relevanz und können di
 
     \item \textbf{Multi-Engine OCR-Kaskadierung}: Robustifizierung durch Diversität der Engines (PaddleOCR → Tesseract → EasyOCR) funktioniert universell für technischen Text. Die Fallback-Strategie ist domänenunabhängig.
 
-    \item \textbf{Orientierungsadaptive Preprocessing (Dual-Path-Routing)}: Die Idee, Textausschnitte in zwei Orientierungen (Original + 90°) zu verarbeiten, ist auf jede Zeichnung mit rotiertem Text anwendbar.
+    \item \textbf{Orientierungsadaptive Preprocessing (Dual-Path-Routing)}: Die Idee, Textausschnitte in zwei Orientierungen (Original + $90^\circ$) zu verarbeiten, ist auf jede Zeichnung mit rotiertem Text anwendbar.
 \end{itemize}
 
 \textbf{Architekturmuster:}
@@ -892,7 +892,7 @@ Die End-to-End-Genauigkeit von \textbf{98.76\%} auf dem Testsatz (Tabelle~\ref{t
 
     \item \textbf{Hochauflösende Rasterisierung:} Die Rendering-Auflösung von 500 DPI ist zwingend erforderlich, um filigrane Symbole differenzierbar darzustellen (Kapitel~\ref{chap:konzeption}).
 
-    \item \textbf{Synthetische Rotationsaugmentation:} Die Erweiterung des Trainingsdatensatzes durch 10 Rotationswinkel (-90° bis +90° in 18°-Schritten) kompensiert die begrenzte Datenmenge effektiv und führt zu vollständiger Rotationsinvarianz. Bemerkenswert ist, dass rotierte Objekte ($|\theta| > 30°$) sogar höhere Konfidenzwerte aufweisen (0.946 vs. 0.890) als horizontal ausgerichtete (Tabelle~\ref{tab:rotation_analysis}).
+    \item \textbf{Synthetische Rotationsaugmentation:} Die Erweiterung des Trainingsdatensatzes durch 10 Rotationswinkel ($-90^\circ$ bis $+90^\circ$ in $18^\circ$-Schritten) kompensiert die begrenzte Datenmenge effektiv und führt zu vollständiger Rotationsinvarianz. Bemerkenswert ist, dass rotierte Objekte ($|\theta| > 30^\circ$) sogar höhere Konfidenzwerte aufweisen (0.946 vs. 0.890) als horizontal ausgerichtete (Tabelle~\ref{tab:rotation_analysis}).
 
     \item \textbf{Klassengewichtete Augmentation:} Unterrepräsentierte Klassen (z.B. \textit{endeweichen} mit nur 4 Original-Instanzen) wurden durch höhere Augmentationsfaktoren (bis zu 150×) ausgeglichen.
 \end{itemize}
