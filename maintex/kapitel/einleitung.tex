@@ -56,6 +56,7 @@ Für moderne digitale Arbeitsabläufe, etwa für die Erstellung eines Digitalen 
 Erschwerend kommt hinzu, dass in der Praxis erhebliche Varianzen in der Darstellung existieren: Unterschiedliche Kunden, Hersteller oder Normen verwenden abweichende Symbolbibliotheken, verschiedene Orientierungen und Skalierungen sowie heterogene Textlayouts. Die korrekte Zuordnung von Textannotationen zu den entsprechenden grafischen Elementen erfolgt oft nach impliziten, nicht formalisierten Konventionen, die von Plan zu Plan variieren können. Zudem fehlt in traditionellen Workflows die bidirektionale Verknüpfung zwischen strukturierten Daten und ihrer visuellen Repräsentation im Ursprungsdokument: Wenn in einer Excel-Tabelle beispielsweise die Kilometerangabe \enquote{18.456}  für Signal AS102 eingetragen ist, existiert keine direkte Möglichkeit, die exakte Position dieser Information im Ursprungsplan aufzurufen. Diese fehlende \textit{Rückverfolgbarkeit} erschwert die Validierung und Fehlersuche erheblich, da Ingenieure bei Unklarheiten oder vermuteten Fehlern manuell im Dokument suchen müssen, was ein zeitaufwändiger Prozess bei Plänen mit hunderten von Einträgen ist. Änderungen in neuen Planversionen müssen manuell identifiziert, dokumentiert und in mehrere Zielsysteme wie in Prüftabellen (Excel), Planungsdatenbanken (z.\,B. PostgreSQL) und ERP-Systeme nachgepflegt werden. Dieser Mehrfachaufwand ist nicht nur zeitintensiv, sondern eröffnet auch Fehlerquellen durch inkonsistente oder unvollständige Datenaktualisierung.
 \\
 \\
+\\
 \textbf{Anwendungsfall Bahninfrastrukturplanung}
 \\
 Im konkreten Kontext der vorliegenden Arbeit manifestiert sich diese allgemeine Problemstellung im Bereich der Bahninfrastrukturplanung. Hier werden Gleispläne häufig als PDF- oder Bilddateien bereitgestellt, die Informationen über Stellwerke, Signale, Weichen, Gleiskoppelspulen und Positionsangaben enthalten. Diese grafischen Pläne müssen regelmäßig in strukturierte Datenformate wie Excel, XML oder Datenbanken überführt werden – etwa für Prüfroutinen, Dokumentation oder die Weiterverarbeitung in Planungssystemen.
@@ -69,7 +70,7 @@ Die zu lösende Herausforderung besteht darin:
     \item möglichst viele relevante Informationen automatisiert aus unstrukturierten Plänen zu extrahieren,
     \item diese flexibel in strukturierte, maschinenlesbare Formate zu exportieren,
     \item Symbole und Texte semantisch zu verknüpfen und in strukturierte Datenmodelle zu überführen,
-    \item Rückverfolgbarkeit und Änderungsverfolgung zwischen Layout zu ermöglichen,
+    \item Rückverfolgbarkeit zwischen Plan und extrahierten Daten sowie Änderungsverfolgung zwischen Planversionen zu ermöglichen,,
     \item sowie eine benutzerfreundliche Oberfläche für die Validierung und Nachbearbeitung bereitzustellen.
 \end{itemize}
 

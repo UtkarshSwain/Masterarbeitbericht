@@ -34,8 +34,8 @@ Annotierte Symbole (Validierungsset) & 1.305 \\
 \hline
 \hspace{3mm} Signale & 218 \\
 \hspace{3mm} Koordinaten & 629 \\
-\hspace{3mm} GKS-Platten (festkodiert) & 60 \\
-\hspace{3mm} GKS-Platten (gesteuert) & 69 \\
+\hspace{3mm} GKS (festkodiert) & 60 \\
+\hspace{3mm} GKS (gesteuert) & 69 \\
 \hspace{3mm} GM-Blöcke & 91 \\
 \hspace{3mm} \textbf{Summe Kernklassen} & \textbf{1.067 (81.8\%)} \\
 \hline
@@ -85,7 +85,7 @@ Komplexitätsstufen & Einfach (2), Mittel (2), Komplex (3) \\
 \multicolumn{2}{|l|}{\textit{Durchschnittliche Symbolanzahl pro Plan}} \\
 \hline
 \hspace{3mm} Signale & 25 \\
-\hspace{3mm} GKS-Platten (beide Typen) & 37 \\
+\hspace{3mm} GKS (beide Arten) & 37 \\
 \hspace{3mm} GM-Blöcke & 31 \\
 \hspace{3mm} \textbf{Summe Kernklassen} & \textbf{92} \\
 Gesamtanzahl evaluierter Objekte & 644 \\
@@ -101,7 +101,7 @@ Auflösungsbereich & 500 DPI \\
 
 \begin{itemize}
     \item \textbf{Signale}: Bezeichnung (z.B. ``A102''), zugehörige Kilometrierung, Fahrtrichtung (A/B)
-    \item \textbf{GKS-Platten}: Nummer (z.B. ``1234''), zugehörige Kilometrierung
+    \item \textbf{GKS}: Nummer (z.B. ``1234''), zugehörige Kilometrierung
     \item \textbf{Koordinatenangaben}: Kilometerwert (z.B. ``18.1606''), optionale Gleisangabe
     \item \textbf{Verknüpfungen}: Erwartete Assoziationen zwischen Symbolen und Texten
 \end{itemize}
@@ -313,7 +313,7 @@ höhere Detektionskonfidenz (0.946) als kardinal orientierte Objekte (0.890).
 gks\_gesteuert, gm\_block) werden zuverlässig detektiert. Die zusätzliche Integration 
 von 8 Auxiliarklassen demonstriert die Erweiterbarkeit des Systems (NFA-008).
 
-\textbf{Hinweis zu weiteren Symbolklassen:} Das Modell wurde zusätzlich auf acht weitere Klassen trainiert (\textit{weichen\_block}, \textit{haltepunkt}, \textit{isolierstoß}, \textit{sverbinder}, \textit{prellblock}, \textit{haltetafel}, \textit{endeweichen}, \textit{weichengruppeende}), die zu experimentellen Zwecken annotiert wurden. Diese Klassen erreichen ebenfalls hohe Erkennungsraten (Durchschnitt mAP@0.5: 98.8\%), werden jedoch in der nachfolgenden End-to-End-Evaluation nicht berücksichtigt, da sie nicht zur primären Extraktionsaufgabe gehören.
+\textbf{Hinweis zu weiteren Symbolklassen:} Das Modell wurde zusätzlich auf acht weitere Klassen trainiert (\textit{weichen\_block}, \textit{haltepunkt}, \textit{isolierstoß}, \textit{sverbinder}, \textit{prellbock}, \textit{haltetafel}, \textit{endeweichen}, \textit{weichengruppeende}), die zu experimentellen Zwecken annotiert wurden. Diese Klassen erreichen ebenfalls hohe Erkennungsraten (Durchschnitt mAP@0.5: 98.8\%), werden jedoch in der nachfolgenden End-to-End-Evaluation nicht berücksichtigt, da sie nicht zur primären Extraktionsaufgabe gehören.
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.7\textwidth]{images/Kapitel7/confusion_matrix.png}
@@ -331,7 +331,7 @@ Die Analyse der klassenspezifischen Ergebnisse offenbart mehrere bedeutende Beob
     
     \item \textbf{Perfekt balancierte Klassen}: Die Klassen \textit{gm\_block} (97.6\% P/R) und \textit{coordinate} (97.7\% P, 98.6\% R) zeigen nahezu identische Precision- und Recall-Werte, was auf eine optimale Detektionsqualität ohne systematische Bias hinweist. Bei \textit{coordinate} ist dies besonders bemerkenswert, da diese Klasse mit 629 Instanzen (58.9\% der Kernklassen) die am häufigsten vorkommende ist.
     
-    \item \textbf{Herausforderung bei GKS-Varianten}: Die Klasse \textit{gks\_gesteuert} zeigt mit 94.5\% die niedrigste Precision unter den Kernklassen, was auf die hohe visuelle Ähnlichkeit zu \textit{gks\_festkodiert} zurückzuführen ist. Die Konfusionsmatrix (Abbildung~\ref{fig:confusion_matrix}) zeigt, dass 4 Instanzen von \textit{gks\_gesteuert} fälschlicherweise als \textit{gks\_festkodiert} klassifiziert wurden, während 1 Instanz von \textit{gks\_festkodiert} als \textit{gks\_gesteuert} fehlklassifiziert wurde. Diese beiden GKS-Plattentypen unterscheiden sich nur durch interne Symboldetails (fest kodierte vs. programmierbarer Code), was die Unterscheidung für das neuronale Netz erschwert.
+    \item \textbf{Herausforderung bei GKS-Varianten}: Die Klasse \textit{gks\_gesteuert} zeigt mit 94.5\% die niedrigste Precision unter den Kernklassen, was auf die hohe visuelle Ähnlichkeit zu \textit{gks\_festkodiert} zurückzuführen ist. Die Konfusionsmatrix (Abbildung~\ref{fig:confusion_matrix}) zeigt, dass 4 Instanzen von \textit{gks\_gesteuert} fälschlicherweise als \textit{gks\_festkodiert} klassifiziert wurden, während 1 Instanz von \textit{gks\_festkodiert} als \textit{gks\_gesteuert} fehlklassifiziert wurde. Diese beiden GKS-Arten unterscheiden sich nur durch interne Symboldetails (fest kodierte vs. programmierbarer Code), was die Unterscheidung für das neuronale Netz erschwert.
     
     \item \textbf{mAP als synthetische Metrik}: Die mAP@0.5-Werte liegen durchweg 1-3 Prozentpunkte über den jeweiligen Precision-Werten, da mAP die durchschnittliche Precision über alle Recall-Stufen misst. Klassen mit nahezu rechteckigen Precision-Recall-Kurven (siehe Abbildung~\ref{fig:pr_curve}) wie \textit{gm\_block} (99.5\% mAP) zeigen, dass hohe Precision auch bei variierenden Konfidenzschwellen erhalten bleibt.
     
@@ -578,7 +578,7 @@ Die detaillierte Analyse offenbart spezifische technische Limitationen, die gezi
         \textit{gks\_festkodiert} klassifiziert. Dies bestätigt die in der 
         Konfusionsmatrix (Abbildung~\ref{fig:confusion_matrix}) beobachtete 
         Verwechslungstendenz zwischen diesen visuell ähnlichen Symboltypen. 
-        Die beiden GKS-Plattentypen unterscheiden sich nur durch interne 
+        Die beiden GKS Arten unterscheiden sich nur durch interne 
         Symboldetails (fest kodierter vs. programmierbarer Code), was die 
         Unterscheidung für das neuronale Netz erschwert.
         

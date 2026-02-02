@@ -94,7 +94,7 @@ Die Leistungsfähigkeit eines objekterkennenden Modells hängt direkt von der Qu
 
 \subsubsection{Vorverarbeitung der Gleispläne}
 
-Die initialen Gleispläne lagen im PDF-Format vor und mussten zunächst in ein für die Annotation geeignetes Bildformat überführt werden. Hierzu wurde die Python-Bibliothek PyMuPDF eingesetzt, welche eine zuverlässige Rasterisierung von PDF-Dokumenten ermöglicht. Die Konvertierung erfolgte mit einer Auflösung von 500 DPI (dots per inch), was einem Skalierungsfaktor von $\frac{500}{72} \approx 6.94$ gegenüber der Standard-PDF-Auflösung entspricht. Diese hohe Auflösung wurde gewählt, um auch kleine Symbole wie Gleiskoppelspulenplatten oder Isolierstöße mit ausreichender Detailgenauigkeit darzustellen.
+Die initialen Gleispläne lagen im PDF-Format vor und mussten zunächst in ein für die Annotation geeignetes Bildformat überführt werden. Hierzu wurde die Python-Bibliothek PyMuPDF eingesetzt, welche eine zuverlässige Rasterisierung von PDF-Dokumenten ermöglicht. Die Konvertierung erfolgte mit einer Auflösung von 500 DPI (dots per inch), was einem Skalierungsfaktor von $\frac{500}{72} \approx 6.94$ gegenüber der Standard-PDF-Auflösung entspricht. Diese hohe Auflösung wurde gewählt, um auch kleine Symbole wie Gleiskoppelspulen oder Isolierstöße mit ausreichender Detailgenauigkeit darzustellen.
 
 Nach der Rasterisierung wurden die hochauflösenden Bilder in kleinere, überlappende Bildausschnitte segmentiert. Die gewählte Segmentgröße für die Annotation betrug $2048 \times 2048$ Pixel, um ausreichend Kontext für die präzise Markierung von Symbolen und deren räumliche Beziehungen zu gewährleisten. Für das Training und die Inferenz werden diese Tiles auf $1024 \times 1024$ Pixel herunterskaliert (Downsampling), was der YOLO-Eingabegröße entspricht. Diese Strategie kombiniert die Vorteile großflächiger Annotation mit effizienter Modellverarbeitung: Die Annotationen auf 2048×2048 Pixeln erfassen mehr Kontextinformation, während das Downsampling die Rechenzeit signifikant reduziert -- ein Tile mit $2048 \times 2048$ Pixeln enthält viermal so viele Pixel wie eines mit $1024 \times 1024$, was zu einer entsprechend längeren Inferenzzeit führt. Zudem reduziert die kleinere Eingabegröße den GPU-Speicherbedarf während des Trainings erheblich, was größere Batch-Größen und damit stabilere Gradientenschätzungen ermöglicht. Bei ausreichender Symbolauflösung (die bei 500 DPI Renderauflösung gegeben ist) bleiben die relevanten visuellen Merkmale auch nach dem Downsampling differenzierbar. Diese Dimensionierung stellt somit einen Kompromiss dar zwischen Annotationsqualität und effizienter Verarbeitung auf GPU-Systemen mit begrenztem Videospeicher (NVIDIA, AWS Instance g4dn.xlarge, 16 GB VRAM).
 
@@ -112,9 +112,9 @@ $\{(x_i/W, y_i/H)\}_{i=1}^{4}$.
 
 \subsubsection{Datenaufteilung und Statistiken}
 
-Der finale Datensatz umfasst insgesamt 13 Symbolklassen, darunter Signale, verschiedene Weichentypen, Koordinatenbeschriftungen, Haltepunkte, Isolierstöße und weitere eisenbahnspezifische Elemente. Die Daten wurden in einen Validierungssatz mit 115 Bildern und 1.305 annotierten Objektinstanzen aufgeteilt. Der Trainingssatz umfasste entsprechend die verbliebenen Bilder.
+Der finale Datensatz umfasst insgesamt 13 Symbolklassen, darunter Signale, verschiedene Weichentypen, Koordinatenbeschriftungen, Haltepunkte, Isolierstöße und weitere eisenbahnspezifische Elemente. Die Daten wurden in einen Trainingssatz und einen Validierungssatz aufgeteilt, wobei der Validierungssatz 115 Bilder mit insgesamt 1.305 annotierten Objektinstanzen enthält.
 
-Die Verteilung der Objektinstanzen über die Klassen hinweg zeigt Tabelle \ref{tab:dataset_distribution}:
+Die Verteilung der Objektinstanzen über die Klassen hinweg zeigt Tabelle~\ref{tab:dataset_distribution}. Die Spalte \textit{Bilder} gibt dabei an, in wie vielen der 115 Validierungsbilder mindestens eine Instanz der jeweiligen Klasse vorkommt. Da ein einzelnes Bild typischerweise mehrere Symbolklassen gleichzeitig enthält, überlappen sich diese Werte und können nicht zur Gesamtzahl von 115 Bildern aufsummiert werden. Die Spalte \textit{Instanzen} hingegen zeigt die absolute Anzahl der annotierten Objekte pro Klasse, deren Summe die Gesamtzahl von 1.305 Annotationen ergibt.
 
 \begin{table}[H]
 \centering
@@ -130,7 +130,7 @@ gks\_gesteuert & 67 & 69 \\
 gm\_block & 55 & 91 \\
 gks\_festkodiert & 43 & 60 \\
 \hline
-\textbf{Summe Kernklassen} & --- & \textbf{1.067 (81.8\%)} \\
+\textbf{Summe Kernklassen} & --- & \textbf{1.067 (81,8\%)} \\
 \hline
 \multicolumn{3}{|c|}{\textit{Auxiliarklassen (Erweiterbarkeit)}} \\
 \hline
@@ -138,22 +138,23 @@ sverbinder & 81 & 85 \\
 haltepunkt & 47 & 47 \\
 weichen\_block & 25 & 39 \\
 isolierstoß & 16 & 27 \\
-prellblock & 14 & 16 \\
+prellbock & 14 & 16 \\
 haltetafel & 11 & 11 \\
-weichengruppeende & 9 & 9 \\
+weichengruppenende & 9 & 9 \\
 endeweichen & 4 & 4 \\
 \hline
-\textbf{Summe Auxiliarklassen} & --- & \textbf{238 (18.2\%)} \\
+\textbf{Summe Auxiliarklassen} & --- & \textbf{238 (18,2\%)} \\
 \hline
 \hline
-\textbf{Gesamt} & \textbf{115} & \textbf{1.305} \\
+\textbf{Gesamt} & \textbf{115}* & \textbf{1.305} \\
 \hline
 \end{tabular}
-\caption{Verteilung der Annotationen über Klassen und Bilder im Validierungssatz, unterteilt nach Kern- und Auxiliarklassen (vgl. Anforderung FA-003)}
+\caption{Verteilung der Annotationen über Klassen und Bilder im Validierungssatz, unterteilt nach Kern- und Auxiliarklassen (vgl. Anforderung FA-003). *Die Spalte \textit{Bilder} zeigt die Anzahl der Bilder mit mindestens einer Instanz der jeweiligen Klasse; da Bilder mehrere Klassen enthalten können, ist die Summe der Einzelwerte größer als die Gesamtbildzahl.}
 \label{tab:dataset_distribution}
 \end{table}
 
 Es ist ersichtlich, dass die Klassenverteilung unausgeglichen ist, mit Koordinaten und Signalen als dominierende Klassen. Diese Verteilung spiegelt die reale Häufigkeit der Symbole in Gleisplänen wider. Um ein Overfitting auf häufige Klassen zu vermeiden, wurde während des Trainings eine klassengewichtete Verlustfunktion zwar in Betracht gezogen, letztendlich jedoch zugunsten einer robusten Datenaugmentation verworfen.
+
 \textbf{Klassenpriorisierung:} Gemäß Anforderung \textbf{FA-003} werden die Objektklassen 
 in zwei Kategorien unterteilt. Die fünf \textit{Kernklassen} (signal, coordinate, 
 gks\_festkodiert, gks\_gesteuert, gm\_block) repräsentieren die für die Projektierung 
@@ -161,7 +162,8 @@ bei Siemens Mobility essentiellen Symbole und bilden den Fokus der End-to-End-Ev
 in Kapitel~\ref{chap:evaluation}. Die acht \textit{Auxiliarklassen} wurden zusätzlich 
 implementiert, um die Erweiterbarkeit des Systems zu demonstrieren (vgl. Anforderung 
 \textbf{NFA-008}), werden jedoch nicht im Detail evaluiert.
-Die Daten wurden in eine standardisierte COCO-Verzeichnisstruktur (Abbildung \ref{fig:COCODatenset}) überführt, welche die Organisation von Trainings- und Validierungsdaten sowie die zugehörigen Annotationen in separaten Verzeichnissen vorsieht.
+
+Die Daten wurden in eine standardisierte COCO-Verzeichnisstruktur (Abbildung~\ref{fig:COCODatenset}) überführt, welche die Organisation von Trainings- und Validierungsdaten sowie die zugehörigen Annotationen in separaten Verzeichnissen vorsieht.
 
 \begin{figure}[H]
     \centering
@@ -234,7 +236,7 @@ sverbinder & 85 & 515 & 600 & 7.06x\\
 haltepunkt & 47 & 553 & 600 & 12.77x\\
 weichen\_block & 39 & 561 & 600 & 15.38x\\
 isolierstoß & 27 & 573 & 600 & 22.22x \\
-prellblock & 16 & 584 & 600 & 37.50x \\
+prellbock & 16 & 584 & 600 & 37.50x \\
 haltetafel & 11 & 589 & 600 & 54.55x \\
 endeweichen & 4 & 596 & 600 & 150.00x \\
 weichengruppeende & 9 & 591 & 600 & 66.67x \\
@@ -1697,7 +1699,7 @@ haltepunkt & 1.0 & 1.0 & 80--130 px & 30--50 px & Auxiliar \\
 sverbinder & 1.0 & 1.0 & 80--130 px & 30--50 px & Auxiliar \\
 isolierstoß & 1.0 & 1.0 & 80--130 px & 30--50 px & Auxiliar \\
 haltetafel & 1.0 & 2.0 & 80--130 px & 60--100 px & Auxiliar \\
-prellblock & 1.0 & 2.0 & 80--130 px & 60--100 px & Auxiliar \\
+prellbock & 1.0 & 2.0 & 80--130 px & 60--100 px & Auxiliar \\
 weichenende & 1.0 & 3.0 & 80--130 px & 90--150 px & Auxiliar \\
 weichengruppeende & 1.0 & 4.0 & 80--130 px & 120--200 px & Auxiliar \\
 \hline
@@ -1706,7 +1708,7 @@ weichengruppeende & 1.0 & 4.0 & 80--130 px & 120--200 px & Auxiliar \\
 \label{tab:linking_multipliers}
 \end{table}
 
-Die erhöhten horizontalen Multiplikatoren ($k_{dx} > 1$) für Auxiliarklassen wie \textit{haltetafel}, \textit{prellblock} und \textit{weichengruppeende} reflektieren deren typische Layoutcharakteristik: Diese Symbole haben häufig horizontal versetzte Beschriftungen, während die Kernklassen überwiegend vertikal ausgerichtete Text-Symbol-Relationen aufweisen.
+Die erhöhten horizontalen Multiplikatoren ($k_{dx} > 1$) für Auxiliarklassen wie \textit{haltetafel}, \textit{prellbock} und \textit{weichengruppeende} reflektieren deren typische Layoutcharakteristik: Diese Symbole haben häufig horizontal versetzte Beschriftungen, während die Kernklassen überwiegend vertikal ausgerichtete Text-Symbol-Relationen aufweisen.
 
 \subsubsection{Spezialfälle mit festen Suchparametern}
 
@@ -2120,7 +2122,7 @@ Die erste Ebene, die syntaktische Validierung, prüft die formale Korrektheit de
 
 Für Signalbezeichnungen wird das Muster durch den regulären Ausdruck beschrieben, der eine bis vier Großbuchstaben (einschließlich deutscher Umlaute Ä, Ö, Ü) gefolgt von einer bis vier Ziffern erwartet. Das entsprechende Regex-Muster lautet: ein bis vier Zeichen aus der Menge A bis Z sowie Ä, Ö, Ü, gefolgt von einer bis vier Ziffern. Dieses Format entspricht der standardisierten Signalnomenklatur, bei der Buchstaben den Signaltyp oder die Streckenbezeichnung kodieren, während Ziffern die spezifische Signalnummer angeben. Beispiele für gültige Signalbezeichnungen sind somit A101, BHR201 oder F3a.
 
-Für GKS-Platten (Gleiskontakte) gilt ein numerisches Format mit drei bis vier Ziffern. GKS-Platten werden ausschließlich durch diese Ziffernfolgen identifiziert, beispielsweise 1234 oder 567.
+Für GKS  gilt ein numerisches Format mit drei bis vier Ziffern. GKS werden ausschließlich durch diese Ziffernfolgen identifiziert, beispielsweise 1234 oder 567.
 
 Die Validierung von Koordinatentexten erfolgt mehrstufig, da Koordinatenangaben sowohl einen numerischen Teil als auch optionale Zusatzinformationen enthalten können. Der numerische Hauptteil besteht aus einer bis drei Ziffern, gefolgt von einem Dezimaltrenner (Punkt oder Komma), gefolgt von drei bis vier Ziffern. Dies berücksichtigt unterschiedliche Schreibweisen in verschiedenen Dokumentversionen. Zusätzlich wird geprüft, dass keine Kleinbuchstaben im Text vorkommen, mit Ausnahme der standardisierten Abkürzung Gl für Gleis. Ebenfalls wird validiert, dass zwischen den Ziffern keine Buchstaben eingefügt sind, da dies auf OCR-Fehler hinweist. Bei Koordinaten mit Gleisangaben wird zudem die korrekte Klammerung geprüft, sodass Angaben wie 10.5123(Gl.1) als gültig erkannt werden, während fehlerhafte Klammerungen wie 10.5123(Gl.1 als problematisch gekennzeichnet werden.
 
@@ -2130,7 +2132,7 @@ Die zweite Ebene, die semantische Validierung, überprüft die inhaltliche Plaus
 
 Bei mehrfach vorkommenden Signalen wird die Konsistenz der zugeordneten Attribute überprüft. Ein Signal mit identischer Bezeichnung sollte in allen Instanzen dieselbe Kilometrierung aufweisen, da physisch identische Signale an einem festen geografischen Punkt lokalisiert sind. Ebenso wird die Konsistenz der Fahrtrichtung geprüft, wobei Inkonsistenzen auf Erkennungsfehler oder tatsächliche Duplikate hindeuten können.
 
-Die dritte Ebene, die räumliche Validierung, analysiert die geometrischen Beziehungen zwischen den erkannten Objekten. Für Objektklassen, die zwingend eine Kilometrierung benötigen wie Signale, GKS-Platten, Weichenblöcke und Streckentrenner wird geprüft, ob eine Koordinate in räumlicher Nähe vorhanden ist. Die Definition räumlicher Nähe erfolgt klassenspezifisch gemäß den in Abschnitt~\ref{subsec:proximity_linking} definierten dynamischen Suchbereichen. Für die Kernklassen (Signal, GKS, GM-Block) resultiert dies typischerweise in vertikalen Suchbereichen von 80--130 Pixeln und horizontalen Bereichen von 30--50 Pixeln (vgl. Tabelle~\ref{tab:linking_multipliers}). Diese Schwellenwerte basieren auf der durchschnittlichen Größe der Symbole und der typischen Anordnung von Text relativ zu Symbolen in Gleisplänen.
+Die dritte Ebene, die räumliche Validierung, analysiert die geometrischen Beziehungen zwischen den erkannten Objekten. Für Objektklassen, die zwingend eine Kilometrierung benötigen wie Signale, GKS, Weichenblöcke und Streckentrenner wird geprüft, ob eine Koordinate in räumlicher Nähe vorhanden ist. Die Definition räumlicher Nähe erfolgt klassenspezifisch gemäß den in Abschnitt~\ref{subsec:proximity_linking} definierten dynamischen Suchbereichen. Für die Kernklassen (Signal, GKS, GM-Block) resultiert dies typischerweise in vertikalen Suchbereichen von 80--130 Pixeln und horizontalen Bereichen von 30--50 Pixeln (vgl. Tabelle~\ref{tab:linking_multipliers}). Diese Schwellenwerte basieren auf der durchschnittlichen Größe der Symbole und der typischen Anordnung von Text relativ zu Symbolen in Gleisplänen.
 
 Zusätzlich werden YOLO-Konfidenzwerte gegen klassenspezifische Schwellenwerte validiert. Jede Objektklasse besitzt einen eigenen Mindestkonfidenzwert, der aus der Trainingsphase des YOLO-Modells abgeleitet wurde. Erkennungen unterhalb dieser Schwellenwerte werden als unsicher gekennzeichnet und zur manuellen Überprüfung vorgeschlagen.
 
@@ -3310,7 +3312,7 @@ gm\_block) den Fokus der Evaluation bilden und acht \textit{Auxiliarklassen} die
 Erweiterbarkeit des Systems demonstrieren (vgl. Anforderungen FA-003 und NFA-008).
 
 \textbf{OCR-Pipeline (Abschnitt \ref{sec:ocrpipeline}):}
-Die orientierungsadaptive OCR-Pipeline bildet das Herzstück der Textextraktion. Durch die Kaskadierung dreier OCR-Engines (PaddleOCR, Tesseract, EasyOCR) wird eine hohe Erkennungsrobustheit erreicht. Das Dual-Winkel-Routing-System behandelt sowohl achsenparallele als auch beliebig rotierte Texte mittels unterschiedlicher Transformationsstrategien. Klassenspezifische Vorverarbeitungspipelines passen die Bildaufbereitung an die jeweiligen Charakteristika der Symbole an (z.B. adaptive Padding für Signale, morphologische Filterung für GKS-Platten). Die Validierung erfolgt durch regex-basierte Pattern-Matching-Verfahren mit konfidenzgewichteten Scoring-Mechanismen.
+Die orientierungsadaptive OCR-Pipeline bildet das Herzstück der Textextraktion. Durch die Kaskadierung dreier OCR-Engines (PaddleOCR, Tesseract, EasyOCR) wird eine hohe Erkennungsrobustheit erreicht. Das Dual-Winkel-Routing-System behandelt sowohl achsenparallele als auch beliebig rotierte Texte mittels unterschiedlicher Transformationsstrategien. Klassenspezifische Vorverarbeitungspipelines passen die Bildaufbereitung an die jeweiligen Charakteristika der Symbole an (z.B. adaptive Padding für Signale, morphologische Filterung für GKS). Die Validierung erfolgt durch regex-basierte Pattern-Matching-Verfahren mit konfidenzgewichteten Scoring-Mechanismen.
 
 \textbf{Symbol-Text-Verknüpfung (Abschnitt \ref{sec:intelligentesymboltextverknüpfung}):}
 Die intelligente Linking-Komponente ordnet extrahierte Texte ihren zugehörigen Symbolen zu. Die rotationsinvariante Koordinatentransformation ermöglicht eine geometrisch konsistente Richtungsbeziehung unabhängig von der Symbolorientierung. Der proximity-basierte Algorithmus nutzt klassenspezifische Suchradien und berücksichtigt erwartete räumliche Relationen. Ein adaptiver Lernmechanismus erfasst wiederkehrende Layoutmuster und optimiert die Verknüpfung durch probabilistische Fenstersuche. Speziallogiken behandeln komplexe Fälle wie die geometrische Ableitung der Fahrtrichtung aus der GKS-Signal-Relation oder die Gruppierung von Haltepunkt-Tripeln.

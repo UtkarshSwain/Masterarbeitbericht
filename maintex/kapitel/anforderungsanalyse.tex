@@ -4,7 +4,7 @@ Die in Kapitel 3 dargelegten theoretischen und technischen Grundlagen bilden das
 
 \section{Funktionale Anforderungen}
 \label{sec:funktionaleanforderungen}
-Im Rahmen dieser Arbeit wird ein Prototyp entwickelt, der die automatisierte Extraktion und Interpretation von Informationen aus technischen Gleisplänen ermöglicht. Die funktionalen Anforderungen ergeben sich aus den spezifischen Aufgabenstellungen der Signaltechnik-Planung. Das System soll folgende Kernfunktionen erfüllen:
+Im Rahmen dieser Arbeit wird ein Prototyp entwickelt, der die automatisierte Extraktion und Interpretation von Informationen aus technischen Gleisplänen ermöglicht. Die funktionalen Anforderungen (FA-001 bis FA-014 ) ergeben sich aus den spezifischen Aufgabenstellungen der Signaltechnik-Planung. Das System soll folgende Kernfunktionen erfüllen:
 
 \subsection{Symbolerkennung und Objektklassifizierung}
 \label{subsec:req_symbol}
@@ -43,7 +43,7 @@ in Kapitel~\ref{chap:evaluation} quantitativ evaluiert:
     } \\
     \hline
 
-    GKS-Platte (festkodiert) & 
+    GKS (festkodiert) & 
     \parbox[c]{7cm}{\centering
         \vspace{0.2cm}
         \includegraphics[width=2cm]{images/symbols/GKS1.png}
@@ -51,7 +51,7 @@ in Kapitel~\ref{chap:evaluation} quantitativ evaluiert:
     } \\
     \hline
 
-    GKS-Platte (gesteuert) & 
+    GKS (gesteuert) & 
     \parbox[c]{7cm}{\centering
         \vspace{0.2cm}
         \includegraphics[width=2cm]{images/symbols/GKS2.png}
@@ -59,7 +59,7 @@ in Kapitel~\ref{chap:evaluation} quantitativ evaluiert:
     } \\
     \hline
 
-    GM-Block & 
+    Gleismagnet & 
     \parbox[c]{7cm}{\centering
         \vspace{0.2cm}
         \includegraphics[width=2cm]{images/symbols/gleismagnet.png}
@@ -86,7 +86,7 @@ der aktuellen Planungsaufgabe und werden daher nicht detailliert evaluiert.
     Weichenblock & 
     \parbox[c]{7cm}{\centering
         \vspace{0.2cm}
-        \includegraphics[width=2cm]{images/symbols/Weiche2.png}
+        \includegraphics[width=3cm]{images/symbols/Weiche2.png}
         \vspace{0.2cm}
     } \\
     \hline 
@@ -94,7 +94,7 @@ der aktuellen Planungsaufgabe und werden daher nicht detailliert evaluiert.
     Haltepunkt & 
     \parbox[c]{7cm}{\centering
         \vspace{0.2cm}
-        \includegraphics[width=2cm]{images/symbols/Haltepunkt2.png}
+        \includegraphics[width=2cm]{images/symbols/haltepunkt3.png}
         \vspace{0.2cm}
     } \\
     \hline
@@ -102,7 +102,7 @@ der aktuellen Planungsaufgabe und werden daher nicht detailliert evaluiert.
     Isolierstoß & 
     \parbox[c]{7cm}{\centering
         \vspace{0.2cm}
-        \includegraphics[width=2cm]{images/symbols/Isolierstoß.png}
+        \includegraphics[width=1cm]{images/symbols/Isolierstoß§.png}
         \vspace{0.2cm}
     } \\
     \hline
@@ -110,7 +110,7 @@ der aktuellen Planungsaufgabe und werden daher nicht detailliert evaluiert.
     S-Verbinder & 
     \parbox[c]{7cm}{\centering
         \vspace{0.2cm}
-        \includegraphics[width=2cm]{images/symbols/Weiche2.png}
+        \includegraphics[width=3cm]{images/symbols/SVERBINDER.png}
         \vspace{0.2cm}
     } \\
     \hline
@@ -151,11 +151,8 @@ der aktuellen Planungsaufgabe und werden daher nicht detailliert evaluiert.
     \label{tab:auxiliarklassen}
 \end{longtable}
 
-\textbf{Hinweis:} Die Auxiliarklassen werden im Rahmen des YOLOv8-Trainings 
-(Kapitel~\ref{sec:objekterkennungmityolov8obb}) mit annotiert und erreichen 
-vergleichbare Detektionsleistungen wie die Kernklassen. Die Fokussierung der End-to-End-Evaluation auf 
-die Kernklassen erfolgt aufgrund ihrer direkten Relevanz für die 
-Projektierungsaufgaben bei Siemens Mobility.
+\textbf{Hinweis:} Die Auxiliarklassen werden im Rahmen des YOLOv8-Trainings (Kapitel~\ref{sec:objekterkennungmityolov8obb}) mit annotiert und erreichen vergleichbare Detektionsleistungen wie die Kernklassen. Die Fokussierung der End-to-End-Evaluation auf die Kernklassen erfolgte aufgrund der notwendigen Eingrenzung des Evaluationsumfangs. Bemerkenswert ist, dass das Modell auch visuell sehr ähnliche Symbole (z.\,B. Haltepunkt-Varianten H, Weichen W, Weichengruppen WG) zuverlässig unterscheiden kann. Eine detaillierte Analyse 
+dieser Feinunterscheidungen war jedoch nicht Gegenstand dieser Arbeit.
 
 \subsection{Texterkennung und OCR-Integration}
 \begin{itemize}
@@ -191,7 +188,7 @@ Projektierungsaufgaben bei Siemens Mobility.
     \item \textbf{FA-006}\label{req:FA-006} \textbf{Fahrtrichtungsdetektion:} Basierend auf der geometrischen Orientierung (Rotationswinkel) von Signalen und Weichen muss automatisch die Wirkrichtung (z.\,B. in Richtung steigender oder fallender Kilometrierung) abgeleitet werden.
     
     \item \textbf{FA-007}\label{req:FA-007} \textbf{Symbol-Koordinaten-Verknüpfung:} 
-    Jedes erkannte Gleisplanelement (Signal, GKS-Platte, GM-Block) muss automatisch 
+    Jedes erkannte Gleisplanelement (Signal, GKS, GM-Block) muss automatisch 
     mit der räumlich nächstgelegenen Kilometrierungsangabe verknüpft werden. 
     Die Verknüpfung erfolgt durch geometrische Proximity-Analyse unter 
     Berücksichtigung der Symbolorientierung. Bei komplexen Objekten wie Haltepunkten müssen zusätzlich mehrere zusammengehörige Elemente (Haltepunkt-Symbol, zugehöriges Signal, Koordinate) zu einer logischen Einheit gruppiert werden.
@@ -229,7 +226,7 @@ Projektierungsaufgaben bei Siemens Mobility.
     \item \textbf{FA-012}\label{req:FA-012} \textbf{Visuelle Validierung:} Zur manuellen Überprüfung (\enquote{Ground Truthing}) sollen im ausgegebenen Gleisplan (oder einer Overlay-Ansicht) alle erkannten Objekte durch farbige Bounding Boxes markiert werden.
     \begin{figure}[H]
     \centering
-    \includegraphics[width=14cm]{images/Kapitel4/gleisplanmarkierung.png} 
+    \includegraphics[width=14cm]{images/Kapitel4/gleisplanmarkierungv2.png} 
     \caption{Visuelle Validierung durch Bounding-Box-Overlays im Gleisplan \cite{railroadstationdrawing}}
     \label{fig:gleisplanmarkierung}
     \end{figure}
@@ -246,7 +243,7 @@ Projektierungsaufgaben bei Siemens Mobility.
 
 \section{Nicht-funktionale Anforderungen}
 \label{sec:nichtfunktionaleanforderungen}
-Ergänzend zu den funktionalen Zielen definieren die nicht-funktionalen Anforderungen die Qualitätsmerkmale und Rahmenbedingungen des Systems.
+Ergänzend zu den funktionalen Zielen definieren die nicht-funktionalen Anforderungen (NFA-001 bis NFA-012)die Qualitätsmerkmale und Rahmenbedingungen des Systems.
 
 \subsection{Sicherheit und Datenschutz}
 \begin{itemize}
@@ -358,7 +355,7 @@ Evaluationsmetriken (Kapitel~\ref{chap:evaluation}).
 
 \subsection{Funktionale Anforderungen}
 
-\begin{longtable}{|l|p{4cm}|p{4.5cm}|p{4.5cm}|}
+\begin{longtable}{|l|>{\raggedright\arraybackslash}p{4cm}|>{\raggedright\arraybackslash}p{4.5cm}|>{\raggedright\arraybackslash}p{4.5cm}|}
 \hline
 \textbf{ID} & \textbf{Anforderung} & \textbf{Implementierung} & \textbf{Evaluation} \\
 \hline
@@ -368,74 +365,74 @@ Evaluationsmetriken (Kapitel~\ref{chap:evaluation}).
 \hline
 \endhead
 
-FA-001 & Erkennungsrate $\geq$ 90\% & 
-§\ref{sec:objekterkennungmityolov8obb}: YOLOv8-OBB Training mit 13 Klassen & 
-§\ref{subsec:detection_eval}: Recall = 95.7\% (Val), 100\% (Test) \\
+\hyperref[req:FA-001]{FA-001} & Erkennungsrate $\geq$ 90\% & 
+Abschn.~\ref{sec:objekterkennungmityolov8obb}: YOLOv8-OBB Training mit 13 Klassen & 
+Abschn.~\ref{subsec:detection_eval}: Recall = 95.7\% (Val), 100\% (Test) \\
 \hline
 
-FA-002 & Rotationsinvarianz ($0^\circ$--$360^\circ$) & 
-§\ref{sec:objekterkennungmityolov8obb}: OBB-Annotation, synthetische Rotation (10 Winkel) & 
-§\ref{subsec:e2e_test_eval}, Tab.~\ref{tab:rotation_analysis}: 38 Objekte mit $|\theta|>30^\circ$ bei höherer Konfidenz (0.946 vs. 0.890) \\
+\hyperref[req:FA-002]{FA-002} & Rotationsinvarianz ($0^\circ$--$360^\circ$) & 
+Abschn.~\ref{sec:objekterkennungmityolov8obb}: OBB-Annotation, synthetische Rotation (10 Winkel) & 
+Abschn.~\ref{subsec:e2e_test_eval}, Tab.~\ref{tab:rotation_analysis}: 38 Objekte mit $|\theta|>30^\circ$ bei höherer Konfidenz (0.946 vs. 0.890) \\
 \hline
 
-FA-003 & Zielobjekte (5 Kernklassen) & 
-§\ref{sec:objekterkennungmityolov8obb}: Signal, Koordinate, GKS (2 Typen), GM-Block & 
-§\ref{subsec:e2e_test_eval}: 636/644 Objekte korrekt (98.76\%)\\
+\hyperref[req:FA-003]{FA-003} & Zielobjekte (5 Kernklassen) & 
+Abschn.~\ref{sec:objekterkennungmityolov8obb}: Signal, Koordinate, GKS (2 Typen), GM-Block & 
+Abschn.~\ref{subsec:e2e_test_eval}: 636/644 Objekte korrekt (98.76\%)\\
 \hline
 
-FA-004 & OCR-Genauigkeit (in E2E integriert) & 
-§\ref{sec:ocrpipeline}: Multi-Engine Kaskade (PaddleOCR, Tesseract, EasyOCR) & 
-§\ref{subsec:e2e_test_eval}: 3 OCR-bedingte Fehler (0.47\% Fehlerrate) \\
+\hyperref[req:FA-004]{FA-004} & OCR-Genauigkeit (in E2E integriert) & 
+Abschn.~\ref{sec:ocrpipeline}: Multi-Engine Kaskade (PaddleOCR, Tesseract, EasyOCR) & 
+Abschn.~\ref{subsec:e2e_test_eval}: 3 OCR-bedingte Fehler (0.47\% Fehlerrate) \\
 \hline
 
-FA-005 & OCR-Robustheit (Rauschen, Rotation) & 
-§\ref{sec:ocrpipeline}: Dual-Winkel-Routing, CLAHE, Linienentfernung & 
-§\ref{subsec:e2e_test_eval}, Tab.~\ref{tab:rotation_analysis}: 100\% OCR-Erfolg bei $|\theta|>30^\circ$ (38/38) \\
+\hyperref[req:FA-005]{FA-005} & OCR-Robustheit (Rauschen, Rotation) & 
+Abschn.~\ref{sec:ocrpipeline}: Dual-Winkel-Routing, CLAHE, Linienentfernung & 
+Abschn.~\ref{subsec:e2e_test_eval}, Tab.~\ref{tab:rotation_analysis}: 100\% OCR-Erfolg bei $|\theta|>30^\circ$ (38/38) \\
 \hline
 
-FA-006 & Fahrtrichtungsdetektion & 
-§\ref{sec:fahrtrichtung}: Geometrische Ableitung aus Signal-GKS-Relation & 
-§\ref{subsec:e2e_test_eval}: 171/172 korrekt (99.42\%), Tab.~\ref{tab:signal_attribute_accuracy} \\
+\hyperref[req:FA-006]{FA-006} & Fahrtrichtungsdetektion & 
+Abschn.~\ref{sec:fahrtrichtung}: Geometrische Ableitung aus Signal-GKS-Relation & 
+Abschn.~\ref{subsec:e2e_test_eval}: 171/172 korrekt (99.42\%), Tab.~\ref{tab:signal_attribute_accuracy} \\
 \hline
 
-FA-007 & Symbol-Koordinaten-Verknüpfung & 
-§\ref{sec:intelligentesymboltextverknüpfung}: Proximity-basiertes Linking & 
-§\ref{subsec:e2e_test_eval}: 642/644 Verknüpfungen korrekt (99.69\%) \\
+\hyperref[req:FA-007]{FA-007} & Symbol-Koordinaten-Verknüpfung & 
+Abschn.~\ref{sec:intelligentesymboltextverknüpfung}: Proximity-basiertes Linking & 
+Abschn.~\ref{subsec:e2e_test_eval}: 642/644 Verknüpfungen korrekt (99.69\%) \\
 \hline
 
-FA-008 & Manuelle Korrektur (Human-in-the-Loop) & 
-§\ref{sec:validierungundsicherung}: Validierungsdialog mit Inline-Editierung & 
-§\ref{subsubsec:validation_tools}: Prüfaufwand um 85\% reduziert \\
+\hyperref[req:FA-008]{FA-008} & Manuelle Korrektur (Human-in-the-Loop) & 
+Abschn.~\ref{sec:validierungundsicherung}: Validierungsdialog mit Inline-Editierung & 
+Abschn.~\ref{subsubsec:validation_tools}: Prüfaufwand um 85\% reduziert \\
 \hline
 
-FA-009 & Excel-Integration & 
-§\ref{subsec:exportfunktionlität}: XLSX-Export mit Formatierung & 
-§\ref{subsec:functional_validation}, Tab.~\ref{tab:functional_validation} \\
+\hyperref[req:FA-009]{FA-009} & Excel-Integration & 
+Abschn.~\ref{subsec:exportfunktionlität}: XLSX-Export mit Formatierung & 
+Abschn.~\ref{subsec:functional_validation}, Tab.~\ref{tab:functional_validation} \\
 \hline
 
-FA-010 & Strukturerhalt (Non-destructive Update) & 
-§\ref{subsec:exportfunktionlität}: Werte-Insertion ohne Formatänderung & 
-§\ref{subsec:functional_validation}, Tab.~\ref{tab:functional_validation} \\
+\hyperref[req:FA-010]{FA-010} & Strukturerhalt (Non-destructive Update) & 
+Abschn.~\ref{subsec:exportfunktionlität}: Werte-Insertion ohne Formatänderung & 
+Abschn.~\ref{subsec:functional_validation}, Tab.~\ref{tab:functional_validation} \\
 \hline
 
-FA-011 & Änderungsverfolgung (Diff) & 
-§\ref{subsec:vergleichundänderung}: UID-basierter Versionsvergleich & 
-§\ref{subsec:functional_validation}, Tab.~\ref{tab:functional_validation} \\
+\hyperref[req:FA-011]{FA-011} & Änderungsverfolgung (Diff) & 
+Abschn.~\ref{subsec:vergleichundänderung}: UID-basierter Versionsvergleich & 
+Abschn.~\ref{subsec:functional_validation}, Tab.~\ref{tab:functional_validation} \\
 \hline
 
-FA-012 & Visuelle Validierung (Bounding Boxes) & 
-§\ref{sec:benutzeroberfläche}: PDF-Viewer mit Overlay-System & 
-§\ref{subsec:functional_validation}, Tab.~\ref{tab:functional_validation} \\
+\hyperref[req:FA-012]{FA-012} & Visuelle Validierung (Bounding Boxes) & 
+Abschn.~\ref{sec:benutzeroberfläche}: PDF-Viewer mit Overlay-System & 
+Abschn.~\ref{subsec:functional_validation}, Tab.~\ref{tab:functional_validation} \\
 \hline
 
-FA-013 & Grafische Benutzeroberfläche & 
-§\ref{sec:benutzeroberfläche}: PyQt5-basierte Desktop-Anwendung & 
-§\ref{subsec:functional_validation}, Tab.~\ref{tab:functional_validation} \\
+\hyperref[req:FA-013]{FA-013} & Grafische Benutzeroberfläche & 
+Abschn.~\ref{sec:benutzeroberfläche}: PyQt5-basierte Desktop-Anwendung & 
+Abschn.~\ref{subsec:functional_validation}, Tab.~\ref{tab:functional_validation} \\
 \hline
 
-FA-014 & Modularität (Architektur) & 
-§\ref{chap:konzeption}: Schichtenarchitektur; §\ref{sec:objekterkennungmityolov8obb}: 8 Auxiliarklassen & 
-§\ref{subsec:nfa_validation}: Erweiterung ohne Kernlogik-Änderung \\
+\hyperref[req:FA-014]{FA-014} & Modularität (Architektur) & 
+Kap.~\ref{chap:konzeption}: Schichtenarchitektur; Abschn.~\ref{sec:objekterkennungmityolov8obb}: 8 Auxiliarklassen & 
+Abschn.~\ref{subsec:nfa_validation}: Erweiterung ohne Kernlogik-Änderung \\
 \hline
 
 \caption{Rückverfolgbarkeitsmatrix: Funktionale Anforderungen}
@@ -444,7 +441,7 @@ FA-014 & Modularität (Architektur) &
 
 \subsection{Nicht-funktionale Anforderungen}
 
-\begin{longtable}{|l|p{3.5cm}|p{4cm}|p{4cm}|}
+\begin{longtable}{|l|>{\raggedright\arraybackslash}p{3.5cm}|>{\raggedright\arraybackslash}p{4cm}|>{\raggedright\arraybackslash}p{4cm}|}
 \hline
 \textbf{ID} & \textbf{Anforderung} & \textbf{Implementierung} & \textbf{Evaluation} \\
 \hline
@@ -454,64 +451,64 @@ FA-014 & Modularität (Architektur) &
 \hline
 \endhead
 
-NFA-001 & On-Premise-Verarbeitung & 
+\hyperref[req:NFA-001]{NFA-001} & On-Premise-Verarbeitung & 
 Vollständig lokale Ausführung, keine Cloud-APIs & 
-§\ref{subsec:testumgebung}: CPU-only Inferenz; §\ref{subsec:nfa_validation} \\
+Abschn.~\ref{subsec:testumgebung}: CPU-only Inferenz; Abschn.~\ref{subsec:nfa_validation} \\
 \hline
 
-NFA-002 & Lizenzkonformität (Apache/MIT/BSD) & 
+\hyperref[req:NFA-002]{NFA-002} & Lizenzkonformität (Apache/MIT/BSD) & 
 Tab.~\ref{tab:tech_stack}: Alle Bibliotheken Open Source & 
-§\ref{subsec:nfa_validation}: Lizenzprüfung dokumentiert \\
+Abschn.~\ref{subsec:nfa_validation}: Lizenzprüfung dokumentiert \\
 \hline
 
-NFA-003 & Gesamtgenauigkeit $\geq$ 85\% & 
+\hyperref[req:NFA-003]{NFA-003} & Gesamtgenauigkeit $\geq$ 85\% & 
 Gesamte Pipeline (Kap.~\ref{chap:implementierung}) & 
-§\ref{subsec:e2e_test_eval}: 98.76\% erreicht \\
+Abschn.~\ref{subsec:e2e_test_eval}: 98.76\% erreicht \\
 \hline
 
-NFA-004 & Robustheit (fehlerhafte Eingaben) & 
-§\ref{sec:validierungundsicherung}: Fallback-Mechanismen & 
-§\ref{subsubsec:validation_tools}: 7 Pläne ohne Abstürze \\
+\hyperref[req:NFA-004]{NFA-004} & Robustheit (fehlerhafte Eingaben) & 
+Abschn.~\ref{sec:validierungundsicherung}: Fallback-Mechanismen & 
+Abschn.~\ref{subsubsec:validation_tools}: 7 Pläne ohne Abstürze \\
 \hline
 
-NFA-005 & Prüfbarkeit (Rückverfolgbarkeit) & 
-§\ref{sec:unterstützendekomponente}: Metadaten, Jump-to-Detection & 
-§\ref{subsubsec:validation_tools}: Bidirektionale Navigation \\
+\hyperref[req:NFA-005]{NFA-005} & Prüfbarkeit (Rückverfolgbarkeit) & 
+Abschn.~\ref{sec:unterstützendekomponente}: Metadaten, Jump-to-Detection & 
+Abschn.~\ref{subsubsec:validation_tools}: Bidirektionale Navigation \\
 \hline
 
-NFA-006 & Prozessoptimierung & 
+\hyperref[req:NFA-006]{NFA-006} & Prozessoptimierung & 
 Automatisierung des manuellen Prozesses & 
-§\ref{subsubsec:processing_time}: 75.3\% Zeitersparnis \\
+Abschn.~\ref{subsubsec:processing_time}: 75.3\% Zeitersparnis \\
 \hline
 
-NFA-007 & Ressourceneffizienz & 
+\hyperref[req:NFA-007]{NFA-007} & Ressourceneffizienz & 
 CPU-kompatible Inferenz & 
-§\ref{subsubsec:processing_time}: Ø 12.3 min/Plan \\
+Abschn.~\ref{subsubsec:processing_time}: Ø 12.3 min/Plan \\
 \hline
 
-NFA-008 & Erweiterbarkeit & 
-Modulare Architektur (§\ref{chap:konzeption}) & 
-§\ref{subsec:nfa_validation}: 8 Auxiliarklassen integriert \\
+\hyperref[req:NFA-008]{NFA-008} & Erweiterbarkeit & 
+Modulare Architektur (Kap.~\ref{chap:konzeption}) & 
+Abschn.~\ref{subsec:nfa_validation}: 8 Auxiliarklassen integriert \\
 \hline
 
-NFA-009 & Update-Fähigkeit & 
+\hyperref[req:NFA-009]{NFA-009} & Update-Fähigkeit & 
 Externe Modell-Gewichte (\texttt{best.pt}) & 
-§\ref{subsec:nfa_validation}: Nachtraining demonstriert \\
+Abschn.~\ref{subsec:nfa_validation}: Nachtraining demonstriert \\
 \hline
 
-NFA-010 & Eingabeformate (PDF, PNG, JPG) & 
-§\ref{Inferenz}: PyMuPDF, OpenCV & 
-§\ref{subsec:testdatensatz}: 7 PDFs verarbeitet \\
+\hyperref[req:NFA-010]{NFA-010} & Eingabeformate (PDF, PNG, JPG) & 
+Abschn.~\ref{Inferenz}: PyMuPDF, OpenCV & 
+Abschn.~\ref{subsec:testdatensatz}: 7 PDFs verarbeitet \\
 \hline
 
-NFA-011 & Datenquellen (Kundenpläne) & 
-§\ref{Inferenz}: 500 DPI Rasterisierung & 
-§\ref{subsec:testdatensatz}: Siemens Mobility Pläne \\
+\hyperref[req:NFA-011]{NFA-011} & Datenquellen (Kundenpläne) & 
+Abschn.~\ref{Inferenz}: 500 DPI Rasterisierung & 
+Abschn.~\ref{subsec:testdatensatz}: Siemens Mobility Pläne \\
 \hline
 
-NFA-012 & Ausgabeformate (XLSX, CSV, JSON) & 
-§\ref{subsec:exportfunktionlität}: Drei Export-Optionen & 
-§\ref{subsec:functional_validation}: Funktionstest bestanden \\
+\hyperref[req:NFA-012]{NFA-012} & Ausgabeformate (XLSX, CSV, JSON) & 
+Abschn.~\ref{subsec:exportfunktionlität}: Drei Export-Optionen & 
+Abschn.~\ref{subsec:functional_validation}: Funktionstest bestanden \\
 \hline
 
 \caption{Rückverfolgbarkeitsmatrix: Nicht-funktionale Anforderungen}

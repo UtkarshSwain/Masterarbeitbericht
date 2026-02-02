@@ -22,16 +22,18 @@ Obwohl diese Pläne in der heutigen Ingenieurspraxis mittels CAD-Systemen (Compu
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=1\textwidth]{images/tracklayout2.png} 
-    \caption{Ausschnitt eines schematischen Gleisplans mit Darstellung von Signalen, Weichen und Gleisbezeichnungen (Beispielhafte Darstellung) aus Quelle \cite{railroadstationdrawing}}
+    \includegraphics[width=1\textwidth]{images/gleisplandrawiov2.png} 
+    \caption{Ausschnitt eines schematischen Gleisplans mit drei Bahnsteigbereichen (4a/4b, 1/2, 3), wobei Richtungspfeile die zulässigen Fahrtrichtungen kennzeichnen (Beispielhafte Darstellung)}
     \label{fig:gleisplan_schema}
 \end{figure}
 
+Abbildung~\ref{fig:gleisplan_schema} zeigt einen typischen Bahnhofsbereich mit drei Bahnsteigen (4a/4b, 1/2, 3) und der zugehörigen Infrastruktur. Die Darstellung umfasst verschiedene bahntechnische Symbole. \textbf{Signale} werden durch ein einheitliches Grundsymbol dargestellt und durch ihre Bezeichnung in drei Kategorien unterteilt: \textbf{Einfahrtsignale (ES)} regeln die Einfahrt in den Bahnhof, \textbf{Ausfahrtsignale (AS)} regeln die Ausfahrt, und \textbf{Zwischensignale (ZS)} regeln Fahrten innerhalb des Bahnhofsbereichs. Die \textbf{Weichen (W)} ermöglichen die flexible Fahrweggestaltung zwischen den verschiedenen Gleisen. \textbf{Gleiskoppelspulen (GKS)}, als trapezförmige Symbole dargestellt, dienen der punktförmigen Zugbeeinflussung. Die elektrische Trennung von Gleisabschnitten zur Belegungserkennung wird durch \textbf{Isolierstöße} (T-förmige Symbole) realisiert. Ergänzend sind \textbf{S-Verbinder} (S-förmige Symbole) dargestellt, die Schienenverbindungen zwischen Gleisabschnitten markieren. \textbf{Richtungspfeile} kennzeichnen die zulässigen Befahrrichtungen der einzelnen Gleise -- beispielsweise zeigt die bidirektionale Pfeildarstellung bei Bahnsteig 1/2 die Befahrbarkeit aus beiden Richtungen an \cite{Pachl}.
+
+
+
 \subsection{Bahntechnische Symbole und ihre Klassifikation}
 \label{sec:Bahntechnischesymbole}
-In den Gleisplänen kommen zahlreiche Symbole zum Einsatz, um die verschiedenen technischen Objekte, Anlagenkomponenten und zusätzlichen Informationen übersichtlich darzustellen. Diese Symboldarstellung dient nicht nur der Visualisierung der Gleiskomponenten, sondern bildet auch die Grundlage für Planung, Projektierung, Dokumentation und spätere Anwendung. \cite{signallayout} Da der Gleisplan eine zentrale Schnittstelle zwischen technischer Planung, 
-betrieblicher Umsetzung und sicherheitstechnischen Systemen darstellt, ist eine präzise, klare und einheitliche Symbolklassifizierung notwendig. Die für diese Arbeit relevanten Symbolklassen gliedern sich in drei funktionale 
-Kategorien (siehe Tabelle~\ref{tab:symbol_categories}):
+In den Gleisplänen kommen zahlreiche Symbole zum Einsatz, um die verschiedenen technischen Objekte, Anlagenkomponenten und zusätzlichen Informationen übersichtlich darzustellen \cite{Pachl}. Gleispläne dienen als fundamentale Arbeitsgrundlage für das Engineering von Stellwerken und bilden die zentrale Planungsbasis für verschiedenste Gewerke der Bahntechnik \cite{Pachl,DB2008Regelwerk}. Stellwerke nutzen diese Pläne beispielsweise für das Einstellen von Signalen mit Fahrstraßenelementen und Ausschlüssen, während die Zugsicherung auf Basis dieser Pläne die Betrachtung der Durchrutschwege und Fahrwegelemente durchführt \cite{Pachl}. Die Zugsicherungssysteme werden dabei vom Stellwerk gesteuert, entweder direkt über die Stellwerkslogik oder indirekt über nachgelagerte Systeme \cite{Pachl}. Alle dargestellten Elemente wie Signale, Weichen, Isolierstöße, Achszähler, Gleiskoppelspulen, Gleismagnete und S-Verbinder sind Bestandteile der bahntechnischen Infrastruktur, wobei jedes Gewerk abhängig von seiner spezifischen Aufgabenstellung unterschiedliche Teilmengen dieser Elemente benötigt \cite{Pachl}. Da der Gleisplan somit eine zentrale Schnittstelle zwischen technischer Planung, betrieblicher Umsetzung und sicherheitstechnischen Systemen darstellt, ist eine präzise, klare und einheitliche Symbolklassifizierung notwendig \cite{signallayout}. Die für diese Arbeit relevanten Symbolklassen gliedern sich in vier funktionale Kategorien (siehe Tabelle~\ref{tab:symbol_categories}):
 
 \begin{table}[h]
 \centering
@@ -39,7 +41,7 @@ Kategorien (siehe Tabelle~\ref{tab:symbol_categories}):
 \hline
 \textbf{Kategorie} & \textbf{Elemente und Funktion} \\
 \hline
-Infrastruktur & \textbf{Signale}: Fahrterlaubnis und Geschwindigkeitsvorgabe\cite{Pachl}. 
+Stellwerkselemente & \textbf{Signale}: Fahrterlaubnis und Geschwindigkeitsvorgabe\cite{Pachl}. 
 \textbf{Weichen}: Fahrwegverzweigungen\cite{Pachl}. \\
 \hline
 Zugbeeinflussung & \textbf{Balisen}, \textbf{Gleismagnete (GM)}, \textbf{Gleiskoppelspulen (GKS)}: Übertragung von Informationen (Fahrt-/Haltinformationen, ggf. auch Geschwindigkeitsvorgaben und weitere Daten) vom Stellwerk an den Zug\cite{Pachl}. \\
@@ -51,7 +53,7 @@ Metadaten & \textbf{Positionsangaben}: Kilometrierung, Lagepunkte\cite{DB2008Reg
 \textbf{Gleisabschnittsnamen}: Eindeutige Gleisidentifikation\cite{DB2008Regelwerk}. \\
 \hline
 \end{tabular}
-\caption{Klassifikation bahntechnischer Symbole}
+\caption{Klassifikation bahntechnischer Symbole nach funktionalen Kategorien}
 \label{tab:symbol_categories}
 \end{table}
 
@@ -105,7 +107,7 @@ Zweistufige Detektoren wie Faster R-CNN \cite{Ren2015_FasterRCNN} separieren den
 
 Für die Gleisplananalyse erweist sich diese Geschwindigkeit als kritisch. Ein durchschnittlicher Plan umfasst nach der Kachelungsstrategie (siehe Abschnitt~\ref{subsubsec:tiling_strategie}) zwischen 150 und 300 Bildausschnitte. Während YOLO-Modelle typischerweise mit Eingangsgrößen von 640×640 oder 1024×1024 Pixeln arbeiten, werden für die Gleisplananalyse aufgrund der sehr kleinen Symbolgrößen Kacheln von 2048×2048 Pixeln verwendet (Details zur Kachelungsstrategie in Abschnitt~\ref{subsubsec:tiling_strategie}). Bei einer Verarbeitungszeit von 100 bis 200 Millisekunden pro Kachel würde die Gesamtanalyse zwischen 4 bis 15 Minuten dauern. Bei größeren Eingabebildern erfolgt ein automatisches Downsampling auf die konfigurierte Eingabegröße, wobei die Ausgabekoordinaten entsprechend zurückskaliert werden. 
 
-Einstufige Detektoren wie YOLO (You Only Look Once) \cite{redmon2016lookonceunifiedrealtime} adressieren diese Geschwindigkeitsproblematik durch eine fundamental andere Strategie. YOLO unterteilt das Eingabebild in ein regelmäßiges Raster von Zellen (beispielsweise 13×13 oder 26×26 Zellen bei kleineren Eingabegrößen, bzw. entsprechend größere Raster bei höheren Auflösungen). Für jede Zelle sagt das Netz in einem einzigen Vorwärtsdurchlauf direkt mehrere Aspekte voraus: Liegt in dieser Zelle ein Objekt? Wenn ja, welcher Objektklasse gehört es an? Wie hoch ist die Konfidenz dieser Vorhersage? Und wo genau innerhalb der Zelle befindet sich das Objekt? Diese parallele Verarbeitung aller Bildbereiche ermöglicht Inferenzgeschwindigkeiten von 40 bis über 100 Bildern pro Sekunde \cite{yolov8_ultralytics}. Moderne Varianten wie YOLOv8 erreichen durch architektonische Verbesserungen -- insbesondere Feature Pyramid Networks (FPN) \cite{Lin2017_FPN} für Multi-Scale-Detektion und verbesserte Loss-Funktionen -- vergleichbare oder sogar überlegene Präzision gegenüber zweistufigen Detektoren bei Beibehaltung der Echtzeitfähigkeit.
+Einstufige Detektoren wie YOLO (You Only Look Once) \cite{redmon2016lookonceunifiedrealtime} adressieren diese Geschwindigkeitsproblematik durch eine fundamental andere Strategie. YOLO unterteilt das Eingabebild in ein regelmäßiges Raster von Zellen (beispielsweise 13×13 oder 26×26 Zellen bei kleineren Eingabegrößen, bzw. entsprechend größere Raster bei höheren Auflösungen). Für jede Zelle sagt das Netz in einem einzigen Vorwärtsdurchlauf direkt mehrere Aspekte vorher: Liegt in dieser Zelle ein Objekt? Wenn ja, welcher Objektklasse gehört es an? Wie hoch ist die Konfidenz dieser Vorhersage? Und wo genau innerhalb der Zelle befindet sich das Objekt? Diese parallele Verarbeitung aller Bildbereiche ermöglicht Inferenzgeschwindigkeiten von 40 bis über 100 Bildern pro Sekunde \cite{yolov8_ultralytics}. Moderne Varianten wie YOLOv8 erreichen durch architektonische Verbesserungen -- insbesondere Feature Pyramid Networks (FPN) \cite{Lin2017_FPN} für Multi-Scale-Detektion und verbesserte Loss-Funktionen -- vergleichbare oder sogar überlegene Präzision gegenüber zweistufigen Detektoren bei Beibehaltung der Echtzeitfähigkeit.
 
 Die Abwägung zwischen beiden Paradigmen muss im Kontext der Anwendungsanforderungen erfolgen. Für technische Gleispläne mit gut sichtbaren, scharf gerenderten Symbolen rechtfertigt die hohe Verarbeitungsgeschwindigkeit marginale Genauigkeitseinbußen. Einstufige Architekturen können bei technischen Zeichnungen vergleichbare Präzision erreichen (die konkrete Evaluation erfolgt in Kapitel~\ref{chap:evaluation}).
 
@@ -174,7 +176,7 @@ Die Intersection over Union (IoU) \cite{Everingham2010_PascalVOC} quantifiziert 
 {\text{Area}(B_{\text{pred}} \cup B_{\text{gt}})}
 \end{equation}
 
-Der IoU-Wert liegt im Intervall $[0, 1]$, wobei 0 keine Überlappung und 1 perfekte Übereinstimmung signalisiert. In der Praxis gilt eine Detektion als korrekt, wenn $\text{IoU} \geq 0.5$ -- das heißt, die Überlappung muss mindestens die Hälfte der Gesamtfläche betragen. Dieser Schwellenwert reflektiert einen Kompromiss zwischen Forderung nach Präzision und Toleranz gegenüber geringfügigen Positionsabweichungen. Für präzisionskritische Anwendungen werden teilweise höhere Schwellen (0.75 oder 0.9) verwendet \cite{Lin2014_COCO}.
+Der IoU-Wert liegt im Intervall $[0, 1]$, wobei 0 keine Überlappung und 1 eine perfekte Übereinstimmung signalisiert. In der Praxis gilt eine Detektion als korrekt, wenn $\text{IoU} \geq 0.5$ -- das heißt, die Überlappung muss mindestens die Hälfte der Gesamtfläche betragen. Dieser Schwellenwert reflektiert einen Kompromiss zwischen Forderung nach Präzision und Toleranz gegenüber geringfügigen Positionsabweichungen. Für präzisionskritische Anwendungen werden teilweise höhere Schwellen (0.75 oder 0.9) verwendet \cite{Lin2014_COCO}.
 
 Abbildung~\ref{fig:iou_visualization} veranschaulicht diese Berechnung anhand eines konkreten Beispiels. Die grüne Box repräsentiert die Ground-Truth-Position eines Symbols, wie sie von einem menschlichen Annotator markiert wurde. Die blaue Box stellt die Vorhersage des Detektors dar. Die Schnittfläche (rot schraffiert) entspricht der Fläche, in der beide Boxen überlappen. Die Vereinigungsfläche (durch die gestrichelte schwarze Linie umrandet) umfasst alle Bereiche, die von mindestens einer der beiden Boxen abgedeckt werden. Im dargestellten Fall beträgt die IoU etwa 0.28, was unterhalb der üblichen Schwelle von 0.5 liegt. Obwohl visuell erkennbar ist, dass der Detektor das richtige Objekt identifiziert hat, wird die Detektion aufgrund der ungenügenden Lokalisierung als Fehldetektion gewertet. Dies verdeutlicht die Strenge der IoU-Metrik: Nicht nur die korrekte Objektklasse, sondern auch eine präzise Lokalisierung ist erforderlich.
 
@@ -182,29 +184,35 @@ Abbildung~\ref{fig:iou_visualization} veranschaulicht diese Berechnung anhand ei
 \centering
 \begin{tikzpicture}[scale=1.1]
     % Ground Truth (grün)
-    \draw[thick, green!70!black, fill=green!20, opacity=0.7] (1,1) rectangle (5,3.5);
-    \node[green!70!black, font=\small\bfseries] at (0.5, 3.8) {Ground Truth};
+    \draw[thick, green!60!black, fill=green!20, opacity=0.7] (1,1) rectangle (5,3.5);
+    \node[green!50!black, font=\small\bfseries] at (1.8, 3.8) {Ground Truth};
     
     % Prediction (blau)
-    \draw[thick, blue!70!black, fill=blue!20, opacity=0.7] (2.5,1.8) rectangle (6.5,4.3);
-    \node[blue!70!black, font=\small\bfseries] at (4.5, 4.6) {Vorhersage};
+    \draw[thick, blue!60!black, fill=blue!20, opacity=0.7] (2.5,1.8) rectangle (6.5,4.3);
+    \node[blue!50!black, font=\small\bfseries] at (5.5, 4.6) {Vorhersage};
     
-    % Intersection (rot)
+    % Intersection (rot schraffiert)
     \begin{scope}
         \clip (1,1) rectangle (5,3.5);
         \fill[pattern=north east lines, pattern color=red!80!black, opacity=0.8] 
             (2.5,1.8) rectangle (6.5,4.3);
     \end{scope}
+    % Roter Rahmen nur um den Schnitt
     \draw[thick, red!80!black] (2.5,1.8) rectangle (5,3.5);
     \node[red!80!black, font=\small\bfseries] at (3.75, 2.65) {Schnitt};
     
-    % Union (gestrichelt)
-    \draw[thick, dashed, black] (1,1) -- (1,3.5) -- (2.5,3.5) -- (2.5,4.3) -- 
+    % Union (FETT gestrichelt, klare Abstände)
+    % Änderungen: line width=1.5pt, dash pattern angepasst, leicht nach außen verschoben (optional)
+    \draw[line width=1.5pt, dashed, dash pattern=on 5pt off 3pt, black] 
+        (1,1) -- (1,3.5) -- (2.5,3.5) -- (2.5,4.3) -- 
         (6.5,4.3) -- (6.5,1.8) -- (5,1.8) -- (5,1) -- cycle;
     
+    % Optional: Pfeil der auf die Union-Linie zeigt (falls Betreuer es sehr deutlich will)
+    \draw[->, thick, black] (7.2, 3.0) node[right, align=left, font=\footnotesize] {Vereinigung\\(Union)} -- (6.5, 3.0);
+
     \node[below, font=\small] at (3.75, 0.3) {$\text{IoU} \approx 0.28$ (zu niedrig, gilt als Fehldetektion)};
 \end{tikzpicture}
-\caption{Visualisierung der Intersection over Union (IoU)-Metrik.}
+\caption{Visualisierung der Intersection over Union (IoU). Die Vereinigungsfläche wird durch die schwarze gestrichelte Umrandung dargestellt.}
 \label{fig:iou_visualization}
 \end{figure}
 
@@ -377,7 +385,7 @@ Trotz der geometrischen Vorteile bringen OBB zusätzliche Komplexität in die De
     
     % Challenge 2: Angle Periodicity
     \begin{scope}[xshift=5.5cm]
-        \node[above, font=\bfseries] at (2, 3.5) {Winkel-Periodizität};
+        \node[above, font=\bfseries] at (2, 3.5) {Winkelperiodizität};
         
         % Angle representation
         \draw[->] (1, 2.5) arc (0:360:0.5);
@@ -420,7 +428,7 @@ Die Berechnung der Intersection over Union zwischen zwei OBB ist algorithmisch a
 
 wobei $P_1$ und $P_2$ die als Vierecke repräsentierten OBB sind. Die Schnittpunktberechnung zwischen den Kantensegmenten skaliert mit $\mathcal{O}(n^2)$ für $n$-Ecke, was in der Praxis zu einem Faktor 3-5 langsameren NMS-Durchläufen führt\cite{Xie2021OrientedRD}.
 
-\subsubsection{Winkel-Periodizität und Trainingsinstabilität}
+\subsubsection{Winkelperiodizität und Trainingsinstabilität}
 
 Der Rotationswinkel $\theta$ weist eine zyklische Periodizität auf: Eine Rotation um $180^\circ$ (bzw. bei symmetrischen Objekten um $90^\circ$) resultiert in einer geometrisch identischen Bounding Box\cite{Yang2021RSDETR,Zhao2023ABFL}. Dies führt zu Ambiguitäten in der Netzwerk-Ausgabe. Betrachtet man beispielsweise zwei Vorhersagen $\theta_1 = 0^\circ$ und $\theta_2 = 89^\circ$ für dasselbe Objekt, so sind diese geometrisch nur $1^\circ$ voneinander entfernt, numerisch jedoch $89^\circ$. Standard-Regressionsverluste (z.B. Smooth L1) behandeln diese Diskrepanz linear, was zu instabilen Gradienten führt.
 
@@ -532,7 +540,7 @@ Die in Kapitel 4 definierten funktionalen Anforderungen an die Symbolerkennung e
 \section{Optical Character Recognition (OCR)}
 \label{sec:ocr}
 
-Die optische Zeichenerkennung bildet das verbindende Element zwischen der visuellen Symbolerkennung und der semantischen Interpretation von Gleisplänen. Während die in Abschnitt~\ref{subsec:cad_spezifisch} beschriebene Objekterkennung Symbole lokalisiert und klassifiziert, liefert sie zunächst keine Information über die zugehörigen Textinhalte. Erst durch die zuverlässige Extraktion von Signalbezeichnungen (z.\,B. \enquote{AS102}), Kilometerangaben (z.\,B. \enquote{18.1606}) und Balisen-Kennungen (z.\,B. \enquote{1234}) erhalten die erkannten Symbole ihre vollständige technische Bedeutung.
+Die optische Zeichenerkennung bildet das verbindende Element zwischen der visuellen Symbolerkennung und der semantischen Interpretation von Gleisplänen. Während die in Abschnitt~\ref{subsec:cad_spezifisch} beschriebene Objekterkennung Symbole lokalisiert und klassifiziert, liefert sie zunächst keine Information über die zugehörigen Textinhalte. Erst durch die zuverlässige Extraktion von Signalbezeichnungen (z.\,B. \enquote{AS102}), Kilometerangaben (z.\,B. \enquote{18.1606}) und GKS-Kennungen (z.\,B. \enquote{1234}) erhalten die erkannten Symbole ihre vollständige technische Bedeutung.
 
 Dieser Abschnitt behandelt zunächst die allgemeinen Grundlagen der optischen Zeichenerkennung, bevor die spezifischen Herausforderungen technischer Zeichnungen und die für Gleispläne relevanten Lösungsansätze dargelegt werden. Die Progression folgt dabei dem Muster der vorangegangenen Abschnitte: vom allgemeinen Prinzip über moderne Architekturen bis zur domänenspezifischen Anwendung.
 
@@ -1106,7 +1114,7 @@ Signal & \verb|^[A-Z]{1,4}\d{1,4}[a-z]?$| & AS102, BHR201, F3a \\
 \hline
 Koordinate & \verb|^\d{1,3}[.,]\d{3,4}$| & 18.1606, 123,456 \\
 \hline
-Balise (GKS) & \verb|^\d{4}$| & 1234, 5678 \\
+GKS & \verb|^\d{4}$| & 1234, 5678 \\
 \hline
 Weiche & \verb|^W\d{2,4}[a-z]?$| & W12, W234a \\
 \hline
@@ -1315,7 +1323,7 @@ Die beschriebenen OCR-Konzepte bilden die theoretische Grundlage für die in Kap
     \item \textbf{Dreistufige Validierung}: Syntaktisch (Regex), semantisch (Plausibilität), konfidenzbasiert (Schwellenwerte)
 \end{itemize}
 
-Die Texttypen in Gleisplänen umfassen Signalbezeichnungen (z.\,B. \enquote{AS102}), Kilometerangaben (z.\,B. \enquote{18.1606}), Balisenkennung (z.\,B. \enquote{1234}) und Gleisabschnittsnamen. Jeder Texttyp erfordert spezifische Validierungsregeln und Nachbearbeitungsstrategien, die in der Implementierung detailliert werden.
+Die Texttypen in Gleisplänen umfassen unter anderem Signalbezeichnungen (z.\,B. \enquote{AS102}), Kilometerangaben (z.\,B. \enquote{18.1606}), GKS-Kennungen (z.\,B. \enquote{1234}). Jeder Texttyp erfordert spezifische Validierungsregeln und Nachbearbeitungsstrategien, die in der Implementierung detailliert werden.
 
 \section{Räumliche Beziehungen in technischen Dokumenten}
 \label{sec:spatial_relations}
@@ -1932,7 +1940,7 @@ Für ein Dokumentenanalysesystem sind folgende Parameter typischerweise konfigur
 \hline
 \textbf{Kategorie} & \textbf{Beispiel} & \textbf{Zweck} \\
 \hline
-Konfidenzschwellen & Klassenspezifische Mindestkonfidenzen & Präzisions-/Recall-Balance je Klasse \\
+Konfidenzschwellen & Klassenspezifische Mindestkonfidenzen & Precisions-/Recall-Balance je Klasse \\
 \hline
 Verknüpfungsregeln & Suchrichtung, Distanzmultiplikatoren & Steuerung der Symbol-Text-Zuordnung \\
 \hline
@@ -2054,7 +2062,7 @@ Für ein Dokumentenanalysesystem bedeutet Rückverfolgbarkeit, dass zu jedem ext
 \begin{table}[H]
 \centering
 \renewcommand{\arraystretch}{1.3}
-\begin{tabular}{|p{3.5cm}|p{9.5cm}|}
+\begin{tabular}{|p{4cm}|p{10cm}|}
 \hline
 \textbf{Information} & \textbf{Beschreibung} \\
 \hline
