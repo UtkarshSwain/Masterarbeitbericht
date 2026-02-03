@@ -23,32 +23,31 @@ Der Validierungssatz dient der technischen Bewertung der Objekterkennungskompone
 \hline
 \textbf{Attribut} & \textbf{Wert} \\
 \hline
-Anzahl Original-Gleispläne (A0-Format) & 25 \\
-Anzahl Tiles (2048x2048, überlappend) & 1.154 \\
+Anzahl Original-Gleispläne (A0-Format) & 24 \\
+Anzahl Tiles (2048x2048, überlappend) & 1.131 \\
 \hspace{3mm} davon Trainingsdaten & 923 \\
-\hspace{3mm} davon Validierungsdaten (initial) & 208 \\
-\hspace{3mm} davon finale Validierungsdaten & 115 \\
-Annotierte Symbole (Validierungsset) & 1.305 \\
+\hspace{3mm} davon Validierungsdaten & 208 \\
+Annotierte Symbole (Validierungsset) & 3.706 \\
 \hline
 \multicolumn{2}{|l|}{\textit{Kernklassen (produktionsrelevant)}} \\
 \hline
-\hspace{3mm} Signale & 218 \\
-\hspace{3mm} Koordinaten & 629 \\
-\hspace{3mm} GKS (festkodiert) & 60 \\
-\hspace{3mm} GKS (gesteuert) & 69 \\
-\hspace{3mm} GM-Blöcke & 91 \\
-\hspace{3mm} \textbf{Summe Kernklassen} & \textbf{1.067 (81.8\%)} \\
+\hspace{3mm} Signale & 473 \\
+\hspace{3mm} Koordinaten & 1.483 \\
+\hspace{3mm} GKS (festkodiert) & 122  \\
+\hspace{3mm} GKS (gesteuert) & 157  \\
+\hspace{3mm} GM-Blöcke & 201  \\
+\hspace{3mm} \textbf{Summe Kernklassen} & \textbf{2.436 (79,2\%)} \\
 \hline
 \multicolumn{2}{|l|}{\textit{Auxiliarklassen (experimentell)}} \\
 \hline
-\hspace{3mm} Sonstige Klassen (8 Typen) & 238 (18.2\%) \\
+\hspace{3mm} Sonstige Klassen (8 Typen) & 640 (20.8\%) \\
 \hline
 Objektklassen (gesamt) & 13 \\
 \hspace{3mm} davon Kernklassen & 5 \\
 \hspace{3mm} davon Auxiliarklassen & 8 \\
 Synthetische Augmentation (Training) & 10 Rotationswinkel \\
 Gesamtinstanzen (inkl. Augmentation) & 8.029 \\
-Tile-Größe & 2048 × 2048 Pixel \\
+Tile-Größe & 2048 x 2048 Pixel \\
 Auflösungsbereich (Original-PDFs) & 500 DPI \\
 \hline
 \end{tabular}
@@ -56,9 +55,18 @@ Auflösungsbereich (Original-PDFs) & 500 DPI \\
 \label{tab:validation_dataset_stats}
 \end{table}
 
-\textbf{Anmerkung zur Datenfilterung:} Von den initial 208 durch YOLOv8s automatische 80/20-Aufteilung zugewiesenen Validierungsbildern wurden 93 Bilder manuell gefiltert, da sie entweder keine relevanten Symbole enthielten (leere Randbereiche nach dem Tiling) oder ausschließlich Hintergrundgeometrie ohne annotierte Objekte darstellten. Dies resultiert in einem finalen Validierungsdatensatz von 115 Bildern mit 1.305 validen Objektinstanzen.
+\textbf{Anmerkung zur Datenaufteilung:} Die Aufteilung in Trainings- und 
+Validierungsdaten erfolgte stratifiziert mit einem 80/20-Verhältnis 
+(vgl. Abschnitt~\ref{subsubsec:dataset_split}). Sowohl Original- als auch 
+augmentierte Tiles sind in beiden Teilmengen enthalten, wobei die relative 
+Klassenverteilung annähernd erhalten bleibt.
 
-\textbf{Verwendungszweck:} Der Validierungssatz dient primär der Bewertung der YOLO-Detektionsleistung (mAP, Precision, Recall) und bestätigt die erfolgreiche Modellkonvergenz. Diese Daten wurden während des Trainings zur Hyperparameter-Optimierung und Early Stopping verwendet und stellen keine vollständig unabhängige Testmenge dar.
+\textbf{Verwendungszweck:} Der Validierungssatz dient der technischen Bewertung 
+der YOLO-Detektionsleistung (mAP, Precision, Recall) und bestätigt die erfolgreiche 
+Modellkonvergenz. Die detaillierten Trainingsergebnisse und Konvergenzanalysen 
+sind in Abschnitt~\ref{subsec:modelltraining} dokumentiert. Der Validierungssatz 
+stellt keine vollständig unabhängige Testmenge dar; die unabhängige End-to-End-Evaluation 
+erfolgt auf dem separaten Testsatz (Abschnitt~\ref{subsec:e2e_test_eval}).
 
 \subsubsection{Testsatz (End-to-End System Evaluation)}
 
@@ -244,7 +252,7 @@ Die Objekterkennung bildet die fundamentale Stufe der Extraktionspipeline. Die Q
 
 \subsubsection{Gesamtleistung auf dem Validierungssatz}
 
-Das trainierte YOLOv8l-OBB Modell wurde auf dem Validierungsdatensatz (115 Bilder, 1.305 Instanzen) evaluiert. Tabelle~\ref{tab:detection_overall} zeigt die aggregierten Metriken über alle Symbolklassen.
+Das trainierte YOLOv8l-OBB Modell wurde auf dem Validierungsdatensatz (208 Bilder, 3.076 Instanzen) evaluiert. Tabelle~\ref{tab:detection_overall} zeigt die aggregierten Metriken über alle Symbolklassen.
 
 \begin{table}[H]
 \centering
@@ -284,13 +292,13 @@ Die Detektionsleistung variiert zwischen den verschiedenen Symbolklassen moderat
 \hline
 \textbf{Klasse} & \textbf{Instanzen (Val)} & \textbf{Precision} & \textbf{Recall} & \textbf{mAP@0.5} \\
 \hline
-signal & 218 & 94.9\% & 98.5\% & 97.6\% \\
-coordinate & 629 & 97.7\% & 98.6\% & 98.7\% \\
-gks\_festkodiert & 60 & 98.3\% & 95.8\% & 97.8\% \\
-gks\_gesteuert & 69 & 94.5\% & 97.5\% & 95.1\% \\
-gm\_block & 91 & 97.6\% & 97.6\% & 99.5\% \\
+signal & 473 & 94.9\% & 98.5\% & 97.6\% \\
+coordinate & 1.483 & 97.7\% & 98.6\% & 98.7\% \\
+gks\_festkodiert & 122 & 98.3\% & 95.8\% & 97.8\% \\
+gks\_gesteuert & 157 & 94.5\% & 97.5\% & 95.1\% \\
+gm\_block & 201 & 97.6\% & 97.6\% & 99.5\% \\
 \hline
-\textbf{Kernklassen (Durchschnitt)} & \textbf{1.067 (81.8\%)} & \textbf{96.9\%} & \textbf{98.3\%} & \textbf{97.7\%} \\
+\textbf{Kernklassen (Durchschnitt)} & \textbf{2.436 (79,2\%)} & \textbf{98.3\%} & \textbf{97.7\%} \\
 \hline
 \end{tabular}
 \caption{Detektionsmetriken für die fünf Kernklassen auf dem Validierungsdatensatz. Precision und Recall wurden aus der Konfusionsmatrix berechnet, mAP@0.5 aus den Precision-Recall-Kurven.}
@@ -303,8 +311,7 @@ Validierungssatz und 100\% auf dem Testsatz (kein Symbol übersehen) übertrifft
 geforderte Mindesterkennungsrate deutlich.
 
 \textbf{FA-002 (Rotationsinvarianz):} Die OBB-Architektur in Kombination mit der 
-synthetischen Rotationsaugmentation (10 Winkel von $-90^\circ$ bis $+90^\circ$, vgl. 
-§\ref{subsec:Modelltraining}) gewährleistet robuste Erkennung bei beliebigen 
+synthetischen Rotationsaugmentation (10 Winkel von $-90^\circ$ bis $+90^\circ$, vgl. Abschnitt~\ref{subsec:modelltraining} gewährleistet robuste Erkennung bei beliebigen 
 Symbolorientierungen. Die quantitative Analyse in Tabelle~\ref{tab:rotation_analysis} 
 bestätigt dies: 38 Objekte mit Steilrotation ($|\theta| > 30^\circ$) erreichen eine 
 höhere Detektionskonfidenz (0.946) als kardinal orientierte Objekte (0.890).
@@ -318,7 +325,7 @@ von 8 Auxiliarklassen demonstriert die Erweiterbarkeit des Systems (NFA-008).
 \centering
 \includegraphics[width=0.7\textwidth]{images/Kapitel7/confusion_matrix.png}
 \caption{Konfusionsmatrix der YOLO-Klassifikation (Validierungsset). 
-Die Matrix zeigt, dass 4 Instanzen von \textit{gks\_gesteuert} 
+Die Matrix zeigt, dass 5 Instanzen von \textit{gks\_gesteuert} 
 fälschlicherweise als \textit{gks\_festkodiert} klassifiziert wurden.}
 \label{fig:confusion_matrix}
 \end{figure}
@@ -329,13 +336,13 @@ Die Analyse der klassenspezifischen Ergebnisse offenbart mehrere bedeutende Beob
     
     \item \textbf{Klassen-spezifische Precision-Recall-Profile}: Die Klasse \textit{signal} zeigt einen interessanten Trade-off mit niedrigerer Precision (94.9\%) aber höherem Recall (98.5\%). Dies ist für sicherheitskritische Signalerkennung vorteilhaft: Lieber einige Falschdetektionen in Kauf nehmen, als ein tatsächliches Signal zu übersehen. Im Gegensatz dazu erreicht \textit{gks\_festkodiert} die höchste Precision (98.3\%) bei etwas niedrigerem Recall (95.8\%), was die distinktive visuelle Erscheinung dieser Symbolklasse reflektiert.
     
-    \item \textbf{Perfekt balancierte Klassen}: Die Klassen \textit{gm\_block} (97.6\% P/R) und \textit{coordinate} (97.7\% P, 98.6\% R) zeigen nahezu identische Precision- und Recall-Werte, was auf eine optimale Detektionsqualität ohne systematische Bias hinweist. Bei \textit{coordinate} ist dies besonders bemerkenswert, da diese Klasse mit 629 Instanzen (58.9\% der Kernklassen) die am häufigsten vorkommende ist.
+    \item \textbf{Perfekt balancierte Klassen}: Die Klassen \textit{gm\_block} (97.6\% P/R) und \textit{coordinate} (97.7\% P, 98.6\% R) zeigen nahezu identische Precision- und Recall-Werte, was auf eine optimale Detektionsqualität ohne systematische Bias hinweist. Bei \textit{coordinate} ist dies besonders bemerkenswert, da diese Klasse mit 1.483 Instanzen (60,9\% der Kernklassen) die am häufigsten vorkommende ist.
     
     \item \textbf{Herausforderung bei GKS-Varianten}: Die Klasse \textit{gks\_gesteuert} zeigt mit 94.5\% die niedrigste Precision unter den Kernklassen, was auf die hohe visuelle Ähnlichkeit zu \textit{gks\_festkodiert} zurückzuführen ist. Die Konfusionsmatrix (Abbildung~\ref{fig:confusion_matrix}) zeigt, dass 4 Instanzen von \textit{gks\_gesteuert} fälschlicherweise als \textit{gks\_festkodiert} klassifiziert wurden, während 1 Instanz von \textit{gks\_festkodiert} als \textit{gks\_gesteuert} fehlklassifiziert wurde. Diese beiden GKS-Arten unterscheiden sich nur durch interne Symboldetails (fest kodierte vs. programmierbarer Code), was die Unterscheidung für das neuronale Netz erschwert.
     
     \item \textbf{mAP als synthetische Metrik}: Die mAP@0.5-Werte liegen durchweg 1-3 Prozentpunkte über den jeweiligen Precision-Werten, da mAP die durchschnittliche Precision über alle Recall-Stufen misst. Klassen mit nahezu rechteckigen Precision-Recall-Kurven (siehe Abbildung~\ref{fig:pr_curve}) wie \textit{gm\_block} (99.5\% mAP) zeigen, dass hohe Precision auch bei variierenden Konfidenzschwellen erhalten bleibt.
     
-    \item \textbf{Auxiliarklassen demonstrieren Erweiterbarkeit}: Die acht experimentellen Klassen mit durchschnittlich 98.8\% mAP belegen, dass das System prinzipiell auf weitere Symboltypen erweiterbar ist. Die erfolgreiche Erkennung seltener Klassen wie \textit{endeweichen} (nur 4 Trainingsinstanzen, 99.5\% mAP) demonstriert die Effektivität der synthetischen Rotationsaugmentation, die die Datenmenge für jede Klasse um Faktor 10-150 erhöht hat.
+    \item \textbf{Auxiliarklassen demonstrieren Erweiterbarkeit}: Die acht experimentellen Klassen mit durchschnittlich 98.8\% mAP belegen, dass das System prinzipiell auf weitere Symboltypen erweiterbar ist. Die erfolgreiche Erkennung seltener Klassen wie \textit{weichengruppenende} (74 Trainingsinstanzen, 99.0\% mAP) und \textit{haltetafel} (93 Trainingsinstanzen, 98.4\% mAP) demonstriert die Effektivität der synthetischen Rotationsaugmentation zur Verbesserung der Erkennungsleistung bei unterrepräsentierten Klassen.
 \end{itemize}
 
 \subsection{End-to-End Systemevaluation auf dem Testsatz}

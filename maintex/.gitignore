@@ -1,29 +1,35 @@
+cd "C:\Users\z0054cxa\Documents\Masterarbeit\Masterarbeit document"
+
+# Erstelle .gitignore
+@"
+# LaTeX temporäre Dateien
 *.aux
-*.glo
-*.idx
 *.log
+*.out
 *.toc
-*.ist
-*.acn
-*.acr
-*.alg
+*.synctex.gz
+*.fdb_latexmk
+*.fls
 *.bbl
 *.blg
-*.dvi
-*.glg
-*.gls
-*.ilg
-*.ind
-*.lof
-*.lot
-*.maf
-*.mtc
-*.mtc1
-*.out
-*.synctex.gz
-*.fls
-*.fdb_latexmk
-*.pdf
 *.bcf
 *.run.xml
-*.log
+*.lof
+*.lot
+
+# Build Ordner
+build/
+
+# VS Code
+.vscode/*
+!.vscode/settings.json
+
+# OS
+.DS_Store
+Thumbs.db
+*~
+
+# Backup
+*.bak
+*.backup
+"@ | Out-File -FilePath ".gitignore" -Encoding UTF8

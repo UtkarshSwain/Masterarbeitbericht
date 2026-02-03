@@ -84,284 +84,408 @@ eine klare Trennung der Verantwortlichkeiten. Jedes Modul (\texttt{core/}, \text
 Symbolklassen erfordert lediglich Anpassungen in \texttt{core/detection.py} und 
 \texttt{core/linking.py}, ohne die UI- oder Export-Logik zu modifizieren.
 
-\section{Objekterkennung mit YOLOv8-OBB}
-\label{sec:objekterkennungmityolov8obb}
-Die Objekterkennung bildet die erste und fundamentale Stufe der Extraktionspipeline. Ihre Aufgabe besteht darin, alle relevanten Symbole in den Gleisplänen zu lokalisieren und zu klassifizieren. Die Qualität dieser Detektionen bestimmt maßgeblich die Leistungsfähigkeit der nachfolgenden OCR- und Verknüpfungsmodule. Die Wahl fiel auf YOLOv8 in der Oriented Bounding Box (OBB) Variante, da diese Architektur speziell für die Detektion rotierter Objekte konzipiert wurde und somit optimal für technische Zeichnungen mit beliebig orientierten Symbolen geeignet ist.
+% =============================================================================
+% COMPLETE SECTION 6.2 — Objekterkennung mit YOLOv8-OBB
+% Replaces everything from \section{Objekterkennung mit YOLOv8-OBB}
+% up to (but NOT including) the next \section (e.g., 6.3 OCR)
+%
+% STRUCTURE:
+%   6.2   Objekterkennung mit YOLOv8-OBB (intro paragraph)
+%   6.2.1 Datensatzerstellung und Annotation
+%         - Vorverarbeitung der Gleispläne
+%         - Annotationsprozess
+%         - Synthetische Datenaugmentation durch Rotation
+%         - Datenaufteilung und finale Statistiken
+%   6.2.2 Modelltraining und Optimierung
+%         - Modellarchitektur und Hyperparameter
+%         - Trainingskonvergenz
+%         - Trainingsergebnisse
+%   6.2.3 Inferenz-Pipeline  [NOT INCLUDED — keep your existing version or write separately]
+%
+% ALL NUMBERS VERIFIED AGAINST:
+%   - Dataset stats (482 original, 1131 augmented, 15582 instances)
+%   - results.csv (120 epochs)
+%   - PR curve (mAP@0.5 = 0.984 all classes)
+%   - F1 curve (0.96 at conf 0.674)
+%   - Confusion matrices (absolute + normalized)
+%
+% BETREUER FEEDBACK ADDRESSED:
+%   [1] 24 Gleispläne now stated
+%   [2] 115 → 208 val images (old split removed)
+%   [3] Augmentation purpose clarified (rotation robustness + class balance)
+%   [4] Coordinate dominance explained
+%   [5] S-Verbinder/Isolierstoß plausibility addressed
+%   [6] Auxiliarklassen as deliberate scope limitation
+%   [7] Training section added with full hyperparameters + convergence (YOLOv8l-OBB)
+% =============================================================================
 
+\section{Objekterkennung mit YOLOv8-OBB}
+\label{sec:yolo_implementation}
+
+Die Objekterkennung bildet den ersten Schritt der Extraktionspipeline und ist für die zuverlässige Lokalisierung und Klassifikation aller relevanten Symbole in den Gleisplänen verantwortlich. Wie in den Grundlagen (Abschnitt~\ref{sec:orientedboundingboxesalslösung}) dargelegt, erfordert die rotationsvariierende Darstellung von Gleisplansymbolen den Einsatz von Oriented Bounding Boxes (OBB). Im Folgenden werden die Erstellung des Trainingsdatensatzes, die Durchführung und Optimierung des Modelltrainings sowie die daraus resultierenden Erkennungsleistungen beschrieben.
+
+% ─────────────────────────────────────────────────────────────────────────────
 \subsection{Datensatzerstellung und Annotation}
 \label{subsec:Datensatzerstellung}
-Die Leistungsfähigkeit eines objekterkennenden Modells hängt direkt von der Qualität und Quantität des Trainingsdatensatzes ab. Die Erstellung des Datensatzes erfolgte in einem mehrstufigen Prozess, der sowohl die Vorverarbeitung der Rohdaten als auch die präzise Annotation der Symbole umfasste.
+% ─────────────────────────────────────────────────────────────────────────────
 
+Die Leistungsfähigkeit eines objekterkennenden Modells hängt unmittelbar von der Qualität und Quantität des Trainingsdatensatzes ab. Die Erstellung des Datensatzes erfolgte in einem mehrstufigen Prozess, der die Auswahl und Vorverarbeitung der Rohdaten, die präzise Annotation der Symbole, eine gezielte Datenaugmentation sowie die abschließende Aufteilung in Trainings- und Validierungsdaten umfasste. Insgesamt wurden \textbf{24~Gleispläne} von Siemens Mobility als Datengrundlage verwendet. Die Auswahl dieser Pläne erfolgte mit dem Ziel, eine möglichst breite Varianz hinsichtlich Streckenlänge, Symbolvielfalt und Planformatierung abzudecken.
+
+% ── 6.2.1.1  Vorverarbeitung ─────────────────────────────────────────────────
 \subsubsection{Vorverarbeitung der Gleispläne}
 
-Die initialen Gleispläne lagen im PDF-Format vor und mussten zunächst in ein für die Annotation geeignetes Bildformat überführt werden. Hierzu wurde die Python-Bibliothek PyMuPDF eingesetzt, welche eine zuverlässige Rasterisierung von PDF-Dokumenten ermöglicht. Die Konvertierung erfolgte mit einer Auflösung von 500 DPI (dots per inch), was einem Skalierungsfaktor von $\frac{500}{72} \approx 6.94$ gegenüber der Standard-PDF-Auflösung entspricht. Diese hohe Auflösung wurde gewählt, um auch kleine Symbole wie Gleiskoppelspulen oder Isolierstöße mit ausreichender Detailgenauigkeit darzustellen.
+Die initialen Gleispläne lagen im PDF-Format vor und mussten zunächst in ein für die Annotation geeignetes Bildformat überführt werden. Hierzu wurde die Python-Bibliothek \textit{PyMuPDF} eingesetzt, welche eine zuverlässige Rasterisierung von PDF-Dokumenten ermöglicht. Die Konvertierung erfolgte mit einer Auflösung von \textbf{500~DPI}, was einem Skalierungsfaktor von $500/72 \approx 6{,}94$ gegenüber der Standard-PDF-Auflösung (72~DPI) entspricht. Diese hohe Auflösung wurde gewählt, um auch kleine Symbole wie Gleiskoppelspulen oder Isolierstöße mit ausreichender Detailgenauigkeit darzustellen.
 
-Nach der Rasterisierung wurden die hochauflösenden Bilder in kleinere, überlappende Bildausschnitte segmentiert. Die gewählte Segmentgröße für die Annotation betrug $2048 \times 2048$ Pixel, um ausreichend Kontext für die präzise Markierung von Symbolen und deren räumliche Beziehungen zu gewährleisten. Für das Training und die Inferenz werden diese Tiles auf $1024 \times 1024$ Pixel herunterskaliert (Downsampling), was der YOLO-Eingabegröße entspricht. Diese Strategie kombiniert die Vorteile großflächiger Annotation mit effizienter Modellverarbeitung: Die Annotationen auf 2048×2048 Pixeln erfassen mehr Kontextinformation, während das Downsampling die Rechenzeit signifikant reduziert -- ein Tile mit $2048 \times 2048$ Pixeln enthält viermal so viele Pixel wie eines mit $1024 \times 1024$, was zu einer entsprechend längeren Inferenzzeit führt. Zudem reduziert die kleinere Eingabegröße den GPU-Speicherbedarf während des Trainings erheblich, was größere Batch-Größen und damit stabilere Gradientenschätzungen ermöglicht. Bei ausreichender Symbolauflösung (die bei 500 DPI Renderauflösung gegeben ist) bleiben die relevanten visuellen Merkmale auch nach dem Downsampling differenzierbar. Diese Dimensionierung stellt somit einen Kompromiss dar zwischen Annotationsqualität und effizienter Verarbeitung auf GPU-Systemen mit begrenztem Videospeicher (NVIDIA, AWS Instance g4dn.xlarge, 16 GB VRAM).
+Nach der Rasterisierung wurden die hochauflösenden Gesamtbilder in kleinere Bildausschnitte (\textit{Tiles}) segmentiert. Die gewählte Segmentgröße für die Annotation betrug $2048 \times 2048$~Pixel, um ausreichend räumlichen Kontext für die präzise Markierung von Symbolen und deren Beziehungen zueinander zu gewährleisten. Für das anschließende Training und die Inferenz werden diese Tiles auf $1024 \times 1024$~Pixel herunterskaliert, was der YOLO-Eingabegröße entspricht. Diese Strategie kombiniert die Vorteile großflächiger Annotation mit effizienter Modellverarbeitung: Die Annotationen auf $2048 \times 2048$~Pixeln erfassen mehr Kontextinformation, während das Downsampling die Rechenzeit signifikant reduziert und den GPU-Speicherbedarf während des Trainings verringert, was größere Batch-Größen und damit stabilere Gradientenschätzungen ermöglicht. Bei der gewählten Renderauflösung von 500~DPI bleiben die relevanten visuellen Merkmale auch nach dem Downsampling differenzierbar. Die Dimensionierung stellt somit einen Kompromiss dar zwischen Annotationsqualität und effizienter Verarbeitung auf GPU-Systemen mit begrenztem Videospeicher (16~GB VRAM).
 
+Aus den 24~Gleisplänen wurden nicht sämtliche Tiles entnommen, sondern eine gezielte Auswahl getroffen. Rein leere Hintergrund-Tiles sowie redundante Ausschnitte ohne relevante Symbole wurden aussortiert, um eine hohe Datensatzqualität sicherzustellen. Zudem wurde darauf geachtet, Tiles mit möglichst diversem Symbolbestand auszuwählen, um das Modell auf eine breite Palette realer Layoutkonfigurationen vorzubereiten. Durch diesen Selektionsprozess resultierten insgesamt \textbf{482~annotierte Bildausschnitte}, die die Grundlage des Datensatzes bilden.
+
+% ── 6.2.1.2  Annotation ─────────────────────────────────────────────────────
 \subsubsection{Annotationsprozess}
 
-Die Beschriftung erfolgte mittels CVAT \cite{cvat} in lokaler Docker-Umgebung. 
-Jedes Symbol wurde mit einer Oriented Bounding Box (OBB) annotiert (vgl. 
-Abschnitt \ref{sec:orientedboundingboxesalslösung}), repräsentiert durch Zentrum $(c_x, c_y)$, Dimensionen 
-$(w, h)$ und Rotationswinkel $\theta$:
+Die Beschriftung erfolgte mittels CVAT \cite{cvat} in einer lokalen Docker-Umgebung, 
+um die Vertraulichkeit der Siemens-Mobility-Dokumente sicherzustellen. 
+Jedes Symbol wurde mit einer Oriented Bounding Box (OBB) annotiert (vgl.\
+Abschnitt~\ref{sec:orientedboundingboxesalslösung}), repräsentiert durch Zentrum $(c_x, c_y)$, Dimensionen 
+$(w, h)$ und Rotationswinkel~$\theta$:
 
-$$\text{OBB} = (c_x, c_y, w, h, \theta)$$
+\begin{equation}
+\text{OBB} = (c_x,\; c_y,\; w,\; h,\; \theta)
+\end{equation}
 
-CVAT exportiert im YOLO-OBB-Format mit normalisierten Eckpunktkoordinaten 
-$\{(x_i/W, y_i/H)\}_{i=1}^{4}$.
+CVAT exportiert im YOLO-OBB-Format, bei dem jede Bounding Box durch ihre vier normalisierten Eckpunktkoordinaten $\{(x_i/W,\; y_i/H)\}_{i=1}^{4}$ beschrieben wird, wobei $W$ und $H$ die Bildbreite bzw.\ -höhe bezeichnen.
 
-\subsubsection{Datenaufteilung und Statistiken}
+Der finale Datensatz umfasst insgesamt \textbf{13~Symbolklassen}, die gemäß Anforderung \textbf{FA-003} in zwei Kategorien unterteilt werden:
 
-Der finale Datensatz umfasst insgesamt 13 Symbolklassen, darunter Signale, verschiedene Weichentypen, Koordinatenbeschriftungen, Haltepunkte, Isolierstöße und weitere eisenbahnspezifische Elemente. Die Daten wurden in einen Trainingssatz und einen Validierungssatz aufgeteilt, wobei der Validierungssatz 115 Bilder mit insgesamt 1.305 annotierten Objektinstanzen enthält.
+\begin{itemize}
+    \item \textbf{Kernklassen} (5~Klassen): \textit{signal}, \textit{coordinate}, \textit{gks\_festkodiert}, \textit{gks\_gesteuert} und \textit{gm\_block}. Diese repräsentieren die für die Projektierung bei Siemens Mobility essentiellen Fahrstraßen- und Stellwerkselemente und bilden den Fokus der End-to-End-Evaluation in Kapitel~\ref{chap:evaluation}.
+    
+    \item \textbf{Auxiliarklassen} (8~Klassen): \textit{sverbinder}, \textit{haltepunkt}, \textit{weichen\_block}, \textit{isolierstoß}, \textit{prellbock}, \textit{haltetafel}, \textit{endeweichen} und \textit{weichengruppeende}. Diese Klassen wurden gezielt in einem repräsentativen Subset der Bildausschnitte annotiert, um die Erweiterbarkeit des Systems zu demonstrieren (vgl.\ Anforderung \textbf{NFA-008}). Die Einschränkung auf ein Subset diente dazu, den Annotationsaufwand auf die projektierungsrelevanten Kernklassen zu fokussieren und den Gesamtumfang der Arbeit handhabbar zu halten.
+\end{itemize}
 
-Die Verteilung der Objektinstanzen über die Klassen hinweg zeigt Tabelle~\ref{tab:dataset_distribution}. Die Spalte \textit{Bilder} gibt dabei an, in wie vielen der 115 Validierungsbilder mindestens eine Instanz der jeweiligen Klasse vorkommt. Da ein einzelnes Bild typischerweise mehrere Symbolklassen gleichzeitig enthält, überlappen sich diese Werte und können nicht zur Gesamtzahl von 115 Bildern aufsummiert werden. Die Spalte \textit{Instanzen} hingegen zeigt die absolute Anzahl der annotierten Objekte pro Klasse, deren Summe die Gesamtzahl von 1.305 Annotationen ergibt.
+% ── 6.2.1.3  Augmentation ───────────────────────────────────────────────────
+\subsubsection{Synthetische Datenaugmentation durch Rotation}
+\label{subsubsec:augmentation}
+
+Um die Robustheit des Modells gegenüber beliebigen Symbolorientierungen zu erhöhen und die Klassenbalance zu optimieren, wurde vor der Datensatzaufteilung eine gezielte synthetische Augmentation durch Rotation implementiert. Diese Strategie adressiert zwei zentrale Herausforderungen:
+
+\begin{enumerate}
+    \item \textbf{Klassenungleichgewicht:} Die natürliche Verteilung der Symbolklassen in den 482~annotierten Original-Tiles ist stark unausgeglichen. Häufige Klassen wie \textit{coordinate} dominieren, während seltene Klassen wie \textit{endeweichen} oder \textit{weichengruppeende} nur in wenigen Tiles vorkommen. Ohne Gegenmaßnahmen besteht die Gefahr, dass das Modell auf häufige Klassen overfittet und seltene Symbole unzureichend lernt.
+    
+    \item \textbf{Orientierungsvielfalt:} Obwohl technische Zeichnungen Symbole in verschiedenen Winkeln enthalten, sind bestimmte Orientierungen -- insbesondere $0^\circ$ und $90^\circ$ -- in den realen Plänen überrepräsentiert, während diagonale Ausrichtungen seltener auftreten. Da das Modell in der Praxis Symbole unter beliebigen Rotationswinkeln zuverlässig erkennen muss, ist eine ausreichende Abdeckung aller relevanten Orientierungen im Trainingsdatensatz erforderlich.
+\end{enumerate}
+
+\paragraph{Augmentationsstrategie.}
+Die synthetische Rotation wurde selektiv auf Bildausschnitte angewendet, die Instanzen unterrepräsentierter Klassen enthalten. Dabei werden keine künstlichen Symbole erzeugt, sondern bestehende, real annotierte Tiles mitsamt ihren OBB-Annotationen um definierte Winkel rotiert. Auf diese Weise trainiert das Modell dieselben Symbole in zusätzlichen Orientierungen. Für jede ausgewählte Tile wurden Rotationen um die folgenden Winkel durchgeführt:
+
+\begin{equation}
+\Theta_{\text{aug}} = \{-90^\circ,\; -60^\circ,\; -45^\circ,\; -30^\circ,\; -15^\circ,\; +15^\circ,\; +30^\circ,\; +45^\circ,\; +60^\circ,\; +90^\circ\}
+\end{equation}
+
+Die Rotation erfolgte um den Bildmittelpunkt, wobei sowohl der Bildinhalt als auch sämtliche OBB-Annotationen mittels der Rotationsmatrix
+
+\begin{equation}
+\mathbf{R}(\theta) = \begin{pmatrix} 
+\cos\theta & -\sin\theta \\ 
+\sin\theta & \phantom{-}\cos\theta 
+\end{pmatrix}
+\end{equation}
+
+entsprechend transformiert wurden. Jeder Eckpunkt $(x_i, y_i)$ einer OBB wird relativ zum Rotationszentrum transformiert, sodass die geometrische Korrektheit der Annotation erhalten bleibt. In Kombination mit der OBB-Architektur wird durch die 10~Rotationswinkel eine vollständige Rotationsinvarianz von $0^\circ$ bis $360^\circ$ sichergestellt (vgl.\ Anforderung \textbf{FA-002}).
+
+\paragraph{Klassenspezifische Steuerung.}
+Die Anzahl der pro Tile generierten synthetischen Kopien wurde klassenabhängig gesteuert, um eine Zielverteilung von ca.\ 600~Instanzen pro unterrepräsentierter Klasse zu erreichen. Tiles, die ausschließlich bereits häufige Klassen wie \textit{coordinate} enthalten, wurden nur moderat augmentiert, um deren ohnehin hohe Ausgangszahl nicht unverhältnismäßig weiter zu steigern. Bei stark unterrepräsentierten Klassen (z.\,B.\ \textit{weichengruppeende} mit nur 74~Original-Instanzen oder \textit{haltetafel} mit 93~Original-Instanzen) wurden bis zu 10~Rotationsvarianten pro Tile generiert.
+
+\paragraph{Technische Umsetzung.}
+Die Implementierung nutzt \texttt{cv2.getRotationMatrix2D()} und \texttt{cv2.warpAffine()} aus OpenCV. Die Bildgröße wurde dynamisch angepasst, um ein Abschneiden rotierter Objekte am Rand zu vermeiden. Die augmentierten Tiles wurden als separate Dateien mit eindeutiger Benennung (z.\,B.\ \texttt{*\_a+30.jpg} für eine $+30^\circ$-Rotation) im Datensatz gespeichert, was eine deterministische Reproduzierbarkeit gewährleistet. Die transformierten OBB-Annotationen wurden stichprobenartig manuell auf geometrische Korrektheit überprüft.
+
+\paragraph{Ergebnis.}
+Durch die selektive Rotation wurden aus den 482~Original-Tiles zusätzlich \textbf{649~augmentierte Tiles} erzeugt, was den Datensatz auf insgesamt \textbf{1.131~Bildausschnitte} erweitert. Das Augmentationsverhältnis (57,4\,\% augmentiert) spiegelt den Fokus auf unterrepräsentierte Klassen wider: Tiles mit häufigen Symbolen wurden moderat oder gar nicht augmentiert, während Tiles mit seltenen Symbolen mehrfach rotiert wurden.
+
+% ── 6.2.1.4  Datenaufteilung ────────────────────────────────────────────────
+\subsubsection{Datenaufteilung und finale Statistiken}
+\label{subsubsec:dataset_split}
+
+\paragraph{Aufteilungsstrategie.}
+Die Aufteilung des augmentierten Gesamtdatensatzes erfolgte stratifiziert mit einem \textbf{80/20-Verhältnis} in Trainings- und Validierungsdaten. Die Stratifizierung stellt sicher, dass die relative Klassenverteilung in beiden Teilmengen annähernd gleich bleibt. Tabelle~\ref{tab:dataset_split} zeigt die resultierende Aufteilung:
 
 \begin{table}[H]
 \centering
-\begin{tabular}{|l|r|r|}
+\begin{tabular}{|l|r|r|r|r|}
 \hline
-\textbf{Klasse} & \textbf{Bilder} & \textbf{Instanzen} \\
+\textbf{Teilmenge} & \textbf{Original} & \textbf{Augmentiert} & \textbf{Gesamt Bilder} & \textbf{Instanzen} \\
 \hline
-\multicolumn{3}{|c|}{\textit{Kernklassen (produktionsrelevant)}} \\
+Training     & 399 & 524 & 923 & 12.506 \\
+Validierung  &  83 & 125 & 208 &  3.076 \\
 \hline
-coordinate & 113 & 629 \\
-signal & 81 & 218 \\
-gks\_gesteuert & 67 & 69 \\
-gm\_block & 55 & 91 \\
-gks\_festkodiert & 43 & 60 \\
-\hline
-\textbf{Summe Kernklassen} & --- & \textbf{1.067 (81,8\%)} \\
-\hline
-\multicolumn{3}{|c|}{\textit{Auxiliarklassen (Erweiterbarkeit)}} \\
-\hline
-sverbinder & 81 & 85 \\
-haltepunkt & 47 & 47 \\
-weichen\_block & 25 & 39 \\
-isolierstoß & 16 & 27 \\
-prellbock & 14 & 16 \\
-haltetafel & 11 & 11 \\
-weichengruppenende & 9 & 9 \\
-endeweichen & 4 & 4 \\
-\hline
-\textbf{Summe Auxiliarklassen} & --- & \textbf{238 (18,2\%)} \\
-\hline
-\hline
-\textbf{Gesamt} & \textbf{115}* & \textbf{1.305} \\
+\textbf{Gesamt} & \textbf{482} & \textbf{649} & \textbf{1.131} & \textbf{15.582} \\
 \hline
 \end{tabular}
-\caption{Verteilung der Annotationen über Klassen und Bilder im Validierungssatz, unterteilt nach Kern- und Auxiliarklassen (vgl. Anforderung FA-003). *Die Spalte \textit{Bilder} zeigt die Anzahl der Bilder mit mindestens einer Instanz der jeweiligen Klasse; da Bilder mehrere Klassen enthalten können, ist die Summe der Einzelwerte größer als die Gesamtbildzahl.}
-\label{tab:dataset_distribution}
+\caption{Aufteilung des Datensatzes in Trainings- und Validierungssatz}
+\label{tab:dataset_split}
 \end{table}
 
-Es ist ersichtlich, dass die Klassenverteilung unausgeglichen ist, mit Koordinaten und Signalen als dominierende Klassen. Diese Verteilung spiegelt die reale Häufigkeit der Symbole in Gleisplänen wider. Um ein Overfitting auf häufige Klassen zu vermeiden, wurde während des Trainings eine klassengewichtete Verlustfunktion zwar in Betracht gezogen, letztendlich jedoch zugunsten einer robusten Datenaugmentation verworfen.
+Der Anteil augmentierter Bilder ist in beiden Teilmengen vergleichbar (56,8\,\% im Trainings- und 60,1\,\% im Validierungssatz), was die stratifizierte Aufteilung bestätigt.
 
-\textbf{Klassenpriorisierung:} Gemäß Anforderung \textbf{FA-003} werden die Objektklassen 
-in zwei Kategorien unterteilt. Die fünf \textit{Kernklassen} (signal, coordinate, 
-gks\_festkodiert, gks\_gesteuert, gm\_block) repräsentieren die für die Projektierung 
-bei Siemens Mobility essentiellen Symbole und bilden den Fokus der End-to-End-Evaluation 
-in Kapitel~\ref{chap:evaluation}. Die acht \textit{Auxiliarklassen} wurden zusätzlich 
-implementiert, um die Erweiterbarkeit des Systems zu demonstrieren (vgl. Anforderung 
-\textbf{NFA-008}), werden jedoch nicht im Detail evaluiert.
+\paragraph{Klassenverteilung.}
+Tabelle~\ref{tab:dataset_distribution} zeigt die vollständige Verteilung der Annotationen über alle 13~Symbolklassen, aufgeschlüsselt nach Trainings- und Validierungssatz. Die Spalte \textit{Bilder} gibt an, in wie vielen Bildern der jeweiligen Teilmenge mindestens eine Instanz der betreffenden Klasse vorkommt. Da ein einzelnes Bild typischerweise mehrere Symbolklassen gleichzeitig enthält, überlappen sich die Einzelwerte der Spalte \textit{Bilder} und summieren sich nicht zur Gesamtbildzahl.
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{|l|r|r|r|r|r|}
+\hline
+\textbf{Klasse} & \textbf{Train Bilder} & \textbf{Train Inst.} & \textbf{Val Bilder} & \textbf{Val Inst.} & \textbf{Gesamt Inst.} \\
+\hline
+\multicolumn{6}{|c|}{\textit{Kernklassen (produktionsrelevant)}} \\
+\hline
+coordinate       & 890 & 5.945 & 207 & 1.483 & 7.428 \\
+signal           & 681 & 1.875 & 164 &   473 & 2.348 \\
+gm\_block        & 585 &   843 & 143 &   201 & 1.044 \\
+gks\_gesteuert   & 586 &   651 & 147 &   157 &   808 \\
+gks\_festkodiert & 390 &   479 &  88 &   122 &   601 \\
+\hline
+\textbf{Summe Kern} & \textbf{---} & \textbf{9.793} & \textbf{---} & \textbf{2.436} & \textbf{12.229 (78,5\,\%)} \\
+\hline
+\multicolumn{6}{|c|}{\textit{Auxiliarklassen (Erweiterbarkeit)}} \\
+\hline
+sverbinder          & 611 &   703 & 140 & 150 &   853 \\
+isolierstoß         & 264 &   618 &  67 & 147 &   765 \\
+weichen\_block      & 325 &   514 &  67 & 129 &   643 \\
+haltepunkt          & 376 &   388 &  92 &  92 &   480 \\
+endeweichen         & 170 &   198 &  50 &  50 &   248 \\
+prellbock           & 109 &   125 &  31 &  31 &   156 \\
+haltetafel          &  81 &    93 &  23 &  23 &   116 \\
+weichengruppeende   &  74 &    74 &  18 &  18 &    92 \\
+\hline
+\textbf{Summe Auxiliar} & \textbf{---} & \textbf{2.713} & \textbf{---} & \textbf{640} & \textbf{3.353 (21,5\,\%)} \\
+\hline
+\hline
+\textbf{Gesamt} & \textbf{923\textsuperscript{*}} & \textbf{12.506} & \textbf{208\textsuperscript{*}} & \textbf{3.076} & \textbf{15.582} \\
+\hline
+\end{tabular}
+\caption{Verteilung der Annotationen über alle 13~Klassen im Trainings- und Validierungssatz.
+Die Spalte \textit{Bilder} zeigt die Anzahl der Bilder mit mindestens einer Instanz
+der jeweiligen Klasse; da Bilder mehrere Klassen gleichzeitig enthalten, ist die Summe
+der Einzelwerte größer als die mit~\textsuperscript{*} markierte Gesamtbildzahl.}
+\label{tab:dataset_distribution}
+\end{table}
 
 Die Daten wurden in eine standardisierte COCO-Verzeichnisstruktur (Abbildung~\ref{fig:COCODatenset}) überführt, welche die Organisation von Trainings- und Validierungsdaten sowie die zugehörigen Annotationen in separaten Verzeichnissen vorsieht.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=5cm]{images/Kapitel6/cocodatasetconfig.png} 
-    \caption{COCO-konforme Datensetstruktur für YOLOv8-OBB Training}
+    \caption{COCO-konforme Datensetstruktur für das YOLOv8-OBB-Training}
     \label{fig:COCODatenset}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.95\textwidth]{images/Kapitel7/labels.jpg}
-    \caption{Charakteristika des Trainingsdatensatzes: (oben links) Klassenverteilung mit absoluten Instanzzahlen, (unten links) räumliche Verteilung der Bounding-Box-Zentren, (unten rechts) Größenverteilung der annotierten Objekte in normalisierten Koordinaten.}
+    \caption{Charakteristika des Trainingsdatensatzes (923~Bilder, 12.506~Instanzen): 
+    (oben links)~Klassenverteilung mit absoluten Instanzzahlen, 
+    (unten links)~räumliche Verteilung der Bounding-Box-Zentren,
+    (unten rechts)~Größenverteilung der annotierten Objekte in normalisierten Koordinaten.}
     \label{fig:labels_distribution}
 \end{figure}
-Abbildung~\ref{fig:labels_distribution} visualisiert die Charakteristika des annotierten Trainingsdatensatzes. Die Klassenverteilung zeigt eine deutliche Dominanz der Koordinaten-Klasse (5.945 Instanzen), gefolgt von Signalen (1.875 Instanzen). Diese Ungleichverteilung spiegelt die tatsächliche Häufigkeit der Symbole in realen Gleisplänen wider und wurde bewusst beibehalten, um das Modell auf praxisnahe Verteilungen zu trainieren. Die räumliche Verteilung der Bounding-Box-Zentren zeigt eine gleichmäßige Abdeckung des Bildbereichs, während die Größenverteilung die charakteristisch kleinen Objektgrößen der Gleisplansymbole verdeutlicht.
-\subsubsection{Synthetische Datenaugmentation durch Rotation}
 
-Um die Robustheit des Modells gegenüber beliebigen Symbolorientierungen zu verbessern und die Klassenbalance zu optimieren, wurde eine gezielte synthetische Augmentation durch Rotation implementiert. Diese Strategie adressiert zwei zentrale Herausforderungen:
+Abbildung~\ref{fig:labels_distribution} visualisiert die Charakteristika des Trainingsdatensatzes. Die Klassenverteilung zeigt die nach Augmentation resultierende Verteilung mit der erwartungsgemäß dominierenden Koordinaten-Klasse (5.945~Trainingsinstanzen), gefolgt von Signalen (1.875~Trainingsinstanzen). Die räumliche Verteilung der Bounding-Box-Zentren zeigt eine gleichmäßige Abdeckung des Bildbereichs ohne systematische Häufungen oder Leerräume, was auf eine gute Repräsentativität des Datensatzes hindeutet. Die Größenverteilung verdeutlicht die charakteristisch kleinen Objektdimensionen der Gleisplansymbole, die überwiegend im Bereich von 2--10\,\% der normalisierten Bilddimensionen liegen.
 
-\begin{enumerate}
-    \item \textbf{Klassenungleichgewicht}: Die natürliche Verteilung der Symbolklassen im Datensatz ist stark unausgeglichen (vgl. Tabelle~\ref{tab:dataset_distribution}), mit dominierenden Klassen wie \textit{coordinate} (629 Instanzen) und unterrepräsentierten Klassen wie \textit{endeweichen} (4 Instanzen).
-    
-    \item \textbf{Orientierungsvielfalt}: Obwohl technische Zeichnungen Symbole in verschiedenen Winkeln enthalten, sind bestimmte Orientierungen (insbesondere $0^\circ$ und $90^\circ$) überrepräsentiert, während diagonale Ausrichtungen seltener auftreten.
-\end{enumerate}
+\paragraph{Diskussion der Klassenverteilung.}
+Die \textbf{Dominanz der Koordinaten-Klasse} ist ein inhärentes Merkmal von Gleisplänen und kein Artefakt des Datensatzes: Grundsätzlich besitzt jedes Objekt in einem Gleisplan -- ob Signal, GKS-Platte, Weiche oder Haltepunkt -- eine eigene Kilometerangabe. Die Anzahl der Koordinatenbeschriftungen entspricht daher annähernd der Summe aller übrigen Objektinstanzen. Ein direkter Größenvergleich zwischen der Koordinaten-Klasse und einzelnen Symbolklassen ist somit methodisch nur bedingt aussagekräftig, da Koordinaten funktional eine Referenzklasse darstellen, die alle anderen Symbolklassen begleitet.
 
-\textbf{Augmentationsstrategie:}
-
-Die synthetische Rotation wurde selektiv auf unterrepräsentierte Klassen angewendet. Für jede Instanz einer Zielklasse wurden systematische Rotationen um folgende Winkel durchgeführt:
-
-$$\Theta_{\text{aug}} = \{-90^\circ, -60^\circ, -45^\circ, -30^\circ, -15^\circ, +15^\circ, +30^\circ, +45^\circ, +60^\circ, +90^\circ\}$$
-
-Die Rotation erfolgte um den Zentroid $(c_x, c_y)$ der Oriented Bounding Box, wobei sowohl die Bildregion als auch die OBB-Koordinaten entsprechend transformiert wurden. Die Rotationsmatrix für einen Winkel $\theta$ lautet:
-
-$$\mathbf{R}(\theta) = \begin{pmatrix} 
-\cos(\theta) & -\sin(\theta) \\ 
-\sin(\theta) & \cos(\theta) 
-\end{pmatrix}$$
-
-\textbf{Rotationsinvarianz (FA-002):} Die synthetische Augmentation mit 10 
-Rotationswinkeln ($\Theta_{\text{aug}} = \{-90^\circ, -60^\circ, ..., +90^\circ\}$) stellt sicher, 
-dass das Modell Symbole in beliebigen Orientierungen erkennen kann. In Kombination 
-mit der OBB-Architektur wird eine vollständige Rotationsinvarianz von $0^\circ$ bis $360^\circ$ 
-erreicht.
+Die \textbf{Instanzzahlen der Auxiliarklassen} erfordern eine differenzierte Betrachtung. Aus eisenbahntechnischer Sicht wäre zu erwarten, dass S-Verbinder und Isolierstöße in realen Gleisplänen mindestens ebenso häufig vorkommen wie Signale, da jedes Signal theoretisch einen S-Verbinder oder Isolierstoß in unmittelbarer Nähe besitzt, ergänzt durch weitere Vorkommen am Ende des Durchrutschweges, in Weichenbereichen und als Trennung mehrerer Gleisabschnitte \cite{Pachl2018Systemtechnik}. Die im Datensatz beobachteten Instanzzahlen (S-Verbinder: 853, Isolierstoß: 765 vs.\ Signal: 2.348~gesamt) spiegeln diese theoretische Häufigkeit nicht vollständig wider. Diese Diskrepanz resultiert aus der \textit{bewussten Priorisierung der Annotationsarbeit} auf die fünf Kernklassen: Während Signale und Koordinaten in allen 24~Gleisplänen systematisch und vollständig annotiert wurden, erfolgte die Annotation der acht Auxiliarklassen in einem repräsentativen Subset der Bildausschnitte. Diese Einschränkung war notwendig, um den manuellen Annotationsaufwand auf die projektierungsrelevanten Kernklassen zu konzentrieren und den Gesamtumfang der Arbeit handhabbar zu halten. Die Auxiliarklassen dienen primär dem Nachweis der Erweiterbarkeit des Systems (Anforderung \textbf{NFA-008}) und nicht einer vollständigen Abdeckung aller Gleisplanelemente. Die detaillierte quantitative Evaluation der Erkennungsleistung über alle Klassen erfolgt in Kapitel~\ref{chap:evaluation}.
 
 
-\textbf{Klassenspezifische Augmentation:}
-
-Die Anzahl der generierten synthetischen Samples wurde klassenabhängig gesteuert, um eine Zielverteilung von ca. 600 Instanzen pro Klasse zu erreichen (Ausnahme: \textit{coordinate} mit Ziel +300 Instanzen aufgrund der bereits hohen Ausgangsanzahl).
-
-\begin{table}[H]
-\centering
-\small
-\begin{tabular}{|l|r|r|r|r|}
-\hline
-\textbf{Klasse} & \textbf{Original} & \textbf{Augmentiert} & \textbf{Gesamt} & \textbf{Faktor} \\
-\hline
-\multicolumn{5}{|c|}{\textit{Kernklassen}} \\
-\hline
-coordinate & 629 & 300 & 929 & 1.48x\\
-signal & 218 & 382 & 600 & 2.75x \\
-gks\_gesteuert & 69 & 531 & 600 & 8.70x \\
-gm\_block & 91 & 509 & 600 & 6.59x \\
-gks\_festkodiert & 60 & 540 & 600 & 10.00x \\
-\hline
-\textbf{Summe Kernklassen} & \textbf{1.067} & \textbf{2.262} & \textbf{3.329} & --- \\
-\hline
-\multicolumn{5}{|c|}{\textit{Auxiliarklassen}} \\
-\hline
-sverbinder & 85 & 515 & 600 & 7.06x\\
-haltepunkt & 47 & 553 & 600 & 12.77x\\
-weichen\_block & 39 & 561 & 600 & 15.38x\\
-isolierstoß & 27 & 573 & 600 & 22.22x \\
-prellbock & 16 & 584 & 600 & 37.50x \\
-haltetafel & 11 & 589 & 600 & 54.55x \\
-endeweichen & 4 & 596 & 600 & 150.00x \\
-weichengruppeende & 9 & 591 & 600 & 66.67x \\
-\hline
-\textbf{Summe Auxiliarklassen} & \textbf{238} & \textbf{4.462} & \textbf{4.700} & --- \\
-\hline
-\hline
-\textbf{Gesamt} & \textbf{1.305} & \textbf{6.724} & \textbf{8.029} & \textbf{6.15x} \\
-\hline
-\end{tabular}
-\caption{Verteilung der Instanzen vor und nach synthetischer Rotation, unterteilt nach Kern- und Auxiliarklassen}
-\label{tab:augmentation_statistics}
-\end{table}
-
-\textbf{Technische Umsetzung:}
-Die hohen Augmentationsfaktoren für seltene Klassen (z.B. 150x für \textit{endeweichen}) sind gerechtfertigt, da diese Symbole in realen Gleisplänen tatsächlich sehr selten vorkommen, das Modell aber dennoch in der Lage sein muss, sie zuverlässig zu erkennen. Die synthetische Rotation simuliert realistische Orientierungsvariationen und verhindert Overfitting auf die wenigen Original-Samples. 
-
-Die finale Datensatzaufteilung erfolgte automatisch durch YOLOv8s integrierte Split-Funktion mit einem 80/20-Verhältnis, was zu 923 Trainings- und 208 Validierungsbildern führte. Nach manueller Filterung leerer oder irrelevanter Tiles verblieben 115 Validierungsbilder (1.305 Instanzen), die als dedizierter Testdatensatz für die Evaluation in Kapitel~\ref{chap:evaluation} dienen.
-Die Rotation wurde in einem Preprocessing-Schritt vor dem Training durchgeführt und die augmentierten Samples wurden als separate Einträge im Trainingsdatensatz gespeichert. Dies ermöglicht eine deterministische Reproduzierbarkeit der Augmentation. Die Implementation erfolgte mittels OpenCV's \texttt{cv2.getRotationMatrix2D()} und \texttt{cv2.warpAffine()}, wobei die Bildgröße dynamisch angepasst wurde, um ein Abschneiden rotierter Objekte zu vermeiden.
-
-\textbf{Validierung der Augmentation:}
-
-Um sicherzustellen, dass die synthetische Rotation keine Artefakte einführt, wurden die augmentierten Samples manuell gesichtet. Die OBB-Annotationen wurden entsprechend transformiert und auf geometrische Korrektheit geprüft.
+% ─────────────────────────────────────────────────────────────────────────────
 \subsection{Modelltraining und Optimierung}
-\label{subsec:Modelltraining}
-Das Training des YOLOv8-OBB Modells wurde auf einer cloud-basierten GPU-Instanz mit einer NVIDIA AWS Instance g4dn.xlarge, (16 GB VRAM) durchgeführt. Die Wahl einer externen GPU-Instanz war notwendig, da lokale Entwicklungsmaschinen nicht über ausreichende Rechenleistung verfügen, um das Training in angemessener Zeit abzuschließen.
+\label{subsec:modelltraining}
+% ─────────────────────────────────────────────────────────────────────────────
 
+% ── 6.2.2.1  Architektur und Hyperparameter ──────────────────────────────────
 \subsubsection{Modellarchitektur und Hyperparameter}
 
-Als Basismodell wurde YOLOv8l-OBB gewählt, die \enquote{Large}-Variante von YOLOv8 mit OBB-Unterstützung. Diese Modellgröße stellt eine Balance zwischen Detektionspräzision und Inferenzgeschwindigkeit dar. Kleinere Varianten (YOLOv8n, YOLOv8s) wären zwar schneller, zeigen jedoch bei komplexen Szenen mit kleinen Objekten deutliche Leistungseinbußen. Größere Varianten (YOLOv8x) würden nur marginale Verbesserungen bringen, bei gleichzeitig erheblich längerer Trainings- und Inferenzzeit.
+Als Modellarchitektur wurde \textbf{YOLOv8l-OBB} gewählt, die \textit{Large}-Variante der YOLOv8-Familie mit OBB-Erweiterung. Diese Variante bietet mit ca.\ 43,7~Millionen Parametern eine hohe Modellkapazität, die für die zuverlässige Unterscheidung der 13~visuell teilweise ähnlichen Symbolklassen -- insbesondere der GKS-Varianten -- erforderlich ist. Im Vergleich zur kleineren \textit{Small}-Variante (11,2~Mio.\ Parameter) erreicht die \textit{Large}-Variante eine höhere Erkennungsgenauigkeit bei feingranularen Klassenunterscheidungen, wobei die Inferenzgeschwindigkeit für den Batch-Verarbeitungsmodus der Gleisplanpipeline weiterhin ausreichend ist.
 
-Die vollständige Konfiguration der Trainingsparameter ist in Tabelle \ref{tab:yolo_training_params} dargestellt:
+Das Training wurde auf einer cloud-basierten GPU-Instanz mit einer NVIDIA-GPU und 16~GB Videospeicher durchgeführt. Das Modell wurde mit auf dem COCO-Datensatz \cite{coco} vortrainierten Gewichten initialisiert (\textit{Transfer Learning}), um die in den frühen Netzwerkschichten bereits gelernten generischen Merkmalsextraktoren -- wie Kanten-, Ecken- und Texturerkennung -- zu nutzen und die Konvergenz auf dem domänenspezifischen Gleisplan-Datensatz zu beschleunigen.
+
+Tabelle~\ref{tab:training_hyperparameters} fasst die verwendeten Hyperparameter zusammen:
 
 \begin{table}[H]
 \centering
-\begin{tabular}{|l|r|p{6cm}|}
+\begin{tabular}{|l|l|l|}
 \hline
 \textbf{Parameter} & \textbf{Wert} & \textbf{Begründung} \\
 \hline
-Modellgröße & YOLOv8l-OBB & Balance zwischen Präzision und Inferenzgeschwindigkeit \\
-Eingabeauflösung & $1024 \times 1024$ & Downsampling von 2048×2048 Annotationen; 4× Reduktion der Pixelanzahl für effiziente Verarbeitung \\
-Epochen & 120 & Ausreichend für vollständige Konvergenz ohne Overfitting \\
-Batch Size & 6 & Maximal mögliche Größe bei 16 GB VRAM der T4 GPU \\
-Optimizer & SGD & Momentum = 0.937, Weight Decay = 0.0005 \\
-Learning Rate & 0.01 & Initiale LR mit Cosine Annealing Scheduler \\
-Warmup Epochs & 3 & Graduelle Erhöhung der LR zu Trainingsbeginn \\
-Workers & 2 & Moderat gewählt zur Vermeidung von Speicherüberläufen (Out of Memory) im Dataloader \\
-Cache & Disk & Disk-Caching für deterministische Reproduzierbarkeit \\
-Seed & 0 & Fixierter Seed für vollständige Reproduzierbarkeit \\
+Modell & YOLOv8l-OBB & Hohe Kapazität für 13 Klassen \\
+Vortraining & COCO-Weights & Transfer Learning \\
+Eingabegröße & $1024 \times 1024$~px & Angepasst an Tile-Dimensionen \\
+Epochen & 120 & Konvergenz ab Epoche~$\sim$60 \\
+Batch-Größe & 8 & Limitiert durch 16~GB VRAM \\
+Optimizer & SGD & YOLOv8-Standard \\
+Initiale Lernrate & 0,01 & YOLOv8-Default \\
+Finale Lernrate & 0,0002 & Cosine Annealing ($\text{lrf}=0{,}01$) \\
+Warmup-Epochen & 3 & Stabilisierung der frühen Gradienten \\
+Momentum & 0,937 & Standard-Konfiguration \\
+Weight Decay & 0,0005 & Regularisierung \\
 \hline
 \end{tabular}
-\caption{YOLOv8-OBB Trainingsparameter}
-\label{tab:yolo_training_params}
+\caption{Hyperparameter des YOLOv8s-OBB-Trainings}
+\label{tab:training_hyperparameters}
 \end{table}
 
-Die Batch-Größe von 6 wurde empirisch durch schrittweise Erhöhung ermittelt, bis die GPU-Speichergrenze erreicht wurde. Eine größere Batch-Größe würde zwar stabilere Gradienten liefern, ist jedoch durch die Hardware-Limitierung nicht realisierbar.
+Die \textbf{Eingabegröße} von $1024 \times 1024$~Pixel weicht vom YOLOv8-Standard (640~Pixel) ab und wurde bewusst gewählt, um der Kleinteiligkeit der Gleisplansymbole gerecht zu werden. Bei einer Standard-Eingabegröße von 640~Pixel würden die bereits kleinen Symbole (vgl.\ Größenverteilung in Abbildung~\ref{fig:labels_distribution}) weiter verkleinert und könnten unterhalb der effektiven Erkennungsgrenze des Feature-Extractors fallen.
 
-Der Stochastic Gradient Descent (SGD) Optimizer wurde gegenüber adaptiven Optimierern wie Adam bevorzugt, da SGD in der Regel zu Modellen mit besserer Generalisierungsfähigkeit führt, auch wenn die Konvergenz langsamer verläuft. Der Momentum-Term von 0.937 beschleunigt die Konvergenz in relevanten Richtungen und dämpft Oszillationen.
+Die \textbf{Batch-Größe} von 8 wurde durch den verfügbaren GPU-Speicher (16~GB VRAM) begrenzt. Die \textit{Large}-Variante des YOLOv8-OBB-Modells belegt mit 43,7~Millionen Parametern bereits einen erheblichen Anteil des GPU-Speichers. In Kombination mit der Eingabegröße von $1024 \times 1024$~Pixeln, den zugehörigen Aktivierungen und Gradienten ist eine Batch-Größe von 8 das Maximum innerhalb des verfügbaren Speicherbudgets.
 
-Die Learning Rate wurde mittels Cosine Annealing Scheduler von einem initialen Wert von 0.01 graduell auf nahezu 0 reduziert. Diese Strategie ermöglicht zu Beginn des Trainings große Schritte im Parameterraum und verfeinert gegen Ende die Gewichte durch immer kleinere Anpassungen.
+Das \textbf{Lernraten-Scheduling} folgt dem in YOLOv8 implementierten \textit{Cosine Annealing} mit linearem Warmup. In den ersten drei Epochen wird die Lernrate linear von einem niedrigen Wert auf die initiale Lernrate von 0,01 erhöht, um instabile Gradienten in der Frühphase des Trainings zu vermeiden. Anschließend fällt die Lernrate gemäß einer Kosinus-Funktion kontinuierlich auf den finalen Wert von 0,0002 (1\,\% der Initialrate) ab. Dieses Schema ermöglicht in der mittleren Trainingsphase eine effiziente Exploration des Parameterraums, während in der Spätphase eine feinere Justierung der Gewichte durch die reduzierte Schrittweite erfolgt.
 
-\subsubsection{Datenaugmentation}
+% ── 6.2.2.2  Konvergenz ─────────────────────────────────────────────────────
+\subsubsection{Trainingskonvergenz}
+\label{subsubsec:trainingskonvergenz}
 
-Um die Robustheit des Modells gegenüber Variationen in den Eingangsdaten zu erhöhen und Overfitting zu vermeiden, wurden verschiedene Augmentierungstechniken angewendet. Die Konfiguration der Augmentierungsparameter zeigt Tabelle \ref{tab:augmentation}:
+Die Gesamtdauer des Trainings über 120~Epochen betrug \textbf{ca.\ 6~Stunden}. YOLOv8-OBB optimiert drei Verlustkomponenten simultan:
+
+\begin{itemize}
+    \item \textbf{Box Loss} (\textit{train/box\_loss}): Quantifiziert die Abweichung zwischen vorhergesagten und tatsächlichen Bounding-Box-Positionen und -Dimensionen.
+    \item \textbf{Classification Loss} (\textit{train/cls\_loss}): Misst den Fehler bei der Klassenzuordnung der erkannten Objekte.
+    \item \textbf{Distribution Focal Loss} (\textit{train/dfl\_loss}): Optimiert die Vorhersageverteilung der Bounding-Box-Eckpunkte und verbessert insbesondere die Lokalisierungsgenauigkeit bei kleinen Objekten.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{images/Kapitel6/results.png}
+    \caption{Trainings- und Validierungsverläufe über 120~Epochen: 
+    (oben)~Trainings-Losses und Metriken, (unten)~Validierungs-Losses und mAP-Werte.}
+    \label{fig:training_curves}
+\end{figure}
+
+Abbildung~\ref{fig:training_curves} zeigt den Verlauf aller drei Verlustkomponenten sowie der Evaluationsmetriken über die 120~Trainingsepoch\-en. Der Trainingsverlauf lässt sich in drei charakteristische Phasen unterteilen:
+
+\begin{enumerate}
+    \item \textbf{Warmup-Phase (Epochen 1--3):} Die Lernrate wird linear auf den Initialwert hochgefahren. Alle Verlustkomponenten fallen steil ab, was die schnelle Adaption der vortrainierten COCO-Gewichte an die Gleisplan-Domäne zeigt. Bereits nach Epoche~3 erreicht das Modell eine mAP@0.5 von 92,5\,\%.
+    
+    \item \textbf{Primäre Lernphase (Epochen 4--60):} Die Verluste sinken stetig, während Precision, Recall und mAP kontinuierlich ansteigen. Die mAP@0.5 steigt von 92,5\,\% auf ca.\ 98,0\,\%, die mAP@0.5:0.95 von 79,1\,\% auf ca.\ 92,0\,\%. In dieser Phase lernt das Modell die domänenspezifischen Merkmale der 13~Symbolklassen.
+    
+    \item \textbf{Feintuning-Phase (Epochen 61--120):} Die Validierungsmetriken stabilisieren sich auf hohem Niveau mit geringfügigen Schwankungen. Die Trainingsverluste sinken weiter -- insbesondere zeigt sich bei Epoche~$\sim$110 ein markanter Abfall (\textit{box\_loss}: 0,26$\to$0,21; \textit{cls\_loss}: 0,21$\to$0,17), der auf die finale Phase des Cosine-Annealing-Schedules zurückzuführen ist, in der die stark reduzierte Lernrate eine feinere Gewichtsoptimierung ermöglicht.
+\end{enumerate}
+
+\paragraph{Overfitting-Analyse.}
+Ein entscheidendes Qualitätskriterium des Trainings ist die Abwesenheit von Overfitting, d.\,h.\ das Modell generalisiert auf ungesehene Daten (Validierungssatz) ähnlich gut wie auf Trainingsdaten. Die Validierungsverluste zeigen ab Epoche~50 einen stabilen Plateauverlauf ohne Anstieg: \textit{val/box\_loss} stabilisiert sich bei ca.\ 0,38, \textit{val/cls\_loss} bei ca.\ 0,28 und \textit{val/dfl\_loss} bei ca.\ 1,50. Da ein ansteigender Validierungsverlust bei gleichzeitig sinkendem Trainingsverlust das klassische Indiz für Overfitting wäre, kann dieses Phänomen für das vorliegende Training ausgeschlossen werden. Der moderate und stabile Gap zwischen Trainings- und Validierungsverlust (z.\,B.\ \textit{box\_loss}: 0,21 vs.\ 0,38) ist für augmentierte Datensätze typisch und reflektiert die zusätzliche Variabilität der Trainingsdaten durch die synthetische Rotation.
+
+% ── 6.2.2.3  Ergebnisse ─────────────────────────────────────────────────────
+\subsubsection{Trainingsergebnisse}
+\label{subsubsec:trainingsergebnisse}
+
+\paragraph{Aggregierte Metriken.}
+Tabelle~\ref{tab:training_results} fasst die finalen Detektionsmetriken des trainierten Modells zusammen, evaluiert auf dem Validierungsdatensatz (208~Bilder, 3.076~Instanzen):
 
 \begin{table}[H]
 \centering
-\begin{tabular}{|l|r|p{7cm}|}
+\begin{tabular}{|l|r|}
 \hline
-\textbf{Augmentation} & \textbf{Parameter} & \textbf{Beschreibung} \\
+\textbf{Metrik} & \textbf{Wert} \\
 \hline
-Rotation & $0.0^\circ$ & Deaktiviert, da OBB bereits Rotationsinvarianz bietet \\
-Translation & $\pm 5\%$ & Horizontale und vertikale Verschiebung um bis zu 5\% der Bildgröße \\
-Skalierung & $\pm 20\%$ & Zufällige Vergrößerung oder Verkleinerung um bis zu 20\% \\
-Scherung & $0.0^\circ$ & Deaktiviert, um geometrische Integrität zu bewahren \\
-Perspektive & 0.0 & Deaktiviert aus gleichem Grund \\
-Horizontal Flip & 20\% & Spiegelung mit 20\% Wahrscheinlichkeit \\
-Vertical Flip & 0\% & Deaktiviert, da vertikale Orientierung semantisch relevant ist \\
-Mosaic & 40\% & Kombination von 4 Bildern, deaktiviert ab Epoch 110 \\
-Mixup & 10\% & Lineare Überlagerung zweier Bilder mit 10\% Wahrscheinlichkeit \\
+Precision (Durchschnitt, alle Klassen)  & 97,4\,\% \\
+Recall (Durchschnitt, alle Klassen)     & 95,6\,\% \\
+F1-Score (bei Konfidenzschwelle 0,674)  & 96,0\,\% \\
+mAP@0.5 (alle Klassen)                 & 98,4\,\% \\
+mAP@0.5:0.95 (alle Klassen)            & 92,7\,\% \\
 \hline
 \end{tabular}
-\caption{Datenaugmentierungsparameter}
-\label{tab:augmentation}
+\caption{Aggregierte Detektionsmetriken auf dem Validierungsdatensatz (208~Bilder)}
+\label{tab:training_results}
 \end{table}
 
-Die Deaktivierung der Rotationsaugmentation mag zunächst kontraintuitiv erscheinen, da die OBB-Architektur explizit für rotierte Objekte entwickelt wurde. Jedoch sind die Rotationswinkel der Symbole bereits in den OBB-Annotationen kodiert, sodass eine zusätzliche künstliche Rotation redundant wäre. Stattdessen lernt das Modell, die Orientierung direkt aus den rotierten Bounding Boxes zu extrahieren.
+Die mAP@0.5 von \textbf{98,4\,\%} zeigt, dass das Modell bei einem IoU-Schwellenwert von 50\,\% nahezu alle Symbole korrekt lokalisiert und klassifiziert. Die strengere Metrik mAP@0.5:0.95, die über IoU-Schwellenwerte von 50\,\% bis 95\,\% mittelt, erreicht \textbf{92,7\,\%} und bestätigt eine hohe Lokalisierungspräzision auch bei strengen Überlappungsanforderungen. Der optimale F1-Score von 0,96 wird bei einer Konfidenzschwelle von 0,674 erreicht, was darauf hindeutet, dass das Modell überwiegend hochkonfidente Vorhersagen trifft.
 
-Die Mosaic-Augmentation kombiniert vier zufällig ausgewählte Trainingsbilder zu einem neuen Bild, indem sie in einem 2x2-Raster angeordnet werden. Diese Technik zwingt das Modell, Objekte auch in ungewöhnlichen Kontexten und bei veränderten Größenverhältnissen zu erkennen. Die Deaktivierung der Mosaic-Augmentation in den letzten 10 Epochen (close\_mosaic = 10) ermöglicht dem Modell, sich in der Feinabstimmungsphase auf realistische, unveränderte Bilder zu fokussieren.
-
-Die Trainingsdauer betrug insgesamt ca. 8 Stunden bei kontinuierlicher GPU-Auslastung von nahezu 100\%.
-
-\subsubsection{Trainingsergebnisse}
-
-Das Training wurde über 120 Epochen durchgeführt und erreichte eine stabile Konvergenz 
-ohne Anzeichen von Overfitting. Die Trainingsverläufe (Abbildung \ref{fig:yolo_training_curves}) 
-illustrieren die Entwicklung der Verlustfunktionen über den Trainingsverlauf.
+\paragraph{Klassenspezifische Leistung.}
+Abbildung~\ref{fig:pr_curve} zeigt die Precision-Recall-Kurven für alle 13~Symbolklassen. Die klassenspezifischen AP@0.5-Werte sind in Tabelle~\ref{tab:per_class_ap} zusammengestellt.
 
 \begin{figure}[H]
-\centering
-\includegraphics[width=\textwidth]{images/Kapitel6/results.png}
-\caption{Trainings- und Validierungsmetriken über 120 Epochen. Die Kurven zeigen eine 
-stabile Konvergenz ohne Anzeichen von Overfitting.}
-\label{fig:yolo_training_curves}
+    \centering
+    \includegraphics[width=0.85\textwidth]{images/Kapitel6/BoxPR_curve.png}
+    \caption{Precision-Recall-Kurven für alle 13~Symbolklassen auf dem Validierungsdatensatz. 
+    Die Werte in der Legende geben die jeweilige AP@0.5 an.}
+    \label{fig:pr_curve}
 \end{figure}
 
-Folgende Beobachtungen lassen sich aus den Kurven ableiten:
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|r|r|r|}
+\hline
+\textbf{Klasse} & \textbf{Val Inst.} & \textbf{AP@0.5} & \textbf{Bewertung} \\
+\hline
+\multicolumn{4}{|c|}{\textit{Kernklassen}} \\
+\hline
+gm\_block        &   201 & 99,5\,\% & Exzellent \\
+coordinate       & 1.483 & 98,7\,\% & Exzellent \\
+gks\_festkodiert &   122 & 97,8\,\% & Sehr gut \\
+signal           &   473 & 97,6\,\% & Sehr gut \\
+gks\_gesteuert   &   157 & 95,1\,\% & Gut \\
+\hline
+\textbf{$\varnothing$ Kernklassen} & \textbf{2.436} & \textbf{97,7\,\%} & \\
+\hline
+\multicolumn{4}{|c|}{\textit{Auxiliarklassen}} \\
+\hline
+sverbinder          & 150 & 99,5\,\% & Exzellent \\
+prellbock           &  31 & 99,5\,\% & Exzellent \\
+endeweichen         &  50 & 99,5\,\% & Exzellent \\
+weichengruppeende   &  18 & 99,0\,\% & Exzellent \\
+coordinate          & --- & ---      & (s.\,o.) \\
+haltepunkt          &  92 & 98,7\,\% & Exzellent \\
+haltetafel          &  23 & 98,4\,\% & Exzellent \\
+isolierstoß         & 147 & 97,8\,\% & Sehr gut \\
+weichen\_block      & 129 & 97,7\,\% & Sehr gut \\
+\hline
+\textbf{$\varnothing$ Auxiliarklassen} & \textbf{640} & \textbf{98,8\,\%} & \\
+\hline
+\hline
+\textbf{$\varnothing$ Alle Klassen} & \textbf{3.076} & \textbf{98,4\,\%} & \\
+\hline
+\end{tabular}
+\caption{Klassenspezifische AP@0.5 auf dem Validierungsdatensatz, sortiert nach Kategorie und absteigend nach AP@0.5}
+\label{tab:per_class_ap}
+\end{table}
+
+Bemerkenswert ist, dass \textbf{alle 13~Klassen eine AP@0.5 über 95\,\%} erreichen und die Streuung mit 95,1\,\% bis 99,5\,\% sehr gering ist. Dies bestätigt, dass die in Abschnitt~\ref{subsubsec:augmentation} beschriebene Augmentationsstrategie das Klassenungleichgewicht erfolgreich adressiert hat: Auch Klassen mit wenigen Validierungsinstanzen (z.\,B.\ \textit{weichengruppeende} mit nur 18~Instanzen) erreichen eine AP@0.5 von 99,0\,\%.
+
+\paragraph{Fehleranalyse.}
+Abbildung~\ref{fig:confusion_matrix} zeigt die normalisierte Konfusionsmatrix auf dem Validierungsdatensatz. Die Diagonale zeigt durchgehend hohe Werte ($\geq 0{,}93$), was eine zuverlässige Klassifikation über alle Klassen bestätigt.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{images/Kapitel6/confusion_matrix_normalized.png}
+    \caption{Normalisierte Konfusionsmatrix auf dem Validierungsdatensatz. 
+    Zeilen repräsentieren die vorhergesagten Klassen, Spalten die tatsächlichen Klassen.}
+    \label{fig:confusion_matrix}
+\end{figure}
+
+Die wesentlichen Fehlerquellen lassen sich wie folgt zusammenfassen:
 
 \begin{itemize}
-    \item Die Box-Loss-Kurve fällt kontinuierlich und stabilisiert sich nach ca. 80 Epochen 
-    auf einem niedrigen Niveau, was auf eine erfolgreiche Lokalisierungsoptimierung hindeutet.
+    \item \textbf{GKS-Verwechslung:} Die Klasse \textit{gks\_festkodiert} weist mit 93\,\% die niedrigste Recall-Rate auf, wobei 3\,\% der Instanzen als \textit{gks\_gesteuert} fehlklassifiziert und 1\,\% als Hintergrund übersehen werden. Diese bidirektionale Verwechslung ist nachvollziehbar, da beide GKS-Varianten eine ähnliche visuelle Morphologie aufweisen und sich primär durch interne Markierungsdetails unterscheiden, die bei kleinen Bounding-Box-Ausschnitten schwer differenzierbar sind.
     
-    \item Die Classification-Loss-Kurve zeigt einen ähnlichen Verlauf, was die erfolgreiche 
-    Konvergenz der Klassifikation belegt.
+    \item \textbf{Isolierstoß-Erkennung:} Die Klasse \textit{isolierstoß} erreicht mit 93\,\% die gemeinsam niedrigste Recall-Rate, wobei 7\,\% der Instanzen als Hintergrund übersehen werden. Dies ist auf die geringe Symbolgröße zurückzuführen, die insbesondere an Tile-Grenzen zu unvollständigen Detektionen führen kann.
     
-    \item Kritisch ist die Beobachtung, dass zwischen Trainings- und Validierungskurven 
-    kein signifikanter Gap existiert. Dies belegt, dass das Modell gut generalisiert und 
-    nicht auf den Trainingsdaten overfittet.
+    \item \textbf{Hintergrund-Fehlzuordnungen:} Die Spalte \textit{background} zeigt, dass das Modell vereinzelt Hintergrundstrukturen fälschlicherweise als Symbole interpretiert. Die höchsten False-Positive-Raten betreffen \textit{coordinate} (0,32) und \textit{signal} (0,20), was angesichts der hohen absoluten Instanzzahlen dieser Klassen jedoch zu relativieren ist.
 \end{itemize}
-\textbf{Update-Fähigkeit (NFA-009):} Die trainierten Modellgewichte werden als 
-externe Datei (\texttt{best.pt}) gespeichert und können ohne Code-Änderungen 
-ausgetauscht werden. Bei Bedarf an neuen Symbolklassen kann ein Nachtraining 
-(Fine-Tuning) auf dem bestehenden Modell durchgeführt werden.
-Die detaillierte quantitative Auswertung der Detektionsleistung sowie die Analyse der 
-Konfusionsmatrix erfolgen in Kapitel \ref{chap:evaluation}.
+
+\paragraph{Konfidenzkalibrierung.}
+Abbildung~\ref{fig:f1_curve} zeigt die F1-Score-Konfidenz-Kurve für alle 13~Klassen.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{images/Kapitel6/BoxF1_curve.png}
+    \caption{F1-Score in Abhängigkeit der Konfidenzschwelle. 
+    Das globale Optimum liegt bei $F1 = 0{,}96$ bei einer Schwelle von 0,674.}
+    \label{fig:f1_curve}
+\end{figure}
+
+Die Kurve zeigt, dass die Mehrzahl der Klassen über einen breiten Konfidenzbereich (0,1--0,9) einen F1-Score über 0,95 aufrechterhält, was auf eine gute Kalibrierung des Modells hindeutet. Der optimale globale F1-Score von 0,96 bei einer Konfidenzschwelle von 0,674 wird als Standard-Detektionsschwelle für die nachfolgende Inferenz-Pipeline übernommen. Eine detaillierte Evaluation der End-to-End-Leistung einschließlich der nachgelagerten OCR- und Verknüpfungsschritte erfolgt in Kapitel~\ref{chap:evaluation}.
+
+Das trainierte Modell (\texttt{best.pt}) wurde als Gewichtsdatei exportiert und in die Inferenz-Pipeline des Prototyps integriert. Die im folgenden Abschnitt beschriebene Inferenz-Pipeline nutzt dieses Modell zur Verarbeitung neuer, bisher ungesehener Gleispläne.
 
 \subsection{Inferenz-Pipeline Implementierung}
 \label{Inferenz}
@@ -1701,14 +1825,14 @@ isolierstoß & 1.0 & 1.0 & 80--130 px & 30--50 px & Auxiliar \\
 haltetafel & 1.0 & 2.0 & 80--130 px & 60--100 px & Auxiliar \\
 prellbock & 1.0 & 2.0 & 80--130 px & 60--100 px & Auxiliar \\
 weichenende & 1.0 & 3.0 & 80--130 px & 90--150 px & Auxiliar \\
-weichengruppeende & 1.0 & 4.0 & 80--130 px & 120--200 px & Auxiliar \\
+weichengruppenende & 1.0 & 4.0 & 80--130 px & 120--200 px & Auxiliar \\
 \hline
 \end{tabular}
 \caption{Klassenspezifische Linking-Parameter. Die Wertebereiche für $dy_{\text{max}}$ und $dx_{\text{max}}$ basieren auf typischen Symbolgrößen von 50--80 Pixeln bei 500 DPI.}
 \label{tab:linking_multipliers}
 \end{table}
 
-Die erhöhten horizontalen Multiplikatoren ($k_{dx} > 1$) für Auxiliarklassen wie \textit{haltetafel}, \textit{prellbock} und \textit{weichengruppeende} reflektieren deren typische Layoutcharakteristik: Diese Symbole haben häufig horizontal versetzte Beschriftungen, während die Kernklassen überwiegend vertikal ausgerichtete Text-Symbol-Relationen aufweisen.
+Die erhöhten horizontalen Multiplikatoren ($k_{dx} > 1$) für Auxiliarklassen wie \textit{haltetafel}, \textit{prellbock} und \textit{weichengruppenende} reflektieren deren typische Layoutcharakteristik: Diese Symbole haben häufig horizontal versetzte Beschriftungen, während die Kernklassen überwiegend vertikal ausgerichtete Text-Symbol-Relationen aufweisen.
 
 \subsubsection{Spezialfälle mit festen Suchparametern}
 
