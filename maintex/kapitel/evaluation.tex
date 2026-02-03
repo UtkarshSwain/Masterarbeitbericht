@@ -27,7 +27,7 @@ Anzahl Original-Gleispläne (A0-Format) & 24 \\
 Anzahl Tiles (2048x2048, überlappend) & 1.131 \\
 \hspace{3mm} davon Trainingsdaten & 923 \\
 \hspace{3mm} davon Validierungsdaten & 208 \\
-Annotierte Symbole (Validierungsset) & 3.706 \\
+Annotierte Symbole (Validierungsset) & 3.076 \\
 \hline
 \multicolumn{2}{|l|}{\textit{Kernklassen (produktionsrelevant)}} \\
 \hline
@@ -46,7 +46,6 @@ Objektklassen (gesamt) & 13 \\
 \hspace{3mm} davon Kernklassen & 5 \\
 \hspace{3mm} davon Auxiliarklassen & 8 \\
 Synthetische Augmentation (Training) & 10 Rotationswinkel \\
-Gesamtinstanzen (inkl. Augmentation) & 8.029 \\
 Tile-Größe & 2048 x 2048 Pixel \\
 Auflösungsbereich (Original-PDFs) & 500 DPI \\
 \hline
@@ -263,8 +262,8 @@ Das trainierte YOLOv8l-OBB Modell wurde auf dem Validierungsdatensatz (208 Bilde
 Precision (Durchschnitt) & 97.5\% \\
 Recall (Durchschnitt) & 95.7\% \\
 F1-Score & 96.6\% \\
-mAP@0.5 & 98.0\% \\
-mAP@0.5:0.95 & 92.2\% \\
+mAP@0.5 & 98.4\% \\
+mAP@0.5:0.95 & 92.7\% \\
 \hline
 \end{tabular}
 \caption{Aggregierte Detektionsmetriken auf dem Validierungsdatensatz}
@@ -273,11 +272,11 @@ mAP@0.5:0.95 & 92.2\% \\
 
 Der erreichte Recall von 95.7\% übertrifft die Anforderung \textbf{FA-001} deutlich, die eine Mindesterkennungsrate von 90\% fordert. Die hohe Precision von 97.5\% zeigt, dass das Modell nur wenige Falschdetektionen produziert -- von 100 vorhergesagten Objekten sind durchschnittlich 97-98 korrekt. Der F1-Score von 96.6\% belegt die ausgewogene Leistung zwischen Precision und Recall, was für produktive Anwendungen essentiell ist: Das System findet nahezu alle vorhandenen Objekte (hoher Recall) und produziert dabei nur wenige Fehlalarme (hohe Precision).
 
-Die mAP@0.5 von 98.0\% demonstriert die exzellente Detektionsqualität bei einem IoU-Schwellenwert von 50\%. Dies bedeutet, dass die vorhergesagten Bounding Boxes im Durchschnitt zu mindestens 50\% mit den Ground-Truth-Boxen überlappen, was für nachgelagerte OCR-Verarbeitung ausreichend präzise ist. Die mAP@0.5:0.95 von 92.2\% bestätigt die robuste Leistung auch bei strengeren Überlappungskriterien (IoU von 50\% bis 95\% in 5\%-Schritten gemittelt). Der Abstand von 5.8 Prozentpunkten zwischen mAP@0.5 und mAP@0.5:0.95 ist für orientierte Bounding Boxes typisch und liegt im erwarteten Bereich.
+Die mAP@0.5 von 98.4\% demonstriert die exzellente Detektionsqualität bei einem IoU-Schwellenwert von 50\%. Dies bedeutet, dass die vorhergesagten Bounding Boxes im Durchschnitt zu mindestens 50\% mit den Ground-Truth-Boxen überlappen, was für nachgelagerte OCR-Verarbeitung ausreichend präzise ist. Die mAP@0.5:0.95 von 92.7\% bestätigt die robuste Leistung auch bei strengeren Überlappungskriterien (IoU von 50\% bis 95\% in 5\%-Schritten gemittelt). Der Abstand von 5.7 Prozentpunkten zwischen mAP@0.5 und mAP@0.5:0.95 ist für orientierte Bounding Boxes typisch und liegt im erwarteten Bereich.
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.85\textwidth]{images/Kapitel7/BoxPR_curve.png}
-    \caption{Precision-Recall-Kurven für alle Objektklassen auf dem Validierungsdatensatz. Die Fläche unter jeder Kurve entspricht dem klassenspezifischen AP-Wert. Der Gesamtwert mAP@0.5 beträgt 98,0\,\%.}
+    \caption{Precision-Recall-Kurven für alle Objektklassen auf dem Validierungsdatensatz. Die Fläche unter jeder Kurve entspricht dem klassenspezifischen AP-Wert. Der Gesamtwert mAP@0.5 beträgt 98,4\,\%.}
     \label{fig:pr_curve}
 \end{figure}
 
@@ -298,7 +297,7 @@ gks\_festkodiert & 122 & 98.3\% & 95.8\% & 97.8\% \\
 gks\_gesteuert & 157 & 94.5\% & 97.5\% & 95.1\% \\
 gm\_block & 201 & 97.6\% & 97.6\% & 99.5\% \\
 \hline
-\textbf{Kernklassen (Durchschnitt)} & \textbf{2.436 (79,2\%)} & \textbf{98.3\%} & \textbf{97.7\%} \\
+\textbf{Kernklassen (Durchschnitt)} & \textbf{2.436 (79,2\%)} & \textbf{98.3\%} & \textbf{97.7\%} & \textbf{97.7\%} \\
 \hline
 \end{tabular}
 \caption{Detektionsmetriken für die fünf Kernklassen auf dem Validierungsdatensatz. Precision und Recall wurden aus der Konfusionsmatrix berechnet, mAP@0.5 aus den Precision-Recall-Kurven.}
@@ -1170,7 +1169,7 @@ Die systematische Evaluation des entwickelten Prototyps auf einem unabhängigen 
 
 \textbf{Objekterkennung (YOLO):}
 \begin{itemize}
-    \item Exzellente Detektionsleistung mit mAP@0.5 von 98.0\% auf dem Validierungssatz
+    \item Exzellente Detektionsleistung mit mAP@0.5 von 98.4\% auf dem Validierungssatz
     \item 100\% Detektionsrate auf dem Testsatz (kein Symbol übersehen)
     \item 1 Klassifikationsfehler (GKS-Typ-Verwechslung) auf dem Testsatz
     \item Robuste Rotationsinvarianz: Steilrotierte Objekte ($|\theta|>30^\circ$) erreichen 

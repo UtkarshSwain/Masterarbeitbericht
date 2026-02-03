@@ -197,7 +197,7 @@ entsprechend transformiert wurden. Jeder Eckpunkt $(x_i, y_i)$ einer OBB wird re
 Die Anzahl der pro Tile generierten synthetischen Kopien wurde klassenabhängig gesteuert, um eine Zielverteilung von ca.\ 600~Instanzen pro unterrepräsentierter Klasse zu erreichen. Tiles, die ausschließlich bereits häufige Klassen wie \textit{coordinate} enthalten, wurden nur moderat augmentiert, um deren ohnehin hohe Ausgangszahl nicht unverhältnismäßig weiter zu steigern. Bei stark unterrepräsentierten Klassen (z.\,B.\ \textit{weichengruppeende} mit nur 74~Original-Instanzen oder \textit{haltetafel} mit 93~Original-Instanzen) wurden bis zu 10~Rotationsvarianten pro Tile generiert.
 
 \paragraph{Technische Umsetzung.}
-Die Implementierung nutzt \texttt{cv2.getRotationMatrix2D()} und \texttt{cv2.warpAffine()} aus OpenCV. Die Bildgröße wurde dynamisch angepasst, um ein Abschneiden rotierter Objekte am Rand zu vermeiden. Die augmentierten Tiles wurden als separate Dateien mit eindeutiger Benennung (z.\,B.\ \texttt{*\_a+30.jpg} für eine $+30^\circ$-Rotation) im Datensatz gespeichert, was eine deterministische Reproduzierbarkeit gewährleistet. Die transformierten OBB-Annotationen wurden stichprobenartig manuell auf geometrische Korrektheit überprüft.
+Die Implementierung nutzt \texttt{cv2.getRotationMatrix2D()} und \\ \texttt{cv2.warpAffine()} aus OpenCV. Die Bildgröße wurde dynamisch angepasst, um ein Abschneiden rotierter Objekte am Rand zu vermeiden. Die augmentierten Tiles wurden als separate Dateien mit eindeutiger Benennung (z.\,B.\ \texttt{*\_a+30.jpg} für eine $+30^\circ$-Rotation) im Datensatz gespeichert, was eine deterministische Reproduzierbarkeit gewährleistet. Die transformierten OBB-Annotationen wurden stichprobenartig manuell auf geometrische Korrektheit überprüft.
 
 \paragraph{Ergebnis.}
 Durch die selektive Rotation wurden aus den 482~Original-Tiles zusätzlich \textbf{649~augmentierte Tiles} erzeugt, was den Datensatz auf insgesamt \textbf{1.131~Bildausschnitte} erweitert. Das Augmentationsverhältnis (57,4\,\% augmentiert) spiegelt den Fokus auf unterrepräsentierte Klassen wider: Tiles mit häufigen Symbolen wurden moderat oder gar nicht augmentiert, während Tiles mit seltenen Symbolen mehrfach rotiert wurden.
@@ -232,10 +232,10 @@ Tabelle~\ref{tab:dataset_distribution} zeigt die vollständige Verteilung der An
 
 \begin{table}[H]
 \centering
-\small
+\footnotesize
 \begin{tabular}{|l|r|r|r|r|r|}
 \hline
-\textbf{Klasse} & \textbf{Train Bilder} & \textbf{Train Inst.} & \textbf{Val Bilder} & \textbf{Val Inst.} & \textbf{Gesamt Inst.} \\
+\textbf{Klasse} & \textbf{Train Bild.} & \textbf{Train Inst.} & \textbf{Val Bild.} & \textbf{Val Inst.} & \textbf{Gesamt} \\
 \hline
 \multicolumn{6}{|c|}{\textit{Kernklassen (produktionsrelevant)}} \\
 \hline
@@ -331,7 +331,7 @@ Momentum & 0,937 & Standard-Konfiguration \\
 Weight Decay & 0,0005 & Regularisierung \\
 \hline
 \end{tabular}
-\caption{Hyperparameter des YOLOv8s-OBB-Trainings}
+\caption{Hyperparameter des YOLOv8l-OBB-Trainings}
 \label{tab:training_hyperparameters}
 \end{table}
 
