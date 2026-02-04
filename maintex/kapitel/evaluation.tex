@@ -15,57 +15,11 @@ Zur systematischen Bewertung wurden zwei hierarchisch strukturierte Datensätze 
 
 \subsubsection{Validierungssatz (YOLO Technical Validation)}
 
-Der Validierungssatz dient der technischen Bewertung der Objekterkennungskomponente und wurde während des Trainingsprozesses zur Modellselektion verwendet.
+Der Validierungssatz dient der technischen Bewertung der Objekterkennungskomponente und wurde während des Trainingsprozesses zur Modellselektion verwendet. Die detaillierte Beschreibung der Datensatzerstellung, Annotation und Augmentation findet sich in Abschnitt~\ref{subsec:Datensatzerstellung}.
 
-\begin{table}[H]
-\centering
-\begin{tabular}{|l|r|}
-\hline
-\textbf{Attribut} & \textbf{Wert} \\
-\hline
-Anzahl Original-Gleispläne (A0-Format) & 24 \\
-Anzahl Tiles (2048x2048, überlappend) & 1.131 \\
-\hspace{3mm} davon Trainingsdaten & 923 \\
-\hspace{3mm} davon Validierungsdaten & 208 \\
-Annotierte Symbole (Validierungsset) & 3.076 \\
-\hline
-\multicolumn{2}{|l|}{\textit{Kernklassen (produktionsrelevant)}} \\
-\hline
-\hspace{3mm} Signale & 473 \\
-\hspace{3mm} Koordinaten & 1.483 \\
-\hspace{3mm} GKS (festkodiert) & 122  \\
-\hspace{3mm} GKS (gesteuert) & 157  \\
-\hspace{3mm} GM-Blöcke & 201  \\
-\hspace{3mm} \textbf{Summe Kernklassen} & \textbf{2.436 (79,2\%)} \\
-\hline
-\multicolumn{2}{|l|}{\textit{Auxiliarklassen (experimentell)}} \\
-\hline
-\hspace{3mm} Sonstige Klassen (8 Typen) & 640 (20.8\%) \\
-\hline
-Objektklassen (gesamt) & 13 \\
-\hspace{3mm} davon Kernklassen & 5 \\
-\hspace{3mm} davon Auxiliarklassen & 8 \\
-Synthetische Augmentation (Training) & 10 Rotationswinkel \\
-Tile-Größe & 2048 x 2048 Pixel \\
-Auflösungsbereich (Original-PDFs) & 500 DPI \\
-\hline
-\end{tabular}
-\caption{Statistiken des Validierungsdatensatzes mit Unterscheidung zwischen Kern- und Auxiliarklassen}
-\label{tab:validation_dataset_stats}
-\end{table}
+Der Datensatz umfasst 208 Validierungs-Tiles mit 3.076 annotierten Symbolinstanzen, davon 2.436 Instanzen (79,2\%) in den fünf Kernklassen (\textit{signal}, \textit{coordinate}, \textit{gks\_festkodiert}, \textit{gks\_gesteuert}, \textit{gm\_block}) und 640 Instanzen (20,8\%) in acht Auxiliarklassen (vgl.\ Tabelle~\ref{tab:dataset_split} und Tabelle~\ref{tab:dataset_distribution}).
 
-\textbf{Anmerkung zur Datenaufteilung:} Die Aufteilung in Trainings- und 
-Validierungsdaten erfolgte stratifiziert mit einem 80/20-Verhältnis 
-(vgl. Abschnitt~\ref{subsubsec:dataset_split}). Sowohl Original- als auch 
-augmentierte Tiles sind in beiden Teilmengen enthalten, wobei die relative 
-Klassenverteilung annähernd erhalten bleibt.
-
-\textbf{Verwendungszweck:} Der Validierungssatz dient der technischen Bewertung 
-der YOLO-Detektionsleistung (mAP, Precision, Recall) und bestätigt die erfolgreiche 
-Modellkonvergenz. Die detaillierten Trainingsergebnisse und Konvergenzanalysen 
-sind in Abschnitt~\ref{subsec:modelltraining} dokumentiert. Der Validierungssatz 
-stellt keine vollständig unabhängige Testmenge dar; die unabhängige End-to-End-Evaluation 
-erfolgt auf dem separaten Testsatz (Abschnitt~\ref{subsec:e2e_test_eval}).
+\textbf{Verwendungszweck:} Der Validierungssatz dient der technischen Bewertung der YOLO-Detektionsleistung (mAP, Precision, Recall) und bestätigt die erfolgreiche Modellkonvergenz. Der Validierungssatz stellt keine vollständig unabhängige Testmenge dar; die unabhängige End-to-End-Evaluation erfolgt auf dem separaten Testsatz (Abschnitt~\ref{subsec:e2e_test_eval}).
 
 \subsubsection{Testsatz (End-to-End System Evaluation)}
 
@@ -319,7 +273,7 @@ höhere Detektionskonfidenz (0.946) als kardinal orientierte Objekte (0.890).
 gks\_gesteuert, gm\_block) werden zuverlässig detektiert. Die zusätzliche Integration 
 von 8 Auxiliarklassen demonstriert die Erweiterbarkeit des Systems (NFA-008).
 
-\textbf{Hinweis zu weiteren Symbolklassen:} Das Modell wurde zusätzlich auf acht weitere Klassen trainiert (\textit{weichen\_block}, \textit{haltepunkt}, \textit{isolierstoß}, \textit{sverbinder}, \textit{prellbock}, \textit{haltetafel}, \textit{endeweichen}, \textit{weichengruppeende}), die zu experimentellen Zwecken annotiert wurden. Diese Klassen erreichen ebenfalls hohe Erkennungsraten (Durchschnitt mAP@0.5: 98.8\%), werden jedoch in der nachfolgenden End-to-End-Evaluation nicht berücksichtigt, da sie nicht zur primären Extraktionsaufgabe gehören.
+\textbf{Hinweis zu weiteren Symbolklassen:} Das Modell wurde zusätzlich auf acht weitere Klassen trainiert (\textit{weichen\_block}, \textit{haltepunkt}, \textit{isolierstoß}, \textit{sverbinder}, \textit{prellbock}, \textit{haltetafel}, \textit{endeweichen}, \textit{weichengruppenende}), die zu experimentellen Zwecken annotiert wurden. Diese Klassen erreichen ebenfalls hohe Erkennungsraten (Durchschnitt mAP@0.5: 98.8\%), werden jedoch in der nachfolgenden End-to-End-Evaluation nicht berücksichtigt, da sie nicht zur primären Extraktionsaufgabe gehören.
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.7\textwidth]{images/Kapitel7/confusion_matrix.png}
@@ -477,7 +431,7 @@ Plan 7 & 40/40 & 55/55 & 46/46 & 141/141 & Keine Fehler (perfekt) \\
  & (100\%) & (100\%) & (100\%) & (100\%) & (\enquote{w}/\enquote{W} irrelevant) \\
 \hline
 \textbf{Gesamt} & \textbf{169/172} & \textbf{254/256} & \textbf{213/216} & \textbf{636/644} & \textbf{8 Fehler} \\
- & \textbf{(98.3\%)} & \textbf{(99.2\%)} & \textbf{(98.6\%)} & \textbf{(98.8\%)} & \\
+ & \textbf{(98.26\%)} & \textbf{(99.22\%)} & \textbf{(98.61\%)} & \textbf{(98.76\%)} & \\
 \hline
 \end{tabular}
 \caption{Detaillierte End-to-End Ergebnisse pro Testplan mit Fehlertyp-Annotation (Kernklassen, 7 Pläne)}
@@ -564,19 +518,19 @@ YOLO Detection-Fehler (Symbol nicht erkannt) & 0 & 0.0\% \\
 Die detaillierte Analyse offenbart spezifische technische Limitationen, die gezielt adressiert werden können:
 
 \begin{enumerate}
-    \item \textbf{YOLO Bounding Box Regression (2 Fehler, 28.6\%):} 
+    \item \textbf{YOLO Bounding Box Regression (2 Fehler, 25.0\%):} 
     Bei zwei GM-Blöcken erzeugte YOLO ungewöhnlich große Bounding Boxes (z.B. 147×95 Pixel statt der typischen 40-60 Pixel). Dies ist ein \textbf{YOLO-Fehler}, nicht ein OCR-Fehler: Die Objekterkennung detektierte das Symbol korrekt (IoU mit Ground Truth $\geq$ 0.5), aber die Bounding Box Regression war unpräzise und inkludierte zu viel Hintergrund-Kontext. Die nachgelagerte OCR-Verarbeitung erhielt dadurch eine suboptimale Region-of-Interest mit niedrigem Signal-zu-Rausch-Verhältnis, was zur fehlgeschlagenen Texterkennung führte. Eine adaptive ROI-Extraktion mit symbolspezifischem Padding oder Post-Processing der YOLO-Boxen durch Tight-Fitting-Algorithmen könnte diese Fehler vermeiden.
     
-    \item \textbf{OCR-Extraktion fehlgeschlagen (2 Fehler, 28.6\%):} 
+    \item \textbf{OCR-Extraktion fehlgeschlagen (2 Fehler, 25.0\%):} 
     Bei zwei Signal-Instanzen in Plan 5 wurden keine Koordinaten extrahiert, obwohl die Symbole korrekt detektiert und die Bounding Boxes adäquat dimensioniert wurden. Die genaue Ursache ist unklar, vermutlich niedrige OCR-Konfidenz oder ungünstige Orientierung. Diese Fälle würden durch die Validierungswerkzeuge automatisch als \enquote{fehlende Verknüpfung} markiert.
     
-    \item \textbf{OCR-Fehlinterpretation durch visuelle Artefakte (1 Fehler, 14.3\%):} 
+    \item \textbf{OCR-Fehlinterpretation durch visuelle Artefakte (1 Fehler, 12.5\%):} 
     Eine horizontale Linie neben der Koordinatenbeschriftung wurde als Ziffer \enquote{1} interpretiert, was zu \enquote{114.567} statt \enquote{14.567} führte. Solche Artefakte sind in technischen Zeichnungen häufig (Führungslinien, Maßketten). Die Regex-Validierung identifiziert solche Anomalien (Koordinate außerhalb erwarteten Bereichs), aber korrigiert sie nicht automatisch.
     
-    \item \textbf{Linking bei atypischem Layout (1 Fehler, 14.3\%):} 
+    \item \textbf{Linking bei atypischem Layout (1 Fehler, 12.5\%):} 
     Bei einem GM-Block in Plan 3 befand sich die Koordinatenbeschriftung rechts statt unterhalb des Symbols. Der Proximity-basierte Linking-Algorithmus sucht primär unterhalb und oberhalb, was zu einer fehlenden Verknüpfung führte. Eine Erweiterung des Suchradius oder adaptives Lernen der Layoutpräferenzen würde diesen Fall abdecken.
     
-    \item \textbf{Fahrtrichtungs-Ableitung fehlgeschlagen (1 Fehler, 14.3\%):}
+    \item \textbf{Fahrtrichtungs-Ableitung fehlgeschlagen (1 Fehler, 12.5\%):}
     Bei einem Signal in Plan 6 konnte die Fahrtrichtung nicht durch geometrische Analyse abgeleitet werden, vermutlich aufgrund fehlender oder falsch detektierter GKS. Dies ist ein Linking-Fehler, da die geometrische Verknüpfung zwischen Signal und GKS nicht hergestellt werden konnte.
     
     \item \textbf{Ein Classification-Fehler bei GKS-Typen (1 Fehler, 12.5\%):} 
@@ -902,36 +856,11 @@ Komplexer Plan (129 Obj.) & 15,9 min & 5 min & 20,9 min \\
 \label{tab:time_comparison_manual}
 \end{table}
 
-Der KI-gestützte Prozess reduziert den Gesamtzeitaufwand um \textbf{75,3\%}, von durchschnittlich 64 Minuten auf 15,8 Minuten pro Plan. Die Extraktionszeit sinkt von 49 Minuten auf 12,3 Minuten (-74,9\%), während die Qualitätssicherungszeit dank automatischer Fehleridentifikation (vgl. Abschnitt~\ref{subsubsec:validation_tools}) von 15 Minuten auf 3,5 Minuten (-76,7\%) reduziert wird. Bei einem durchschnittlichen Plan mit 92 Objekten entspricht dies einer Zeitersparnis von \textbf{48 Minuten (0,8 Stunden)} pro Plan.
+Der KI-gestützte Prozess reduziert den Gesamtzeitaufwand um \textbf{75,3\%}, von durchschnittlich 64 Minuten auf 15,8 Minuten pro Plan (\textbf{NFA-006}). Bei typischen Siemens Mobility Projekten mit 20-50 Gleisplänen ergibt sich eine Gesamtzeitersparnis von 16-40 Stunden (2-5 Arbeitstage) pro Projekt.
 
-\textbf{Hochrechnung auf Projektebene:} Bei typischen Siemens Mobility Projekten mit 20-50 Gleisplänen ergibt sich eine Gesamtzeitersparnis von 16-40 Stunden (2-5 Arbeitstage) pro Projekt. Dies entspricht einer signifikanten Reduktion des Projektaufwands und ermöglicht kürzere Projektlaufzeiten oder Kapazitätsfreisetzung für wertschöpfende Ingenieurtätigkeiten wie die Validierung komplexer Fahrstraßen oder die Optimierung der Signallogik.
+\textbf{Anmerkung zur Messgenauigkeit:} Die manuelle Zeitmessung erfolgte an einem fokussierten Planabschnitt (25,3s/Objekt), hochgerechnet auf 32s/Objekt für vollständige A0-Pläne unter Berücksichtigung des zusätzlichen Aufwands für räumlich verteilte Symbole.
 
-\textbf{Anmerkung zur Messgenauigkeit:} Die manuelle Zeitmessung erfolgte an einem fokussierten Planabschnitt mit räumlich nahen Objekten. Die Hochrechnung auf 32 Sekunden pro Objekt berücksichtigt realistischerweise den zusätzlichen Aufwand für das Scannen großflächiger A0-Pläne ($841 \times 1189$ mm), das Lokalisieren räumlich verteilter Symbole sowie die Verifikation der Eingaben. Diese konservative Schätzung gewährleistet eine realistische Bewertung der Zeitersparnis, die in der Praxis bei routinierten Bearbeitern möglicherweise noch höher ausfällt.
-
-\textbf{Skalierbarkeit und GPU-Potenzial:}
-
-Die gemessenen Zeiten basieren auf CPU-only Verarbeitung gemäß Anforderung NFA-001 (On-Premise ohne dedizierte Hardware). Eine optionale GPU-Beschleunigung würde primär die YOLO-Inferenz betreffen:
-
-\begin{itemize}
-    \item \textbf{CPU-Inferenz (aktuell)}: 556s YOLO-Zeit → 12.3 min Gesamt
-    \item \textbf{GPU-Inferenz (geschätzt)}: 60-80s YOLO-Zeit → 2-3 min Gesamt
-    \item \textbf{Beschleunigungsfaktor}: ca. 4-6× schneller
-\end{itemize}
-
-Die CPU-basierte Verarbeitung erfüllt jedoch bereits die Anforderung NFA-007, sodass eine GPU-Investition optional bleibt. Die aktuelle Implementierung ermöglicht den Einsatz auf Standard-Workstations ohne spezielle Hardware-Anforderungen.
-
-
-\textbf{Validierung NFA-006 und NFA-007:}
-
-\textbf{NFA-006 (Prozessoptimierung):} Der KI-gestützte Workflow reduziert den 
-Gesamtzeitaufwand um 75.3\% gegenüber dem manuellen Prozess (Tab.~\ref{tab:time_comparison_manual}). 
-Bei einem durchschnittlichen Plan mit 92 Objekten entspricht dies einer Zeitersparnis 
-von 48 Minuten pro Plan.
-
-\textbf{NFA-007 (Ressourceneffizienz):} Die durchschnittliche Verarbeitungszeit von 
-12.3 Minuten pro A0-Plan auf Standard-CPU-Hardware (AMD Ryzen 5 PRO 5650U, 6 Kerne, 32 GB RAM, ohne GPU) erfüllt 
-die Anforderung einer Verarbeitung in \enquote{wenigen Minuten} und ermöglicht den 
-Einsatz auf typischen Engineering-Workstations.
+\textbf{Skalierbarkeit:} Die gemessenen Zeiten basieren auf CPU-only Verarbeitung (\textbf{NFA-001}). Die durchschnittliche Verarbeitungszeit von 12,3 Minuten pro A0-Plan auf Standard-CPU-Hardware erfüllt die Anforderung \textbf{NFA-007}. Eine optionale GPU-Beschleunigung würde die Gesamtzeit auf 2-3 Minuten pro Plan reduzieren (ca.\ 4-6× schneller).
 \subsection{Validierung weiterer funktionaler Anforderungen}
 \label{subsec:functional_validation}
 
@@ -1105,17 +1034,19 @@ erfolgreich demonstriert.
 (vgl. Abbildung~\ref{fig:complete_ui}) wurden während der gesamten 
 Evaluationsphase zur manuellen Verifikation der Extraktionsergebnisse verwendet 
 und funktionierten zuverlässig.
-\section{Validierung der funktionalen Anforderungen}
+\section{Validierung aller Anforderungen}
 \label{sec:anforderungen_validierung}
 
-Tabelle~\ref{tab:anforderungen_erfuellt} fasst die Erfüllung der in Kapitel~\ref{chap:anforderungen} definierten funktionalen Anforderungen zusammen.
+Tabelle~\ref{tab:alle_anforderungen} fasst die Erfüllung aller in Kapitel~\ref{chap:anforderungen} definierten funktionalen und nicht-funktionalen Anforderungen zusammen.
 
 \begin{table}[H]
 \centering
 \small
-\begin{tabular}{|l|p{8cm}|c|}
+\begin{tabular}{|l|p{7.5cm}|c|}
 \hline
-\textbf{Anf.-ID} & \textbf{Anforderung} & \textbf{Erfüllt} \\
+\textbf{ID} & \textbf{Anforderung} & \textbf{Erfüllt} \\
+\hline
+\multicolumn{3}{|c|}{\textit{Funktionale Anforderungen}} \\
 \hline
 FA-001 & Erkennungsrate $\geq$ 90\% & \checkmark (95.7\% Val, 100\% Test) \\
 FA-002 & Rotationsinvarianz & \checkmark (100\% bei $|\theta|>30^\circ$) \\
@@ -1123,7 +1054,7 @@ FA-003 & Zielobjekte detektierbar & \checkmark \\
 FA-004 & OCR-Genauigkeit & \checkmark (integriert in 98.76\% E2E) \\
 FA-005 & OCR-Robustheit & \checkmark (100\% bei $|\theta|>30^\circ$) \\
 FA-006 & Fahrtrichtungsdetektion & \checkmark (99.42\%) \\
-FA-007 & Symbol-Koordinaten-Verknüpfung & \checkmark (99.69\%)\\
+FA-007 & Symbol-Koordinaten-Verknüpfung & \checkmark (99.69\%) \\
 FA-008 & Manuelle Korrektur & \checkmark \\
 FA-009 & Excel-Integration & \checkmark \\
 FA-010 & Strukturerhalt & \checkmark \\
@@ -1132,25 +1063,15 @@ FA-012 & Visuelle Validierung & \checkmark \\
 FA-013 & GUI & \checkmark \\
 FA-014 & Modularität & \checkmark \\
 \hline
-\end{tabular}
-\caption{Validierung der funktionalen Anforderungen}
-\label{tab:anforderungen_erfuellt}
-\end{table}
-
-\begin{table}[H]
-\centering
-\small
-\begin{tabular}{|l|p{8cm}|c|}
-\hline
-\textbf{Anf.-ID} & \textbf{Anforderung} & \textbf{Erfüllt} \\
+\multicolumn{3}{|c|}{\textit{Nicht-funktionale Anforderungen}} \\
 \hline
 NFA-001 & On-Premise-Verarbeitung & \checkmark \\
 NFA-002 & Lizenzkonformität & \checkmark \\
 NFA-003 & Gesamtsystem-Genauigkeit $\geq$ 85\% & \checkmark (98.76\%) \\
 NFA-004 & Robustheit & \checkmark \\
 NFA-005 & Prüfbarkeit & \checkmark \\
-NFA-006 & Prozessoptimierung & \checkmark \\
-NFA-007 & Ressourceneffizienz & \checkmark \\
+NFA-006 & Prozessoptimierung & \checkmark (75\% Zeitersparnis) \\
+NFA-007 & Ressourceneffizienz & \checkmark (12.3 min/Plan) \\
 NFA-008 & Erweiterbarkeit & \checkmark \\
 NFA-009 & Update-Fähigkeit & \checkmark \\
 NFA-010 & Eingabeformate & \checkmark \\
@@ -1158,8 +1079,8 @@ NFA-011 & Datenquellen & \checkmark \\
 NFA-012 & Ausgabeformate & \checkmark \\
 \hline
 \end{tabular}
-\caption{Validierung der nicht-funktionalen Anforderungen}
-\label{tab:nfa_erfuellt}
+\caption{Validierung aller funktionalen und nicht-funktionalen Anforderungen}
+\label{tab:alle_anforderungen}
 \end{table}
 
 \section{Zusammenfassung der Evaluationsergebnisse}

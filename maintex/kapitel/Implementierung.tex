@@ -197,7 +197,22 @@ entsprechend transformiert wurden. Jeder Eckpunkt $(x_i, y_i)$ einer OBB wird re
 Die Anzahl der pro Tile generierten synthetischen Kopien wurde klassenabhängig gesteuert, um eine Zielverteilung von ca.\ 600~Instanzen pro unterrepräsentierter Klasse zu erreichen. Tiles, die ausschließlich bereits häufige Klassen wie \textit{coordinate} enthalten, wurden nur moderat augmentiert, um deren ohnehin hohe Ausgangszahl nicht unverhältnismäßig weiter zu steigern. Bei stark unterrepräsentierten Klassen (z.\,B.\ \textit{weichengruppeende} mit nur 74~Original-Instanzen oder \textit{haltetafel} mit 93~Original-Instanzen) wurden bis zu 10~Rotationsvarianten pro Tile generiert.
 
 \paragraph{Technische Umsetzung.}
-Die Implementierung nutzt \texttt{cv2.getRotationMatrix2D()} und \\ \texttt{cv2.warpAffine()} aus OpenCV. Die Bildgröße wurde dynamisch angepasst, um ein Abschneiden rotierter Objekte am Rand zu vermeiden. Die augmentierten Tiles wurden als separate Dateien mit eindeutiger Benennung (z.\,B.\ \texttt{*\_a+30.jpg} für eine $+30^\circ$-Rotation) im Datensatz gespeichert, was eine deterministische Reproduzierbarkeit gewährleistet. Die transformierten OBB-Annotationen wurden stichprobenartig manuell auf geometrische Korrektheit überprüft.
+Die Implementierung nutzt \texttt{cv2.getRotationMatrix2D()} und \\ \texttt{cv2.warpAffine()} aus OpenCV. Die Bildgröße wurde dynamisch angepasst, um ein Abschneiden rotierter Objekte am Rand zu vermeiden. Die augmentierten Tiles wurden als separate Dateien mit eindeutiger Benennung (z.\,B.\ \texttt{*\_a+30.jpg} für eine $+30^\circ$-Rotation) im Datensatz gespeichert, was eine deterministische Reproduzierbarkeit gewährleistet. 
+
+\paragraph{Validierung der Augmentation.}
+Die transformierten OBB-Annotationen wurden stichprobenartig manuell auf
+geometrische Korrektheit überprüft, um sicherzustellen, dass die
+synthetische Rotation keine Artefakte einführt. Diese manuelle Validierung
+ist primär bei der \textit{erstmaligen Implementierung} der
+Augmentationspipeline erforderlich, um die korrekte Funktionsweise der
+Rotationslogik und der OBB-Transformation zu verifizieren. Sobald die
+Pipeline einmal validiert ist, sind die geometrischen Transformationen
+deterministisch und mathematisch exakt, sodass bei der Hinzunahme neuer
+Symbolklassen oder der Anwendung auf weitere Gleisplantypen keine erneute
+manuelle Prüfung der Augmentation notwendig ist. Lediglich bei einer
+Änderung der Augmentationslogik selbst, etwa der Einführung zusätzlicher
+Transformationsarten wie Skalierung oder Spiegelung, wäre eine erneute
+Validierung angezeigt.
 
 \paragraph{Ergebnis.}
 Durch die selektive Rotation wurden aus den 482~Original-Tiles zusätzlich \textbf{649~augmentierte Tiles} erzeugt, was den Datensatz auf insgesamt \textbf{1.131~Bildausschnitte} erweitert. Das Augmentationsverhältnis (57,4\,\% augmentiert) spiegelt den Fokus auf unterrepräsentierte Klassen wider: Tiles mit häufigen Symbolen wurden moderat oder gar nicht augmentiert, während Tiles mit seltenen Symbolen mehrfach rotiert wurden.
@@ -308,7 +323,30 @@ Die \textbf{Instanzzahlen der Auxiliarklassen} erfordern eine differenzierte Bet
 
 Als Modellarchitektur wurde \textbf{YOLOv8l-OBB} gewählt, die \textit{Large}-Variante der YOLOv8-Familie mit OBB-Erweiterung. Diese Variante bietet mit ca.\ 43,7~Millionen Parametern eine hohe Modellkapazität, die für die zuverlässige Unterscheidung der 13~visuell teilweise ähnlichen Symbolklassen -- insbesondere der GKS-Varianten -- erforderlich ist. Im Vergleich zur kleineren \textit{Small}-Variante (11,2~Mio.\ Parameter) erreicht die \textit{Large}-Variante eine höhere Erkennungsgenauigkeit bei feingranularen Klassenunterscheidungen, wobei die Inferenzgeschwindigkeit für den Batch-Verarbeitungsmodus der Gleisplanpipeline weiterhin ausreichend ist.
 
-Das Training wurde auf einer cloud-basierten GPU-Instanz mit einer NVIDIA-GPU und 16~GB Videospeicher durchgeführt. Das Modell wurde mit auf dem COCO-Datensatz \cite{Lin2014_COCO} vortrainierten Gewichten initialisiert (\textit{Transfer Learning}), um die in den frühen Netzwerkschichten bereits gelernten generischen Merkmalsextraktoren -- wie Kanten-, Ecken- und Texturerkennung -- zu nutzen und die Konvergenz auf dem domänenspezifischen Gleisplan-Datensatz zu beschleunigen.
+Das Training wurde auf einer cloud-basierten GPU-Instanz (NVIDIA, 16~GB
+Videospeicher) durchgeführt, da lokale Entwicklungsmaschinen nicht über
+ausreichende Rechenleistung verfügen, um das Training in angemessener Zeit
+abzuschließen. Diese Cloud-Ressource ist jedoch \textit{ausschließlich für
+die initiale Trainingsphase} erforderlich. Das resultierende trainierte
+Modell (\texttt{best.pt}, ca.\ 87~MB) kann anschließend auf
+Standard-Hardware ohne GPU für die Inferenz eingesetzt werden
+(vgl.\ Abschnitt~\ref{subsec:inferenz}). Für zukünftige Projekte ergeben
+sich zwei Szenarien: Wenn ein bestehendes Modell bereits die benötigten
+Symbolklassen abdeckt, ist \textit{kein erneutes Training} notwendig --
+das Modell wird direkt wiederverwendet. Nur bei der Erweiterung um neue,
+bisher nicht trainierte Symbolklassen oder bei der Anpassung an einen
+grundlegend anderen Gleisplantyp ist ein erneutes Training auf einer
+GPU-Instanz erforderlich. Durch den Einsatz von Transfer Learning
+(vgl.\ Tabelle~\ref{tab:training_hyperparameters}) kann dabei auf den
+bereits trainierten Gewichten aufgebaut werden, was die benötigte
+Trainingszeit und Datenmenge für solche Erweiterungen deutlich reduziert.
+
+Das Modell wurde mit auf dem COCO-Datensatz \cite{Lin2014_COCO}
+vortrainierten Gewichten initialisiert (\textit{Transfer Learning}), um die
+in den frühen Netzwerkschichten bereits gelernten generischen
+Merkmalsextraktoren -- wie Kanten-, Ecken- und Texturerkennung -- zu nutzen
+und die Konvergenz auf dem domänenspezifischen Gleisplan-Datensatz zu
+beschleunigen.
 
 Tabelle~\ref{tab:training_hyperparameters} fasst die verwendeten Hyperparameter zusammen:
 
@@ -452,25 +490,15 @@ weichen\_block      & 129 & 97,7\,\% & Sehr gut \\
 Bemerkenswert ist, dass \textbf{alle 13~Klassen eine AP@0.5 über 95\,\%} erreichen und die Streuung mit 95,1\,\% bis 99,5\,\% sehr gering ist. Dies bestätigt, dass die in Abschnitt~\ref{subsubsec:augmentation} beschriebene Augmentationsstrategie das Klassenungleichgewicht erfolgreich adressiert hat: Auch Klassen mit wenigen Validierungsinstanzen (z.\,B.\ \textit{weichengruppeende} mit nur 18~Instanzen) erreichen eine AP@0.5 von 99,0\,\%.
 
 \paragraph{Fehleranalyse.}
-Abbildung~\ref{fig:confusion_matrix} zeigt die normalisierte Konfusionsmatrix auf dem Validierungsdatensatz. Die Diagonale zeigt durchgehend hohe Werte ($\geq 0{,}93$), was eine zuverlässige Klassifikation über alle Klassen bestätigt.
+Abbildung~\ref{fig:confusion_matrix} zeigt die normalisierte Konfusionsmatrix auf dem Validierungsdatensatz. Die Diagonale zeigt durchgehend hohe Werte ($\geq 0{,}93$), was eine zuverlässige Klassifikation über alle Klassen bestätigt. Die vereinzelten Fehlklassifikationen betreffen primär die visuell ähnlichen GKS-Varianten sowie kleine Symbole wie Isolierstöße an Tile-Grenzen. Eine detaillierte klassenspezifische Analyse der Detektionsleistung erfolgt in Kapitel~\ref{chap:evaluation}.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.85\textwidth]{images/Kapitel6/confusion_matrix_normalized.png}
-    \caption{Normalisierte Konfusionsmatrix auf dem Validierungsdatensatz. 
+    \caption{Normalisierte Konfusionsmatrix auf dem Validierungsdatensatz.
     Zeilen repräsentieren die vorhergesagten Klassen, Spalten die tatsächlichen Klassen.}
     \label{fig:confusion_matrix}
 \end{figure}
-
-Die wesentlichen Fehlerquellen lassen sich wie folgt zusammenfassen:
-
-\begin{itemize}
-    \item \textbf{GKS-Verwechslung:} Die Klasse \textit{gks\_festkodiert} weist mit 93\,\% die niedrigste Recall-Rate auf, wobei 3\,\% der Instanzen als \textit{gks\_gesteuert} fehlklassifiziert und 1\,\% als Hintergrund übersehen werden. Diese bidirektionale Verwechslung ist nachvollziehbar, da beide GKS-Varianten eine ähnliche visuelle Morphologie aufweisen und sich primär durch interne Markierungsdetails unterscheiden, die bei kleinen Bounding-Box-Ausschnitten schwer differenzierbar sind.
-    
-    \item \textbf{Isolierstoß-Erkennung:} Die Klasse \textit{isolierstoß} erreicht mit 93\,\% die gemeinsam niedrigste Recall-Rate, wobei 7\,\% der Instanzen als Hintergrund übersehen werden. Dies ist auf die geringe Symbolgröße zurückzuführen, die insbesondere an Tile-Grenzen zu unvollständigen Detektionen führen kann.
-    
-    \item \textbf{Hintergrund-Fehlzuordnungen:} Die Spalte \textit{background} zeigt, dass das Modell vereinzelt Hintergrundstrukturen fälschlicherweise als Symbole interpretiert. Die höchsten False-Positive-Raten betreffen \textit{coordinate} (0,32) und \textit{signal} (0,20), was angesichts der hohen absoluten Instanzzahlen dieser Klassen jedoch zu relativieren ist.
-\end{itemize}
 
 \paragraph{Konfidenzkalibrierung.}
 Abbildung~\ref{fig:f1_curve} zeigt die F1-Score-Konfidenz-Kurve für alle 13~Klassen.
