@@ -11,11 +11,11 @@ Im Rahmen dieser Arbeit wird ein Prototyp entwickelt, der die automatisierte Ext
 Eine zentrale Anforderung ist die zuverlässige Detektion bahntechnischer Symbole in Vektor- oder Rastergrafiken.
 
 \begin{itemize}
-    \item \textbf{FA-001}\label{req:FA-001} \textbf{Erkennungsrate:} Der Prototyp \textbf{muss} mindestens 90\,\% der definierten Symbolklassen mit einer Mindest-Konfidenz von 0.5 \textbf{detektieren} (gemessen als Recall@0.5 des YOLO-Modells).
+    \item \textbf{FA-001}\label{req:FA-001} \textbf{Erkennungsrate:} Der Prototyp \textbf{muss} mindestens 90\,\% der definierten Symbolklassen \textbf{detektieren} (gemessen als Recall des YOLO-Modells).
 
     \item \textbf{FA-002}\label{req:FA-002} \textbf{Rotationsinvarianz:} Wenn Symbole in beliebigen Winkeln ($0^\circ$ bis $360^\circ$) orientiert sind, \textbf{muss} der Prototyp in der Lage sein, diese Objekte korrekt zu \textbf{klassifizieren} und deren Rotationswinkel mit einer Genauigkeit von $\pm 5^\circ$ zu \textbf{bestimmen}.
 
-    \item \textbf{FA-003}\label{req:FA-003} \textbf{Detektionsziele:} Der Prototyp \textbf{muss} die in Tabellen~\ref{tab:kernklassen} (Kernklassen) und~\ref{tab:auxiliarklassen} (Auxiliarklassen) spezifizierten Symboltypen \textbf{detektieren}.
+    \item \textbf{FA-003}\label{req:FA-003} \textbf{Detektionsziele:} Der Prototyp \textbf{muss} die in Tabelle~\ref{tab:kernklassen} spezifizierten Kernklassen \textbf{detektieren}. Zusätzlich \textbf{soll} der Prototyp die in Tabelle~\ref{tab:auxiliarklassen} definierten Auxiliarklassen \textbf{detektieren}. Diese Zweiteilung ergibt sich aus der unterschiedlichen Relevanz: Kernklassen sind für den produktiven Planungsprozess unverzichtbar und werden quantitativ evaluiert, während Auxiliarklassen die Erweiterbarkeit des Systems demonstrieren und für spezifische Anwendungsfälle vorgesehen sind.
 \end{itemize} 
 \subsubsection{Kernklassen (produktionsrelevant)}
 
@@ -157,9 +157,9 @@ dieser Feinunterscheidungen war jedoch nicht Gegenstand dieser Arbeit.
 
 \subsection{Texterkennung und OCR-Integration}
 \begin{itemize}
-    \item \textbf{FA-004}\label{req:FA-004} \textbf{OCR-Genauigkeit:} Der Prototyp \textbf{muss} Textinformationen (Signalbezeichnungen, Kilometrierungen) mit einer Feldgenauigkeit von mindestens 95\,\% \textbf{extrahieren} (exakte Übereinstimmung des extrahierten Wertes mit Ground Truth).
+    \item \textbf{FA-004}\label{req:FA-004} \textbf{OCR-Genauigkeit:} Der Prototyp \textbf{muss} Textinformationen (Signalbezeichnungen, Kilometrierungen) zuverlässig \textbf{extrahieren}.
 
-    \item \textbf{FA-005}\label{req:FA-005} \textbf{Robustheit:} Wenn Textregionen unter erschwerten Bedingungen vorliegen (niedriger Kontrast, Bildrauschen, Rotation $0^\circ$--$360^\circ$, Überlagerungen), \textbf{muss} der Prototyp in der Lage sein, diese Texte mit mindestens 85\,\% Feldgenauigkeit zu \textbf{extrahieren}.
+    \item \textbf{FA-005}\label{req:FA-005} \textbf{Robustheit:} Wenn Textregionen unter erschwerten Bedingungen vorliegen (niedriger Kontrast, Bildrauschen, Rotation $0^\circ$--$360^\circ$, Überlagerungen), \textbf{muss} der Prototyp in der Lage sein, diese Texte zuverlässig zu \textbf{extrahieren}.
     \begin{figure}[H]
     \centering
     \includegraphics[width=5cm]{images/Kapitel4/OCRsample.png} 
@@ -198,17 +198,18 @@ dieser Feinunterscheidungen war jedoch nicht Gegenstand dieser Arbeit.
     \label{fig:änderungsample}
     \end{figure}
 
-    \item \textbf{FA-012}\label{req:FA-012} \textbf{Visuelle Validierung:} Der Prototyp \textbf{soll} alle erkannten Objekte durch farbige Bounding Boxes im Gleisplan oder als Overlay zur manuellen Überprüfung \textbf{visualisieren}.
-    \begin{figure}[H]
-    \centering
-    \includegraphics[width=14cm]{images/Kapitel4/gleisplanmarkierungv2.png} 
-    \caption{Visuelle Validierung durch Bounding-Box-Overlays im Gleisplan \cite{railroadstationdrawing}}
-    \label{fig:gleisplanmarkierung}
-    \end{figure}
 \end{itemize}
 
 \subsection{Benutzerinteraktion und Konfiguration}
 \begin{itemize}
+    \item \textbf{FA-012}\label{req:FA-012} \textbf{Visuelle Validierung:} Der Prototyp \textbf{soll} alle erkannten Objekte durch farbige Bounding Boxes im Gleisplan oder als Overlay zur manuellen Überprüfung \textbf{visualisieren}.
+    \begin{figure}[H]
+    \centering
+    \includegraphics[width=14cm]{images/Kapitel4/gleisplanmarkierungv2.png}
+    \caption{Visuelle Validierung durch Bounding-Box-Overlays im Gleisplan \cite{railroadstationdrawing}}
+    \label{fig:gleisplanmarkierung}
+    \end{figure}
+
     \item \textbf{FA-013}\label{req:FA-013} \textbf{Grafische Benutzeroberfläche:} Der Prototyp \textbf{muss} eine grafische Benutzeroberfläche für PDF-Upload, Analyse-Start und Datenexport ohne erforderliche Kommandozeilen-Kenntnisse \textbf{bereitstellen}.
 
     \item \textbf{FA-014}\label{req:FA-014} \textbf{Modulare Architektur:} Der Prototyp \textbf{muss} mit modularer Architektur \textbf{gestaltet sein}, die klare Trennung der Verarbeitungsstufen (Objekterkennung, Texterkennung, UI, Export) gewährleistet und Erweiterungen (z.B. neue Symbolklassen, CAD-Anbindung) ohne Modifikation der Kernlogik ermöglicht.
