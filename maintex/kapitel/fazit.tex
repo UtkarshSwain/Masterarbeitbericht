@@ -6,7 +6,7 @@ Dieses Kapitel reflektiert kritisch die in Kapitel~\ref{chap:evaluation} präsen
 \section{Einordnung der Ergebnisse}
 \label{sec:einordnung}
 
-Die Evaluationsergebnisse zeigen, dass der entwickelte Prototyp die grundlegenden Ziele der Arbeit nicht nur erreicht, sondern in mehreren Dimensionen deutlich übertrifft: Die automatisierte Extraktion strukturierter Daten aus technischen Gleisplänen ist mit einer End-to-End-Genauigkeit von 98.76\% möglich, und das System bietet eine Zeitersparnis von 75.3\% gegenüber manuellen Prozessen.
+Die Evaluationsergebnisse zeigen, dass der entwickelte Prototyp die grundlegenden Ziele der Arbeit nicht nur erreicht, sondern in mehreren Dimensionen deutlich übertrifft: Die automatisierte Extraktion strukturierter Daten aus technischen Gleisplänen ist mit einer End-to-End-Genauigkeit von 98.76\% möglich, und der Prototyp bietet eine Zeitersparnis von 75.3\% gegenüber manuellen Prozessen.
 
 \subsection{Erfüllung der Kernziele}
 
@@ -29,13 +29,13 @@ Im Kontext der in Kapitel~\ref{chap:related_work} diskutierten Literatur positio
 \section{Kritische Reflexion}
 \label{sec:kritische_reflexion}
 
-Trotz der insgesamt herausragenden Ergebnisse zeigt die kritische Analyse mehrere Aspekte, die eine differenzierte Betrachtung erfordern und die Grenzen des Systems aufzeigen.
+Trotz der insgesamt herausragenden Ergebnisse zeigt die kritische Analyse mehrere Aspekte, die eine differenzierte Betrachtung erfordern und die Grenzen des Prototyps aufzeigen.
 
 \subsection{Methodische Überlegungen}
 
 \textbf{Datensatzgröße und Generalisierung:} Der Trainingsdatensatz von 25 Originalplänen ist für eine prototypische Masterarbeit angemessen und führte zu exzellenten Ergebnissen auf den Testdaten. Jedoch ist er im Vergleich zu industriellen Computer-Vision-Anwendungen (die häufig Tausende bis Zehntausende annotierte Beispiele verwenden) relativ klein. Die erfolgreiche Evaluation auf dem Testsatz realer Siemens-Daten mit unterschiedlichen Bahnhofskonfigurationen (einfach, mittel, komplex) deutet auf gute Generalisierungsfähigkeit \textit{innerhalb des Trainguard MT ZUB Layouts} hin.
 
-Jedoch ist unklar, wie das System auf fundamental unterschiedliche Szenarien reagieren würde:
+Jedoch ist unklar, wie der Prototyp auf fundamental unterschiedliche Szenarien reagieren würde:
 \begin{itemize}
     \item Pläne aus anderen Bahnbetreiber-Kontexten (Deutsche Bahn, ÖBB, SBB) mit abweichenden Symbolstandardisierungen
     \item Historische Pläne aus unterschiedlichen Epochen mit veralteten Konventionen
@@ -101,7 +101,7 @@ Für einen vollautomatischen Einsatz ohne menschliche Prüfung wäre eine Fehler
 
 Positiv ist jedoch festzustellen, dass alle 8 Fehler im Testsatz durch die implementierte Validierungskomponente erkannt und zur manuellen Prüfung markiert wurden. Dies reduziert den manuellen Aufwand erheblich: Statt 644 Objekte manuell zu extrahieren, müssen nur 8 identifizierte Problemfälle geprüft werden -- eine Reduktion um 98.8\%.
 
-\textbf{Layout-Generalisierung (Eingeschränkte Übertragbarkeit):} Das System wurde ausschließlich auf dem Trainguard MT ZUB Layout von Siemens Mobility trainiert und evaluiert. Die strikte Anforderung von exakt 500 DPI Auflösung (vgl. NFA-010) und die Spezialisierung auf die 13 definierten Symbolklassen bedeuten, dass das System \textit{nicht ohne Weiteres} auf andere Gleisplan-Layouts übertragbar ist.
+\textbf{Layout-Generalisierung (Eingeschränkte Übertragbarkeit):} Der Prototyp wurde ausschließlich auf dem Trainguard MT ZUB Layout von Siemens Mobility trainiert und evaluiert. Die strikte Anforderung von exakt 500 DPI Auflösung (vgl. NFA-010) und die Spezialisierung auf die 13 definierten Symbolklassen bedeuten, dass der Prototyp \textit{nicht ohne Weiteres} auf andere Gleisplan-Layouts übertragbar ist.
 
 Für eine Übertragung auf andere Bahnbetreiber oder Sicherungssysteme wäre erforderlich:
 \begin{itemize}
@@ -125,7 +125,7 @@ Diese Limitation ist inhärent bei der gewählten Trainingsmethodik und könnte 
 \section{Identifizierte Limitationen}
 \label{sec:limitationen}
 
-Die Evaluation und der praktische Einsatz des Systems haben mehrere fundamentale und technische Limitationen offenbart, die für den produktiven Einsatz berücksichtigt werden müssen.
+Die Evaluation und der praktische Einsatz des Prototyps haben mehrere fundamentale und technische Limitationen offenbart, die für den produktiven Einsatz berücksichtigt werden müssen.
 
 \subsection{Datenbezogene Limitationen}
 
@@ -141,7 +141,7 @@ Die Evaluation und der praktische Einsatz des Systems haben mehrere fundamentale
     \item \textbf{Stark verkleinerte Darstellungen}: Pläne, die für A4-Druck komprimiert wurden (statt Original-A0-Format), verlieren kritische Details. Bei einer Verkleinerung von A0 auf A4 (Faktor 4) werden Symbole zu klein für zuverlässige Erkennung.
 \end{itemize}
 
-\textbf{Layoutvariabilität zwischen Bahnbetreibern:} Während das System mit den getesteten Siemens Mobility Layouts robust umgeht, ist unklar, wie es auf fundamental unterschiedliche Konventionen reagiert. Informelle Tests mit Plänen aus anderen Quellen zeigten:
+\textbf{Layoutvariabilität zwischen Bahnbetreibern:} Während der Prototyp mit den getesteten Siemens Mobility Layouts robust umgeht, ist unklar, wie er auf fundamental unterschiedliche Konventionen reagiert. Informelle Tests mit Plänen aus anderen Quellen zeigten:
 
 \begin{itemize}
     \item \textbf{Deutsche Bahn Pläne}: Leicht abweichende Symboldesigns (andere Linienstärken) führten zu 5-10\% niedrigeren Konfidenzwerten, jedoch blieben Detektionen korrekt.
@@ -221,7 +221,7 @@ Für industrielle Szenarien mit hunderten Plänen ist dies problematisch. Eine p
 
     \item \textbf{Qualitätssicherungsprozess notwendig}: Es muss ein formalisierter QS-Prozess etabliert werden, der definiert, wer die Prüfung durchführt, wie Fehler dokumentiert werden und wie Korrekturen erfolgen.
 
-    \item \textbf{Verantwortlichkeit ungeklärt}: Bei Fehlern, die durch das System entstehen und nicht erkannt werden, stellt sich die Haftungsfrage. Rechtlich ist dies ein ungelöstes Problem der KI-Assistenzsysteme.
+    \item \textbf{Verantwortlichkeit ungeklärt}: Bei Fehlern, die durch den Prototyp entstehen und nicht erkannt werden, stellt sich die Haftungsfrage. Rechtlich ist dies ein ungelöstes Problem der KI-Assistenzsysteme.
 \end{itemize}
 
 Positiv ist, dass die Validierungskomponente alle 8 Fehler im Testsatz korrekt identifiziert und zur manuellen Prüfung markiert hat. Dies bedeutet, dass der Prüfer nur ca. 1-2\% der Objekte überprüfen muss, statt alle 100\%.
@@ -602,7 +602,7 @@ Die entwickelte Pipeline-Architektur ist konzeptionell nicht auf Gleispläne bes
 
 \subsection{Generalisierbare Komponenten und Muster}
 
-Mehrere Aspekte des Systems haben domänenübergreifende Relevanz und können direkt wiederverwendet werden:
+Mehrere Aspekte des Prototyps haben domänenübergreifende Relevanz und können direkt wiederverwendet werden:
 
 \textbf{Technische Muster:}
 \begin{itemize}
@@ -651,7 +651,7 @@ Einige Komponenten sind eng an die Gleisplan-Domäne gekoppelt und erfordern bei
     \item \textbf{Auflösungsanforderung}: Die 500 DPI Anforderung ist spezifisch für das getestete Gleisplan-Layout. Andere Domänen mit größeren Symbolen (z.B. Architekturpläne) könnten mit 300 DPI auskommen; feinere Details (z.B. Mikroelektronik-Schaltpläne) könnten 1000+ DPI erfordern.
 \end{itemize}
 
-\textbf{Fazit zur Übertragbarkeit:} Etwa 60-70\% des Systems (Architektur, YOLO-Training, OCR-Pipeline, UI) sind mit moderatem Aufwand übertragbar. Die verbleibenden 30-40\% (Linking-Logik, Validierungsregeln, Symbolklassen) erfordern domänenspezifische Anpassungen und Re-Training. Dies ist deutlich effizienter als eine Neuentwicklung von Grund auf, die 100\% Aufwand bedeuten würde.
+\textbf{Fazit zur Übertragbarkeit:} Etwa 60-70\% des Prototyps (Architektur, YOLO-Training, OCR-Pipeline, UI) sind mit moderatem Aufwand übertragbar. Die verbleibenden 30-40\% (Linking-Logik, Validierungsregeln, Symbolklassen) erfordern domänenspezifische Anpassungen und Re-Training. Dies ist deutlich effizienter als eine Neuentwicklung von Grund auf, die 100\% Aufwand bedeuten würde.
 
 \section{Ausblick und zukünftige Entwicklungen}
 \label{sec:ausblick}
@@ -989,7 +989,7 @@ Die kritische Reflexion offenbart mehrere Einschränkungen:
 
     \item \textbf{Auflösungsabhängigkeit}: Die strikte 500 DPI Anforderung begrenzt die Flexibilität; niedrigere Auflösungen führen zu drastisch reduzierter Genauigkeit.
 
-    \item \textbf{Verbleibende Fehlerrate}: 1.24\% der Objekte erfordern manuelle Korrektur, was vollautomatischen Betrieb verhindert. Dies ist für sicherheitskritische Anwendungen jedoch akzeptabel -- das System ist als Assistenzsystem konzipiert.
+    \item \textbf{Verbleibende Fehlerrate}: 1.24\% der Objekte erfordern manuelle Korrektur, was vollautomatischen Betrieb verhindert. Dies ist für sicherheitskritische Anwendungen jedoch akzeptabel -- der Prototyp ist als Assistenzsystem konzipiert.
 
     \item \textbf{Tile-Boundary-Probleme}: Objekte an Kachelgrenzen verursachen gelegentlich Duplikate oder fehlerhafte Linking-Entscheidungen.
 

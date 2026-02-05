@@ -6,7 +6,7 @@ Dieses Kapitel präsentiert die systematische Evaluation des entwickelten Protot
 \section{Testmethodik}
 \label{sec:testmethodik}
 
-Die Evaluation des Systems erfordert eine sorgfältige Definition der Testbedingungen, um reproduzierbare und aussagekräftige Ergebnisse zu gewährleisten. Dieser Abschnitt beschreibt die verwendeten Testdatensätze, die angewandten Evaluationsmetriken sowie die Testumgebung.
+Die Evaluation des Prototyps erfordert eine sorgfältige Definition der Testbedingungen, um reproduzierbare und aussagekräftige Ergebnisse zu gewährleisten. Dieser Abschnitt beschreibt die verwendeten Testdatensätze, die angewandten Evaluationsmetriken sowie die Testumgebung.
 
 \subsection{Testdatensätze}
 \label{subsec:testdatensatz}
@@ -75,7 +75,7 @@ Die Ground-Truth-Daten wurden in strukturierten Excel-Dateien gespeichert, um ei
 
 \subsubsection{Komplexitätskategorisierung}
 
-Um die Robustheit des Systems unter verschiedenen Bedingungen zu evaluieren, wurden die Testpläne in drei Komplexitätskategorien eingeteilt. Da alle Pläne im A0-Format vorliegen und jeweils eine Seite umfassen, erfolgt die Kategorisierung primär nach Symboldichte und Layoutkomplexität.
+Um die Robustheit des Prototyps unter verschiedenen Bedingungen zu evaluieren, wurden die Testpläne in drei Komplexitätskategorien eingeteilt. Da alle Pläne im A0-Format vorliegen und jeweils eine Seite umfassen, erfolgt die Kategorisierung primär nach Symboldichte und Layoutkomplexität.
 
 \begin{table}[H]
 \centering
@@ -100,7 +100,7 @@ Diese Kategorisierung ermöglicht eine differenzierte Analyse der Systemleistung
 \subsection{Evaluationsmetriken}
 \label{subsec:evaluationsmetriken}
 
-Die Bewertung des Systems erfolgt auf mehreren Ebenen mit jeweils spezifischen Metriken. Die verwendeten Metriken basieren auf den in Kapitel~\ref{chap:theoretischeundtechnischegrundlagen} eingeführten Standardverfahren für Objekterkennung (Abschnitt~\ref{subsec:theoretischeevaluationsmetriken}) und OCR-Systeme (Abschnitt~\ref{subsec:ocr_metriken}). Dieser Abschnitt fasst die angewandten Metriken kurz zusammen und definiert die spezifische End-to-End Systemmetrik.
+Die Bewertung des Prototyps erfolgt auf mehreren Ebenen mit jeweils spezifischen Metriken. Die verwendeten Metriken basieren auf den in Kapitel~\ref{chap:theoretischeundtechnischegrundlagen} eingeführten Standardverfahren für Objekterkennung (Abschnitt~\ref{subsec:theoretischeevaluationsmetriken}) und OCR-Systeme (Abschnitt~\ref{subsec:ocr_metriken}). Dieser Abschnitt fasst die angewandten Metriken kurz zusammen und definiert die spezifische End-to-End Systemmetrik.
 
 \subsubsection{Metriken für die Objekterkennung}
 
@@ -201,7 +201,7 @@ Dieser Abschnitt präsentiert die quantitativen Evaluationsergebnisse der einzel
 \subsection{Objekterkennungsleistung}
 \label{subsec:detection_eval}
 
-Die Objekterkennung bildet die fundamentale Stufe der Extraktionspipeline. Die Qualität der YOLO-Detektionen determiniert maßgeblich die erreichbare Gesamtgenauigkeit des Systems.
+Die Objekterkennung bildet die fundamentale Stufe der Extraktionspipeline. Die Qualität der YOLO-Detektionen determiniert maßgeblich die erreichbare Gesamtgenauigkeit des Prototyps.
 
 \subsubsection{Gesamtleistung auf dem Validierungssatz}
 
@@ -271,7 +271,7 @@ höhere Detektionskonfidenz (0.946) als kardinal orientierte Objekte (0.890).
 
 \textbf{FA-003 (Zielobjekte):} Alle 5 Kernklassen (signal, coordinate, gks\_festkodiert, 
 gks\_gesteuert, gm\_block) werden zuverlässig detektiert. Die zusätzliche Integration 
-von 8 Auxiliarklassen demonstriert die Erweiterbarkeit des Systems (NFA-008).
+von 8 Auxiliarklassen demonstriert die Erweiterbarkeit des Prototyps (NFA-008).
 
 \textbf{Hinweis zu weiteren Symbolklassen:} Das Modell wurde zusätzlich auf acht weitere Klassen trainiert (\textit{weichen\_block}, \textit{haltepunkt}, \textit{isolierstoß}, \textit{sverbinder}, \textit{prellbock}, \textit{haltetafel}, \textit{endeweichen}, \textit{weichengruppenende}), die zu experimentellen Zwecken annotiert wurden. Diese Klassen erreichen ebenfalls hohe Erkennungsraten (Durchschnitt mAP@0.5: 98.8\%), werden jedoch in der nachfolgenden End-to-End-Evaluation nicht berücksichtigt, da sie nicht zur primären Extraktionsaufgabe gehören.
 \begin{figure}[H]
@@ -626,7 +626,7 @@ bleibt jedoch konstant niedrig.
 
 Über die quantitativen Metriken hinaus wurden folgende qualitative Erkenntnisse aus der Testsatz-Evaluation gewonnen:
 
-\textbf{Stärken des Systems:}
+\textbf{Stärken des Prototyps:}
 \begin{itemize}
     \item Robuste Leistung über verschiedene Planstile (Bahnhof vs. Strecke) und -komplexitäten hinweg
     \item Exzellente YOLO-Detektionsleistung ohne False Negatives im Testsatz
@@ -741,7 +741,7 @@ ermöglichen eine lückenlose Rückverfolgbarkeit jeder Extraktion zur Quelldoku
 \subsubsection{Verarbeitungszeit-Analyse}
 \label{subsubsec:processing_time}
 
-Die Verarbeitungszeit ist ein kritischer Faktor für die praktische Nutzbarkeit des Systems und validiert die Anforderung \textbf{NFA-007} (Ressourceneffizienz). Die Zeitmessungen wurden auf der in Abschnitt~\ref{subsec:testumgebung} beschriebenen Standard-Workstation (AMD Ryzen 5 PRO 5650U, CPU-only, ohne GPU) für alle sieben Testpläne durchgeführt.
+Die Verarbeitungszeit ist ein kritischer Faktor für die praktische Nutzbarkeit des Prototyps und validiert die Anforderung \textbf{NFA-007} (Ressourceneffizienz). Die Zeitmessungen wurden auf der in Abschnitt~\ref{subsec:testumgebung} beschriebenen Standard-Workstation (AMD Ryzen 5 PRO 5650U, CPU-only, ohne GPU) für alle sieben Testpläne durchgeführt.
 
 \textbf{Gesamtverarbeitungszeiten nach Plankomplexität:}
 
@@ -962,7 +962,7 @@ ausgetauscht werden musste.
 \textbf{NFA-010 (Eingabeformate):} Alle 7 Testpläne wurden als PDF-Dateien 
 verarbeitet. Die interne Verarbeitungspipeline konvertiert PDFs zunächst 
 in hochauflösende Rasterbilder (500 DPI, PNG-Format) mittels PyMuPDF 
-(§\ref{Inferenz}), bevor die YOLO-Inferenz erfolgt. Damit wird die 
+(Abschnitt \ref{subsec:inferenz}), bevor die YOLO-Inferenz erfolgt. Damit wird die 
 Bildverarbeitungsfähigkeit (PNG/JPG) implizit durch jeden PDF-Test validiert. 
 Ein direkter Import von Bilddateien ohne PDF-Konvertierung wurde nicht 
 explizit getestet, ist jedoch aufgrund der identischen nachgelagerten 
@@ -1086,7 +1086,7 @@ NFA-012 & Ausgabeformate & \checkmark \\
 \section{Zusammenfassung der Evaluationsergebnisse}
 \label{sec:eval_zusammenfassung}
 
-Die systematische Evaluation des entwickelten Prototyps auf einem unabhängigen Testsatz realer Siemens Mobility Gleispläne belegt die exzellente Funktionsfähigkeit und Praxistauglichkeit des Systems. Die wichtigsten Ergebnisse lassen sich wie folgt zusammenfassen:
+Die systematische Evaluation des entwickelten Prototyps auf einem unabhängigen Testsatz realer Siemens Mobility Gleispläne belegt die exzellente Funktionsfähigkeit und Praxistauglichkeit des Prototyps. Die wichtigsten Ergebnisse lassen sich wie folgt zusammenfassen:
 
 \textbf{Objekterkennung (YOLO):}
 \begin{itemize}

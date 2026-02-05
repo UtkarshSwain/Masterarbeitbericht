@@ -3,8 +3,8 @@
 In diesem Kapitel wird der Entwurf und die technische Konzeption des Prototyps aufbauend auf der im vorherigen Kapitel definierten Anforderungsanalyse dargelegt. Das Ziel besteht in der Entwicklung einer modularen und skalierbaren Systemarchitektur, die den gesamten Workflow von der rohen PDF-Datei bis zum strukturierten und validierten Datenexport automatisiert. Die konkrete Implementierungsdetails werden anschließend in Kapitel 6 behandelt.
 
 \section{Systemarchitektur}
-Die Architektur des Prototyps folgt dem Prinzip der Modularität und Separation of Concerns. 
-Das System ist in funktional abgegrenzte Module unterteilt, die über definierte Schnittstellen miteinander kommunizieren. Diese Architektur ermöglicht eine schrittweise Entwicklung, einfache Wartbarkeit und die Möglichkeit zur späteren Erweiterung um zusätzliche Funktionalitäten \textbf{(Anforderungen \hyperref[req:FA-014]{FA-014}, \hyperref[req:NFA-008]{NFA-008})}. Abbildung \ref{fig:Systemarchitektur} zeigt die Gesamtarchitektur des Systems mit ihren Hauptkomponenten.
+Die Architektur des Prototyps folgt dem Prinzip der Modularität und Separation of Concerns.
+Der Prototyp ist in funktional abgegrenzte Module unterteilt, die über definierte Schnittstellen miteinander kommunizieren. Diese Architektur ermöglicht eine schrittweise Entwicklung, einfache Wartbarkeit und die Möglichkeit zur späteren Erweiterung um zusätzliche Funktionalitäten \textbf{(Anforderungen \hyperref[req:FA-014]{FA-014}, \hyperref[req:NFA-008]{NFA-008})}. Abbildung \ref{fig:Systemarchitektur} zeigt die Gesamtarchitektur des Prototyps mit ihren Hauptkomponenten.
 
 \begin{figure}[H]
     \centering
@@ -164,7 +164,7 @@ unterstützten Datentypen gewährleistet wird.
 
 \subsection{Detection \& OCR}
 
-Dieses Modul bildet das technologische Herzstück des Systems und kombiniert zwei komplementäre Erkennungsverfahren:
+Dieses Modul bildet das technologische Herzstück des Prototyps und kombiniert zwei komplementäre Erkennungsverfahren:
 \begin{enumerate}
     \item \textbf{Objekterkennung} - Ein trainiertes Deep Learning Modell der YOLO Familie analysiert die vorverarbeiteten Bildausschnitte und identifiziert relevante Symbole (Signale, Weichen, GKS, etc.). Für jedes erkannte Objekt liefert das Modell:
     \begin{itemize}
@@ -320,7 +320,7 @@ Die Auswahl wurde gegen populäre Alternativen validiert. Die folgende Tabelle f
 \end{table}
 
 Die konkrete Wahl der Rendering-Parameter (DPI-Auflösung, Farbtiefe, 
-Anti-Aliasing) und die Implementierung der Pipeline wird in Abschnitt \ref{Inferenz}
+Anti-Aliasing) und die Implementierung der Pipeline wird in Abschnitt \ref{subsec:inferenz}
 (Preprocessing und Rasterisierung) beschrieben.
 \subsection{Objekterkennung: Einsatz von YOLOv8 OBB}
 Zur Identifizierung der schematischen Symbole (Signale, Weichen, Gleiselemente) wurde das Modell \textbf{YOLOv8} (You Only Look Once) in der spezialisierten Konfiguration für rotierte Bounding Boxes (OBB) implementiert. Diese Wahl stellt eine Abkehr von klassischen Detektoren dar und wird durch die spezifische Topologie von Gleisplänen begründet.
@@ -374,7 +374,7 @@ Als Hauptkomponente kommt PaddleOCR zum Einsatz. Die Entscheidung für dieses Fr
 
 Die technischen Vorzüge gegenüber alternativen Engines zeigten sich in der empirischen Evaluation:
 \begin{itemize}
-    \item \textbf{Rotation-Robustheit:} Standard-OCR-Engines versagen oft bei vertikalem Text. PaddleOCR unterstützt zwar eine interne Klassifizierung (\texttt{use\_angle\_cls}), diese erwies sich jedoch bei kurzen technischen Bezeichnern als fehleranfällig. Daher wurde das System so konfiguriert, dass die Rotation extern durch die OBB-Koordinaten (aus dem YOLO-Schritt) vorgegeben wird, was die Stabilität signifikant erhöht \cite{du2020ppocrpracticalultralightweight}.
+    \item \textbf{Rotation-Robustheit:} Standard-OCR-Engines versagen oft bei vertikalem Text. PaddleOCR unterstützt zwar eine interne Klassifizierung (\texttt{use\_angle\_cls}), diese erwies sich jedoch bei kurzen technischen Bezeichnern als fehleranfällig. Daher wurde der Prototyp so konfiguriert, dass die Rotation extern durch die OBB-Koordinaten (aus dem YOLO-Schritt) vorgegeben wird, was die Stabilität signifikant erhöht \cite{du2020ppocrpracticalultralightweight}.
     
     \item \textbf{Genauigkeit (Character Error Rate - CER):} Auf einem validierten Testset von Gleisplan-Ausschnitten (Crops) erzielte PaddleOCR die niedrigsten Fehlerraten:
     \begin{itemize}
@@ -447,7 +447,7 @@ Ein neuartiger Ansatz der Pipeline ist das \textit{Dual Angle Routing}. Da die O
 Die Entscheidung, welches Ergebnis übernommen wird, erfolgt durch eine \textbf{Textnormierungs-Heuristik}. Beide Ergebnisse werden gegen reguläre Ausdrücke (Regex) für typische Signalbezeichnungen (z.\,B. \texttt{\^{}[A-Z]\{1,3\}[0-9]+}) geprüft. Das Ergebnis mit dem höheren Konfidenz-Score, das gleichzeitig dem Schema entspricht, wird akzeptiert. Dies eliminiert Rauschen, das entsteht, wenn vertikaler Text fälschlicherweise horizontal gelesen wird.
 
 \subsubsection{Fallback-Ebene und Vorverarbeitung}
-Für Fälle, in denen PaddleOCR keine plausiblen Ergebnisse liefert (Konfidenz $< 0.5$), greift das System auf \textbf{Tesseract 5} zurück.
+Für Fälle, in denen PaddleOCR keine plausiblen Ergebnisse liefert (Konfidenz $< 0.5$), greift der Prototyp auf \textbf{Tesseract 5} zurück.
 \begin{itemize}
     \item \textbf{Spezialisierung:} Tesseract zeigt insbesondere bei stark pixelierten, aber hochkontrastigen Signalnamen Stärken.
     \item \textbf{Page Segmentation Modes (PSM):} Durch die explizite Setzung von \texttt{--psm 7} (Single Line) für Koordinaten und \texttt{--psm 8} (Single Word) für IDs wird die Engine gezwungen, Layout-Analysen zu überspringen, was Fehlinterpretationen reduziert \cite{Smith2007}.

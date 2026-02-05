@@ -436,7 +436,7 @@ mAP@0.5:0.95 (alle Klassen)            & 92,7\,\% \\
 \label{tab:training_results}
 \end{table}
 
-Die mAP@0.5 von \textbf{98,4\,\%} zeigt, dass das Modell bei einem IoU-Schwellenwert von 50\,\% nahezu alle Symbole korrekt lokalisiert und klassifiziert. Die strengere Metrik mAP@0.5:0.95, die über IoU-Schwellenwerte von 50\,\% bis 95\,\% mittelt, erreicht \textbf{92,7\,\%} und bestätigt eine hohe Lokalisierungspräzision auch bei strengen Überlappungsanforderungen. Der optimale F1-Score von 0,96 wird bei einer Konfidenzschwelle von 0,674 erreicht, was darauf hindeutet, dass das Modell überwiegend hochkonfidente Vorhersagen trifft.
+Die berichteten Metriken beziehen sich auf das automatisch gesicherte Modell mit den besten Validierungsergebnissen (Epoche~103 von~120), welches als \texttt{best.pt} exportiert und für die produktive Inferenz verwendet wird.Die mAP@0.5 von \textbf{98,4\,\%} zeigt, dass das Modell bei einem IoU-Schwellenwert von 50\,\% nahezu alle Symbole korrekt lokalisiert und klassifiziert. Die strengere Metrik mAP@0.5:0.95, die über IoU-Schwellenwerte von 50\,\% bis 95\,\% mittelt, erreicht \textbf{92,7\,\%} und bestätigt eine hohe Lokalisierungspräzision auch bei strengen Überlappungsanforderungen. Der optimale F1-Score von 0,96 wird bei einer Konfidenzschwelle von 0,674 erreicht, was darauf hindeutet, dass das Modell überwiegend hochkonfidente Vorhersagen trifft.
 
 \paragraph{Klassenspezifische Leistung.}
 Abbildung~\ref{fig:pr_curve} zeigt die Precision-Recall-Kurven für alle 13~Symbolklassen. Die klassenspezifischen AP@0.5-Werte sind in Tabelle~\ref{tab:per_class_ap} zusammengestellt.
@@ -471,7 +471,6 @@ sverbinder          & 150 & 99,5\,\% & Exzellent \\
 prellbock           &  31 & 99,5\,\% & Exzellent \\
 endeweichen         &  50 & 99,5\,\% & Exzellent \\
 weichengruppeende   &  18 & 99,0\,\% & Exzellent \\
-coordinate          & --- & ---      & (s.\,o.) \\
 haltepunkt          &  92 & 98,7\,\% & Exzellent \\
 haltetafel          &  23 & 98,4\,\% & Exzellent \\
 isolierstoß         & 147 & 97,8\,\% & Sehr gut \\
@@ -516,7 +515,7 @@ Die Kurve zeigt, dass die Mehrzahl der Klassen über einen breiten Konfidenzbere
 Das trainierte Modell (\texttt{best.pt}) wurde als Gewichtsdatei exportiert und in die Inferenz-Pipeline des Prototyps integriert. Die im folgenden Abschnitt beschriebene Inferenz-Pipeline nutzt dieses Modell zur Verarbeitung neuer, bisher ungesehener Gleispläne.
 
 \subsection{Inferenz-Pipeline Implementierung}
-\label{Inferenz}
+\label{subsec:inferenz}
 Nach Abschluss des Trainings wurde das Modell mit den optimalen Gewichten (\texttt{best.pt}) in die produktive Extraktionspipeline integriert. Die Inferenz auf neuen, zuvor ungesehenen Gleisplänen erfolgt in mehreren aufeinander aufbauenden Schritten. Abbildung \ref{fig:pipeline_flowchart} zeigt den vollständigen Ablauf der Inferenz-Pipeline von der PDF-Eingabe über das Tiling bis zur Rücktransformation der globalen Koordinaten.
 \begin{figure}[H]
     \centering
@@ -1939,9 +1938,9 @@ Falls für ein Symbol keine Textkandidaten die Filterkriterien erfüllen, bleibt
 \label{subsec:adaptivelearningmechanism}
 \subsubsection{Motivation und Konzept}
 
-Obwohl technische Zeichnungen üblicherweise Konventionen folgen, existieren in der Praxis Variationen zwischen verschiedenen Planversionen, Zeichnern oder historischen Perioden. Ein statisches Regelwerk mit festen Suchradien und Richtungen kann in solchen Fällen suboptimal sein. Aus diesem Grund implementiert das System einen adaptiven Lernmechanismus, der erfolgreiche Verknüpfungen analysiert und statistische Muster extrahiert, um die Linking-Parameter dynamisch anzupassen.
+Obwohl technische Zeichnungen üblicherweise Konventionen folgen, existieren in der Praxis Variationen zwischen verschiedenen Planversionen, Zeichnern oder historischen Perioden. Ein statisches Regelwerk mit festen Suchradien und Richtungen kann in solchen Fällen suboptimal sein. Aus diesem Grund implementiert der Prototyp einen adaptiven Lernmechanismus, der erfolgreiche Verknüpfungen analysiert und statistische Muster extrahiert, um die Linking-Parameter dynamisch anzupassen.
 
-Der Mechanismus basiert auf der Beobachtung, dass innerhalb eines einzelnen Gleisplans die Positionierung von Texten relativ zu Symbolen oft konsistent ist. Wenn beispielsweise alle Signalbezeichnungen systematisch 10 Pixel rechts und 20 Pixel unterhalb der Signalsymbole platziert sind, kann das System dieses Muster lernen und für nachfolgende unsichere Fälle nutzen.
+Der Mechanismus basiert auf der Beobachtung, dass innerhalb eines einzelnen Gleisplans die Positionierung von Texten relativ zu Symbolen oft konsistent ist. Wenn beispielsweise alle Signalbezeichnungen systematisch 10 Pixel rechts und 20 Pixel unterhalb der Signalsymbole platziert sind, kann der Prototyp dieses Muster lernen und für nachfolgende unsichere Fälle nutzen.
 
 \subsubsection{Pattern-Erfassung und statistische Auswertung}
 
@@ -1994,7 +1993,7 @@ Um die erwartete Position herum wird ein achsenparalleles Suchfenster definiert,
 
 Alle Textkandidaten, deren Positionen innerhalb dieses Fensters liegen, werden als potenzielle Zuordnungen betrachtet. Aus dieser gefilterten Menge wird der zur erwarteten Position $\vec{C}_{\text{expected}}$ nächstgelegene Kandidat ausgewählt. Die Distanz wird dabei als euklidische Distanz zur erwarteten Position berechnet, nicht zur Symbolposition, da die erwartete Position die durch das Lernen verfeinerte beste Schätzung der Textlage darstellt.
 Abbildung \ref{fig:adaptive_window} illustriert dieses Verfahren: Ausgehend vom Signal wird die erwartete Textposition durch den mittleren gelernten Offset bestimmt (roter Punkt). Das Suchfenster (rot gestrichelt) umfasst einen $2\sigma$ Bereich um diese Position. Nur Textkandidaten innerhalb dieses Fensters (grün) werden für die Zuordnung berücksichtigt, während außenliegende Kandidaten (schwarz) ignoriert werden
-Die probabilistische Fenstersuche wird nur dann aktiviert, wenn mindestens 10 validierte Links für die entsprechende Symbolklasse vorliegen. Dies stellt sicher, dass die statistischen Schätzer eine ausreichende Präzision besitzen. Für seltene Symbolklassen oder zu Beginn der Verarbeitung, wenn noch wenige Links validiert wurden, greift das System auf die konventionelle Proximity-Suche zurück.
+Die probabilistische Fenstersuche wird nur dann aktiviert, wenn mindestens 10 validierte Links für die entsprechende Symbolklasse vorliegen. Dies stellt sicher, dass die statistischen Schätzer eine ausreichende Präzision besitzen. Für seltene Symbolklassen oder zu Beginn der Verarbeitung, wenn noch wenige Links validiert wurden, greift der Prototyp auf die konventionelle Proximity-Suche zurück.
 
 \begin{figure}[H]
 \centering
@@ -2055,7 +2054,7 @@ Die probabilistische Fenstersuche wird nur dann aktiviert, wenn mindestens 10 va
 \label{fig:adaptive_window}
 \end{figure}
 
-Dieser adaptive Mechanismus ermöglicht es dem System, sich an plan-spezifische Layoutkonventionen anzupassen. Insbesondere bei historischen Plänen oder Zeichnungen von verschiedenen Bearbeitern, die von modernen Standardkonventionen abweichen, verbessert der Lernmechanismus die Linking-Rate signifikant. Empirisch zeigt sich eine Verbesserung der erfolgreichen Zuordnungen um ca. 12\% gegenüber rein statischen Regeln, insbesondere bei inkonsistenten oder nicht-standardkonformen Layouts.
+Dieser adaptive Mechanismus ermöglicht es dem Prototyp, sich an plan-spezifische Layoutkonventionen anzupassen. Insbesondere bei historischen Plänen oder Zeichnungen von verschiedenen Bearbeitern, die von modernen Standardkonventionen abweichen, verbessert der Lernmechanismus die Linking-Rate signifikant. Empirisch zeigt sich eine Verbesserung der erfolgreichen Zuordnungen um ca. 12\% gegenüber rein statischen Regeln, insbesondere bei inkonsistenten oder nicht-standardkonformen Layouts.
 
 \subsection{Komplexe Verknüpfungslogik für Spezialfälle}
 
@@ -3236,10 +3235,10 @@ Abbildung~\ref{fig:complete_ui} zeigt die vollständige Benutzeroberfläche mit 
 \label{fig:complete_ui}
 \end{figure}
 
-Die Abbildung demonstriert die praktische Anwendung der bidirektionalen Verlinkung: Das in der Tabelle selektierte Objekt (GKS 0553 mit Koordinate 15{,}2564, hervorgehoben in cyan) ist im PDF-Viewer durch eine grüne Bounding Box markiert und zentriert. Die farbliche Codierung der Overlays folgt dem definierten Schema (Das ausgewählte Element muss rot und die andere Elemente müssen grün sein). Die Toolbar am oberen Rand bietet Funktionen zur Datenvalidierung, Erkennungsqualitätsprüfung, manuellen Koordinatenverknüpfung und OCR-Re-Extraktion. Das rechte Panel zeigt Detailinformationen zum selektierten Objekt, einschließlich Klassentyp (gks\_gesteuert), YOLO-Konfidenz (0{,}947), extrahiertem Text und Seitenzuordnung. Diese integrierte Ansicht erfüllt die Anforderungen FA-012 (Visuelle Validierung) und FA-013 (GUI) und ermöglicht eine effiziente Qualitätsprüfung ohne Medienbruch zwischen Originaldokument und strukturierten Daten.
+Die Abbildung demonstriert die praktische Anwendung der bidirektionalen Verlinkung: Das in der Tabelle selektierte Objekt (GKS 0553 mit Koordinate 15{,}2564, hervorgehoben in cyan) ist im PDF-Viewer durch eine grüne Bounding Box markiert und zentriert. Die farbliche Codierung der Overlays folgt dem definierten Schema (Das selektierte Element wird rot hervorgehoben, während die übrigen Erkennungen grün dargestellt werden). Die Toolbar am oberen Rand bietet Funktionen zur Datenvalidierung, Erkennungsqualitätsprüfung, manuellen Koordinatenverknüpfung und OCR-Re-Extraktion. Das rechte Panel zeigt Detailinformationen zum selektierten Objekt, einschließlich Klassentyp (gks\_gesteuert), YOLO-Konfidenz (0{,}947), extrahiertem Text und Seitenzuordnung. Diese integrierte Ansicht erfüllt die Anforderungen FA-012 (Visuelle Validierung) und FA-013 (GUI) und ermöglicht eine effiziente Qualitätsprüfung ohne Medienbruch zwischen Originaldokument und strukturierten Daten.
 \subsection{Validierungs-Dialog}
 
-Der Validierungs-Dialog implementiert eine mehrstufige Fehlerklassifikation basierend auf den Validierungsregeln aus Abschnitt [Referenz zu Validierungskapitel]. Die Fehlertypen umfassen:
+Der Validierungs-Dialog implementiert eine mehrstufige Fehlerklassifikation basierend auf den Validierungsregeln aus Abschnitt~\ref{sec:validierungundsicherung}. Die Fehlertypen umfassen:
 
 \begin{itemize}
     \item \textbf{Regex-Mismatch}: OCR-Text entspricht nicht dem erwarteten Format für die jeweilige Klasse
@@ -3457,7 +3456,7 @@ Dieses Kapitel stellte die technische Realisierung der automatisierten Datenextr
 
 Die Extraktionspipeline besteht aus folgenden Hauptmodulen:
 
-\textbf{Objekterkennung (Abschnitt \ref{sec:objekterkennungmityolov8obb}):}
+\textbf{Objekterkennung (Abschnitt \ref{sec:yolo_implementation}):}
 Das YOLOv8-OBB Modell wurde auf einem Datensatz mit 13 Symbolklassen trainiert, 
 wobei fünf \textit{Kernklassen} (signal, coordinate, gks\_festkodiert, gks\_gesteuert, 
 gm\_block) den Fokus der Evaluation bilden und acht \textit{Auxiliarklassen} die 

@@ -1,8 +1,8 @@
 \chapter{Theoretische und technische Grundlagen}
 \label{chap:theoretischeundtechnischegrundlagen}
-Im Rahmen dieses Kapitels werden die maßgeblichen Technologien und Konzepte dargelegt, auf denen das entwickelte Modell basiert. Der Fokus liegt auf der automatisierten Objekterkennung, Textextraktion und strukturierten Informationsverarbeitung aus Gleisplänen.
+Im Rahmen dieses Kapitels werden die maßgeblichen Grundlagen dargelegt, auf denen das entwickelte System basiert. Dabei umfassen die \textit{theoretischen Grundlagen} die konzeptionellen Aspekte wie die Struktur von Gleisplänen, die Klassifikation bahntechnischer Symbole sowie die Prinzipien der Objekterkennung, während die \textit{technischen Grundlagen} die eingesetzten Technologien und Werkzeuge behandeln. Der Fokus liegt auf drei Kernbereichen, die den in Kapitel~\ref{chap:einleitung} definierten Zielen entsprechen: (1) automatisierte Objekterkennung zur Symboldetektion, (2) Textextraktion zur Erfassung von Bezeichnungen und Positionsangaben, sowie (3) strukturierte Informationsverarbeitung zur semantischen Verknüpfung der erkannten Elemente.
 \section{Grafische Gleispläne im Bahnkontext}
-Die Modellierung einer Bahnanlage stellt eine komplexe Aufgabe dar, da diese typischerweise aus einer Vielzahl von Gleisabschnitten, Weichen und Signalen besteht. Die manuelle Erstellung eines Modells, das den physischen Details der Anlage entspricht, erfordert üblicherweise mehrere Wochen Arbeit. Dies hat signifikante Auswirkungen auf die Anwendbarkeit und den Umfang vieler Methoden.\cite{railroadstationdrawing}
+Die Dokumentation einer Bahnanlage stellt eine komplexe Aufgabe dar, da diese typischerweise aus einer Vielzahl von Gleisabschnitten, Weichen und Signalen besteht. Die manuelle Erfassung aller Anlagendetails erfordert üblicherweise mehrere Wochen Arbeit, was die Skalierbarkeit traditioneller Dokumentationsansätze erheblich einschränkt.\cite{railroadstationdrawing}
 
 Diese zeitintensive manuelle Arbeit motiviert den Einsatz automatisierter Verfahren zur Datenextraktion. Die folgenden Abschnitte legen die theoretischen Grundlagen dar, auf denen eine solche Automatisierung aufbauen kann.
 
@@ -18,7 +18,7 @@ Gleispläne enthalten drei Symbolkategorien \cite{Pachl}: (1) Fahrwegelemente (G
 (2) Sicherungstechnik (Signale, Achszähler), (3) Metadaten (Bezeichner,
 Kilometrierung). Jedes Element trägt eindeutige Labels zur Identifikation.
 
-Obwohl diese Pläne in der heutigen Ingenieurspraxis mittels CAD-Systemen (Computer Aided Design) erstellt werden, liegt die primäre Herausforderung für eine automatisierte Auswertung nicht im Dateiformat, sondern in der korrekten semantischen Interpretation dieser abstrahierten Symbolik und ihrer logischen Verknüpfung \cite{Pachl}.
+Obwohl diese Pläne in der heutigen Ingenieurspraxis mittels CAD-Werkzeugen (Computer Aided Design) erstellt werden, liegt die primäre Herausforderung für eine automatisierte Auswertung nicht im Dateiformat, sondern in der korrekten semantischen Interpretation dieser abstrahierten Symbolik und ihrer logischen Verknüpfung \cite{Pachl}.
 
 \begin{figure}[H]
     \centering
@@ -57,11 +57,9 @@ Metadaten & \textbf{Positionsangaben}: Kilometrierung, Lagepunkte\cite{DB2008Reg
 \label{tab:symbol_categories}
 \end{table}
 
-\textbf{Hinweis zur Umsetzung:} Diese theoretische Klassifikation dient als Ausgangspunkt für die Anforderungsanalyse. Die konkrete Auswahl der zu erkennenden Symbolklassen -- unterteilt in fünf produktionsrelevante \textit{Kernklassen} und acht experimentelle \textit{Auxiliarklassen} -- wird in Kapitel~\ref{chap:anforderungen} (Tabellen~\ref{tab:kernklassen} und \ref{tab:auxiliarklassen}) basierend auf den Projektanforderungen bei Siemens Mobility definiert.
+Die automatisierte Analyse visueller Informationen bildet das Fundament zahlreicher technischer Anwendungen von der Qualitätskontrolle in der industriellen Fertigung über die medizinische Bildanalyse bis hin zur autonomen Navigation. Während Menschen mühelos in der Lage sind, Objekte in Bildern zu identifizieren und zu lokalisieren, erfordert die Replikation dieser Fähigkeit in Maschinen die Lösung komplexer Teilprobleme. Historisch wurde diese Aufgabe durch explizite Programmierung von Erkennungsregeln adressiert. Der konzeptionelle Durchbruch gelang durch maschinelles Lernen, insbesondere durch tiefe neuronale Netze, die relevante Merkmale selbstständig aus Trainingsdaten extrahieren können \cite{LeCun1998_GradientBasedLearning,Krizhevsky2012_AlexNet}. Diese Methodik bildet das Fundament für die in dieser Arbeit entwickelte Symbol- und Texterkennung in Gleisplänen.
 
-Die automatisierte Analyse visueller Informationen bildet das Fundament zahlreicher technischer Anwendungen von der Qualitätskontrolle in der industriellen Fertigung über die medizinische Bildanalyse bis hin zur autonomen Navigation. Während Menschen mühelos in der Lage sind, Objekte in Bildern zu identifizieren und zu lokalisieren, erfordert die Replikation dieser Fähigkeit in Maschinen die Lösung komplexer Teilprobleme. Historisch wurde diese Aufgabe durch explizite Programmierung von Erkennungsregeln adressiert. Der konzeptionelle Durchbruch gelang durch maschinelles Lernen, insbesondere durch tiefe neuronale Netze, die relevante Merkmale selbstständig aus Trainingsdaten extrahieren können \cite{LeCun1998_GradientBasedLearning,Krizhevsky2012_AlexNet}.
-
-Für technische Anwendungen wie die Analyse von Konstruktionszeichnungen oder Gleisplänen manifestieren sich spezifische Herausforderungen, die über die Verarbeitung natürlicher Fotografien hinausgehen. Im Folgenden werden zunächst die domänenspezifischen Anforderungen technischer Zeichnungen erläutert, bevor die grundlegenden methodischen Ansätze der Objekterkennung systematisch hergeleitet werden. Das Kapitel folgt dabei einer Progression vom Allgemeinen zum Spezifischen: Ausgehend von universellen Erkennungsprinzipien wird schrittweise die Anwendung auf bahntechnische Gleispläne konkretisiert.
+Für technische Anwendungen wie die Analyse von Konstruktionszeichnungen oder Gleisplänen manifestieren sich spezifische Herausforderungen, die über die Verarbeitung natürlicher Fotografien hinausgehen. Im Folgenden werden zunächst die besonderen Eigenschaften technischer CAD-Zeichnungen wie hohe Objektdichte, standardisierte Symbolik und beliebige Symbolorientierung erläutert, bevor die grundlegenden methodischen Ansätze der Objekterkennung systematisch hergeleitet werden. Das Kapitel folgt dabei einer Progression vom Allgemeinen zum Spezifischen: Ausgehend von universellen Erkennungsprinzipien wird schrittweise die Anwendung auf bahntechnische Gleispläne konkretisiert.
 
 \subsection{Objekterkennung in technischen CAD-Zeichnungen}
 \label{subsec:cad_spezifisch}
@@ -70,7 +68,7 @@ Im Gegensatz zu natürlichen Szenen weisen technische Konstruktionszeichnungen s
 
 \subsubsection{Domänenspezifische Eigenschaften}
 
-Technische Zeichnungen unterscheiden sich fundamental von natürlichen Bildern in ihrer Entstehung und Struktur \cite{Zeid2005}. CAD-Systeme (Computer-Aided Design) erzeugen vektorbasierte Repräsentationen, die geometrische Primitive wie Linien, Kreise und Polylinien sowie zugeordnete Metadaten enthalten. Die Konvertierung in Rasterformate (PDF, PNG) für ML-basierte Analyse führt jedoch zu einem Informationsverlust hinsichtlich topologischer Beziehungen und semantischer Layer-Informationen. Topologische Beziehungen beschreiben die Verbindungsstruktur zwischen Elementen -- etwa welche Gleisabschnitte durch eine Weiche verbunden sind oder welches Signal zu welchem Gleis gehört. Semantische Layer-Informationen kodieren die funktionale Zuordnung von Objekten zu Kategorien wie Gleisführung, Signaltechnik oder Oberleitung. Bei der Rasterisierung werden diese Strukturinformationen eliminiert; das Bild wird zu einer Ansammlung von Pixeln ohne inhärente Bedeutung. Diese Transformation von strukturierten zu unstrukturierten Daten motiviert den Einsatz von Deep-Learning-Verfahren, die robuste Mustererkennung auch ohne explizite topologische Information ermöglichen.
+Technische Zeichnungen unterscheiden sich fundamental von natürlichen Bildern in ihrer Entstehung und Struktur \cite{Zeid2005}. CAD-Systeme erzeugen vektorbasierte Repräsentationen, die geometrische Primitive wie Linien, Kreise und Polylinien sowie zugeordnete Metadaten enthalten. Die Konvertierung in Rasterformate (PDF, PNG) für ML-basierte Analyse führt jedoch zu einem Informationsverlust hinsichtlich topologischer Beziehungen und semantischer Layer-Informationen. Topologische Beziehungen beschreiben die Verbindungsstruktur zwischen Elementen -- etwa welche Gleisabschnitte durch eine Weiche verbunden sind oder welches Signal zu welchem Gleis gehört. Semantische Layer-Informationen kodieren die funktionale Zuordnung von Objekten zu Kategorien wie Gleisführung, Signaltechnik oder Oberleitung. Bei der Rasterisierung werden diese Strukturinformationen eliminiert; das Bild wird zu einer Ansammlung von Pixeln ohne inhärente Bedeutung. Diese Transformation von strukturierten zu unstrukturierten Daten motiviert den Einsatz von Deep-Learning-Verfahren, die robuste Mustererkennung auch ohne explizite topologische Information ermöglichen.
 
 Bahntechnische Symbole folgen standardisierten Bibliotheken gemäß EN-Normen \cite{DIN_ISO_128} oder kundenspezifischen Richtlinien. Die Variabilität innerhalb einer Symbolklasse ist somit deutlich geringer als bei natürlichen Objekten wie Fahrzeugen oder Personen, jedoch erschweren kundenspezifische Anpassungen die Generalisierung über verschiedene Planungsunternehmen hinweg. Ein durchschnittlicher Bahnhofsgleisplan enthält zwischen 100 und 300 relevante Symbole (Signale, Zugbeeinflussungselemente, Koordinaten) auf einer Fläche von wenigen Quadratmetern, was eine deutlich höhere Objektdichte als in typischen Computer-Vision-Benchmark-Datensätzen wie COCO \cite{Lin2014_COCO} oder Pascal VOC \cite{Everingham2010_PascalVOC} darstellt. Zum Vergleich: COCO-Bilder enthalten im Durchschnitt 7 bis 10 Objekte, während ein Gleisplanausschnitt von vergleichbarer Pixelgröße 50 bis 100 Symbole aufweisen kann.
 
@@ -80,7 +78,7 @@ Anders als bei Objekten mit kanonischer Orientierung -- etwa Straßenverkehrssch
 
 Die Anwendung von Machine Learning auf technische Zeichnungen ist ein aktives Forschungsfeld mit Anwendungen in verschiedenen Ingenieurdisziplinen. Ahmed et al. \cite{Ahmed2011} entwickelten frühe Ansätze zur automatischen Segmentierung von architektonischen Grundrissen unter Verwendung morphologischer Operationen und Hough-Transformation. Moreno-García et al. \cite{Moreno2019} entwickelten ein umfassendes Framework zur Digitalisierung komplexer technischer Zeichnungen und demonstrierten die Überlegenheit von Deep-Learning-Ansätzen gegenüber klassischen Feature-Engineering-Methoden. Rahul et al. \cite{Rahul2019} extrahierten Informationen aus P\&ID-Diagrammen der Prozessindustrie mittels Faster R-CNN und erreichten dabei mean Average Precision-Werte von über 85\%.
 
-Jamieson et al. \cite{Jamieson2024} liefern eine umfassende Übersicht über Deep-Learning-Methoden für Engineering-Diagramme und identifizieren als zentrale Herausforderungen die hohe Variabilität kundenspezifischer Symbolbibliotheken, den Mangel an annotierten Trainingsdaten sowie die Notwendigkeit rotationsinvarianter Detektionsverfahren. Für den bahntechnischen Bereich existieren bisher hauptsächlich proprietäre Lösungen einzelner Eisenbahnunternehmen ohne publizierte wissenschaftliche Evaluierung. Die vorliegende Arbeit adressiert diese Forschungslücke durch Entwicklung und Evaluation eines prototypischen Systems auf Basis moderner One-Stage-Detektoren.
+Jamieson et al. \cite{Jamieson2024} liefern eine umfassende Übersicht über Deep-Learning-Methoden für Engineering-Diagramme und identifizieren als zentrale Herausforderungen die hohe Variabilität kundenspezifischer Symbolbibliotheken, den Mangel an annotierten Trainingsdaten sowie die Notwendigkeit rotationsinvarianter Detektionsverfahren. Für den bahntechnischen Bereich existieren bisher hauptsächlich proprietäre Lösungen einzelner Eisenbahnunternehmen ohne publizierte wissenschaftliche Evaluierung. Die vorliegende Arbeit adressiert diese Forschungslücke durch Entwicklung und Evaluation eines prototypischen Systems auf Basis moderner One-Stage-Detektoren (Detektoren wie YOLO, die Objekte in einem einzigen Netzwerkdurchlauf lokalisieren und klassifizieren).
 
 
 
@@ -107,9 +105,9 @@ Zweistufige Detektoren wie Faster R-CNN \cite{Ren2015_FasterRCNN} separieren den
 
 Für die Gleisplananalyse erweist sich diese Geschwindigkeit als kritisch. Ein durchschnittlicher Plan umfasst nach der Kachelungsstrategie (siehe Abschnitt~\ref{subsubsec:tiling_strategie}) zwischen 150 und 300 Bildausschnitte. Während YOLO-Modelle typischerweise mit Eingangsgrößen von 640×640 oder 1024×1024 Pixeln arbeiten, werden für die Gleisplananalyse aufgrund der sehr kleinen Symbolgrößen Kacheln von 2048×2048 Pixeln verwendet (Details zur Kachelungsstrategie in Abschnitt~\ref{subsubsec:tiling_strategie}). Bei einer Verarbeitungszeit von 100 bis 200 Millisekunden pro Kachel würde die Gesamtanalyse zwischen 4 bis 15 Minuten dauern. Bei größeren Eingabebildern erfolgt ein automatisches Downsampling auf die konfigurierte Eingabegröße, wobei die Ausgabekoordinaten entsprechend zurückskaliert werden. 
 
-Einstufige Detektoren wie YOLO (You Only Look Once) \cite{redmon2016lookonceunifiedrealtime} adressieren diese Geschwindigkeitsproblematik durch eine fundamental andere Strategie. YOLO unterteilt das Eingabebild in ein regelmäßiges Raster von Zellen (beispielsweise 13×13 oder 26×26 Zellen bei kleineren Eingabegrößen, bzw. entsprechend größere Raster bei höheren Auflösungen). Für jede Zelle sagt das Netz in einem einzigen Vorwärtsdurchlauf direkt mehrere Aspekte vorher: Liegt in dieser Zelle ein Objekt? Wenn ja, welcher Objektklasse gehört es an? Wie hoch ist die Konfidenz dieser Vorhersage? Und wo genau innerhalb der Zelle befindet sich das Objekt? Diese parallele Verarbeitung aller Bildbereiche ermöglicht Inferenzgeschwindigkeiten von 40 bis über 100 Bildern pro Sekunde \cite{yolov8_ultralytics}. Moderne Varianten wie YOLOv8 erreichen durch architektonische Verbesserungen -- insbesondere Feature Pyramid Networks (FPN) \cite{Lin2017_FPN} für Multi-Scale-Detektion und verbesserte Loss-Funktionen -- vergleichbare oder sogar überlegene Präzision gegenüber zweistufigen Detektoren bei Beibehaltung der Echtzeitfähigkeit.
+Einstufige Detektoren wie YOLO (You Only Look Once) \cite{redmon2016lookonceunifiedrealtime} adressieren diese Geschwindigkeitsproblematik durch eine fundamental andere Strategie. YOLO unterteilt das Eingabebild in ein regelmäßiges Raster von Zellen (beispielsweise 13×13 oder 26×26 Zellen bei kleineren Eingabegrößen, bzw. entsprechend größere Raster bei höheren Auflösungen). Für jede Zelle sagt das Netz in einem einzigen Vorwärtsdurchlauf direkt mehrere Aspekte vorher: Liegt in dieser Zelle ein Objekt? Wenn ja, welcher Objektklasse gehört es an? Wie hoch ist die Konfidenz dieser Vorhersage? Und wo genau innerhalb der Zelle befindet sich das Objekt? Diese parallele Verarbeitung aller Bildbereiche ermöglicht Inferenzgeschwindigkeiten von 40 bis über 100 Bildern pro Sekunde \cite{yolov8_ultralytics}. Moderne Varianten wie YOLOv8 erreichen durch architektonische Verbesserungen -- insbesondere Feature Pyramid Networks (FPN) \cite{Lin2017_FPN} für Multi-Scale-Detektion und verbesserte Loss-Funktionen -- vergleichbare oder sogar überlegene Präzision gegenüber zweistufigen Detektoren bei Beibehaltung der Echtzeitfähigkeit. FPN ermöglicht dabei die gleichzeitige Erkennung von Symbolen unterschiedlicher Größe, was für Gleispläne essentiell ist, da kleine Elemente wie Isolierstöße und große Symbole wie Signale im selben Bild detektiert werden müssen.
 
-Die Abwägung zwischen beiden Paradigmen muss im Kontext der Anwendungsanforderungen erfolgen. Für technische Gleispläne mit gut sichtbaren, scharf gerenderten Symbolen rechtfertigt die hohe Verarbeitungsgeschwindigkeit marginale Genauigkeitseinbußen. Einstufige Architekturen können bei technischen Zeichnungen vergleichbare Präzision erreichen (die konkrete Evaluation erfolgt in Kapitel~\ref{chap:evaluation}).
+Die Abwägung zwischen beiden Paradigmen muss im Kontext der Anwendungsanforderungen erfolgen. Für technische Gleispläne mit gut sichtbaren, scharf gerenderten Symbolen rechtfertigt die hohe Verarbeitungsgeschwindigkeit marginale Genauigkeitseinbußen. Einstufige Architekturen können bei technischen Zeichnungen vergleichbare Präzision erreichen.
 
 Abbildung~\ref{fig:two_stage_vs_one_stage} illustriert den fundamentalen Unterschied zwischen beiden Architekturparadigmen.
 
@@ -156,15 +154,26 @@ Abbildung~\ref{fig:two_stage_vs_one_stage} illustriert den fundamentalen Untersc
 \end{figure}
 
 \subsection{Modelltraining}
+\label{subsec:theoretisches_modelltraining}
 
-Das Training erfolgt supervised mit annotierten Bounding Boxes. Die konkreten 
-Trainingsparameter und Augmentationsstrategien werden in 
-Kapitel~\ref{chap:implementierung}, Abschnitt~\ref{subsec:Modelltraining} dokumentiert.
+Das Training moderner Objektdetektoren wie YOLOv8 erfolgt überwacht (supervised) mit annotierten Bounding Boxes \cite{yolov8_ultralytics}. Jedes Trainingsbeispiel besteht aus einem Eingabebild und den zugehörigen Ground-Truth-Annotationen, die Position, Größe und Klassenzugehörigkeit jedes Objekts spezifizieren.
+
+\textbf{Transfer Learning.} Anstatt ein Modell von Grund auf zu trainieren, wird typischerweise mit vortrainierten Gewichten initialisiert \cite{yaseen2024yolov8indepthexplorationinternal}. YOLOv8-Modelle werden standardmäßig auf dem COCO-Datensatz (Common Objects in Context) mit 80 Objektklassen vortrainiert. Dieses Transfer Learning ermöglicht es, bereits erlernte low-level Features (Kanten, Texturen) auf die Zieldomäne zu übertragen und beschleunigt die Konvergenz erheblich, insbesondere bei kleineren domänenspezifischen Datensätzen wie sie für Gleispläne typisch sind.
+
+\textbf{Datenaugmentation.} Zur Verbesserung der Generalisierungsfähigkeit und Vermeidung von Overfitting setzt YOLOv8 verschiedene Augmentationstechniken ein \cite{Bochkovskiy2020_YOLOv4}:
+\begin{itemize}
+    \item \textit{Mosaic}: Kombiniert vier Trainingsbilder zu einem, wodurch das Modell lernt, Objekte in verschiedenen Kontexten zu erkennen
+    \item \textit{MixUp}: Überlagert zwei Bilder mit ihren Labels, was die Entscheidungsgrenzen glättet
+    \item \textit{Geometrische Transformationen}: Rotation, Skalierung und Spiegelung erhöhen die Varianz der Trainingsdaten
+    \item \textit{Farbaugmentation}: Variation von Helligkeit, Kontrast und Sättigung verbessert die Robustheit gegenüber unterschiedlichen Scanqualitäten
+\end{itemize}
+
+Die kombinierte Loss-Funktion (vgl. Abschnitt~\ref{subsubsec:yolov8_obb_loss}) optimiert simultan Lokalisierung und Klassifikation. Die konkreten Trainingsparameter und domänenspezifischen Anpassungen für die Gleisplanerkennung werden in Kapitel~\ref{chap:implementierung}, Abschnitt~\ref{subsec:modelltraining} dokumentiert.
 
 \subsection{Evaluationsmetriken}
 \label{subsec:theoretischeevaluationsmetriken}
 
-Die Bewertung von Objektdetektoren erfordert standardisierte Metriken, die sowohl Lokalisierungsgenauigkeit als auch Klassifikationsgüte quantifizieren. Im Gegensatz zu einfachen Klassifikationsproblemen müssen Detektoren beide Aspekte simultan korrekt vorhersagen. Die nachfolgenden Metriken bilden die Grundlage für die in Kapitel~\ref{chap:evaluation} präsentierte Systemevaluation.
+Die Bewertung von Objektdetektoren erfordert standardisierte Metriken, die sowohl Lokalisierungsgenauigkeit als auch Klassifikationsgüte quantifizieren. Im Gegensatz zu einfachen Klassifikationsproblemen müssen Detektoren beide Aspekte simultan korrekt vorhersagen. Die nachfolgenden Metriken bilden die Grundlage für die Systemevaluation.
 
 \subsubsection{Intersection over Union}
 
@@ -178,41 +187,70 @@ Die Intersection over Union (IoU) \cite{Everingham2010_PascalVOC} quantifiziert 
 
 Der IoU-Wert liegt im Intervall $[0, 1]$, wobei 0 keine Überlappung und 1 eine perfekte Übereinstimmung signalisiert. In der Praxis gilt eine Detektion als korrekt, wenn $\text{IoU} \geq 0.5$ -- das heißt, die Überlappung muss mindestens die Hälfte der Gesamtfläche betragen. Dieser Schwellenwert reflektiert einen Kompromiss zwischen Forderung nach Präzision und Toleranz gegenüber geringfügigen Positionsabweichungen. Für präzisionskritische Anwendungen werden teilweise höhere Schwellen (0.75 oder 0.9) verwendet \cite{Lin2014_COCO}.
 
-Abbildung~\ref{fig:iou_visualization} veranschaulicht diese Berechnung anhand eines konkreten Beispiels. Die grüne Box repräsentiert die Ground-Truth-Position eines Symbols, wie sie von einem menschlichen Annotator markiert wurde. Die blaue Box stellt die Vorhersage des Detektors dar. Die Schnittfläche (rot schraffiert) entspricht der Fläche, in der beide Boxen überlappen. Die Vereinigungsfläche (durch die gestrichelte schwarze Linie umrandet) umfasst alle Bereiche, die von mindestens einer der beiden Boxen abgedeckt werden. Im dargestellten Fall beträgt die IoU etwa 0.28, was unterhalb der üblichen Schwelle von 0.5 liegt. Obwohl visuell erkennbar ist, dass der Detektor das richtige Objekt identifiziert hat, wird die Detektion aufgrund der ungenügenden Lokalisierung als Fehldetektion gewertet. Dies verdeutlicht die Strenge der IoU-Metrik: Nicht nur die korrekte Objektklasse, sondern auch eine präzise Lokalisierung ist erforderlich.
+Abbildung~\ref{fig:iou_visualization} veranschaulicht diese Berechnung anhand zweier kontrastierender Beispiele. In beiden Fällen repräsentiert die grüne Box die Ground-Truth-Position eines Symbols, während die blaue Box die Vorhersage des Detektors darstellt. Die Schnittfläche (rot schraffiert) entspricht der Überlappung beider Boxen.
+
+Das linke Beispiel zeigt eine Detektion mit $\text{IoU} = 0.28$: Die Vorhersage weist zwar auf das korrekte Objekt hin, verfehlt aber die Ground Truth deutlich. Mit einem IoU-Wert unterhalb der Standardschwelle von 0.5 wird diese Detektion als False Positive gewertet. Das rechte Beispiel demonstriert den Grenzfall mit $\text{IoU} = 0.50$: Hier überlappt die Schnittfläche exakt die Hälfte der Vereinigungsfläche, was der minimalen Anforderung für eine korrekte Detektion entspricht. Der visuelle Vergleich verdeutlicht die Strenge der IoU-Metrik: Selbst wenn der Detektor das richtige Objekt identifiziert, führt eine ungenaue Lokalisierung zur Klassifikation als Fehldetektion.
 
 \begin{figure}[H]
 \centering
-\begin{tikzpicture}[scale=1.1]
-    % Ground Truth (grün)
-    \draw[thick, green!60!black, fill=green!20, opacity=0.7] (1,1) rectangle (5,3.5);
-    \node[green!50!black, font=\small\bfseries] at (1.8, 3.8) {Ground Truth};
-    
-    % Prediction (blau)
-    \draw[thick, blue!60!black, fill=blue!20, opacity=0.7] (2.5,1.8) rectangle (6.5,4.3);
-    \node[blue!50!black, font=\small\bfseries] at (5.5, 4.6) {Vorhersage};
-    
-    % Intersection (rot schraffiert)
+\begin{tikzpicture}[scale=0.85]
+    % ===== LEFT: IoU = 0.28 (Failure Case) =====
     \begin{scope}
-        \clip (1,1) rectangle (5,3.5);
-        \fill[pattern=north east lines, pattern color=red!80!black, opacity=0.8] 
-            (2.5,1.8) rectangle (6.5,4.3);
-    \end{scope}
-    % Roter Rahmen nur um den Schnitt
-    \draw[thick, red!80!black] (2.5,1.8) rectangle (5,3.5);
-    \node[red!80!black, font=\small\bfseries] at (3.75, 2.65) {Schnitt};
-    
-    % Union (FETT gestrichelt, klare Abstände)
-    % Änderungen: line width=1.5pt, dash pattern angepasst, leicht nach außen verschoben (optional)
-    \draw[line width=1.5pt, dashed, dash pattern=on 5pt off 3pt, black] 
-        (1,1) -- (1,3.5) -- (2.5,3.5) -- (2.5,4.3) -- 
-        (6.5,4.3) -- (6.5,1.8) -- (5,1.8) -- (5,1) -- cycle;
-    
-    % Optional: Pfeil der auf die Union-Linie zeigt (falls Betreuer es sehr deutlich will)
-    \draw[->, thick, black] (7.2, 3.0) node[right, align=left, font=\footnotesize] {Vereinigung\\(Union)} -- (6.5, 3.0);
+        \node[font=\bfseries] at (2, 4.2) {Fehldetektion};
 
-    \node[below, font=\small] at (3.75, 0.3) {$\text{IoU} \approx 0.28$ (zu niedrig, gilt als Fehldetektion)};
+        % Ground Truth (grün): (0,0) to (4,3), Area = 12
+        \draw[thick, green!60!black, fill=green!20, opacity=0.7] (0,0) rectangle (4,3);
+        \node[green!50!black, font=\scriptsize\bfseries] at (0.9, 3.3) {Ground Truth};
+
+        % Prediction (blau): (2.25,0) to (6.25,3), Area = 12
+        % Offset = 2.25, so intersection width = 4 - 2.25 = 1.75
+        % Intersection = 1.75 × 3 = 5.25, Union = 12 + 12 - 5.25 = 18.75
+        % IoU = 5.25 / 18.75 = 0.28
+        \draw[thick, blue!60!black, fill=blue!20, opacity=0.7] (2.25,0) rectangle (6.25,3);
+        \node[blue!50!black, font=\scriptsize\bfseries] at (5.35, 3.3) {Vorhersage};
+
+        % Intersection (rot schraffiert): (2.25,0) to (4,3)
+        \begin{scope}
+            \clip (0,0) rectangle (4,3);
+            \fill[pattern=north east lines, pattern color=red!80!black, opacity=0.8]
+                (2.25,0) rectangle (6.25,3);
+        \end{scope}
+        \draw[thick, red!80!black] (2.25,0) rectangle (4,3);
+        \node[red!80!black, font=\scriptsize\bfseries] at (3.125, 1.5) {Schnitt};
+
+        % IoU Label
+        \node[below, font=\small, red!70!black] at (3.125, -0.5) {$\text{IoU} = 0.28$ {\footnotesize (< 0.5, ungültig)}};
+    \end{scope}
+
+    % ===== RIGHT: IoU = 0.50 (Threshold Case) =====
+    \begin{scope}[xshift=8cm]
+        \node[font=\bfseries] at (2, 4.2) {Gültige Detektion};
+
+        % Ground Truth (grün): (0,0) to (4,3), Area = 12
+        \draw[thick, green!60!black, fill=green!20, opacity=0.7] (0,0) rectangle (4,3);
+        \node[green!50!black, font=\scriptsize\bfseries] at (0.9, 3.3) {Ground Truth};
+
+        % Prediction (blau): (1.33,0) to (5.33,3), Area = 12
+        % Offset = 1.33, so intersection width = 4 - 1.33 = 2.67
+        % Intersection = 2.67 × 3 = 8, Union = 12 + 12 - 8 = 16
+        % IoU = 8 / 16 = 0.50
+        \draw[thick, blue!60!black, fill=blue!20, opacity=0.7] (1.33,0) rectangle (5.33,3);
+        \node[blue!50!black, font=\scriptsize\bfseries] at (4.6, 3.3) {Vorhersage};
+
+        % Intersection (rot schraffiert): (1.33,0) to (4,3)
+        \begin{scope}
+            \clip (0,0) rectangle (4,3);
+            \fill[pattern=north east lines, pattern color=red!80!black, opacity=0.8]
+                (1.33,0) rectangle (5.33,3);
+        \end{scope}
+        \draw[thick, red!80!black] (1.33,0) rectangle (4,3);
+        \node[red!80!black, font=\scriptsize\bfseries] at (2.665, 1.5) {Schnitt};
+
+        % IoU Label
+        \node[below, font=\small, green!60!black] at (2.665, -0.5) {$\text{IoU} = 0.50$ {\footnotesize (= 0.5, gültig)}};
+    \end{scope}
 \end{tikzpicture}
-\caption{Visualisierung der Intersection over Union (IoU). Die Vereinigungsfläche wird durch die schwarze gestrichelte Umrandung dargestellt.}
+\caption{Visualisierung der Intersection over Union (IoU) bei unterschiedlichen Überlappungsgraden.}
 \label{fig:iou_visualization}
 \end{figure}
 
@@ -235,13 +273,15 @@ Die Mean Average Precision (mAP) \cite{Everingham2010_PascalVOC,Lin2014_COCO} ag
 \text{mAP} = \frac{1}{N} \sum_{i=1}^{N} \text{AP}_i
 \end{equation}
 
-wobei $N$ die Anzahl der Objektklassen bezeichnet. Üblich ist die Angabe von mAP@0.5 (IoU-Schwelle 50\%) sowie mAP@[0.5:0.95] (Mittelwert über IoU-Schwellen von 50\% bis 95\% in 5\%-Schritten). Die letztere Metrik ist deutlich strenger und fordert präzisere Lokalisierung. Für diese Arbeit wird primär mAP@0.5 verwendet (siehe Kapitel~\ref{chap:evaluation}), da leichte Ungenauigkeiten in der Boxlokalisierung durch nachgelagerte Validierung kompensiert werden können. Ein Signal, das mit $45^\circ$ statt exakt $47^\circ$ Rotation detektiert wird, ist für die Planungsaufgabe dennoch korrekt identifiziert.
+wobei $N$ die Anzahl der Objektklassen bezeichnet. Üblich ist die Angabe von mAP@0.5 (IoU-Schwelle 50\%) sowie mAP@[0.5:0.95] (Mittelwert über IoU-Schwellen von 50\% bis 95\% in 5\%-Schritten). Die letztere Metrik ist deutlich strenger und fordert präzisere Lokalisierung.
+
+Die mAP-Metrik ist keine Anforderung, sondern die \textit{Standardevaluationsmetrik} für Objektdetektoren wie YOLO \cite{yolov8_ultralytics}. Sie wird sowohl während des Trainings zur Überwachung des Lernfortschritts als auch zur finalen Bewertung des trainierten Modells verwendet. In der vorliegenden Arbeit dient mAP@0.5 als primäre Evaluationsmetrik für die Objekterkennung (Kapitel~\ref{chap:evaluation}), da für die Gleisplananalyse eine IoU-Schwelle von 50\% ausreichend ist: Leichte Ungenauigkeiten in der Boxlokalisierung werden durch nachgelagerte Validierung kompensiert. Ein Signal, das mit $45^\circ$ statt exakt $47^\circ$ Rotation detektiert wird, ist für die Planungsaufgabe dennoch korrekt identifiziert.
 
 Die in diesem Abschnitt dargestellten Verfahren, von zweistufigen Detektoren wie Faster R-CNN bis zu einstufigen Architekturen wie YOLO, verwenden achsenparallele Begrenzungsrahmen (Axis-Aligned Bounding Boxes, AABB). Diese Boxen sind durch vier Parameter definiert und ihre Kanten verlaufen stets horizontal und vertikal zum Bildrand. Für viele Anwendungen wie Fußgängererkennung oder Fahrzeugdetektion, bei denen Objekte typischerweise aufrechte oder horizontale Orientierung aufweisen, ist dies ausreichend. Technische Zeichnungen mit beliebig rotierten Symbolen und Textannotationen stellen jedoch besondere Anforderungen, die achsenparallele Boxen nur unzureichend erfüllen. Abschnitt~\ref{sec:obb} führt daher orientierte Begrenzungsrahmen (Oriented Bounding Boxes, OBB) ein, die durch einen zusätzlichen Rotationsparameter präzisere Lokalisierung rotierter Objekte ermöglichen.
 \section{Oriented Object Detection für rotierte Objekte}
 \label{sec:obb}
 
-Die in Abschnitt~\ref{sec:objekterkennungmityolov8obb} vorgestellten objekterkennenden Modelle basieren überwiegend auf achsenparallelen Bounding Boxes (Axis-Aligned Bounding Boxes, AABB)\cite{redmon2016lookonceunifiedrealtime}. Bei der Detektion rotierter Objekte, wie sie in technischen Zeichnungen und Gleisplänen vorliegen, stoßen AABB-basierte Ansätze jedoch an fundamentale Grenzen. Oriented Bounding Boxes (OBB) bieten hier eine geometrisch präzisere Alternative, indem sie zusätzlich zum Zentrum und den Abmessungen auch den Rotationswinkel des Objekts modellieren.
+Die in Abschnitt~\ref{subsec:dl_architekturen} vorgestellten objekterkennenden Modelle basieren überwiegend auf achsenparallelen Bounding Boxes (Axis-Aligned Bounding Boxes, AABB)\cite{redmon2016lookonceunifiedrealtime}. Bei der Detektion rotierter Objekte, wie sie in technischen Zeichnungen und Gleisplänen vorliegen, stoßen AABB-basierte Ansätze jedoch an fundamentale Grenzen. Oriented Bounding Boxes (OBB) bieten hier eine geometrisch präzisere Alternative, indem sie zusätzlich zum Zentrum und den Abmessungen auch den Rotationswinkel des Objekts modellieren.
 
 \subsection{Limitierungen achsenparalleler Bounding Boxes}
 
@@ -349,11 +389,11 @@ Oriented Bounding Boxes erweitern die AABB-Repräsentation um einen zusätzliche
 \text{OBB} = (c_x, c_y, w, h, \theta)
 \end{equation}
 
-wobei $(c_x, c_y)$ das Zentrum, $w$ und $h$ die Dimensionen entlang der lokalen Achsen und $\theta \in [-90^\circ, 90^\circ)$ den Rotationswinkel relativ zur horizontalen Bildachse beschreiben. Diese Repräsentation ermöglicht eine eng anliegende Umhüllung rotierter Objekte und reduziert den Hintergrundanteil auf das geometrische Minimum.
+wobei $(c_x, c_y)$ das Zentrum, $w$ und $h$ die Dimensionen entlang der lokalen Achsen und $\theta \in [-90^\circ, 90^\circ)$ den Rotationswinkel relativ zur horizontalen Bildachse beschreiben. Diese Parametrisierung ermöglicht eine eng anliegende Umhüllung rotierter Objekte und reduziert den Hintergrundanteil auf das geometrische Minimum.
 
 \subsubsection{Vorteile für rotierte Objekte}
 
-Die präzisere geometrische Modellierung durch OBB bietet mehrere Vorteile \cite{Xie2021OrientedRD}. Bei perfekter Ausrichtung der OBB mit dem Objekt minimiert sich der Hintergrundanteil, während AABB bei starker Rotation erhebliche Hintergrundbereiche umschließen. Die IoU zwischen OBB reflektiert die tatsächliche Objektüberlappung, wodurch Fehlunterdrückungen bei NMS vermieden werden. Dies ist besonders wichtig bei dicht gruppierten Objekten, wo AABB fälschlicherweise hohe Überlappungen anzeigen würden. Zudem kodiert der Parameter $\theta$ explizit die Objektorientierung, was für nachgelagerte Prozesse wie orientierungsabhängige OCR wertvoll ist. Für die Domäne der Gleisplananalyse sind diese Eigenschaften besonders relevant, da Symbole entlang der Gleisachsen in beliebigen Winkeln angeordnet sind und oft dicht gruppiert auftreten.
+Die präzisere geometrische Modellierung durch OBB bietet mehrere Vorteile \cite{Xie2021OrientedRD}. Die IoU zwischen OBB reflektiert die tatsächliche Objektüberlappung, wodurch Fehlunterdrückungen bei NMS vermieden werden. Dies ist besonders wichtig bei dicht gruppierten Objekten, wo AABB fälschlicherweise hohe Überlappungen anzeigen würden. Zudem kodiert der Parameter $\theta$ explizit die Objektorientierung, was für nachgelagerte Prozesse wie orientierungsabhängige OCR wertvoll ist.
 
 \subsection{Herausforderungen bei der Verwendung von OBB}
 
@@ -365,12 +405,12 @@ Trotz der geometrischen Vorteile bringen OBB zusätzliche Komplexität in die De
     % Challenge 1: Computational Complexity
     \begin{scope}
         \node[above, font=\bfseries] at (2, 3.5) {Berechnungskomplexität};
-        
+
         % AABB: Simple rectangles
         \draw[thick, red] (0.5, 2) rectangle (1.5, 3);
         \draw[thick, red] (2, 2) rectangle (3, 3);
         \node at (1.5, 1.5) {\textcolor{red}{AABB: $\mathcal{O}(1)$}};
-        
+
         % OBB: Rotated rectangles with intersection
         \begin{scope}[shift={(0,-1.5)}]
             \begin{scope}[rotate around={20:(1,0.5)}]
@@ -381,40 +421,46 @@ Trotz der geometrischen Vorteile bringen OBB zusätzliche Komplexität in die De
             \end{scope}
             \node at (1.5, -0.7) {\textcolor{blue}{OBB: $\mathcal{O}(n)$}};
         \end{scope}
+        % Explanation
+        \node[align=center, font=\footnotesize] at (1.75, 1) {Polygon-Clipping\\für IoU-Berechnung};
     \end{scope}
-    
+
     % Challenge 2: Angle Periodicity
     \begin{scope}[xshift=5.5cm]
         \node[above, font=\bfseries] at (2, 3.5) {Winkelperiodizität};
-        
+
         % Angle representation
         \draw[->] (1, 2.5) arc (0:360:0.5);
         \node at (2.5, 2.5) {$\theta \in [0^\circ, 360^\circ)$};
-        
+
         % Problem illustration
         \node[align=center] at (2, 1.3) {$0^\circ$ und $89^\circ$:\\geometrisch $1^\circ$ apart\\numerisch $89^\circ$ Diff};
-        
+
         \draw[thick, red, <->] (0.5, 0.3) -- (3.5, 0.3);
         \node[below, font=\footnotesize] at (2, 0.3) {Trainingsinstabilität};
+        % Explanation
+        \node[align=center, font=\footnotesize] at (2, -0.5) {$\rightarrow$ Instabile Gradienten};
     \end{scope}
-    
+
     % Challenge 3: Training Overhead
     \begin{scope}[xshift=11cm]
         \node[above, font=\bfseries] at (2, 3.5) {Trainingsaufwand};
-        
+
         % Training progress bars
         \draw[thick, fill=red!30] (0.5, 2.5) rectangle (3, 2.8);
         \node[right] at (3.2, 2.65) {AABB: 100 Epochen};
-        
+
         \draw[thick, fill=blue!30] (0.5, 1.5) rectangle (3.5, 1.8);
         \node[right] at (3.7, 1.65) {OBB: 120-130 Epochen};
-        
+
         % Arrow indicating increase
         \draw[thick, red, ->] (3.3, 2.2) -- (3.3, 1.9);
         \node[right, font=\footnotesize] at (3.5, 2.05) {+20-30\%};
+        % Explanation
+        \node[align=center, font=\footnotesize] at (2, 0.8) {Rotationsparameter $\theta$\\verlängert Konvergenz};
     \end{scope}
 \end{tikzpicture}
-\caption{Hauptherausforderungen bei OBB-Verwendung.}
+\caption{Hauptherausforderungen bei OBB-Verwendung: IoU-Berechnung erfordert Polygon-Clipping statt einfacher Min/Max-Operationen (links), zyklische Winkel führen zu Gradienteninstabilität (Mitte), und der zusätzliche Rotationsparameter erhöht den Trainingsaufwand (rechts).}
 \label{fig:obb_challenges}
 \end{figure}
 
@@ -435,82 +481,76 @@ Der Rotationswinkel $\theta$ weist eine zyklische Periodizität auf: Eine Rotati
 
 \subsubsection{Erhöhter Trainingsaufwand}
 
-Die zusätzliche Parameterregression für $\theta$ erhöht die Komplexität des Lernproblems. Empirische Studien zeigen, dass OBB-Modelle typischerweise 20-30\% mehr Trainingsepochen benötigen als vergleichbare AABB-Modelle, um ähnliche Konvergenzniveaus zu erreichen\cite{Xie2021OrientedRD}. Dies resultiert aus der Notwendigkeit, sowohl die präzise Lokalisierung als auch die korrekte Orientierungsprädiktion zu erlernen.
+Die zusätzliche Parameterregression für $\theta$ erhöht die Komplexität des Lernproblems. Empirische Studien zeigen, dass OBB-Modelle typischerweise 20-30\% mehr Trainingsepochen benötigen als vergleichbare AABB-Modelle, um ähnliche Konvergenzniveaus zu erreichen\cite{Xie2021OrientedRD}. Eine Trainingsepoche bezeichnet dabei einen vollständigen Durchlauf durch den gesamten Trainingsdatensatz, bei dem jedes Trainingsbeispiel einmal zur Gewichtsoptimierung verwendet wird. Dies resultiert aus der Notwendigkeit, sowohl die präzise Lokalisierung als auch die korrekte Orientierungsprädiktion zu erlernen.
 
 \subsection{YOLOv8-OBB Architektur}
 
-YOLOv8 bietet eine spezialisierte OBB-Variante, die für die Symbolerkennung geeignet ist. Die Architekturwahl wird in Kapitel~\ref{chap:konzeption} begründet. YOLOv8-OBB erweitert die Standard-Architektur um die Regression des Rotationsparameters $\theta$, während die grundlegende Netzwerkstruktur aus Backbone, Neck und Detection Heads erhalten bleibt\cite{yolov8_ultralytics}. Die schematische Architektur ist in Abbildung~\ref{fig:yolov8_architecture} dargestellt und zeigt den Informationsfluss vom Eingabebild über die Feature-Extraktion bis zu den finalen OBB-Vorhersagen. Der Backbone extrahiert hierarchische Merkmale auf fünf Auflösungsstufen, das Neck fusioniert diese über Skalen hinweg, und die drei spezialisierten Detection Heads produzieren Vorhersagen für kleine, mittlere und große Objekte.
+YOLOv8 bietet eine spezialisierte OBB-Variante, die für die Symbolerkennung geeignet ist. Die Architekturwahl wird in Kapitel~\ref{chap:konzeption} begründet. YOLOv8-OBB erweitert die Standard-Architektur um die Regression des Rotationsparameters $\theta$, während die grundlegende Netzwerkstruktur aus Backbone, Neck und Detection Heads erhalten bleibt\cite{yolov8_ultralytics}. Die schematische Architektur ist in Abbildung~\ref{fig:yolov8_architecture} dargestellt. Der CSPNet-Backbone extrahiert hierarchische Merkmale und erzeugt eine Feature Pyramid mit drei Auflösungsstufen: P3 (128$\times$128) für kleine Objekte wie GKS-Symbole, P4 (64$\times$64) für mittlere Objekte und P5 (32$\times$32) für große Objekte wie Signale. Das PANet-Neck fusioniert diese Multi-Scale-Features durch bidirektionale Pfade (Top-Down und Bottom-Up), bevor drei spezialisierte Detection Heads die finalen OBB-Vorhersagen $(c_x, c_y, w, h, \theta, \text{cls})$ produzieren.
 
 \begin{figure}[H]
 \centering
-\hspace*{1.5cm} 
 \begin{tikzpicture}[
-    scale=0.9,
-    node distance=1.2cm and 0.5cm,
-    module/.style={
-        rectangle, 
-        draw, 
-        minimum width=3.2cm, 
-        minimum height=1cm, 
-        align=center, 
-        fill=blue!10,
+    layer/.style={
+        rectangle,
+        draw=black!60,
+        thick,
+        minimum height=0.9cm,
+        align=center,
         font=\small
-    },
-    arrow/.style={->, >=stealth, thick, rounded corners}
+    }
 ]
+    % Layer labels on the left with proper spacing
+    \node[font=\small\bfseries, anchor=east, text width=2.5cm, align=right] at (-0.5, 0) {Input};
+    \node[font=\small\bfseries, anchor=east, text width=2.5cm, align=right] at (-0.5, -1.5) {Backbone};
+    \node[font=\small\bfseries, anchor=east, text width=2.5cm, align=right] at (-0.5, -3.0) {Feature Pyramid};
+    \node[font=\small\bfseries, anchor=east, text width=2.5cm, align=right] at (-0.5, -4.5) {Neck};
+    \node[font=\small\bfseries, anchor=east, text width=2.5cm, align=right] at (-0.5, -6.0) {Heads};
+    \node[font=\small\bfseries, anchor=east, text width=2.5cm, align=right] at (-0.5, -7.5) {Output};
 
-    % 1. Input
-    \node[module, fill=gray!20] (input) {Input\\$1024 \times 1024 \times 3$};
-    
-    % 2. Backbone
-    \node[module, below=of input, fill=blue!20] (backbone) {CSPNet Backbone\\(C2f Modules)};
-    
-    % 3. Multi-scale features
-    \node[module, below=of backbone, fill=green!20, minimum width=8cm] (features) {Multi-Scale Features\\(P3, P4, P5)};
-    
-    % 4. Neck
-    \node[module, below=of features, fill=orange!20] (neck) {PANet Neck\\(FPN + PAN)};
-    
-    % 5. Detection heads
-    \node[module, below=1.5cm of neck, fill=red!20, minimum width=2.8cm] (head2) {Head P4\\(Medium)};
-    \node[module, left=0.2cm of head2, fill=red!20, minimum width=2.8cm] (head1) {Head P3\\(Small)};
-    \node[module, right=0.2cm of head2, fill=red!20, minimum width=2.8cm] (head3) {Head P5\\(Large)};
-    
-    % 6. Outputs
-    \node[module, below=1.2cm of head2, fill=purple!20, minimum width=8cm] (output) {OBB Predictions\\$(c_x, c_y, w, h, \theta, \text{cls})$};
-    
-    % Arrows
-    \draw[arrow] (input) -- (backbone);
-    \draw[arrow] (backbone) -- (features);
-    \draw[arrow] (features) -- (neck);
-    
-    \draw[arrow] (neck.south) -- (head2.north); 
-    \draw[arrow] (neck.south) -| (head1.north); 
-    \draw[arrow] (neck.south) -| (head3.north); 
-    
-    \draw[arrow] (head2.south) -- (output.north);
-    \draw[arrow] (head1.south) -- (head1.south |- output.north); 
-    \draw[arrow] (head3.south) -- (head3.south |- output.north); 
-    
-    % Annotations
-    \node[right=0.8cm of backbone, font=\footnotesize, align=left] {
-        \textbf{Feature Extraction:}\\
-        5 Resolution Levels
-    };
-    
-    \node[right=0.8cm of neck, font=\footnotesize, align=left] {
-        \textbf{Feature Fusion:}\\
-        Top-Down + Bottom-Up
-    };
-    
-    \node[right=0.2cm of head3, font=\footnotesize, align=left, text width=3.5cm] {
-        \textbf{Decoupled Heads:}\\
-        Separate Classification\\
-        \& Regression
-    };
+    % Input layer
+    \node[layer, fill=gray!15, minimum width=9cm] at (5, 0) {$1024 \times 1024 \times 3$};
+
+    % Backbone layer
+    \node[layer, fill=blue!15, minimum width=9cm] at (5, -1.5) {CSPNet mit C2f-Modulen};
+
+    % Feature Pyramid - three separate boxes
+    \node[layer, fill=green!25, minimum width=2.8cm] (p3) at (2.1, -3.0) {P3 (128$\times$128)};
+    \node[layer, fill=green!18, minimum width=2.8cm] (p4) at (5, -3.0) {P4 (64$\times$64)};
+    \node[layer, fill=green!10, minimum width=2.8cm] (p5) at (7.9, -3.0) {P5 (32$\times$32)};
+
+    % Neck layer
+    \node[layer, fill=orange!15, minimum width=9cm] at (5, -4.5) {PANet (FPN + PAN)};
+
+    % Detection Heads - three separate boxes with clearer labels
+    \node[layer, fill=red!15, minimum width=2.8cm] (h3) at (2.1, -6.0) {Head P3};
+    \node[layer, fill=red!15, minimum width=2.8cm] (h4) at (5, -6.0) {Head P4};
+    \node[layer, fill=red!15, minimum width=2.8cm] (h5) at (7.9, -6.0) {Head P5};
+
+    % Size labels below heads
+    \node[font=\footnotesize, text=black!70] at (2.1, -6.6) {(kleine Objekte)};
+    \node[font=\footnotesize, text=black!70] at (5, -6.6) {(mittlere Objekte)};
+    \node[font=\footnotesize, text=black!70] at (7.9, -6.6) {(große Objekte)};
+
+    % Output layer
+    \node[layer, fill=purple!12, minimum width=9cm] at (5, -7.5) {OBB: $(c_x, c_y, w, h, \theta, \text{cls})$};
+
+    % Vertical connection lines (subtle, no arrows)
+    \draw[gray!50, thick] (5, -0.45) -- (5, -1.05);
+    \draw[gray!50, thick] (5, -1.95) -- (5, -2.55);
+    \draw[gray!50, thick] (2.1, -1.95) -- (2.1, -2.55);
+    \draw[gray!50, thick] (7.9, -1.95) -- (7.9, -2.55);
+    \draw[gray!50, thick] (5, -3.45) -- (5, -4.05);
+    \draw[gray!50, thick] (2.1, -3.45) -- (2.1, -4.05);
+    \draw[gray!50, thick] (7.9, -3.45) -- (7.9, -4.05);
+    \draw[gray!50, thick] (5, -4.95) -- (5, -5.55);
+    \draw[gray!50, thick] (2.1, -4.95) -- (2.1, -5.55);
+    \draw[gray!50, thick] (7.9, -4.95) -- (7.9, -5.55);
+    \draw[gray!50, thick] (5, -6.95) -- (5, -7.05);
+    \draw[gray!50, thick] (2.1, -6.95) -- (2.1, -7.05);
+    \draw[gray!50, thick] (7.9, -6.95) -- (7.9, -7.05);
 
 \end{tikzpicture}
-\caption{YOLOv8-OBB Architektur.}
+\caption{YOLOv8-OBB Netzwerkarchitektur (nach \cite{yolov8_ultralytics}).}
 \label{fig:yolov8_architecture}
 \end{figure}
 
@@ -519,6 +559,7 @@ YOLOv8 bietet eine spezialisierte OBB-Variante, die für die Symbolerkennung gee
 Die Architektur gliedert sich in drei funktionale Blöcke. Der Backbone extrahiert hierarchische Merkmale aus den Eingabebildern und verwendet eine auf CSPNet basierende Architektur mit Cross Stage Partial Connections\cite{Wang2020_CSPNet}. Die sogenannten C2f-Module (CSP Bottleneck with 2 Convolutions, faster) ersetzen die C3-Module früherer Versionen und bieten eine effizientere Gradientenfluss-Charakteristik bei gleichzeitiger Reduktion der Parameteranzahl. Das Neck-Modul fusioniert Merkmale unterschiedlicher Auflösungsstufen durch eine Kombination aus Top-Down- und Bottom-Up-Pfaden. Die Path Aggregation Network (PANet) Architektur\cite{Liu2018_PANet} ermöglicht eine effektive Informationspropagation zwischen den Skalen, was für die Detektion sowohl kleiner als auch großer Objekte essentiell ist. YOLOv8 folgt einem Anchor-Free-Ansatz\cite{Tian2019FCOS}, bei dem Objektzentren direkt vorhergesagt werden, anstatt vordefinierte Anker-Boxen zu verwenden. Die Heads sind dezentralisiert (decoupled): Separate Zweige regredieren die Lokalisierung (inklusive $\theta$) und die Klassifikation. Diese Entkopplung verbessert die Konvergenz, da die beiden Aufgaben unterschiedliche Repräsentationen erfordern\cite{Ge2021_YOLOX}.
 
 \subsubsection{Verlustfunktion und Training}
+\label{subsubsec:yolov8_obb_loss}
 
 Das Training von YOLOv8-OBB optimiert eine kombinierte Verlustfunktion, die drei Komponenten umfasst:
 
@@ -526,7 +567,7 @@ Das Training von YOLOv8-OBB optimiert eine kombinierte Verlustfunktion, die drei
 \mathcal{L}_{\text{total}} = \lambda_{\text{box}} \mathcal{L}_{\text{box}} + \lambda_{\text{cls}} \mathcal{L}_{\text{cls}} + \lambda_{\text{dfl}} \mathcal{L}_{\text{dfl}}
 \end{equation}
 
-Die Box-Loss $\mathcal{L}_{\text{box}}$ quantifiziert die Lokalisierungsgenauigkeit der vorhergesagten OBB gegenüber der Ground Truth. Die Classification-Loss $\mathcal{L}_{\text{cls}}$ verwendet Binary Cross-Entropy für die Klassenzuordnung\cite{Lin2017_FocalLoss}. Die Distribution Focal Loss (DFL)\cite{Li2020GeneralizedFocal} verbessert die Bounding-Box-Regression durch Modellierung der Koordinaten als Verteilungen anstelle von Punktschätzungen.
+Die Box-Loss $\mathcal{L}_{\text{box}}$ quantifiziert die Lokalisierungsgenauigkeit der vorhergesagten OBB gegenüber der Ground Truth. Die Classification-Loss $\mathcal{L}_{\text{cls}}$ verwendet Binary Cross-Entropy für die Klassenzuordnung\cite{Lin2017_FocalLoss}. Focal Loss adressiert dabei das Problem der Klassenungleichverteilung, das bei Gleisplänen auftritt, da manche Symbolklassen (z.B. Koordinaten) deutlich häufiger vorkommen als andere (z.B. Gleismagnete). Die Distribution Focal Loss (DFL)\cite{Li2020GeneralizedFocal} verbessert die Bounding-Box-Regression durch Modellierung der Koordinaten als Verteilungen anstelle von Punktschätzungen.
 
 Die konkreten Trainingsparameter und -ergebnisse für den im Rahmen dieser Arbeit trainierten Detektor werden in Kapitel 6 detailliert dokumentiert. Die Kombination aus Echtzeitfähigkeit, Rotationsinvarianz und Anchor-Free-Design macht YOLOv8-OBB zu einem geeigneten Kandidaten für die Gleisplananalyse. Die endgültige Architekturentscheidung 
 wird in Kapitel~\ref{chap:konzeption} dokumentiert.
@@ -547,70 +588,8 @@ Dieser Abschnitt behandelt zunächst die allgemeinen Grundlagen der optischen Ze
 \subsection{Grundlagen und Entwicklung der OCR-Technologie}
 \label{subsec:ocr_grundlagen}
 
-Die optische Zeichenerkennung bezeichnet die automatisierte Umwandlung von Bildern, die Text enthalten, in maschinenlesbaren Text. Diese Aufgabe lässt sich konzeptionell in eine Verarbeitungskette unterteilen, die in Abbildung~\ref{fig:ocr_pipeline_konzept} dargestellt ist.
+Die optische Zeichenerkennung (Optical Character Recognition, OCR) bezeichnet die automatisierte Umwandlung von Bildern, die Text enthalten, in maschinenlesbaren Text. Diese Aufgabe lässt sich konzeptionell in vier Verarbeitungsstufen unterteilen: Vorverarbeitung, Textdetektion, Zeichenerkennung und Nachverarbeitung.
 
-\begin{figure}[h]
-\centering
-\begin{tikzpicture}[
-    % Größerer vertikaler Abstand (2.5cm) für die Labels dazwischen
-    node distance=2.5cm and 1.0cm,
-    box/.style={
-        rectangle, 
-        draw, 
-        thick, 
-        minimum width=3.2cm, % Etwas breiter für besseren Textumbruch
-        minimum height=1cm, 
-        align=center, 
-        font=\small, 
-        rounded corners=2pt
-    },
-    arrow/.style={->, >=stealth, thick, rounded corners},
-    annotation/.style={font=\scriptsize, align=center, text=gray!40!black}
-]
-
-    % --- ZEILE 1 (Nach Rechts) ---
-    
-    % 1. Input
-    \node[box, fill=blue!10] (input) {Eingabebild\\(Dokument/Scan)};
-    
-    % 2. Vorverarbeitung
-    \node[box, right=of input, fill=yellow!20] (preproc) {Vorverarbeitung\\(Binarisierung)};
-    \node[annotation, below=0.1cm of preproc] {Kontrast,\\Rauschen};
-    
-    % 3. Textdetektion
-    \node[box, right=of preproc, fill=orange!20] (detect) {Textdetektion\\(Lokalisierung)};
-    \node[annotation, below=0.1cm of detect] {Bounding\\Boxes};
-
-    
-    % --- ZEILE 2 (Nach Links, unter der ersten Zeile) ---
-    
-    % 4. Zeichenerkennung (Unter Detektion)
-    \node[box, below=of detect, fill=green!20] (recog) {Zeichenerkennung\\(Recognition)};
-    \node[annotation, below=0.1cm of recog] {CNN/LSTM\\Decoder};
-    
-    % 5. Nachverarbeitung (Links von Erkennung)
-    \node[box, left=of recog, fill=purple!20] (post) {Nachverarbeitung\\(Validierung)};
-    \node[annotation, below=0.1cm of post] {Regex,\\Korrektur};
-    
-    % 6. Ausgabe (Links von Post)
-    \node[box, left=of post, fill=gray!10] (output) {Ausgabetext\\(String)};
-    
-
-    % --- PFEILE ---
-    \draw[arrow] (input) -- (preproc);
-    \draw[arrow] (preproc) -- (detect);
-    
-    % Der Pfeil von Zeile 1 zu Zeile 2 (Rechts außen runter)
-    \draw[arrow] (detect.south) -- (recog.north);
-    
-    % Pfeile zurück nach links
-    \draw[arrow] (recog) -- (post);
-    \draw[arrow] (post) -- (output);
-
-\end{tikzpicture}
-\caption{Konzeptionelle OCR-Pipeline (Zweizeilige Darstellung)}
-\label{fig:ocr_pipeline_konzept}
-\end{figure}
 Die \textbf{Vorverarbeitung} bereitet das Eingabebild für die nachfolgenden Schritte auf. Typische Operationen umfassen Kontrastverbesserung, Rauschunterdrückung und Binarisierung (Umwandlung in Schwarz-Weiß). Bei technischen Zeichnungen ist zusätzlich die Entfernung störender Linienelemente relevant \cite{Tombre}.
 
 Die \textbf{Textdetektion} lokalisiert Bereiche im Bild, die Text enthalten. Moderne Verfahren verwenden neuronale Netze zur Segmentierung von Textregionen, wobei die Ausgabe typischerweise als Bounding Boxes oder Polygone erfolgt \cite{liao2019realtimescenetextdetection}.
@@ -619,34 +598,6 @@ Die \textbf{Zeichenerkennung} wandelt die lokalisierten Bildausschnitte in Zeich
 
 Die \textbf{Nachverarbeitung} validiert und korrigiert die erkannten Texte. Für domänenspezifische Anwendungen wie Gleispläne können hier Musterprüfungen (Regular Expressions) und Plausibilitätskontrollen integriert werden.
 
-\subsubsection{Historische Entwicklung}
-
-Die Entwicklung der OCR-Technologie lässt sich in drei Phasen unterteilen, die in Tabelle~\ref{tab:ocr_evolution} zusammengefasst sind.
-
-\begin{table}[H]
-\centering
-\renewcommand{\arraystretch}{1.3}
-\begin{tabular}{|p{2.5cm}|p{3cm}|p{4cm}|p{4cm}|}
-\hline
-\textbf{Phase} & \textbf{Zeitraum} & \textbf{Methodik} & \textbf{Limitierungen} \\
-\hline
-Regelbasiert & 1950--1980 & Template Matching, Merkmalsdeskriptoren & Nur monospace-Schriften, keine Variabilität \\
-\hline
-Statistisch & 1980--2010 & Hidden Markov Models (HMM), SVM mit HOG-Features & Manuelles Feature-Engineering, begrenzte Robustheit \\
-\hline
-Deep Learning & 2010--heute & CNN + RNN, Transformer, End-to-End-Training & Hoher Datenbedarf, Rechenaufwand \\
-\hline
-\end{tabular}
-\caption{Evolution der OCR-Technologie über drei methodische Phasen\cite{Mori1999}}
-\label{tab:ocr_evolution}
-\end{table}
-
-Die erste Generation basierte auf expliziten Mustervergleichen: Für jedes zu erkennende Zeichen wurde ein Template definiert, das pixelweise mit dem Eingabebild verglichen wurde \cite{Mori1999}. Diese Ansätze funktionierten nur bei exakt passenden Schriftarten und -größen.
-
-Die zweite Generation führte statistische Modelle ein. Hidden Markov Models (HMM) modellierten die sequenzielle Struktur von Text, während Support Vector Machines (SVM) auf manuell konstruierten Merkmalen (z.\,B. Histogram of Oriented Gradients) operierten \cite{Smith2007}. Diese Verfahren ermöglichten erstmals Robustheit gegenüber moderaten Variationen, erforderten jedoch aufwendiges Feature-Engineering.
-
-Die dritte Generation nutzt Deep Learning für End-to-End-Erkennung. Convolutional Neural Networks (CNN) extrahieren visuelle Merkmale automatisch aus Trainingsbeispielen, während Recurrent Neural Networks (RNN) die sequenzielle Abhängigkeit zwischen Zeichen modellieren \cite{Shi2017_CRNN}. Diese Kombination ermöglicht die Erkennung beliebiger Schriftarten und -stile ohne manuelle Merkmalsdefiniton.
-
 \subsection{Architekturen moderner OCR-Systeme}
 \label{subsec:ocr_architekturen}
 
@@ -654,7 +605,7 @@ Moderne OCR-Systeme basieren auf zwei dominierenden Architekturparadigmen: der C
 
 \subsubsection{CRNN-Architektur}
 
-Die CRNN-Architektur, eingeführt von Shi et al. \cite{Shi2017_CRNN}, kombiniert drei Komponenten zu einem End-to-End-trainierbaren System (Abbildung~\ref{fig:crnn_architecture}).
+Die CRNN-Architektur, eingeführt von Shi et al. \cite{Shi2017_CRNN}, kombiniert drei Komponenten zu einem End-to-End-trainierbaren System (Abbildung~\ref{fig:crnn_architecture}). In dieser Arbeit ermöglicht CRNN die Erkennung der alphanumerischen Beschriftungen in Gleisplänen, darunter Signalnamen (z.B. AS102), Koordinatenangaben und GKS-Bezeichnungen.
 
 \begin{figure}[H]
 \centering
@@ -724,7 +675,7 @@ P(y \mid x) = \sum_{\pi \in \mathcal{B}^{-1}(y)} \prod_{t=1}^{T} P(\pi_t \mid x)
 
 wobei $y$ die Zielsequenz, $x$ die Eingabe, $\mathcal{B}^{-1}(y)$ die Menge aller Pfade bezeichnet, die nach Entfernung von Blanks und Deduplizierung $y$ ergeben, und $P(\pi_t \mid x)$ die Wahrscheinlichkeit des Symbols $\pi_t$ zum Zeitpunkt $t$ ist.
 
-Für Maschinenbau-Ingenieure lässt sich die CTC-Funktionsweise anschaulich erklären: Das Netz gibt für jeden Zeitschritt (jede Spalte des Bildes) eine Wahrscheinlichkeitsverteilung über alle möglichen Zeichen aus. Die Ausgabe \enquote{A--S-11-0-2} (wobei \enquote{-} das Blank-Symbol bezeichnet) wird durch Entfernung der Blanks und Zusammenfassung aufeinanderfolgender identischer Zeichen zu \enquote{AS102} dekodiert.
+Für Maschinenbau-Ingenieure lässt sich die CTC-Funktionsweise anschaulich erklären: Das Netz gibt für jeden Zeitschritt (jede Spalte des Bildes) eine Wahrscheinlichkeitsverteilung über alle möglichen Zeichen aus. Die Ausgabe \enquote{A--S-11-0-2} (wobei \enquote{-} das Blank-Symbol bezeichnet) wird durch Entfernung der Blanks und Zusammenfassung aufeinanderfolgender identischer Zeichen zu \enquote{AS102} dekodiert. Diese Fähigkeit zur Verarbeitung variabler Textlängen ist für Gleispläne essentiell, da Beschriftungen von kurzen Signalnamen (z.B. \enquote{AS1}) bis zu längeren Koordinatenangaben (z.B. \enquote{18.1606}) reichen.
 
 \subsubsection{Transformer-basierte OCR}
 
@@ -783,7 +734,7 @@ Eine Whitelist-Funktionalität ermöglicht die Einschränkung des Zeichensatzes 
 
 \subsubsection{PaddleOCR}
 
-PaddleOCR \cite{du2020ppocrpracticalultralightweight} ist ein vom chinesischen Technologiekonzern Baidu entwickeltes Framework, das eine vollständige Pipeline aus Textdetektion, Winkelklassifikation und Texterkennung bereitstellt. Die PP-OCRv3-Architektur besteht aus drei Komponenten:
+PaddleOCR \cite{du2020ppocrpracticalultralightweight} ist ein vom chinesischen Technologiekonzern Baidu entwickeltes Framework, das eine vollständige Pipeline aus Textdetektion, Winkelklassifikation und Texterkennung bereitstellt. Für die vorliegende Arbeit wurde PaddleOCR gewählt, da es integrierte Winkelerkennung für rotierte Texte bietet und effiziente Verarbeitung der zahlreichen Textregionen in Gleisplänen ermöglicht. Die PP-OCRv3-Architektur besteht aus drei Komponenten:
 
 \begin{enumerate}
     \item \textbf{DB-Detektor (Differentiable Binarization)}: Lokalisiert Textregionen durch semantische Segmentierung mit differenzierbarer Schwellenwertberechnung \cite{liao2019realtimescenetextdetection}.
@@ -874,8 +825,7 @@ Für integrierte Extraktionspipelines, bei denen OCR nur eine von mehreren
 Stufen darstellt (Detektion → OCR → Verknüpfung → Validierung), ist jedoch 
 eine \textit{End-to-End-Bewertung} aussagekräftiger: Sie misst, ob das finale 
 Extraktionsergebnis korrekt ist, unabhängig davon, in welcher Pipeline-Stufe 
-Fehler auftraten oder kompensiert wurden. Dieser Ansatz wird in der 
-vorliegenden Arbeit verfolgt (vgl. Kapitel~\ref{chap:evaluation}).
+Fehler auftraten oder kompensiert wurden. Dieser Ansatz wird in der vorliegenden Arbeit verfolgt.
 
 
 \subsection{Herausforderungen bei technischen Zeichnungen}
@@ -1738,36 +1688,7 @@ Abbildung~\ref{fig:revision_example} zeigt typische Änderungen zwischen zwei Do
 
 Um Änderungen automatisch zu erkennen, muss zunächst festgestellt werden, welche Elemente in beiden Versionen \enquote{dasselbe} Objekt darstellen. Dies erfolgt über \textbf{eindeutige Identifikationsmerkmale} -- vergleichbar mit Artikelnummern in einer Stückliste oder Sachnummern in einem PDM-System \cite{stark2022}.
 
-Für technische Zeichnungen können solche Identifikatoren aus den Objektattributen abgeleitet werden. Ein Signal mit der Bezeichnung \enquote{AS102} erhält beispielsweise eine eindeutige Kennung, die aus Objekttyp und Bezeichnung zusammengesetzt wird.
-
-\subsection{Mengentheoretische Betrachtung}
-
-Mit eindeutigen Identifikatoren lässt sich die Änderungserkennung konzeptionell auf Mengenoperationen zurückführen:
-
-\begin{figure}[H]
-\centering
-\begin{tikzpicture}[scale=1.0]
-    % Venn diagram
-    \draw[thick, fill=blue!15, fill opacity=0.7] (0, 0) circle (2.2);
-    \draw[thick, fill=red!15, fill opacity=0.7] (3, 0) circle (2.2);
-    
-    % Labels
-    \node[font=\small\bfseries] at (-1.5, 2.5) {Version A};
-    \node[font=\small\bfseries] at (4.5, 2.5) {Version B};
-    
-    % Set regions with descriptions
-    \node[font=\small, blue!70!black, align=center] at (-1.2, 0) {Nur in A\\(entfernt)};
-    
-    \node[font=\small, align=center] at (1.5, 0) {In beiden\\(unverändert/\\modifiziert)};
-    
-    \node[font=\small, red!70!black, align=center] at (4.2, 0) {Nur in B\\(hinzugefügt)};
-    
-\end{tikzpicture}
-\caption{Änderungserkennung als Mengenvergleich zweier Dokumentversionen}
-\label{fig:set_comparison_concept}
-\end{figure}
-
-Für Elemente in der Schnittmenge (gleiche Kennung in beiden Versionen) muss zusätzlich geprüft werden, ob sich ihre Attribute geändert haben. Die algorithmische Umsetzung dieser Konzepte wird in Kapitel~\ref{chap:implementierung}, Abschnitt~\ref{subsec:vergleichundänderung} beschrieben.
+Für technische Zeichnungen können solche Identifikatoren aus den Objektattributen abgeleitet werden. Ein Signal mit der Bezeichnung \enquote{AS102} erhält beispielsweise eine eindeutige Kennung, die aus Objekttyp und Bezeichnung zusammengesetzt wird. Mit solchen Identifikatoren lässt sich die Änderungserkennung auf Mengenoperationen zurückführen: Elemente nur in Version A wurden \textit{entfernt}, Elemente nur in Version B wurden \textit{hinzugefügt}, und Elemente in beiden Versionen sind entweder \textit{unverändert} oder \textit{modifiziert}. Die algorithmische Umsetzung wird in Kapitel~\ref{chap:implementierung}, Abschnitt~\ref{subsec:vergleichundänderung} beschrieben.
 
 
 %==============================================================================
@@ -2059,6 +1980,8 @@ Für ein Dokumentenanalysesystem bedeutet Rückverfolgbarkeit, dass zu jedem ext
 \label{fig:traceability_principle}
 \end{figure}
 
+Die wesentlichen Metadaten, die für eine vollständige Rückverfolgbarkeit gespeichert werden müssen, sind in Tabelle~\ref{tab:traceability_metadata} zusammengefasst.
+
 \begin{table}[H]
 \centering
 \renewcommand{\arraystretch}{1.3}
@@ -2153,5 +2076,9 @@ Die in diesem Kapitel dargestellten theoretischen Konzepte bilden das Fundament 
     \item \textbf{Konfigurierbarkeit} (Abschnitt~\ref{sec:config_based_adaptation}): Trennung von Code und Domänenwissen
     \item \textbf{Qualitätssicherung} (Abschnitt~\ref{sec:traceability_qa}): Rückverfolgbarkeit und mehrstufige Validierung
 \end{itemize}
+
+Die vorgestellten theoretischen Konzepte adressieren gezielt die in Kapitel~\ref{chap:einleitung} beschriebene Problemstellung: Während die manuelle Übertragung technischer Pläne in strukturierte Datenformate zeitintensiv, fehleranfällig und kaum skalierbar ist, ermöglichen Deep-Learning-basierte Objekterkennungsverfahren in Kombination mit OCR-Technologien die automatisierte Extraktion von Symbolen und Textinformationen. Die räumliche Verknüpfung dieser Entitäten durch proximale Algorithmen bildet die Grundlage für eine semantische Interpretation, während die mengenbasierte Änderungserkennung erstmals eine automatisierte Verfolgung von Planmodifikationen ermöglicht. Besonders bedeutsam ist die durchgängige Rückverfolgbarkeit: Durch die Speicherung von Quellenreferenzen und Positionsangaben entsteht eine bidirektionale Verknüpfung zwischen extrahierten Daten und ihrer grafischen Repräsentation im Originaldokument – ein wesentlicher Unterschied zu rein manuellen Workflows, bei denen diese Verknüpfung implizit bleibt und die Validierung erheblich erschwert.
+
+Diese theoretischen Grundlagen schaffen damit die Voraussetzungen für ein hybrides System, das die Stärken automatischer Verfahren (Geschwindigkeit, Konsistenz, Skalierbarkeit) mit menschlicher Expertise (Domänenwissen, Plausibilitätsprüfung) kombiniert. Die konfigurationsbasierte Anpassbarkeit gewährleistet dabei, dass das System auf wechselnde Anforderungen reagieren kann, ohne den Programmcode zu verändern – ein entscheidender Faktor für die praktische Anwendbarkeit in industriellen Kontexten mit heterogenen Plandarstellungen und kundenspezifischen Symbolbibliotheken.
 
 Die folgenden Kapitel konkretisieren diese theoretischen Grundlagen: Kapitel~\ref{chap:anforderungen} definiert die funktionalen und nicht-funktionalen Anforderungen, Kapitel~\ref{chap:konzeption} beschreibt die Architekturentscheidungen und Kapitel~\ref{chap:implementierung} dokumentiert die Implementierung.
