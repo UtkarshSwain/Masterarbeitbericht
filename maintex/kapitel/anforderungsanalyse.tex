@@ -4,18 +4,18 @@ Die in Kapitel 3 dargelegten theoretischen und technischen Grundlagen bilden das
 
 \section{Funktionale Anforderungen}
 \label{sec:funktionaleanforderungen}
-Im Rahmen dieser Arbeit wird ein Prototyp entwickelt, der die automatisierte Extraktion und Interpretation von Informationen aus technischen Gleisplänen ermöglicht. Die funktionalen Anforderungen (FA-001 bis FA-014 ) ergeben sich aus den spezifischen Aufgabenstellungen der Signaltechnik-Planung. Der Prototyp soll folgende Kernfunktionen erfüllen:
+Im Rahmen dieser Arbeit wird ein Prototyp entwickelt, der die automatisierte Extraktion und Interpretation von Informationen aus technischen Gleisplänen ermöglicht. Die funktionalen Anforderungen (FA-001 bis FA-014) ergeben sich aus den spezifischen Aufgabenstellungen der Signaltechnik-Planung. Der Prototyp soll folgende Kernfunktionen erfüllen:
 
 \subsection{Symbolerkennung und Objektklassifizierung}
 \label{subsec:req_symbol}
 Eine zentrale Anforderung ist die zuverlässige Detektion bahntechnischer Symbole in Vektor- oder Rastergrafiken.
 
 \begin{itemize}
-    \item \textbf{FA-001}\label{req:FA-001} \textbf{Erkennungsrate:} Das System \textbf{muss} mindestens 90\,\% der definierten Symbolklassen mit einer Mindest-Konfidenz von 0.5 \textbf{detektieren} (gemessen als Recall@0.5 des YOLO-Modells).
+    \item \textbf{FA-001}\label{req:FA-001} \textbf{Erkennungsrate:} Der Prototyp \textbf{muss} mindestens 90\,\% der definierten Symbolklassen mit einer Mindest-Konfidenz von 0.5 \textbf{detektieren} (gemessen als Recall@0.5 des YOLO-Modells).
 
-    \item \textbf{FA-002}\label{req:FA-002} \textbf{Rotationsinvarianz:} Wenn Symbole in beliebigen Winkeln ($0^\circ$ bis $360^\circ$) orientiert sind, \textbf{muss} das System in der Lage sein, diese Objekte korrekt zu \textbf{klassifizieren} und deren Rotationswinkel mit einer Genauigkeit von $\pm 5^\circ$ zu \textbf{bestimmen}.
+    \item \textbf{FA-002}\label{req:FA-002} \textbf{Rotationsinvarianz:} Wenn Symbole in beliebigen Winkeln ($0^\circ$ bis $360^\circ$) orientiert sind, \textbf{muss} der Prototyp in der Lage sein, diese Objekte korrekt zu \textbf{klassifizieren} und deren Rotationswinkel mit einer Genauigkeit von $\pm 5^\circ$ zu \textbf{bestimmen}.
 
-    \item \textbf{FA-003}\label{req:FA-003} \textbf{Detektionsziele:} Das System \textbf{muss} die in Tabellen~\ref{tab:kernklassen} (Kernklassen) und~\ref{tab:auxiliarklassen} (Auxiliarklassen) spezifizierten Symboltypen \textbf{detektieren}.
+    \item \textbf{FA-003}\label{req:FA-003} \textbf{Detektionsziele:} Der Prototyp \textbf{muss} die in Tabellen~\ref{tab:kernklassen} (Kernklassen) und~\ref{tab:auxiliarklassen} (Auxiliarklassen) spezifizierten Symboltypen \textbf{detektieren}.
 \end{itemize} 
 \subsubsection{Kernklassen (produktionsrelevant)}
 
@@ -74,7 +74,7 @@ in Kapitel~\ref{chap:evaluation} quantitativ evaluiert:
 
 \subsubsection{Auxiliarklassen (Erweiterbarkeit)}
 
-Zur Demonstration der Modularität und Erweiterbarkeit des Prototyps (vgl. Anforderung FA-013) werden zusätzlich acht weitere Objektklassen implementiert. Diese Klassen 
+Zur Demonstration der Modularität und Erweiterbarkeit des Prototyps (vgl. Anforderung FA-014) werden zusätzlich acht weitere Objektklassen implementiert. Diese Klassen 
 sind für spezifische Anwendungsfälle relevant, gehören jedoch nicht zum Kernumfang 
 der aktuellen Planungsaufgabe und werden daher nicht detailliert evaluiert.
 
@@ -152,14 +152,14 @@ der aktuellen Planungsaufgabe und werden daher nicht detailliert evaluiert.
     \label{tab:auxiliarklassen}
 \end{longtable}
 
-\textbf{Hinweis:} Die Auxiliarklassen werden im Rahmen des YOLOv8-Trainings (Kapitel~\ref{sec:yolo_implementation}) mit annotiert und erreichen vergleichbare Detektionsleistungen wie die Kernklassen. Die Fokussierung der End-to-End-Evaluation auf die Kernklassen erfolgte aufgrund der notwendigen Eingrenzung des Evaluationsumfangs. Bemerkenswert ist, dass das Modell auch visuell sehr ähnliche Symbole (z.\,B. Haltepunkt-Varianten H, Weichen W, Weichengruppen WG) zuverlässig unterscheiden kann. Eine detaillierte Analyse 
+\textbf{Hinweis:} Die Auxiliarklassen werden im Rahmen des YOLOv8-Trainings (Kapitel~\ref{sec:objekterkennungmityolov8obb}) mit annotiert und erreichen vergleichbare Detektionsleistungen wie die Kernklassen. Die Fokussierung der End-to-End-Evaluation auf die Kernklassen erfolgte aufgrund der notwendigen Eingrenzung des Evaluationsumfangs. Bemerkenswert ist, dass das Modell auch visuell sehr ähnliche Symbole (z.\,B. Haltepunkt-Varianten H, Weichen W, Weichengruppen WG) zuverlässig unterscheiden kann. Eine detaillierte Analyse 
 dieser Feinunterscheidungen war jedoch nicht Gegenstand dieser Arbeit.
 
 \subsection{Texterkennung und OCR-Integration}
 \begin{itemize}
-    \item \textbf{FA-004}\label{req:FA-004} \textbf{OCR-Genauigkeit:} Das System \textbf{muss} Textinformationen (Signalbezeichnungen, Kilometrierungen) mit einer Feldgenauigkeit von mindestens 95\,\% \textbf{extrahieren} (exakte Übereinstimmung des extrahierten Wertes mit Ground Truth).
+    \item \textbf{FA-004}\label{req:FA-004} \textbf{OCR-Genauigkeit:} Der Prototyp \textbf{muss} Textinformationen (Signalbezeichnungen, Kilometrierungen) mit einer Feldgenauigkeit von mindestens 95\,\% \textbf{extrahieren} (exakte Übereinstimmung des extrahierten Wertes mit Ground Truth).
 
-    \item \textbf{FA-005}\label{req:FA-005} \textbf{Robustheit:} Wenn Textregionen unter erschwerten Bedingungen vorliegen (niedriger Kontrast, Bildrauschen, Rotation $0^\circ$--$360^\circ$, Überlagerungen), \textbf{muss} das System in der Lage sein, diese Texte mit mindestens 85\,\% Feldgenauigkeit zu \textbf{extrahieren}.
+    \item \textbf{FA-005}\label{req:FA-005} \textbf{Robustheit:} Wenn Textregionen unter erschwerten Bedingungen vorliegen (niedriger Kontrast, Bildrauschen, Rotation $0^\circ$--$360^\circ$, Überlagerungen), \textbf{muss} der Prototyp in der Lage sein, diese Texte mit mindestens 85\,\% Feldgenauigkeit zu \textbf{extrahieren}.
     \begin{figure}[H]
     \centering
     \includegraphics[width=5cm]{images/Kapitel4/OCRsample.png} 
@@ -171,16 +171,16 @@ dieser Feinunterscheidungen war jedoch nicht Gegenstand dieser Arbeit.
 \subsection{Semantische Verknüpfung und Logik}
 
 \begin{itemize}
-    \item \textbf{FA-006}\label{req:FA-006} \textbf{Fahrtrichtungsdetektion:} Wenn ein Signal oder eine Weiche detektiert wird, \textbf{muss} das System die Wirkrichtung (steigend/fallend) basierend auf dem Rotationswinkel des Symbols \textbf{ableiten}.
+    \item \textbf{FA-006}\label{req:FA-006} \textbf{Fahrtrichtungsdetektion:} Wenn ein Signal detektiert wird, \textbf{soll} der Prototyp die Wirkrichtung (steigend/fallend) basierend auf dem Rotationswinkel des Symbols \textbf{ableiten}.
 
-    \item \textbf{FA-007}\label{req:FA-007} \textbf{Symbol-Koordinaten-Verknüpfung:} Das System \textbf{muss} jedes erkannte Gleisplanelement (Signal, GKS, GM-Block) automatisch mit der räumlich nächstgelegenen Kilometrierungsangabe mittels geometrischer Proximity-Analyse unter Berücksichtigung der Symbolorientierung \textbf{verknüpfen}.
+    \item \textbf{FA-007}\label{req:FA-007} \textbf{Symbol-Koordinaten-Verknüpfung:} Der Prototyp \textbf{muss} jedes erkannte Gleisplanelement (Signal, GKS, GM-Block) automatisch mit der räumlich nächstgelegenen Kilometrierungsangabe mittels geometrischer Proximity-Analyse unter Berücksichtigung der Symbolorientierung \textbf{verknüpfen}.
 
-    \item \textbf{FA-008}\label{req:FA-008} \textbf{Manuelle Korrektur:} Das System \textbf{muss} eine Funktion zur manuellen Überschreibung automatisch erstellter Symbol-Text-Verknüpfungen \textbf{bereitstellen}.
+    \item \textbf{FA-008}\label{req:FA-008} \textbf{Manuelle Korrektur:} Der Prototyp \textbf{soll} eine Funktion zur manuellen Überschreibung automatisch erstellter Symbol-Text-Verknüpfungen \textbf{bereitstellen}.
 \end{itemize}
 
 \subsection{Datenaufbereitung und Export}
 \begin{itemize}
-    \item \textbf{FA-009}\label{req:FA-009} \textbf{Excel-Export:} Das System \textbf{muss} extrahierte Daten vollautomatisch in vordefinierte Excel-Tabellen (.xlsx) mit korrekter Zuordnung zu Zeilen und Spalten \textbf{exportieren}.
+    \item \textbf{FA-009}\label{req:FA-009} \textbf{Excel-Export:} Der Prototyp \textbf{muss} extrahierte Daten vollautomatisch in vordefinierte Excel-Tabellen (.xlsx) mit korrekter Zuordnung zu Zeilen und Spalten \textbf{exportieren}.
     \begin{figure}[H]
     \centering
     \includegraphics[width=6cm]{images/Kapitel4/excelübertragung.png}
@@ -188,20 +188,20 @@ dieser Feinunterscheidungen war jedoch nicht Gegenstand dieser Arbeit.
     \label{fig:excelübertragung}
     \end{figure}
 
-    \item \textbf{FA-010}\label{req:FA-010} \textbf{Strukturerhalt:} Wenn Daten in bestehende Excel-Dateien exportiert werden, \textbf{muss} das System die vorhandene Struktur (Formatierung, Formeln, Makros) \textbf{bewahren} und ausschließlich Werte in definierte Bereiche einfügen.
+    \item \textbf{FA-010}\label{req:FA-010} \textbf{Strukturerhalt:} Wenn Daten in bestehende Excel-Dateien exportiert werden, \textbf{soll} der Prototyp die vorhandene Struktur (Formatierung, Formeln, Makros) \textbf{bewahren} und ausschließlich Werte in definierte Bereiche einfügen.
 
-    \item \textbf{FA-011}\label{req:FA-011} \textbf{Änderungsverfolgung:} Wenn zwei Planversionen verglichen werden, \textbf{muss} das System Änderungen als hinzugefügt, entfernt, verschoben oder modifiziert \textbf{identifizieren}, \textbf{kategorisieren} und in ein separates Excel-Sheet mit Spalten (Objektklasse, Kennung, Änderungstyp, Alt-Wert, Neu-Wert, Koordinaten) \textbf{exportieren}.
+    \item \textbf{FA-011}\label{req:FA-011} \textbf{Änderungsverfolgung:} Wenn zwei Planversionen verglichen werden, \textbf{muss} der Prototyp Änderungen als hinzugefügt, entfernt, verschoben oder modifiziert \textbf{identifizieren}, \textbf{kategorisieren} und in ein separates Excel-Sheet mit Spalten (Objektklasse, Kennung, Änderungstyp, Alt-Wert, Neu-Wert, Koordinaten) \textbf{exportieren}.
     \begin{figure}[H]
     \centering
-    \includegraphics[width=9cm]{images/Kapitel4/änderungsample.png} 
+    \includegraphics[width=9cm]{images/Kapitel4/änderungsample.png}
     \caption{Visualisierung der Änderungsverfolgung zwischen zwei Planversionen}
     \label{fig:änderungsample}
     \end{figure}
 
-    \item \textbf{FA-012}\label{req:FA-012} \textbf{Visuelle Validierung:} Das System \textbf{muss} alle erkannten Objekte durch farbige Bounding Boxes im Gleisplan oder als Overlay zur manuellen Überprüfung \textbf{visualisieren}.
+    \item \textbf{FA-012}\label{req:FA-012} \textbf{Visuelle Validierung:} Der Prototyp \textbf{soll} alle erkannten Objekte durch farbige Bounding Boxes im Gleisplan oder als Overlay zur manuellen Überprüfung \textbf{visualisieren}.
     \begin{figure}[H]
     \centering
-    \includegraphics[width=14cm]{images/Kapitel4/gleisplanmarkierungv2.png}
+    \includegraphics[width=14cm]{images/Kapitel4/gleisplanmarkierungv2.png} 
     \caption{Visuelle Validierung durch Bounding-Box-Overlays im Gleisplan \cite{railroadstationdrawing}}
     \label{fig:gleisplanmarkierung}
     \end{figure}
@@ -209,56 +209,52 @@ dieser Feinunterscheidungen war jedoch nicht Gegenstand dieser Arbeit.
 
 \subsection{Benutzerinteraktion und Konfiguration}
 \begin{itemize}
-    \item \textbf{FA-013}\label{req:FA-013} \textbf{Grafische Benutzeroberfläche:} Das System \textbf{muss} eine grafische Benutzeroberfläche für PDF-Upload, Analyse-Start und Datenexport ohne erforderliche Kommandozeilen-Kenntnisse \textbf{bereitstellen}.
+    \item \textbf{FA-013}\label{req:FA-013} \textbf{Grafische Benutzeroberfläche:} Der Prototyp \textbf{muss} eine grafische Benutzeroberfläche für PDF-Upload, Analyse-Start und Datenexport ohne erforderliche Kommandozeilen-Kenntnisse \textbf{bereitstellen}.
 
-    \item \textbf{FA-014}\label{req:FA-014} \textbf{Modulare Architektur:} Das System \textbf{muss} mit modularer Architektur \textbf{gestaltet sein}, die klare Trennung der Verarbeitungsstufen (Objekterkennung, Texterkennung, UI, Export) gewährleistet und Erweiterungen (z.B. neue Symbolklassen) ohne Modifikation der Kernlogik ermöglicht.
+    \item \textbf{FA-014}\label{req:FA-014} \textbf{Modulare Architektur:} Der Prototyp \textbf{muss} mit modularer Architektur \textbf{gestaltet sein}, die klare Trennung der Verarbeitungsstufen (Objekterkennung, Texterkennung, UI, Export) gewährleistet und Erweiterungen (z.B. neue Symbolklassen, CAD-Anbindung) ohne Modifikation der Kernlogik ermöglicht.
 \end{itemize}
 
 \section{Nicht-funktionale Anforderungen}
 \label{sec:nichtfunktionaleanforderungen}
-Ergänzend zu den funktionalen Zielen definieren die nicht-funktionalen Anforderungen (NFA-001 bis NFA-012)die Qualitätsmerkmale und Rahmenbedingungen des Prototyps.
+Ergänzend zu den funktionalen Zielen definieren die nicht-funktionalen Anforderungen (NFA-001 bis NFA-010) die Qualitätsmerkmale und Rahmenbedingungen des Prototyps.
 
 \subsection{Sicherheit und Datenschutz}
 \begin{itemize}
-    \item \textbf{NFA-001}\label{req:NFA-001} \textbf{On-Premise-Verarbeitung:} Das System \textbf{muss} alle Daten vollständig lokal ohne Übertragung an externe Cloud-Services \textbf{verarbeiten} und Offline-Betrieb \textbf{unterstützen}.
+    \item \textbf{NFA-001}\label{req:NFA-001} \textbf{On-Premise-Verarbeitung:} Der Prototyp \textbf{muss} alle Daten vollständig lokal ohne Übertragung an externe Cloud-Services \textbf{verarbeiten} und Offline-Betrieb \textbf{unterstützen}.
 
-    \item \textbf{NFA-002}\label{req:NFA-002} \textbf{Lizenzkonformität:} Das System \textbf{muss} ausschließlich Open-Source-Bibliotheken mit genehmigten Lizenzen (Apache 2.0, MIT, BSD) \textbf{verwenden} und alle Abhängigkeiten \textbf{dokumentieren}.
+    \item \textbf{NFA-002}\label{req:NFA-002} \textbf{Lizenzkonformität:} Der Prototyp \textbf{muss} ausschließlich Open-Source-Bibliotheken mit genehmigten Lizenzen (Apache 2.0, MIT, BSD) \textbf{verwenden} und alle Abhängigkeiten \textbf{dokumentieren}.
 \end{itemize}
 
 \subsection{Qualität und Zuverlässigkeit}
 \begin{itemize}
-    \item \textbf{NFA-003}\label{req:NFA-003} \textbf{End-to-End-Genauigkeit:} Das System \textbf{muss} eine Gesamtgenauigkeit von mindestens 85\,\% bei vollständiger Objektextraktion (Detektion + OCR + Linking + Export korrekt) \textbf{erreichen}.
+    \item \textbf{NFA-003}\label{req:NFA-003} \textbf{End-to-End-Genauigkeit:} Der Prototyp \textbf{muss} eine Gesamtgenauigkeit von mindestens 85\,\% bei vollständiger Objektextraktion (Detektion + OCR + Linking + Export korrekt) \textbf{erreichen}.
 
-    \item \textbf{NFA-004}\label{req:NFA-004} \textbf{Robustheit:} Wenn fehlerhafte Eingaben vorliegen (korrupte PDFs, Bildrauschen), \textbf{muss} das System definierte Fehlermeldungen statt Absturz \textbf{bereitstellen}.
+    \item \textbf{NFA-004}\label{req:NFA-004} \textbf{Robustheit:} Wenn fehlerhafte Eingaben vorliegen (korrupte PDFs, Bildrauschen), \textbf{soll} der Prototyp definierte Fehlermeldungen statt Absturz \textbf{bereitstellen}.
 
-    \item \textbf{NFA-005}\label{req:NFA-005} \textbf{Prüfbarkeit:} Das System \textbf{muss} visuelle Validierung aller Ergebnisse mittels Bounding-Box-Overlay und Rückverfolgbarkeit (Klick auf Tabellenzeile zeigt Position im Plan) \textbf{bereitstellen}.
+    \item \textbf{NFA-005}\label{req:NFA-005} \textbf{Prüfbarkeit:} Der Prototyp \textbf{soll} visuelle Validierung aller Ergebnisse mittels Bounding-Box-Overlay und Rückverfolgbarkeit (Klick auf Tabellenzeile zeigt Position im Plan) \textbf{bereitstellen}.
 \end{itemize}
 
 \subsection{Effizienz und Wirtschaftlichkeit}
 \begin{itemize}
-    \item \textbf{NFA-006}\label{req:NFA-006} \textbf{Prozessoptimierung:} Das System \textbf{muss} den manuellen Prüfaufwand durch Transformation vom 4-Augen-Prinzip hin zu einem KI-gestützten Prozess (Mensch prüft KI) \textbf{reduzieren}.
+    \item \textbf{NFA-006}\label{req:NFA-006} \textbf{Prozessoptimierung:} Der Prototyp \textbf{soll} den manuellen Prüfaufwand durch Transformation vom 4-Augen-Prinzip hin zu einem KI-gestützten Prozess (Mensch prüft KI) \textbf{reduzieren}.
 
-    \item \textbf{NFA-007}\label{req:NFA-007} \textbf{Ressourceneffizienz:} Das System \textbf{soll} einen durchschnittlichen Bahnhofsplan auf Standard-Hardware (CPU-only) in maximal 10 Minuten \textbf{verarbeiten}.
+    \item \textbf{NFA-007}\label{req:NFA-007} \textbf{Ressourceneffizienz:} Der Prototyp \textbf{soll} einen durchschnittlichen Bahnhofsplan auf Standard-Hardware (CPU-only) in weniger als der Hälfte der manuellen Bearbeitungszeit \textbf{verarbeiten}.
 \end{itemize}
 
 \subsection{Wartbarkeit und Erweiterbarkeit}
 \begin{itemize}
-    \item \textbf{NFA-008}\label{req:NFA-008} \textbf{Erweiterbarkeit:} Das System \textbf{muss} mit modularer Code-Struktur zur Erleichterung zukünftiger Erweiterungen (z.B. CAD-Anbindung) \textbf{gestaltet sein}.
-
-    \item \textbf{NFA-009}\label{req:NFA-009} \textbf{Update-Fähigkeit:} Das System \textbf{muss} die Integration neuer Symbolvarianten über Konfigurations-Updates oder neue Modell-Gewichte ohne Code-Änderungen \textbf{unterstützen}.
+    \item \textbf{NFA-008}\label{req:NFA-008} \textbf{Update-Fähigkeit:} Der Prototyp \textbf{soll} die Integration neuer Symbolvarianten über Konfigurations-Updates oder neue Modell-Gewichte ohne Code-Änderungen \textbf{unterstützen}.
 \end{itemize}
 
 \subsection{Datenformate und Schnittstellen}
 \label{subsec:datenformate}
 
 \begin{itemize}
-    \item \textbf{NFA-010}\label{req:NFA-010} \textbf{Eingabeformate:} Das System \textbf{muss} PDF-Dateien (Vektor/Raster, intern gerendert bei 500 DPI) und Bilddateien (PNG, JPEG, TIFF, BMP mit nativer Auflösung von 500 DPI) \textbf{verarbeiten}.
+    \item \textbf{NFA-009}\label{req:NFA-009} \textbf{Eingabeformate:} Der Prototyp \textbf{muss} PDF-Dateien (Vektor/Raster, intern gerendert bei 500 DPI) und Bilddateien (PNG, JPEG, TIFF, BMP mit nativer Auflösung von 500 DPI) \textbf{verarbeiten}.
 
     \textit{Begründung:} Das YOLOv8-OBB Modell wurde ausschließlich auf 500 DPI Bildkacheln trainiert. Abweichungen führen zu signifikant reduzierten Erkennungsraten.
 
-    \item \textbf{NFA-011}\label{req:NFA-011} \textbf{Datenquellen:} Das System \textbf{muss} kundenspezifische Gleispläne (PDF/Bild aus CAD-Systemen), historische Bestandspläne (Scans) und synthetisch erzeugte Testdaten \textbf{unterstützen}.
-
-    \item \textbf{NFA-012}\label{req:NFA-012} \textbf{Ausgabeformate:} Das System \textbf{muss} Ergebnisse in Excel (.xlsx), CSV und JSON Format \textbf{exportieren}.
+    \item \textbf{NFA-010}\label{req:NFA-010} \textbf{Ausgabeformate:} Ergänzend zum Excel-Export (FA-009) \textbf{soll} der Prototyp Ergebnisse auch in CSV und JSON Format \textbf{exportieren}.
 \end{itemize}
 
 Tabelle \ref{tab:formate-prototyp} gibt einen detaillierten Überblick über die im Prototyp verwendeten Dateiformate und deren Einsatz in der Verarbeitungspipeline.
@@ -281,7 +277,7 @@ Tabelle \ref{tab:formate-prototyp} gibt einen detaillierten Überblick über die
  & JSON & API-Response & Schnittstellenanbindung \\
 \hline
 \end{tabularx}
-\caption{Übersicht der unterstützten Datenformate (siehe \ref{req:NFA-010} bis \ref{req:NFA-012})}
+\caption{Übersicht der unterstützten Datenformate (siehe \ref{req:NFA-009} und \ref{req:NFA-010})}
 \label{tab:formate-prototyp}
 \end{table}
 
@@ -318,17 +314,17 @@ Evaluationsmetriken (Kapitel~\ref{chap:evaluation}).
 \endhead
 
 \hyperref[req:FA-001]{FA-001} & Erkennungsrate $\geq$ 90\% & 
-Abschn.~\ref{sec:yolo_implementation}: YOLOv8-OBB Training mit 13 Klassen & 
+Abschn.~\ref{sec:objekterkennungmityolov8obb}: YOLOv8-OBB Training mit 13 Klassen & 
 Abschn.~\ref{subsec:detection_eval}: Recall = 95.7\% (Val), 100\% (Test) \\
 \hline
 
 \hyperref[req:FA-002]{FA-002} & Rotationsinvarianz ($0^\circ$--$360^\circ$) & 
-Abschn.~\ref{sec:yolo_implementation}: OBB-Annotation, synthetische Rotation (10 Winkel) & 
+Abschn.~\ref{sec:objekterkennungmityolov8obb}: OBB-Annotation, synthetische Rotation (10 Winkel) & 
 Abschn.~\ref{subsec:e2e_test_eval}, Tab.~\ref{tab:rotation_analysis}: 38 Objekte mit $|\theta|>30^\circ$ bei höherer Konfidenz (0.946 vs. 0.890) \\
 \hline
 
 \hyperref[req:FA-003]{FA-003} & Zielobjekte (5 Kernklassen) & 
-Abschn.~\ref{sec:yolo_implementation}: Signal, Koordinate, GKS (2 Typen), GM-Block & 
+Abschn.~\ref{sec:objekterkennungmityolov8obb}: Signal, Koordinate, GKS (2 Typen), GM-Block & 
 Abschn.~\ref{subsec:e2e_test_eval}: 636/644 Objekte korrekt (98.76\%)\\
 \hline
 
@@ -383,7 +379,7 @@ Abschn.~\ref{subsec:functional_validation}, Tab.~\ref{tab:functional_validation}
 \hline
 
 \hyperref[req:FA-014]{FA-014} & Modularität (Architektur) & 
-Kap.~\ref{chap:konzeption}: Schichtenarchitektur; Abschn.~\ref{sec:yolo_implementation}: 8 Auxiliarklassen & 
+Kap.~\ref{chap:konzeption}: Schichtenarchitektur; Abschn.~\ref{sec:objekterkennungmityolov8obb}: 8 Auxiliarklassen & 
 Abschn.~\ref{subsec:nfa_validation}: Erweiterung ohne Kernlogik-Änderung \\
 \hline
 
@@ -438,28 +434,18 @@ CPU-kompatible Inferenz &
 Abschn.~\ref{subsubsec:processing_time}: Ø 12.3 min/Plan \\
 \hline
 
-\hyperref[req:NFA-008]{NFA-008} & Erweiterbarkeit & 
-Modulare Architektur (Kap.~\ref{chap:konzeption}) & 
-Abschn.~\ref{subsec:nfa_validation}: 8 Auxiliarklassen integriert \\
-\hline
-
-\hyperref[req:NFA-009]{NFA-009} & Update-Fähigkeit & 
-Externe Modell-Gewichte (\texttt{best.pt}) & 
+\hyperref[req:NFA-008]{NFA-008} & Update-Fähigkeit &
+Externe Modell-Gewichte (\texttt{best.pt}) &
 Abschn.~\ref{subsec:nfa_validation}: Nachtraining demonstriert \\
 \hline
 
-\hyperref[req:NFA-010]{NFA-010} & Eingabeformate (PDF, PNG, JPG) & 
-Abschn.~\ref{subsec:inferenz}: PyMuPDF, OpenCV & 
+\hyperref[req:NFA-009]{NFA-009} & Eingabeformate (PDF, PNG, JPG) &
+Abschn.~\ref{Inferenz}: PyMuPDF, OpenCV &
 Abschn.~\ref{subsec:testdatensatz}: 7 PDFs verarbeitet \\
 \hline
 
-\hyperref[req:NFA-011]{NFA-011} & Datenquellen (Kundenpläne) & 
-Abschn.~\ref{subsec:inferenz}: 500 DPI Rasterisierung & 
-Abschn.~\ref{subsec:testdatensatz}: Siemens Mobility Pläne \\
-\hline
-
-\hyperref[req:NFA-012]{NFA-012} & Ausgabeformate (XLSX, CSV, JSON) & 
-Abschn.~\ref{subsec:exportfunktionlität}: Drei Export-Optionen & 
+\hyperref[req:NFA-010]{NFA-010} & Ausgabeformate (CSV, JSON) &
+Abschn.~\ref{subsec:exportfunktionlität}: Zusätzliche Export-Optionen &
 Abschn.~\ref{subsec:functional_validation}: Funktionstest bestanden \\
 \hline
 
