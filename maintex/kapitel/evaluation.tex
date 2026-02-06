@@ -663,7 +663,7 @@ bleibt jedoch konstant niedrig.
 \subsubsection{Validierungs- und Korrekturwerkzeuge}
 \label{subsubsec:validation_tools}
 
-Um den verbleibenden manuellen Korrekturaufwand (geschätzt 5-10\% der Objekte bei produktivem Einsatz) zu minimieren und die Qualitätssicherung zu erleichtern, wurden umfangreiche Validierungs- und Korrekturwerkzeuge in die Benutzeroberfläche integriert. Diese erfüllen die Anforderungen \textbf{FA-009} (Manuelle Korrektur), \textbf{FA-013} (Visuelle Validierung) und \textbf{NFA-005} (Prüfbarkeit).
+Um den verbleibenden manuellen Korrekturaufwand (geschätzt 5-10\% der Objekte bei produktivem Einsatz) zu minimieren und die Qualitätssicherung zu erleichtern, wurden umfangreiche Validierungs- und Korrekturwerkzeuge in die Benutzeroberfläche integriert. Diese erfüllen die Anforderungen \textbf{FA-008} (Manuelle Korrektur), \textbf{FA-012} (Visuelle Validierung) und \textbf{NFA-005} (Prüfbarkeit).
 
 \textbf{Automatische Fehleridentifikation:}
 
@@ -683,7 +683,7 @@ Die GUI bietet dedizierte Ansichten zur effizienten Fehleridentifikation und -ko
     \item \textbf{Fehlerfilterung}: Schnelle Navigation zu allen als \enquote{validierungsrelevant} markierten Objekten
     \item \textbf{Inline-Editierung}: Direkte Korrektur fehlerhafter Texte und Verknüpfungen in der Benutzeroberfläche
     \item \textbf{Zoom-Funktion}: Hochauflösende Detailansicht des Original-PDFs zur Überprüfung unleserlicher Bereiche
-    \item \textbf{Änderungsverfolgung}: Alle manuellen Korrekturen werden protokolliert (Anforderung FA-012)
+    \item \textbf{Änderungsverfolgung}: Alle manuellen Korrekturen werden protokolliert (Anforderung FA-011)
 \end{itemize}
 
 \textbf{Effizienzgewinn durch gezielte Prüfung:}
@@ -949,31 +949,26 @@ unterliegen Open-Source-Lizenzen, die für den kommerziellen Einsatz geeignet si
     \item PostgreSQL: PostgreSQL License (BSD-ähnlich)
 \end{itemize}
 
-\textbf{NFA-008 (Erweiterbarkeit):} Die modulare Architektur wurde durch die Integration 
-von 8 Auxiliarklassen validiert. Diese Klassen wurden ohne Modifikation der Kernlogik 
-(OCR-Pipeline, Linking-Algorithmus, Export-Modul) hinzugefügt. Die Auxiliarklassen 
+\textbf{FA-014 (Modulare Architektur):} Die Erweiterbarkeit der modularen Architektur wurde durch die Integration
+von 8 Auxiliarklassen validiert. Diese Klassen wurden ohne Modifikation der Kernlogik
+(OCR-Pipeline, Linking-Algorithmus, Export-Modul) hinzugefügt. Die Auxiliarklassen
 erreichen vergleichbare Detektionsleistungen (Ø mAP@0.5: 98.8\%) wie die Kernklassen.
 
-\textbf{NFA-009 (Update-Fähigkeit):} Die trainierten Modellgewichte werden als externe 
-Datei (\texttt{best.pt}) geladen. Ein Nachtraining auf erweiterten Datensätzen wurde 
-während der Entwicklung mehrfach durchgeführt, wobei lediglich die Gewichtsdatei 
+\textbf{NFA-008 (Update-Fähigkeit):} Die trainierten Modellgewichte werden als externe
+Datei (\texttt{best.pt}) geladen. Ein Nachtraining auf erweiterten Datensätzen wurde
+während der Entwicklung mehrfach durchgeführt, wobei lediglich die Gewichtsdatei
 ausgetauscht werden musste.
 
-\textbf{NFA-010 (Eingabeformate):} Alle 7 Testpläne wurden als PDF-Dateien 
-verarbeitet. Die interne Verarbeitungspipeline konvertiert PDFs zunächst 
-in hochauflösende Rasterbilder (500 DPI, PNG-Format) mittels PyMuPDF 
-(Abschnitt \ref{subsec:inferenz}), bevor die YOLO-Inferenz erfolgt. Damit wird die 
-Bildverarbeitungsfähigkeit (PNG/JPG) implizit durch jeden PDF-Test validiert. 
-Ein direkter Import von Bilddateien ohne PDF-Konvertierung wurde nicht 
-explizit getestet, ist jedoch aufgrund der identischen nachgelagerten 
+\textbf{NFA-009 (Eingabeformate):} Alle 7 Testpläne wurden als PDF-Dateien
+verarbeitet. Die interne Verarbeitungspipeline konvertiert PDFs zunächst
+in hochauflösende Rasterbilder (500 DPI, PNG-Format) mittels PyMuPDF
+(Abschnitt \ref{subsec:inferenz}), bevor die YOLO-Inferenz erfolgt. Damit wird die
+Bildverarbeitungsfähigkeit (PNG/JPG) implizit durch jeden PDF-Test validiert.
+Ein direkter Import von Bilddateien ohne PDF-Konvertierung wurde nicht
+explizit getestet, ist jedoch aufgrund der identischen nachgelagerten
 Pipeline-Stufen funktional äquivalent.
 
-\textbf{NFA-011 (Datenquellen):} Der Testsatz besteht ausschließlich aus realen 
-Siemens Mobility Gleisplänen verschiedener Projekte und Komplexitätsstufen 
-(Tab.~\ref{tab:test_dataset_stats}). Dies validiert die Kompatibilität mit 
-kundenspezifischen Datenquellen.
-
-\textbf{NFA-012 (Ausgabeformate):} Das System unterstützt alle geforderten 
+\textbf{NFA-010 (Ausgabeformate):} Das System unterstützt alle geforderten 
 Ausgabeformate (Abbildung~\ref{fig:export_format_selection}):
 
 \begin{itemize}
@@ -1006,7 +1001,7 @@ der E2E-Evaluation (vgl. Tabelle~\ref{tab:e2e_per_class_test}).
 
 
 \textbf{FA-011 (Änderungsverfolgung):} Die Änderungsverfolgung wurde anhand eines 
-realen Versionspaars des Plans validiert (Abbildung~\ref{fig:diff_dialog}). 
+realen Versionspaars des Plans validiert (Abbildung~\ref{fig:diff_ui}). 
 Das System erkannte automatisch 41 Änderungen zwischen den Planversionen A\_000 
 und B\_000:
 
@@ -1034,6 +1029,164 @@ erfolgreich demonstriert.
 (vgl. Abbildung~\ref{fig:complete_ui}) wurden während der gesamten 
 Evaluationsphase zur manuellen Verifikation der Extraktionsergebnisse verwendet 
 und funktionierten zuverlässig.
+
+\section{Anforderungs-Rückverfolgbarkeit}
+\label{sec:traceability_eval}
+
+Zur Sicherstellung der vollständigen Umsetzung aller in Kapitel~\ref{chap:anforderungen} definierten Anforderungen dokumentieren die folgenden Tabellen die Zuordnung jeder Anforderung zu den entsprechenden Implementierungskomponenten (Kapitel~\ref{chap:implementierung}) sowie den Evaluationsmetriken.
+
+\subsection{Funktionale Anforderungen}
+
+\begin{longtable}{|l|>{\raggedright\arraybackslash}p{4cm}|>{\raggedright\arraybackslash}p{4.5cm}|>{\raggedright\arraybackslash}p{4.5cm}|}
+\hline
+\textbf{ID} & \textbf{Anforderung} & \textbf{Implementierung} & \textbf{Evaluation} \\
+\hline
+\endfirsthead
+\hline
+\textbf{ID} & \textbf{Anforderung} & \textbf{Implementierung} & \textbf{Evaluation} \\
+\hline
+\endhead
+
+\hyperref[req:FA-001]{FA-001} & Erkennungsrate $\geq$ 90\% &
+Abschn.~\ref{sec:yolo_implementation}: YOLOv8-OBB Training mit 13 Klassen &
+Abschn.~\ref{subsec:detection_eval}: Recall = 95.7\% (Val), 100\% (Test) \\
+\hline
+
+\hyperref[req:FA-002]{FA-002} & Rotationsinvarianz ($0^\circ$--$360^\circ$) &
+Abschn.~\ref{sec:yolo_implementation}: OBB-Annotation, synthetische Rotation (10 Winkel) &
+Abschn.~\ref{subsec:e2e_test_eval}, Tab.~\ref{tab:rotation_analysis}: 38 Objekte mit $|\theta|>30^\circ$ bei höherer Konfidenz (0.946 vs. 0.890) \\
+\hline
+
+\hyperref[req:FA-003]{FA-003} & Zielobjekte (5 Kernklassen) &
+Abschn.~\ref{sec:yolo_implementation}: Signal, Koordinate, GKS (2 Typen), GM-Block &
+Abschn.~\ref{subsec:e2e_test_eval}: 636/644 Objekte korrekt (98.76\%)\\
+\hline
+
+\hyperref[req:FA-004]{FA-004} & OCR-Genauigkeit (in E2E integriert) &
+Abschn.~\ref{sec:ocrpipeline}: Multi-Engine Kaskade (PaddleOCR, Tesseract, EasyOCR) &
+Abschn.~\ref{subsec:e2e_test_eval}: 3 OCR-bedingte Fehler (0.47\% Fehlerrate) \\
+\hline
+
+\hyperref[req:FA-005]{FA-005} & OCR-Robustheit (Rauschen, Rotation) &
+Abschn.~\ref{sec:ocrpipeline}: Dual-Winkel-Routing, CLAHE, Linienentfernung &
+Abschn.~\ref{subsec:e2e_test_eval}, Tab.~\ref{tab:rotation_analysis}: 100\% OCR-Erfolg bei $|\theta|>30^\circ$ (38/38) \\
+\hline
+
+\hyperref[req:FA-006]{FA-006} & Fahrtrichtungsdetektion &
+Abschn.~\ref{sec:fahrtrichtung}: Geometrische Ableitung aus Signal-GKS-Relation &
+Abschn.~\ref{subsec:e2e_test_eval}: 171/172 korrekt (99.42\%), Tab.~\ref{tab:signal_attribute_accuracy} \\
+\hline
+
+\hyperref[req:FA-007]{FA-007} & Symbol-Koordinaten-Verknüpfung &
+Abschn.~\ref{sec:intelligentesymboltextverknüpfung}: Proximity-basiertes Linking &
+Abschn.~\ref{subsec:e2e_test_eval}: 642/644 Verknüpfungen korrekt (99.69\%) \\
+\hline
+
+\hyperref[req:FA-008]{FA-008} & Manuelle Korrektur (Human-in-the-Loop) &
+Abschn.~\ref{sec:validierungundsicherung}: Validierungsdialog mit Inline-Editierung &
+Abschn.~\ref{subsubsec:validation_tools}: Prüfaufwand um 85\% reduziert \\
+\hline
+
+\hyperref[req:FA-009]{FA-009} & Excel-Integration &
+Abschn.~\ref{subsec:exportfunktionlität}: XLSX-Export mit Formatierung &
+Abschn.~\ref{subsec:functional_validation}, Tab.~\ref{tab:functional_validation} \\
+\hline
+
+\hyperref[req:FA-010]{FA-010} & Strukturerhalt (Non-destructive Update) &
+Abschn.~\ref{subsec:exportfunktionlität}: Werte-Insertion ohne Formatänderung &
+Abschn.~\ref{subsec:functional_validation}, Tab.~\ref{tab:functional_validation} \\
+\hline
+
+\hyperref[req:FA-011]{FA-011} & Änderungsverfolgung (Diff) &
+Abschn.~\ref{subsec:vergleichundänderung}: UID-basierter Versionsvergleich &
+Abschn.~\ref{subsec:functional_validation}, Tab.~\ref{tab:functional_validation} \\
+\hline
+
+\hyperref[req:FA-012]{FA-012} & Visuelle Validierung (Bounding Boxes) &
+Abschn.~\ref{sec:benutzeroberfläche}: PDF-Viewer mit Overlay-System &
+Abschn.~\ref{subsec:functional_validation}, Tab.~\ref{tab:functional_validation} \\
+\hline
+
+\hyperref[req:FA-013]{FA-013} & Grafische Benutzeroberfläche &
+Abschn.~\ref{sec:benutzeroberfläche}: PyQt5-basierte Desktop-Anwendung &
+Abschn.~\ref{subsec:functional_validation}, Tab.~\ref{tab:functional_validation} \\
+\hline
+
+\hyperref[req:FA-014]{FA-014} & Modularität (Architektur) &
+Kap.~\ref{chap:konzeption}: Schichtenarchitektur; Abschn.~\ref{sec:yolo_implementation}: 8 Auxiliarklassen &
+Abschn.~\ref{subsec:nfa_validation}: Erweiterung ohne Kernlogik-Änderung \\
+\hline
+
+\caption{Rückverfolgbarkeitsmatrix: Funktionale Anforderungen}
+\label{tab:traceability_fa}
+\end{longtable}
+
+\subsection{Nicht-funktionale Anforderungen}
+
+\begin{longtable}{|l|>{\raggedright\arraybackslash}p{3.5cm}|>{\raggedright\arraybackslash}p{4cm}|>{\raggedright\arraybackslash}p{4cm}|}
+\hline
+\textbf{ID} & \textbf{Anforderung} & \textbf{Implementierung} & \textbf{Evaluation} \\
+\hline
+\endfirsthead
+\hline
+\textbf{ID} & \textbf{Anforderung} & \textbf{Implementierung} & \textbf{Evaluation} \\
+\hline
+\endhead
+
+\hyperref[req:NFA-001]{NFA-001} & On-Premise-Verarbeitung &
+Vollständig lokale Ausführung, keine Cloud-APIs &
+Abschn.~\ref{subsec:testumgebung}: CPU-only Inferenz; Abschn.~\ref{subsec:nfa_validation} \\
+\hline
+
+\hyperref[req:NFA-002]{NFA-002} & Lizenzkonformität (Apache/MIT/BSD) &
+Tab.~\ref{tab:tech_stack}: Alle Bibliotheken Open Source &
+Abschn.~\ref{subsec:nfa_validation}: Lizenzprüfung dokumentiert \\
+\hline
+
+\hyperref[req:NFA-003]{NFA-003} & Gesamtgenauigkeit $\geq$ 85\% &
+Gesamte Pipeline (Kap.~\ref{chap:implementierung}) &
+Abschn.~\ref{subsec:e2e_test_eval}: 98.76\% erreicht \\
+\hline
+
+\hyperref[req:NFA-004]{NFA-004} & Robustheit (fehlerhafte Eingaben) &
+Abschn.~\ref{sec:validierungundsicherung}: Fallback-Mechanismen &
+Abschn.~\ref{subsubsec:validation_tools}: 7 Pläne ohne Abstürze \\
+\hline
+
+\hyperref[req:NFA-005]{NFA-005} & Prüfbarkeit (Rückverfolgbarkeit) &
+Abschn.~\ref{sec:unterstützendekomponente}: Metadaten, Jump-to-Detection &
+Abschn.~\ref{subsubsec:validation_tools}: Bidirektionale Navigation \\
+\hline
+
+\hyperref[req:NFA-006]{NFA-006} & Prozessoptimierung &
+Automatisierung des manuellen Prozesses &
+Abschn.~\ref{subsubsec:processing_time}: 75.3\% Zeitersparnis \\
+\hline
+
+\hyperref[req:NFA-007]{NFA-007} & Ressourceneffizienz &
+CPU-kompatible Inferenz &
+Abschn.~\ref{subsubsec:processing_time}: Ø 12.3 min/Plan \\
+\hline
+
+\hyperref[req:NFA-008]{NFA-008} & Update-Fähigkeit &
+Externe Modell-Gewichte (\texttt{best.pt}) &
+Abschn.~\ref{subsec:nfa_validation}: Nachtraining demonstriert \\
+\hline
+
+\hyperref[req:NFA-009]{NFA-009} & Eingabeformate (PDF, PNG, JPG) &
+Abschn.~\ref{subsec:inferenz}: PyMuPDF, OpenCV &
+Abschn.~\ref{subsec:testdatensatz}: 7 PDFs verarbeitet \\
+\hline
+
+\hyperref[req:NFA-010]{NFA-010} & Ausgabeformate (CSV, JSON) &
+Abschn.~\ref{subsec:exportfunktionlität}: Zusätzliche Export-Optionen &
+Abschn.~\ref{subsec:functional_validation}: Funktionstest bestanden \\
+\hline
+
+\caption{Rückverfolgbarkeitsmatrix: Nicht-funktionale Anforderungen}
+\label{tab:traceability_nfa}
+\end{longtable}
+
 \section{Validierung aller Anforderungen}
 \label{sec:anforderungen_validierung}
 
@@ -1072,11 +1225,9 @@ NFA-004 & Robustheit & \checkmark \\
 NFA-005 & Prüfbarkeit & \checkmark \\
 NFA-006 & Prozessoptimierung & \checkmark (75\% Zeitersparnis) \\
 NFA-007 & Ressourceneffizienz & \checkmark (12.3 min/Plan) \\
-NFA-008 & Erweiterbarkeit & \checkmark \\
-NFA-009 & Update-Fähigkeit & \checkmark \\
-NFA-010 & Eingabeformate & \checkmark \\
-NFA-011 & Datenquellen & \checkmark \\
-NFA-012 & Ausgabeformate & \checkmark \\
+NFA-008 & Update-Fähigkeit & \checkmark \\
+NFA-009 & Eingabeformate & \checkmark \\
+NFA-010 & Ausgabeformate & \checkmark \\
 \hline
 \end{tabular}
 \caption{Validierung aller funktionalen und nicht-funktionalen Anforderungen}

@@ -1,6 +1,6 @@
 \chapter{Anforderungsanalyse}
 \label{chap:anforderungen}
-Die in Kapitel 3 dargelegten theoretischen und technischen Grundlagen bilden das Fundament für die praktische Umsetzung des Prototyps. In den nachfolgenden Schritten erfolgt die Konkretisierung der Anforderungen an den zu entwickelnden Prototyp. Die vorliegende Analyse leitet sich aus den funktionalen Zielen des Projektes sowie den nicht-funktionalen Rahmenbedingungen im industriellen Umfeld der Siemens Mobility GmbH ab. Zu diesem Zweck werden die Systemgrenzen, Datenformate sowie potenzielle technische Herausforderungen strukturiert analysiert.
+Die in Kapitel~\ref{chap:theoretischeundtechnischegrundlagen} dargelegten theoretischen und technischen Grundlagen bilden das Fundament für die praktische Umsetzung des Prototyps. In den nachfolgenden Schritten erfolgt die Konkretisierung der Anforderungen an den zu entwickelnden Prototyp. Die vorliegende Analyse leitet sich aus den funktionalen Zielen des Projektes sowie den nicht-funktionalen Rahmenbedingungen im industriellen Umfeld der Siemens Mobility GmbH ab. Zu diesem Zweck werden die Systemgrenzen, Datenformate sowie potenzielle technische Herausforderungen strukturiert analysiert.
 
 \section{Funktionale Anforderungen}
 \label{sec:funktionaleanforderungen}
@@ -152,7 +152,7 @@ der aktuellen Planungsaufgabe und werden daher nicht detailliert evaluiert.
     \label{tab:auxiliarklassen}
 \end{longtable}
 
-\textbf{Hinweis:} Die Auxiliarklassen werden im Rahmen des YOLOv8-Trainings (Kapitel~\ref{sec:objekterkennungmityolov8obb}) mit annotiert und erreichen vergleichbare Detektionsleistungen wie die Kernklassen. Die Fokussierung der End-to-End-Evaluation auf die Kernklassen erfolgte aufgrund der notwendigen Eingrenzung des Evaluationsumfangs. Bemerkenswert ist, dass das Modell auch visuell sehr ähnliche Symbole (z.\,B. Haltepunkt-Varianten H, Weichen W, Weichengruppen WG) zuverlässig unterscheiden kann. Eine detaillierte Analyse 
+\textbf{Hinweis:} Die Auxiliarklassen werden im Rahmen des YOLOv8-Trainings (Abschnitt~\ref{sec:yolo_implementation}) mit annotiert und erreichen vergleichbare Detektionsleistungen wie die Kernklassen. Die Fokussierung der End-to-End-Evaluation auf die Kernklassen erfolgte aufgrund der notwendigen Eingrenzung des Evaluationsumfangs. Bemerkenswert ist, dass das Modell auch visuell sehr ähnliche Symbole (z.\,B. Haltepunkt-Varianten H, Weichen W, Weichengruppen WG) zuverlässig unterscheiden kann. Eine detaillierte Analyse 
 dieser Feinunterscheidungen war jedoch nicht Gegenstand dieser Arbeit.
 
 \subsection{Texterkennung und OCR-Integration}
@@ -217,6 +217,16 @@ dieser Feinunterscheidungen war jedoch nicht Gegenstand dieser Arbeit.
 
 \section{Nicht-funktionale Anforderungen}
 \label{sec:nichtfunktionaleanforderungen}
+Die nicht-funktionalen Anforderungen wurden aus drei komplementären Quellen abgeleitet:
+
+\begin{enumerate}
+    \item \textbf{Stakeholder-Anforderungen:} Interviews und Abstimmungen mit dem Betreuer sowie Fachkollegen der Siemens Mobility GmbH identifizierten praxisrelevante Rahmenbedingungen wie On-Premise-Verarbeitung (NFA-001), Lizenzkonformität (NFA-002) und Prozessoptimierung (NFA-006).
+
+    \item \textbf{Unternehmensrichtlinien:} Die internen IT-Sicherheits- und Compliance-Vorgaben der Siemens Mobility GmbH definieren verbindliche Anforderungen an Datenschutz, Offline-Betrieb und die Verwendung genehmigter Open-Source-Lizenzen.
+
+    \item \textbf{Domänenanalyse und Stand der Technik:} Aus der Analyse bestehender manueller Arbeitsabläufe (vgl. Kapitel~\ref{chap:einleitung}, Forschungsvorgehen Phase~2) sowie der Evaluation verwandter Arbeiten (Kapitel~\ref{chap:theoretischeundtechnischegrundlagen}) wurden Qualitätsanforderungen wie End-to-End-Genauigkeit (NFA-003), Robustheit (NFA-004) und Ressourceneffizienz (NFA-007) abgeleitet.
+\end{enumerate}
+
 Ergänzend zu den funktionalen Zielen definieren die nicht-funktionalen Anforderungen (NFA-001 bis NFA-010) die Qualitätsmerkmale und Rahmenbedingungen des Prototyps.
 
 \subsection{Sicherheit und Datenschutz}
@@ -296,160 +306,4 @@ Die Realisierung der in den Abschnitten \ref{subsec:req_symbol} bis \ref{subsec:
 \section{Anforderungs-Rückverfolgbarkeit}
 \label{sec:traceability}
 
-Zur Sicherstellung der vollständigen Umsetzung aller definierten Anforderungen 
-wird eine Rückverfolgbarkeitsmatrix (Traceability Matrix) eingeführt. Diese 
-dokumentiert die Zuordnung jeder Anforderung zu den entsprechenden 
-Implementierungskomponenten (Kapitel~\ref{chap:implementierung}) sowie den 
-Evaluationsmetriken (Kapitel~\ref{chap:evaluation}).
-
-\subsection{Funktionale Anforderungen}
-
-\begin{longtable}{|l|>{\raggedright\arraybackslash}p{4cm}|>{\raggedright\arraybackslash}p{4.5cm}|>{\raggedright\arraybackslash}p{4.5cm}|}
-\hline
-\textbf{ID} & \textbf{Anforderung} & \textbf{Implementierung} & \textbf{Evaluation} \\
-\hline
-\endfirsthead
-\hline
-\textbf{ID} & \textbf{Anforderung} & \textbf{Implementierung} & \textbf{Evaluation} \\
-\hline
-\endhead
-
-\hyperref[req:FA-001]{FA-001} & Erkennungsrate $\geq$ 90\% & 
-Abschn.~\ref{sec:objekterkennungmityolov8obb}: YOLOv8-OBB Training mit 13 Klassen & 
-Abschn.~\ref{subsec:detection_eval}: Recall = 95.7\% (Val), 100\% (Test) \\
-\hline
-
-\hyperref[req:FA-002]{FA-002} & Rotationsinvarianz ($0^\circ$--$360^\circ$) & 
-Abschn.~\ref{sec:objekterkennungmityolov8obb}: OBB-Annotation, synthetische Rotation (10 Winkel) & 
-Abschn.~\ref{subsec:e2e_test_eval}, Tab.~\ref{tab:rotation_analysis}: 38 Objekte mit $|\theta|>30^\circ$ bei höherer Konfidenz (0.946 vs. 0.890) \\
-\hline
-
-\hyperref[req:FA-003]{FA-003} & Zielobjekte (5 Kernklassen) & 
-Abschn.~\ref{sec:objekterkennungmityolov8obb}: Signal, Koordinate, GKS (2 Typen), GM-Block & 
-Abschn.~\ref{subsec:e2e_test_eval}: 636/644 Objekte korrekt (98.76\%)\\
-\hline
-
-\hyperref[req:FA-004]{FA-004} & OCR-Genauigkeit (in E2E integriert) & 
-Abschn.~\ref{sec:ocrpipeline}: Multi-Engine Kaskade (PaddleOCR, Tesseract, EasyOCR) & 
-Abschn.~\ref{subsec:e2e_test_eval}: 3 OCR-bedingte Fehler (0.47\% Fehlerrate) \\
-\hline
-
-\hyperref[req:FA-005]{FA-005} & OCR-Robustheit (Rauschen, Rotation) & 
-Abschn.~\ref{sec:ocrpipeline}: Dual-Winkel-Routing, CLAHE, Linienentfernung & 
-Abschn.~\ref{subsec:e2e_test_eval}, Tab.~\ref{tab:rotation_analysis}: 100\% OCR-Erfolg bei $|\theta|>30^\circ$ (38/38) \\
-\hline
-
-\hyperref[req:FA-006]{FA-006} & Fahrtrichtungsdetektion & 
-Abschn.~\ref{sec:fahrtrichtung}: Geometrische Ableitung aus Signal-GKS-Relation & 
-Abschn.~\ref{subsec:e2e_test_eval}: 171/172 korrekt (99.42\%), Tab.~\ref{tab:signal_attribute_accuracy} \\
-\hline
-
-\hyperref[req:FA-007]{FA-007} & Symbol-Koordinaten-Verknüpfung & 
-Abschn.~\ref{sec:intelligentesymboltextverknüpfung}: Proximity-basiertes Linking & 
-Abschn.~\ref{subsec:e2e_test_eval}: 642/644 Verknüpfungen korrekt (99.69\%) \\
-\hline
-
-\hyperref[req:FA-008]{FA-008} & Manuelle Korrektur (Human-in-the-Loop) & 
-Abschn.~\ref{sec:validierungundsicherung}: Validierungsdialog mit Inline-Editierung & 
-Abschn.~\ref{subsubsec:validation_tools}: Prüfaufwand um 85\% reduziert \\
-\hline
-
-\hyperref[req:FA-009]{FA-009} & Excel-Integration & 
-Abschn.~\ref{subsec:exportfunktionlität}: XLSX-Export mit Formatierung & 
-Abschn.~\ref{subsec:functional_validation}, Tab.~\ref{tab:functional_validation} \\
-\hline
-
-\hyperref[req:FA-010]{FA-010} & Strukturerhalt (Non-destructive Update) & 
-Abschn.~\ref{subsec:exportfunktionlität}: Werte-Insertion ohne Formatänderung & 
-Abschn.~\ref{subsec:functional_validation}, Tab.~\ref{tab:functional_validation} \\
-\hline
-
-\hyperref[req:FA-011]{FA-011} & Änderungsverfolgung (Diff) & 
-Abschn.~\ref{subsec:vergleichundänderung}: UID-basierter Versionsvergleich & 
-Abschn.~\ref{subsec:functional_validation}, Tab.~\ref{tab:functional_validation} \\
-\hline
-
-\hyperref[req:FA-012]{FA-012} & Visuelle Validierung (Bounding Boxes) & 
-Abschn.~\ref{sec:benutzeroberfläche}: PDF-Viewer mit Overlay-System & 
-Abschn.~\ref{subsec:functional_validation}, Tab.~\ref{tab:functional_validation} \\
-\hline
-
-\hyperref[req:FA-013]{FA-013} & Grafische Benutzeroberfläche & 
-Abschn.~\ref{sec:benutzeroberfläche}: PyQt5-basierte Desktop-Anwendung & 
-Abschn.~\ref{subsec:functional_validation}, Tab.~\ref{tab:functional_validation} \\
-\hline
-
-\hyperref[req:FA-014]{FA-014} & Modularität (Architektur) & 
-Kap.~\ref{chap:konzeption}: Schichtenarchitektur; Abschn.~\ref{sec:objekterkennungmityolov8obb}: 8 Auxiliarklassen & 
-Abschn.~\ref{subsec:nfa_validation}: Erweiterung ohne Kernlogik-Änderung \\
-\hline
-
-\caption{Rückverfolgbarkeitsmatrix: Funktionale Anforderungen}
-\label{tab:traceability_fa}
-\end{longtable}
-
-\subsection{Nicht-funktionale Anforderungen}
-
-\begin{longtable}{|l|>{\raggedright\arraybackslash}p{3.5cm}|>{\raggedright\arraybackslash}p{4cm}|>{\raggedright\arraybackslash}p{4cm}|}
-\hline
-\textbf{ID} & \textbf{Anforderung} & \textbf{Implementierung} & \textbf{Evaluation} \\
-\hline
-\endfirsthead
-\hline
-\textbf{ID} & \textbf{Anforderung} & \textbf{Implementierung} & \textbf{Evaluation} \\
-\hline
-\endhead
-
-\hyperref[req:NFA-001]{NFA-001} & On-Premise-Verarbeitung & 
-Vollständig lokale Ausführung, keine Cloud-APIs & 
-Abschn.~\ref{subsec:testumgebung}: CPU-only Inferenz; Abschn.~\ref{subsec:nfa_validation} \\
-\hline
-
-\hyperref[req:NFA-002]{NFA-002} & Lizenzkonformität (Apache/MIT/BSD) & 
-Tab.~\ref{tab:tech_stack}: Alle Bibliotheken Open Source & 
-Abschn.~\ref{subsec:nfa_validation}: Lizenzprüfung dokumentiert \\
-\hline
-
-\hyperref[req:NFA-003]{NFA-003} & Gesamtgenauigkeit $\geq$ 85\% & 
-Gesamte Pipeline (Kap.~\ref{chap:implementierung}) & 
-Abschn.~\ref{subsec:e2e_test_eval}: 98.76\% erreicht \\
-\hline
-
-\hyperref[req:NFA-004]{NFA-004} & Robustheit (fehlerhafte Eingaben) & 
-Abschn.~\ref{sec:validierungundsicherung}: Fallback-Mechanismen & 
-Abschn.~\ref{subsubsec:validation_tools}: 7 Pläne ohne Abstürze \\
-\hline
-
-\hyperref[req:NFA-005]{NFA-005} & Prüfbarkeit (Rückverfolgbarkeit) & 
-Abschn.~\ref{sec:unterstützendekomponente}: Metadaten, Jump-to-Detection & 
-Abschn.~\ref{subsubsec:validation_tools}: Bidirektionale Navigation \\
-\hline
-
-\hyperref[req:NFA-006]{NFA-006} & Prozessoptimierung & 
-Automatisierung des manuellen Prozesses & 
-Abschn.~\ref{subsubsec:processing_time}: 75.3\% Zeitersparnis \\
-\hline
-
-\hyperref[req:NFA-007]{NFA-007} & Ressourceneffizienz & 
-CPU-kompatible Inferenz & 
-Abschn.~\ref{subsubsec:processing_time}: Ø 12.3 min/Plan \\
-\hline
-
-\hyperref[req:NFA-008]{NFA-008} & Update-Fähigkeit &
-Externe Modell-Gewichte (\texttt{best.pt}) &
-Abschn.~\ref{subsec:nfa_validation}: Nachtraining demonstriert \\
-\hline
-
-\hyperref[req:NFA-009]{NFA-009} & Eingabeformate (PDF, PNG, JPG) &
-Abschn.~\ref{Inferenz}: PyMuPDF, OpenCV &
-Abschn.~\ref{subsec:testdatensatz}: 7 PDFs verarbeitet \\
-\hline
-
-\hyperref[req:NFA-010]{NFA-010} & Ausgabeformate (CSV, JSON) &
-Abschn.~\ref{subsec:exportfunktionlität}: Zusätzliche Export-Optionen &
-Abschn.~\ref{subsec:functional_validation}: Funktionstest bestanden \\
-\hline
-
-\caption{Rückverfolgbarkeitsmatrix: Nicht-funktionale Anforderungen}
-\label{tab:traceability_nfa}
-\end{longtable}
+Die vollständige Rückverfolgbarkeitsmatrix, welche die Zuordnung jeder Anforderung zu den entsprechenden Implementierungskomponenten sowie den Evaluationsmetriken dokumentiert, wird in Kapitel~\ref{chap:evaluation}, Abschnitt~\ref{sec:traceability_eval} präsentiert.

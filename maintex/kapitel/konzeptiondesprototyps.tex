@@ -1,29 +1,29 @@
 \chapter{Konzeption des Prototyps}
 \label{chap:konzeption}
-In diesem Kapitel wird der Entwurf und die technische Konzeption des Prototyps aufbauend auf der im vorherigen Kapitel definierten Anforderungsanalyse dargelegt. Das Ziel besteht in der Entwicklung einer modularen und skalierbaren Systemarchitektur, die den gesamten Workflow von der rohen PDF-Datei bis zum strukturierten und validierten Datenexport automatisiert. Die konkrete Implementierungsdetails werden anschließend in Kapitel 6 behandelt.
+In diesem Kapitel wird der Entwurf und die technische Konzeption des Prototyps aufbauend auf der im vorherigen Kapitel definierten Anforderungsanalyse dargelegt. Das Ziel besteht in der Entwicklung einer modularen und skalierbaren Prototyparchitektur, die den gesamten Workflow von der rohen PDF-Datei bis zum strukturierten und validierten Datenexport automatisiert. Die konkrete Implementierungsdetails werden anschließend in Kapitel 6 behandelt.
 
-\section{Systemarchitektur}
+\section{Prototyparchitektur}
 Die Architektur des Prototyps folgt dem Prinzip der Modularität und Separation of Concerns.
 Der Prototyp ist in funktional abgegrenzte Module unterteilt, die über definierte Schnittstellen miteinander kommunizieren. Diese Architektur ermöglicht eine schrittweise Entwicklung, einfache Wartbarkeit und die Möglichkeit zur späteren Erweiterung um zusätzliche Funktionalitäten \textbf{(Anforderungen \hyperref[req:FA-014]{FA-014}, \hyperref[req:NFA-008]{NFA-008})}. Abbildung \ref{fig:Systemarchitektur} zeigt die Gesamtarchitektur des Prototyps mit ihren Hauptkomponenten.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=15cm]{images/Kapitel5/Moduldiagrammv3.png} 
-    \caption{Modulare Systemarchitektur des Gleisplanextraktors}
+    \caption{Modulare Prototyparchitektur des Gleisplanextraktors}
     \label{fig:Systemarchitektur}
 \end{figure}
 
 \subsection{Dateneingabe}
 
-Das System akzeptiert Gleispläne in verschiedenen Formaten als primäre Eingabe 
-\textbf{(Anforderung \hyperref[req:NFA-010]{NFA-010})}. Die Unterstützung mehrerer Formate berücksichtigt 
+Der Prototyp akzeptiert Gleispläne in verschiedenen Formaten als primäre Eingabe 
+\textbf{(Anforderung \hyperref[req:NFA-009]{NFA-009})}. Die Unterstützung mehrerer Formate berücksichtigt 
 sowohl den aktuellen Anwendungsfall als auch die zukünftige Erweiterbarkeit 
 auf andere Gleisplan-Layouts.
 
 \textbf{Unterstützte Eingabeformate:}
 \begin{itemize}
     \item \textbf{PDF-Dateien (.pdf):} Standardformat für technische Zeichnungen. 
-    Das System rendert PDFs intern bei einer festen Auflösung von 500 DPI, was 
+    Der Prototyp rendert PDFs intern bei einer festen Auflösung von 500 DPI, was 
     eine konsistente und optimale Bildqualität gewährleistet.
     
     \item \textbf{Rastergrafiken (.png, .jpg/.jpeg, .tif/.tiff, .bmp):} Für bereits 
@@ -45,7 +45,7 @@ erheblichen Erkennungsfehlern führt.
 
 Bei PDF-Eingaben wird die korrekte Auflösung durch die interne Rasterisierung 
 automatisch sichergestellt. Bei Bilddateien muss der Benutzer gewährleisten, 
-dass die Eingabe mit 500 DPI erstellt wurde. Das System zeigt einen entsprechenden 
+dass die Eingabe mit 500 DPI erstellt wurde. Der Prototyp zeigt einen entsprechenden
 Hinweis in der Benutzeroberfläche an.
 
 \textbf{Erweiterbarkeit für zukünftige Layouts:}
@@ -108,7 +108,7 @@ Da das YOLOv8-OBB Modell auf Bildausschnitten trainiert wurde, die aus bei 500 D
 gerenderten PDFs stammen, ist die Auflösung der Eingabedaten ein kritischer Faktor 
 für die Erkennungsgenauigkeit. Bei PDF-Eingaben wird dies durch die interne 
 Rasterisierung automatisch sichergestellt. Bei Bilddateien liegt die Verantwortung 
-für eine ausreichende Auflösung beim Benutzer. Das System zeigt daher bei 
+für eine ausreichende Auflösung beim Benutzer. Der Prototyp zeigt daher bei 
 Bildformaten einen Hinweis auf die empfohlene Mindestauflösung an:
 
 \begin{itemize}
@@ -264,7 +264,7 @@ Das Backend orchestriert die automatisierte Analysepipeline. Die Prozessschritte
 
 Designprinzip: Die Pipeline folgt dem Pipes-and-Filters Architekturmuster, bei dem jede Komponente eine spezifische Transformation durchführt und das Ergebnis an die nächste Stufe weiterreicht.
 
-\textbf{Optionaler Versionsvergleich:} Unabhängig von der automatischen Verarbeitungspipeline kann der Benutzer über die Benutzeroberfläche einen manuellen Vergleich zwischen zwei Versionen desselben Gleisplans initiieren. Hierzu werden beide Planversionen in separaten Ansichten (Tabs) geladen. Durch Betätigung einer Vergleichsfunktion analysiert das System beide Datensätze und identifiziert Änderungen (hinzugefügte, entfernte oder modifizierte Objekte). Die konzeptionelle Vergleichsstrategie basiert auf dem in Abschnitt \ref{sec:änderungsverfolgung} beschriebenen hybriden Matching-Ansatz. Die Ergebnisse werden visuell hervorgehoben dargestellt, sodass der Benutzer Planänderungen nachvollziehen kann. Die technische Implementierung wird in Kapitel 6 beschrieben.
+\textbf{Optionaler Versionsvergleich:} Unabhängig von der automatischen Verarbeitungspipeline kann der Benutzer über die Benutzeroberfläche einen manuellen Vergleich zwischen zwei Versionen desselben Gleisplans initiieren. Hierzu werden beide Planversionen in separaten Ansichten (Tabs) geladen. Durch Betätigung einer Vergleichsfunktion analysiert der Prototyp beide Datensätze und identifiziert Änderungen (hinzugefügte, entfernte oder modifizierte Objekte). Die konzeptionelle Vergleichsstrategie basiert auf dem in Abschnitt \ref{sec:änderungsverfolgung} beschriebenen hybriden Matching-Ansatz. Die Ergebnisse werden visuell hervorgehoben dargestellt, sodass der Benutzer Planänderungen nachvollziehen kann. Die technische Implementierung wird in Kapitel 6 beschrieben.
 
 \subsection{3. Ebene - Speicher und Export (Datenverwaltung)}
 Die unterste Ebene verwaltet die Daten des gesamten Systems, die in statischen und dynamischen Daten unterteilt sind:
@@ -367,7 +367,7 @@ und \textbf{\hyperref[req:NFA-007]{NFA-007}} (Ressourceneffizienz durch Echtzeit
 \subsection{Texterkennung: Multi-Engine-Strategie und Dual-Angle-Routing}
 Die Extraktion von Textinformationen aus technischen Gleisplänen stellt aufgrund variierender Schriftarten, unterschiedlicher Orientierungen ($0^\circ, 90^\circ, 270^\circ$) und der Überlagerung durch grafische Elemente eine besondere Herausforderung dar. Um eine maximale Robustheit zu gewährleisten, wurde keine einfache OCR-Lösung gewählt, sondern eine \textbf{kaskadierte Multi-Engine-Strategie} implementiert.
 
-Das System kombiniert die Deep-Learning-basierte Bibliothek \textbf{PaddleOCR} (als Primärinstanz) mit der klassischen Engine \textbf{Tesseract} (als Fallback). Ergänzt wird dies durch einen eigens entwickelten \textbf{Dual-Angle-Routing-Algorithmus}.
+Der Prototyp kombiniert die Deep-Learning-basierte Bibliothek \textbf{PaddleOCR} (als Primärinstanz) mit der klassischen Engine \textbf{Tesseract} (als Fallback). Ergänzt wird dies durch einen eigens entwickelten \textbf{Dual-Angle-Routing-Algorithmus}.
 
 \subsubsection{Primäre Engine: PaddleOCR (PP-OCRv3)}
 Als Hauptkomponente kommt PaddleOCR zum Einsatz. Die Entscheidung für dieses Framework basiert auf der Architektur des PP-OCRv3-Modells, welches auf einem ultra-leichten CRNN (Convolutional Recurrent Neural Network) basiert.\cite{paddleocr} 
@@ -525,7 +525,7 @@ Die Entscheidung für diesen Ansatz stützt sich auf drei zentrale Gründe:
 Die Implementierung der Export-Pipeline, einschließlich der Tabellenformatierung, 
 bedingten Formatierung und Formelintegration, wird in Abschnitt \ref{subsec:exportfunktionlität}
 (Excel-Export-Modul) beschrieben. Diese Architekturentscheidung erfüllt die Anforderungen \textbf{\hyperref[req:FA-009]{FA-009}} (Excel-Integration),
-\textbf{\hyperref[req:FA-010]{FA-010}} (Strukturerhalt bei bestehendem Template) und \textbf{\hyperref[req:NFA-012]{NFA-012}} (Ausgabeformate).
+\textbf{\hyperref[req:FA-010]{FA-010}} (Strukturerhalt bei bestehendem Template) und \textbf{\hyperref[req:NFA-010]{NFA-010}} (Ausgabeformate).
 \subsection{Rückverfolgbarkeit: Koordinaten + Bildausschnitte}
 Die gewählte Lösung für die Rückverfolgbarkeit ist ein hybrider Ansatz mit Koordinaten in Excel und optionaler Miniaturbildgenerierung. Für die UI-Interaktion wurde eine einfache Methode verwendet: Wird die Tabellenzeile in der Benutzeroberfläche angeklickt, so wird dem Benutzer ein vergrößerter Bereich von $2048 \times 2048$ px im Layout angezeigt, wobei die entsprechenden Datenüberlagerungen in leuchtendem Rot hervorgehoben sind.\\
 Die Gründe für diese gewählte Lösung sind:
@@ -534,7 +534,7 @@ Die Gründe für diese gewählte Lösung sind:
     \item Flexibilität: Auf Wunsch des Benutzers kann die Benutzeroberfläche den entsprechenden vergrößerten Bereich für eine genauere und präzisere Analyse darstellen. 
     \item Normkonformität: Diese Methode erfüllt außerdem die Anforderungen der VDI 1000:2017-06 hinsichtlich Rückverfolgbarkeit.\cite{VDI1000} 
 \end{itemize} 
-Andere Alternative
+Andere Alternativen:
 \begin{table}[H]
 \centering
 \renewcommand{\arraystretch}{1.3} % More row height
@@ -550,12 +550,12 @@ Andere Alternative
 \\
 \hline
 \end{tabularx}
-\caption{Alternativen zu pandas + openpyxl}
+\caption{Alternativen zur hybriden Rückverfolgbarkeit}
 \label{tab:Alternative5}
 \end{table}
 \subsection{Änderungsverfolgung: Konzeptioneller Ansatz}
 \label{sec:änderungsverfolgung}
-Das System unterstützt die Versionierung von Gleisplänen, um Änderungen zwischen 
+Der Prototyp unterstützt die Versionierung von Gleisplänen, um Änderungen zwischen 
 verschiedenen Planständen nachvollziehbar zu machen.
 
 \subsubsection{Konzeptionelle Strategie}
@@ -626,6 +626,7 @@ Für die Benutzeroberfläche wurde das Framework PyQt5 aus der Python-Bibliothek
 Die Wahl von PyQt5 als Desktop-Framework adressiert die Anforderungen \textbf{\hyperref[req:FA-013]{FA-013}}
 (GUI ohne CLI-Kenntnisse), \textbf{\hyperref[req:NFA-001]{NFA-001}} (On-Premise-Verarbeitung ohne Cloud) und
 \textbf{\hyperref[req:FA-012]{FA-012}} (visuelle Validierung durch Overlay-System).
+\end{enumerate}
 \subsection{Datenpersistenz und Speicherschicht: PostgreSQL}
 Für die dauerhafte Speicherung der Analyseergebnisse und Gleisplandaten wurde das objekt-relationale Datenbanksystem (ORDBMS) PostgreSQL gewählt. Die Implementierung verfolgt einen hybriden Ansatz (\enquote{Relational + Document Store}), der die Transaktionssicherheit einer SQL-Datenbank mit der Flexibilität einer dokumentenorientierten Speicherung (via JSONB) kombiniert.\cite{postgresql_docs}
 \begin{enumerate}
@@ -651,11 +652,6 @@ Für die dauerhafte Speicherung der Analyseergebnisse und Gleisplandaten wurde d
     \end{table}
 \end{enumerate}
 
-
-
-
-
-\end{enumerate}
 Das Datenbankdesign unterstützt die Anforderungen \textbf{\hyperref[req:NFA-005]{NFA-005}} (Prüfbarkeit durch
 Metadaten-Persistierung), \textbf{\hyperref[req:FA-011]{FA-011}} (Änderungsverfolgung durch Versionierung) und \textbf{\hyperref[req:NFA-002]{NFA-002}} (Lizenzkonformität durch Open-Source-Datenbank).
 \section{Linking- \& Assoziationsmodul}
@@ -681,7 +677,7 @@ Das Linking-Modul basiert auf drei Kernprinzipien:
   über Gleisplan-Konventionen.
   
   \item \textbf{Adaptive Mustererkennung}: 
-  Das System lernt wiederkehrende Layoutmuster aus erfolgreichen Verknüpfungen und 
+  Der Prototyp lernt wiederkehrende Layoutmuster aus erfolgreichen Verknüpfungen und 
   nutzt diese zur Verbesserung zukünftiger Zuordnungen (vgl. Abschnitt \ref{subsec:adaptivelearningmechanism}).
 \end{enumerate}
 
@@ -714,7 +710,7 @@ Die mathematische Formulierung und algorithmischen Details werden im Abschnitt \
 \section{Validierung und Qualitätssicherung}
 \label{sec:validierungundqualitätssicherung}
 Das Validierungskonzept adressiert die Anforderungen \textbf{\hyperref[req:FA-008]{FA-008}} (manuelle Korrektur durch Human-in-the-Loop), \textbf{\hyperref[req:NFA-004]{NFA-004}} (Robustheit durch Fehlerbehandlung) und
-\textbf{\hyperref[req:NFA-005]{NFA-005}} (Prüfbarkeit durch strukturierte Validierungsberichte).Das Validierungskonzept gliedert sich in drei Ebenen:
+\textbf{\hyperref[req:NFA-005]{NFA-005}} (Prüfbarkeit durch strukturierte Validierungsberichte). Das Validierungskonzept gliedert sich in drei Ebenen:
 
 \begin{enumerate}
     \item \textbf{Symbolvalidierung}: Prüfung erkannter Objekte gegen erwartete 

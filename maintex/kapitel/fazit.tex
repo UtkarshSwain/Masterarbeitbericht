@@ -82,7 +82,7 @@ Die gewählte hybride Strategie stellt einen pragmatischen Kompromiss dar und er
 
 \textbf{CPU vs. GPU Inferenz:} Die Entscheidung für CPU-basierte Inferenz erfüllt die Anforderung NFA-001 (On-Premise auf Standard-Hardware ohne spezielle Beschleuniger), führt jedoch zu Verarbeitungszeiten von durchschnittlich 12.3 Minuten pro Plan. Die Zeitanalyse in Tabelle~\ref{tab:time_breakdown} zeigt, dass 75.3\% dieser Zeit auf die YOLO-Inferenz entfallen.
 
-Eine GPU-beschleunigte Version (z.B. NVIDIA RTX 3060 mit 12 GB VRAM) könnte die YOLO-Inferenzzeit von durchschnittlich 9.3 Minuten auf geschätzt 50-100 Sekunden reduzieren, was die Gesamtzeit auf unter 3 Minuten pro Plan senken würde. Dies würde die Anforderung NFA-007 (\\enquote{wenige Minuten}) noch deutlicher erfüllen und die Benutzerakzeptanz erhöhen.
+Eine GPU-beschleunigte Version (z.B. NVIDIA RTX 3060 mit 12 GB VRAM) könnte die YOLO-Inferenzzeit von durchschnittlich 9.3 Minuten auf geschätzt 50-100 Sekunden reduzieren, was die Gesamtzeit auf unter 3 Minuten pro Plan senken würde. Dies würde die Anforderung NFA-007 (\enquote{wenige Minuten}) noch deutlicher erfüllen und die Benutzerakzeptanz erhöhen.
 
 Jedoch ist zu berücksichtigen:
 \begin{itemize}
@@ -97,11 +97,11 @@ Eine sinnvolle Weiterentwicklung wäre eine hybride Lösung, die GPU-Beschleunig
 
 \textbf{Vollautomatischer Betrieb (1.24\% Fehlerrate):} Obwohl die End-to-End-Genauigkeit mit 98.76\% die Zielanforderung von 85\% (NFA-003) deutlich übertrifft, bedeutet dies dennoch, dass 1.24\% der Objekte manuelle Korrektur erfordern. Bei einem durchschnittlichen Plan mit 92 Objekten entspricht dies etwa einem fehlerhaften Objekt pro Plan.
 
-Für einen vollautomatischen Einsatz ohne menschliche Prüfung wäre eine Fehlerrate von nahezu 0\% erforderlich, insbesondere bei sicherheitskritischen Bahnanwendungen. Das System ist daher als \\textit{Assistenzsystem} konzipiert, das die menschliche Expertise unterstützt, aber nicht vollständig ersetzt. Dies entspricht dem in NFA-006 definierten Paradigmenwechsel vom \\enquote{4-Augen-Prinzip} (zwei Menschen prüfen) zu \\enquote{Mensch prüft KI}.
+Für einen vollautomatischen Einsatz ohne menschliche Prüfung wäre eine Fehlerrate von nahezu 0\% erforderlich, insbesondere bei sicherheitskritischen Bahnanwendungen. Das System ist daher als \textit{Assistenzsystem} konzipiert, das die menschliche Expertise unterstützt, aber nicht vollständig ersetzt. Dies entspricht dem in NFA-006 definierten Paradigmenwechsel vom \enquote{4-Augen-Prinzip} (zwei Menschen prüfen) zu \enquote{Mensch prüft KI}.
 
 Positiv ist jedoch festzustellen, dass alle 8 Fehler im Testsatz durch die implementierte Validierungskomponente erkannt und zur manuellen Prüfung markiert wurden. Dies reduziert den manuellen Aufwand erheblich: Statt 644 Objekte manuell zu extrahieren, müssen nur 8 identifizierte Problemfälle geprüft werden -- eine Reduktion um 98.8\%.
 
-\textbf{Layout-Generalisierung (Eingeschränkte Übertragbarkeit):} Der Prototyp wurde ausschließlich auf dem Trainguard MT ZUB Layout von Siemens Mobility trainiert und evaluiert. Die strikte Anforderung von exakt 500 DPI Auflösung (vgl. NFA-010) und die Spezialisierung auf die 13 definierten Symbolklassen bedeuten, dass der Prototyp \textit{nicht ohne Weiteres} auf andere Gleisplan-Layouts übertragbar ist.
+\textbf{Layout-Generalisierung (Eingeschränkte Übertragbarkeit):} Der Prototyp wurde ausschließlich auf dem Trainguard MT ZUB Layout von Siemens Mobility trainiert und evaluiert. Die strikte Anforderung von exakt 500 DPI Auflösung (vgl. NFA-009) und die Spezialisierung auf die 13 definierten Symbolklassen bedeuten, dass der Prototyp \textit{nicht ohne Weiteres} auf andere Gleisplan-Layouts übertragbar ist.
 
 Für eine Übertragung auf andere Bahnbetreiber oder Sicherungssysteme wäre erforderlich:
 \begin{itemize}
@@ -136,7 +136,7 @@ Die Evaluation und der praktische Einsatz des Prototyps haben mehrere fundamenta
 
     \item \textbf{Mehrfach konvertierte PDFs}: Jede Konvertierung (z.B. PDF → Bild → PDF) führt zu Kompressionsartefakten und Informationsverlust. Bei einem Plan, der 3× konvertiert wurde, stieg die OCR-Fehlerrate von 0.47\% auf geschätzt 8\%.
 
-    \item \textbf{Handschriftliche Annotationen}: Handschriftliche Ergänzungen oder Stempel (z.B. \\enquote{Geprüft}, Datumsangaben) werden vom YOLO-Modell gelegentlich als Symbole fehlinterpretiert. Die NMS-Schwelle filtert die meisten solcher False Positives, jedoch nicht alle.
+    \item \textbf{Handschriftliche Annotationen}: Handschriftliche Ergänzungen oder Stempel (z.B. \enquote{Geprüft}, Datumsangaben) werden vom YOLO-Modell gelegentlich als Symbole fehlinterpretiert. Die NMS-Schwelle filtert die meisten solcher False Positives, jedoch nicht alle.
 
     \item \textbf{Stark verkleinerte Darstellungen}: Pläne, die für A4-Druck komprimiert wurden (statt Original-A0-Format), verlieren kritische Details. Bei einer Verkleinerung von A0 auf A4 (Faktor 4) werden Symbole zu klein für zuverlässige Erkennung.
 \end{itemize}
@@ -170,11 +170,11 @@ Die modulare Architektur ermöglicht prinzipiell die Erweiterung um solche Klass
 \begin{itemize}
     \item \textbf{Zeichen-Verwechslungen}: O/0, I/1/l bei stark pixeligen Texten (Höhe $<$ 25 Pixel). Dies führte zu 2 der 3 OCR-Fehler im Testsatz.
 
-    \item \textbf{Fehlende Zeichen}: Bei stark komprimierten Scans (JPEG-Qualität $<$ 70) werden teilweise Zeichen übersprungen. Beispiel: \\enquote{A102} → \\enquote{A12}.
+    \item \textbf{Fehlende Zeichen}: Bei stark komprimierten Scans (JPEG-Qualität $<$ 70) werden teilweise Zeichen übersprungen. Beispiel: \enquote{A102} → \enquote{A12}.
 
     \item \textbf{Umlaute in älteren Scans}: Deutsche Umlaute (ä, ö, ü) werden gelegentlich als ae, oe, ue interpretiert, was jedoch in den getesteten Plänen kein Problem war (keine Umlaute in Signalbezeichnungen).
 
-    \item \textbf{Sonderzeichen}: Bruchstriche (z.B. bei Kilometrierungen wie \\enquote{12,5/7}) oder Schrägstriche werden inkonsistent erkannt.
+    \item \textbf{Sonderzeichen}: Bruchstriche (z.B. bei Kilometrierungen wie \enquote{12,5/7}) oder Schrägstriche werden inkonsistent erkannt.
 \end{itemize}
 
 Die effektive OCR-Genauigkeit von 99.53\% (nur 3 Fehler bei 644 Texten) ist dennoch herausragend, jedoch zeigt die Fehleranalyse, dass bereits ein einziger Zeichenfehler in einer Signalbezeichnung zu einem funktional inkorrekten Datensatz führt (Field Accuracy Paradigma).
@@ -231,11 +231,11 @@ Positiv ist, dass die Validierungskomponente alle 8 Fehler im Testsatz korrekt i
 \begin{itemize}
     \item \textbf{Kilometrierung-Monotonie}: Es wird nicht geprüft, ob Kilometrierungen entlang eines Gleises monoton steigend/fallend sind.
 
-    \item \textbf{Duplikat-Erkennung}: Doppelt vergebene Signalbezeichnungen (z.B. zwei Signale mit ID \\enquote{A102}) werden nicht automatisch erkannt.
+    \item \textbf{Duplikat-Erkennung}: Doppelt vergebene Signalbezeichnungen (z.B. zwei Signale mit ID \enquote{A102}) werden nicht automatisch erkannt.
 
     \item \textbf{Fahrtrichtung-Plausibilität}: Es wird nicht validiert, ob die extrahierte Fahrtrichtung mit dem topologischen Streckenverlauf übereinstimmt.
 
-    \item \textbf{Technische Abhängigkeiten}: Regeln wie \\enquote{Jedes Hauptsignal muss mindestens eine zugeordnete GKS-Platte haben} werden nicht geprüft.
+    \item \textbf{Technische Abhängigkeiten}: Regeln wie \enquote{Jedes Hauptsignal muss mindestens eine zugeordnete GKS-Platte haben} werden nicht geprüft.
 \end{itemize}
 
 Solche Plausibilitätsprüfungen erfordern domänenspezifisches Expertenwissen und könnten als Erweiterung implementiert werden (vgl. Abschnitt~\ref{sec:verbesserungen}).
@@ -335,7 +335,7 @@ Dies ist die vom Nutzer priorisierte Verbesserung und hat das größte Potenzial
     \item \textbf{Attention-basierte Zuordnung}: Transformer-Mechanismus zur Berechnung optimaler Zuordnungen:
     \begin{itemize}
         \item Self-Attention über alle Symbole und Texte in einem Tile
-        \item Lernen kontextabhängiger Zuordnungen (z.B. \\enquote{in Weichenbereichen gelten andere Regeln})
+        \item Lernen kontextabhängiger Zuordnungen (z.B. \enquote{in Weichenbereichen gelten andere Regeln})
         \item Soft-Attention-Scores statt binärer Entscheidungen (Unsicherheitsquantifizierung)
     \end{itemize}
 
@@ -408,7 +408,7 @@ Dies ist die vom Nutzer priorisierte Verbesserung und hat das größte Potenzial
     \begin{itemize}
         \item INT8-Quantisierung statt FP32 (4× kleineres Modell, 2-3× schneller)
         \item Structured Pruning: Entfernung unwichtiger Netzwerk-Connections
-        \item Knowledge Distillation: Training eines kleineren \\enquote{Student}-Modells
+        \item Knowledge Distillation: Training eines kleineren \enquote{Student}-Modells
     \end{itemize}
 
     \item \textbf{Hybrid CPU/GPU}: Kritische Pfade (YOLO, OCR) auf GPU, Rest auf CPU:
@@ -446,7 +446,7 @@ Diese Ansätze adressieren fundamentale Limitationen, erfordern substanzielle Fo
     \begin{itemize}
         \item Hierarchische Repräsentation: Plan → Bereiche → Symbole → Attribute
         \item Transformer-basierte Layout-Encoder (wie in LayoutLMv3)
-        \item Lernen räumlicher Relationen (\\enquote{unterhalb}, \\enquote{neben}, \\enquote{zwischen})
+        \item Lernen räumlicher Relationen (\enquote{unterhalb}, \enquote{neben}, \enquote{zwischen})
     \end{itemize}
 
     \item \textbf{Kontextuelles Reasoning}: Berücksichtigung globaler Plankonsistenz:
@@ -562,7 +562,7 @@ Die entwickelte Pipeline-Architektur ist konzeptionell nicht auf Gleispläne bes
     \begin{itemize}
         \item Training auf P\&ID-Symboldatensatz (geschätzt 30-50 Klassen)
         \item Erweiterte Linking-Heuristiken für Rohrleitungsverfolgung (Line-Tracing-Algorithmus)
-        \item OCR-Validierung für numerische Werte mit Einheiten (z.B. \\enquote{150 bar}, \\enquote{$80^\circ$C})
+        \item OCR-Validierung für numerische Werte mit Einheiten (z.B. \enquote{150 bar}, \enquote{$80^\circ$C})
     \end{itemize}
 
     \item \textbf{Geschätzter Aufwand}: 2-3 Personenmonate für Anpassung und 50-100 annotierte Pläne
@@ -640,7 +640,7 @@ Mehrere Aspekte des Prototyps haben domänenübergreifende Relevanz und können 
 Einige Komponenten sind eng an die Gleisplan-Domäne gekoppelt und erfordern bei Übertragung substanzielle Anpassungen:
 
 \begin{itemize}
-    \item \textbf{Linking-Heuristiken}: Die Richtungspräferenzen (z.B. \\enquote{Koordinate unterhalb von Symbol}, \\enquote{Signalbezeichnung rechts von Signal}) basieren auf Gleisplan-Konventionen. Für P\&ID oder Elektropläne gelten andere Regeln (z.B. Tag-Numbers oft oberhalb von Equipment).
+    \item \textbf{Linking-Heuristiken}: Die Richtungspräferenzen (z.B. \enquote{Koordinate unterhalb von Symbol}, \enquote{Signalbezeichnung rechts von Signal}) basieren auf Gleisplan-Konventionen. Für P\&ID oder Elektropläne gelten andere Regeln (z.B. Tag-Numbers oft oberhalb von Equipment).
 
     \item \textbf{Fahrtrichtungsdetektion}: Die geometrische Ableitung der Fahrtrichtung aus der relativen Position von Signal und GKS-Platte (festkodiert) ist eisenbahnspezifisch. Andere Domänen haben keine äquivalente Konzepte oder benötigen andere Logiken (z.B. Strömungsrichtung in Hydraulikplänen aus Pfeilsymbolen).
 
@@ -755,7 +755,7 @@ Die rasante Entwicklung großer multimodaler Modelle (GPT-4 Vision, Gemini 1.5, 
 Jedoch bleibt offen, ob diese Modelle die hier erreichte Präzision für hochspezialisierte technische Zeichnungen erreichen werden:
 
 \begin{itemize}
-    \item \textbf{Genauigkeitsanforderungen}: 98.76\% E2E-Accuracy erfordert nahezu perfekte Fehlervermeidung. Foundation Models neigen zu \\enquote{Halluzinationen} und inkonsistenten Outputs.
+    \item \textbf{Genauigkeitsanforderungen}: 98.76\% E2E-Accuracy erfordert nahezu perfekte Fehlervermeidung. Foundation Models neigen zu \enquote{Halluzinationen} und inkonsistenten Outputs.
 
     \item \textbf{Sicherheitskritische Anwendungen}: Bei Bahnanlagen sind Fehler potentiell lebensgefährlich. Die Nachvollziehbarkeit und Reproduzierbarkeit von Foundation Model Outputs ist problematisch.
 
@@ -768,7 +768,7 @@ Dennoch könnten Foundation Models als \textit{Ergänzung} wertvoll sein, z.B. f
 \begin{itemize}
     \item Automatisierte Generierung von Validierungsregeln aus Beispielen
     \item Zero-Shot-Erkennung neuer Symboltypen ohne Training
-    \item Natürlichsprachliche Abfragen über extrahierte Daten (\\enquote{Zeige alle Signale zwischen km 12 und km 15})
+    \item Natürlichsprachliche Abfragen über extrahierte Daten (\enquote{Zeige alle Signale zwischen km 12 und km 15})
 \end{itemize}
 
 \textbf{Synthetic Data Generation:}
@@ -783,7 +783,7 @@ Fortschritte in generativen Modellen (Diffusion Models, GANs, insbesondere Contr
     \item \textbf{Qualitäts-Simulation}: Synthetische Degradation (Rauschen, Artefakte, Kompression) zur Robustifizierung
 \end{itemize}
 
-Erste Forschungsarbeiten in diesem Bereich (z.B. \\enquote{Synthetic P\&ID Generation via Diffusion Models}) zeigen vielversprechende Ergebnisse. Für Gleispläne existieren jedoch noch keine vergleichbaren Ansätze -- eine mögliche Forschungsrichtung.
+Erste Forschungsarbeiten in diesem Bereich (z.B. \enquote{Synthetic P\&ID Generation via Diffusion Models}) zeigen vielversprechende Ergebnisse. Für Gleispläne existieren jedoch noch keine vergleichbaren Ansätze -- eine mögliche Forschungsrichtung.
 
 \textbf{Neuro-Symbolic AI:}
 
@@ -799,7 +799,7 @@ Zukünftige Systeme könnten dies vertiefen durch:
 \begin{itemize}
     \item \textbf{Ontologien technischer Zeichnungen}: Formale Wissensrepräsentation (z.B. in OWL) von Gleisplan-Konventionen und -Regeln
 
-    \item \textbf{Logisches Reasoning}: Automatische Ableitung von Implikationen (\\enquote{Wenn Signal A102 existiert, muss es eine GKS-Platte geben})
+    \item \textbf{Logisches Reasoning}: Automatische Ableitung von Implikationen (\enquote{Wenn Signal A102 existiert, muss es eine GKS-Platte geben})
 
     \item \textbf{Constraint Solving}: Auflösung von Ambiguitäten durch Constraint Satisfaction Problems (CSP)
 \end{itemize}
@@ -817,7 +817,7 @@ Die durch dieses System erzielte Zeitersparnis von 75.3\% bedeutet, dass statt 6
 \begin{itemize}
     \item \textbf{Tätigkeitsprofile}: Weniger repetitive Extraktionsarbeit, mehr Fokus auf Validierung, Plausibilitätsprüfung und Engineering-Entscheidungen
 
-    \item \textbf{Qualifikationsanforderungen}: Ingenieure benötigen Verständnis von KI-Systemen und deren Limitationen (\\enquote{AI Literacy})
+    \item \textbf{Qualifikationsanforderungen}: Ingenieure benötigen Verständnis von KI-Systemen und deren Limitationen (\enquote{AI Literacy})
 
     \item \textbf{Produktivitätsgewinne}: Mehr Projekte können mit gleichen Personalressourcen bearbeitet werden, was wirtschaftlich vorteilhaft ist
 
@@ -843,7 +843,7 @@ Bei sicherheitskritischen Bahnanwendungen stellt sich die fundamentale Frage der
 
     \item \textbf{Rechtslage}: Die aktuelle Rechtsprechung (z.B. EU AI Act) ist noch nicht vollständig geklärt bezüglich KI in sicherheitskritischen Anwendungen
 
-    \item \textbf{Empfehlung}: Klare Prozessdefinition mit eindeutiger Zuordnung: KI als \\textit{Werkzeug}, Ingenieur als \\textit{verantwortlicher Entscheider}
+    \item \textbf{Empfehlung}: Klare Prozessdefinition mit eindeutiger Zuordnung: KI als \textit{Werkzeug}, Ingenieur als \textit{verantwortlicher Entscheider}
 \end{itemize}
 
 \textbf{Transparenz und Nachvollziehbarkeit:}

@@ -611,7 +611,7 @@ Nach Abschluss des Trainings wurde das Modell mit den optimalen Gewichten (\text
 Der erste Schritt der Inferenz-Pipeline besteht in der Überführung der 
 Eingabedaten in ein einheitliches Rasterformat. Das System unterscheidet 
 dabei zwischen zwei Verarbeitungspfaden entsprechend dem Eingabeformat 
-(Anforderung \textbf{NFA-010}).
+(Anforderung \textbf{NFA-009}).
 
 \textbf{PDF-Verarbeitung:}
 
@@ -1256,9 +1256,9 @@ Zunächst wird der von YOLO gelieferte Winkel normalisiert. Da YOLO Winkel im Be
 
 Anschließend wird geprüft, ob der Absolutwert des normalisierten Winkels unter $15^\circ$ liegt. Diese $15^\circ$ wurden empirisch durch Experimente bestimmt: Bei Winkeln bis zu dieser Größe liefert eine einfache Rotation auf den nächsten kardinalen Winkel ($0^\circ, 90^\circ, 180^\circ$ oder $270^\circ$) bessere Ergebnisse als eine komplexe Perspektiventransformation. Der Grund ist, dass bei kleinen Winkeln die Perspektiventransformation zu leichten Verzerrungen führen kann, während die diskrete Rotation verlustfrei ist.
 
-\textbf{Cardinal Path (Winkel $\leq$ $15^\circ$):} Wenn der Winkel nahe an einem kardinalen Wert liegt, wird der Bildausschnitt einfach auf den nächstgelegenen kardinalen Winkel rotiert. Die Rotation erfolgt mittels einer Standard-Rotationsmatrix, die das Bild um den Mittelpunkt dreht. Diese Methode ist schnell, einfach und vermeidet Interpolationsartefakte, da nur $90^\circ$ Schritte verwendet werden.
+\textbf{Cardinal Path (Winkel $\leq$ $15^\circ$):} Die vier kardinalen Kandidaten ($0^\circ, 90^\circ, 180^\circ, 270^\circ$) sind jeweils $90^\circ$ voneinander entfernt. Der Schwellenwert von $15^\circ$ bedeutet, dass der gemessene Winkel maximal $15^\circ$ vom nächstgelegenen Kardinalwinkel abweicht. Da die Kardinale $90^\circ$ auseinander liegen, deckt dieser Schwellenwert einen Bereich von $\pm15^\circ$ um jeden Kardinalwinkel ab -- also insgesamt $30^\circ$ von den $90^\circ$ zwischen zwei benachbarten Kardinalen. Bei Winkeln innerhalb dieses Bereichs wird der Bildausschnitt einfach auf den nächstgelegenen kardinalen Winkel rotiert. Die Rotation erfolgt mittels einer Standard-Rotationsmatrix, die das Bild um den Mittelpunkt dreht. Diese Methode ist schnell, einfach und vermeidet Interpolationsartefakte, da nur $90^\circ$-Schritte verwendet werden.
 
-Konkret wird aus den vier Kandidaten ($0^\circ, 90^\circ, 180^\circ, 270^\circ$) derjenige gewählt, der die kleinste Winkeldifferenz zum normalisierten Winkel hat. Ein Winkel von $12^\circ$ wird also auf $0^\circ$ rotiert, ein Winkel von $85^\circ$ auf $90^\circ$, und so weiter.
+Konkret wird aus den vier Kandidaten derjenige gewählt, der die kleinste Winkeldifferenz zum normalisierten Winkel hat. Ein Winkel von $12^\circ$ liegt innerhalb des $15^\circ$-Schwellenwerts und wird daher auf $0^\circ$ rotiert; ein Winkel von $85^\circ$ wird auf $90^\circ$ rotiert, da die Differenz nur $5^\circ$ beträgt.
 
 
 \textbf{Angular Path (Winkel > $15^\circ$):} Bei größeren Abweichungen von den kardinalen Winkeln wird eine Perspektiventransformation verwendet. Diese Methode nutzt die vier Eckpunkte der Oriented Bounding Box (OBB), um eine Transformationsmatrix zu berechnen. Die Transformation wandelt die gedrehte OBB in ein achsenparalleles Rechteck um, wodurch der Text horizontal ausgerichtet wird.
@@ -1514,7 +1514,7 @@ CLAHE ist ein adaptiver Kontrast-Verbesserungsalgorithmus, der besonders bei Bil
 
 CLAHE arbeitet anders als globale Histogrammentzerrung: Das Bild wird in ein Raster von 8×8 Kacheln (Tiles) aufgeteilt. Für jede Kachel wird separat eine Histogrammentzerrung durchgeführt, die dunkle Bereiche aufhellt und helle Bereiche abdunkelt. Der entscheidende Unterschied: Für jede Kachel wird der Kontrast \textit{lokal} optimiert, nicht global.
 
-Der Parameter \enquote{Clip Limit} (hier: 2.0) begrenzt die maximale Verstärkung des Kontrasts. Ohne diese Begrenzung würde CLAHE in homogenen Bereichen (wie einem gleichmäßigen Hintergrund) minimales Rauschen extrem verstärken. Der Wert 2.0 bedeutet, dass die Histogramm-Verstärkung auf das Doppelte des Durchschnitts begrenzt wird.
+Der Parameter \enquote{Clip Limit} (hier: 2.0) begrenzt die maximale Verstärkung des Kontrasts. Ohne diese Begrenzung würde CLAHE in homogenen Bereichen (wie einem gleichmäßigen Hintergrund) minimales Rauschen extrem verstärken. Der Wert 2.0 bedeutet, dass die Histogrammverstärkung auf das Doppelte des Durchschnitts begrenzt wird.
 
 Die Übergänge zwischen den Kacheln werden durch bilineare Interpolation geglättet, sodass keine sichtbaren Kanten zwischen benachbarten Kacheln entstehen. Das Ergebnis ist ein Bild mit gleichmäßigem Kontrast über die gesamte Fläche, was die OCR-Qualität insbesondere bei schlechten Scans erheblich verbessert.
 
@@ -3085,11 +3085,11 @@ Der Workflow gliedert sich in drei sequenzielle Schritte:
     über einen Dateidialog. Das System akzeptiert PDF-Dateien beliebiger Größe 
     und zeigt einen Hinweis zur empfohlenen Mindestauflösung von 300~DPI an, 
     wobei 500~DPI für optimale Erkennungsleistung empfohlen werden 
-    (vgl. Anforderung \textbf{NFA-010}).
+    (vgl. Anforderung \textbf{NFA-009}).
     
     \item \textbf{KI-Modell laden:} Auswahl der trainierten YOLOv8-OBB 
     Gewichtsdatei (\texttt{best.pt}). Diese explizite Trennung von Anwendung 
-    und Modell erfüllt Anforderung \textbf{NFA-009} (Update-Fähigkeit) und 
+    und Modell erfüllt Anforderung \textbf{NFA-008} (Update-Fähigkeit) und 
     ermöglicht den Austausch von Modellversionen -- beispielsweise nach einem 
     Nachtraining mit zusätzlichen Symbolklassen -- ohne Neukompilierung der 
     Anwendung.
@@ -3417,7 +3417,7 @@ drei Ausgabeformate: Excel (.xlsx), CSV (.csv) und JSON (.json). }
 \label{fig:export_format_selection}
 \end{figure}
 
-Gemäß Anforderung \textbf{NFA-012} unterstützt das System drei Ausgabeformate:
+Gemäß Anforderung \textbf{NFA-010} unterstützt das System drei Ausgabeformate:
 
 \begin{itemize}
     \item \textbf{Excel (.xlsx):} Primärformat für Engineering-Workflows mit 
