@@ -899,7 +899,7 @@ funktionalen Anforderungen (FA-008 bis FA-014) durch manuelle Funktionstests.
 \hline
 \textbf{Anf.} & \textbf{Testmethode} & \textbf{Ergebnis} \\
 \hline
-\multicolumn{3}{|c|}{\textit{Datenaufbereitung und Export (FA-009 bis FA-012)}} \\
+\multicolumn{3}{|c|}{\textit{Datenaufbereitung und Export (FA-009 bis FA-011)}} \\
 \hline
 FA-009 & Export aller 7 Testpläne nach XLSX; manuelle Verifikation der korrekten Zellzuordnung (Signale, GKS, GM-Blöcke in separaten Sheets) & Bestanden \\
 \hline
@@ -907,9 +907,9 @@ FA-010 & Import in bestehende Excel-Vorlage mit Formeln und Formatierung; Prüfu
 \hline
 FA-011 & Diff-Vergleich zweier Planversionen (Plan~3 vs. modifizierte Kopie); Verifikation aller 4 Änderungstypen (hinzugefügt, entfernt, verschoben, modifiziert) & Bestanden \\
 \hline
-FA-012 & Visuelle Validierung durch Bounding-Box-Overlays für alle 644 Testobjekte; Prüfung der korrekten Werten nach Klasse & Bestanden \\
+\multicolumn{3}{|c|}{\textit{Benutzerinteraktion und Konfiguration (FA-012 bis FA-014)}} \\
 \hline
-\multicolumn{3}{|c|}{\textit{Benutzerinteraktion und Modularität (FA-013, FA-014)}} \\
+FA-012 & Visuelle Validierung durch Bounding-Box-Overlays für alle 644 Testobjekte; Prüfung der korrekten Werten nach Klasse & Bestanden \\
 \hline
 FA-013 & GUI-Workflow: PDF-Upload → Analyse-Start → Ergebnisanzeige → Export; Test durch 3 Anwender ohne CLI-Kenntnisse & Bestanden \\
 \hline
@@ -986,8 +986,8 @@ bestätigt.
 \subsection{Validierung der Export- und Hilfsfunktionen}
 \label{subsec:export_validation}
 
-Die Anforderungen FA-009 bis FA-012 betreffen unterstützende Funktionen, deren 
-ausführliche Evaluation den Rahmen dieser auf Objekterkennung und Texterkennung 
+Die Anforderungen FA-009 bis FA-011 betreffen unterstützende Funktionen, deren
+ausführliche Evaluation den Rahmen dieser auf Objekterkennung und Texterkennung
 fokussierten Arbeit übersteigen würde. Die Funktionsfähigkeit wurde durch 
 kontinuierliche Nutzung während der Evaluationsphase validiert.
 
