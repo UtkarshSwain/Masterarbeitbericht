@@ -1,0 +1,244 @@
+PLAN 1 
+Type: B/W 
+Complexity: Einfach 
+Time: __8_ min __15_ sec
+
+COUNTS (per class):
+names:
+  0: signal - 20
+  1: gm_block - 15
+  2: gks_festkodiert - 4
+  3: gks_gesteuert - 14
+  4: weichen_block -  8
+  5: isolierstoß - 7
+  6: haltepunkt - 8
+  7: sverbinder  - 18
+  8: prellbock – no prellbock im plan
+  9: haltetafel – no haltetafel im plan
+  10: weichenende - 7
+  11: weichengruppenende – no weichenende im plan
+
+ERRORS (all details):
+•	weichenende falsch detektiert on a symbol that we dont need (so all weichende are correctly detected and one extra false opositve)
+•	1 sverbinder coordinate was read wrong by ocr because of neighbouring noise extra number 1 was added
+•	2 signal wrongly detected as extra (all signals are coorectly detected and these 2 false positives)
+•	1 haltepunkt coordinate wrongfully y attached because of neighbouring noise 
+
+ 
+
+PLAN 2
+Type: B/W 
+Complexity: Einfach 
+Time: __7_ min __00_ sec
+
+COUNTS (per class):
+names:
+  0: signal - 13
+  1: gm_block - 14
+  2: gks_festkodiert - 3
+  3: gks_gesteuert - 10
+  4: weichen_block -  10
+  5: isolierstoß - 7
+  6: haltepunkt - 4
+  7: sverbinder  - 17
+  8: prellbock – no prellbock im plan
+  9: haltetafel – no haltetafel im plan
+  10: weichenende - 2
+  11: weichengruppenende – 2
+
+ERRORS (all details):
+•	Weichen_block 1character   z in WA z | 21,0167
+•	One signale Name falsch erkannt M Letter added aber wir brauchen diese signal instanc e nicht because ot os used to detcet fahrtrichtgung which was succesfully detected . 
+•	Haltepunkt wrong coordinate attached 
+ 
+PLAN 3
+Type: B/W 
+Complexity: Mittel (viele Angular Data) 
+Time: __8_ min __10_ sec
+
+COUNTS (per class):
+names:
+  0: signal - 20
+  1: gm_block - 21
+  2: gks_festkodiert - 5
+  3: gks_gesteuert - 16
+  4: weichen_block - 22
+  5: isolierstoß - 19
+  6: haltepunkt - 2
+  7: sverbinder - 15
+  8: prellbock – no prellbock im plan
+  9: haltetafel – no haltetafel im plan
+  10: weichenende – no weichendende im plan
+  11: weichengruppenende – 2
+
+ERRORS (all details):
+
+•	Weichen_block 2 Os instead of 0s - WA | O,0452(GI.118) | WA | O,1104(Gl.114)
+
+ 
+PLAN 4
+Type: B/W 
+Complexity: Complex   
+Time: __15_ min __10_ sec
+
+COUNTS (per class):
+names:
+  0: signal - 49
+  1: gm_block - 46
+  2: gks_festkodiert - 14
+  3: gks_gesteuert - 39
+  4: weichen_block - 24
+  5: isolierstoß - 28
+  6: haltepunkt - 17
+  7: sverbinder - 42
+  8: prellbock – 4
+  9: haltetafel – 2
+  10: weichenende – no weichendende im plan
+  11: weichengruppenende – no weichengruppende im plan
+
+ERRORS (all details):
+
+•	4  Weichen_blocks (5 Os instead of 0, 1 O instead of 0,  3 Os insteadof 0, 2 Os omstead of 0)
+•	1 Vorsignal U499 recognised as U400
+•	1 coordiante linkedto isoliersto0ß 1 digit is missing because of OCR and neighbouring noise 
+•	1 coordainte linked to isolierstoß couldn’t be read because of the noiuse of neighbouring elemnt 
+•	1 cooridante of GM was rad wrong 
+PLAN 5
+Type: Farbig  
+Complexity: groß (viele Farben ) 
+Time: __11_ min __10_ sec
+
+COUNTS (per class):
+names:
+  0: signal - 29
+  1: gm_block - 34
+  2: gks_festkodiert - 10
+  3: gks_gesteuert - 26
+  4: weichen_block - 21
+  5: isolierstoß - 22
+  6: haltepunkt - 10
+  7: sverbinder - 25
+  8: prellbock –2
+  9: haltetafel – 3
+  10: weichenende – 7
+  11: weichengruppenende – 2
+
+ERRORS (all details):
+
+•	1 weichen block captured 5 characters from nbeighbouring box
+•	1 sverbinder wrongly recognized (false positive all sverbinders of ground truth are recognised)
+•	1 haltetafel wrongly recognized (false positive all haltetafel are recognized well)
+•	Ein signal coordiante nicht erkannt but fahrtrichtung yes 
+
+ 
+PLAN 6
+Type: B/W aber bisschen Farbe drin
+Complexity: sehr groß  
+Time: __15_ min __40_ sec
+
+COUNTS (per class):
+names:
+  0: signal - 44
+  1: gm_block - 47
+  2: gks_festkodiert - 11
+  3: gks_gesteuert - 38
+  4: weichen_block - 32
+  5: isolierstoß - 34
+  6: haltepunkt - 14
+  7: sverbinder - 40
+  8: prellbock – no prellbock im plan
+  9: haltetafel – no haltetafel im plan
+  10: weichenende – no weichendende im plan
+  11: weichengruppenende – no weichengruppendned im plan
+
+ERRORS (all details):
+
+•	2 weichenblocks took characters  from neighbout 4 numbers 
+•	1 isolierstoß 1 number missing in coordinate
+•	1 isolierstoß coordinate wrong because of OCR
+ 
+
+
+ 
+PLAN 7
+Type: B/W 
+Complexity: Komplex
+Time: __14_ min __10_ sec
+
+COUNTS (per class):
+names:
+  0: signal - 39
+  1: gm_block - 36
+  2: gks_festkodiert - 17
+  3: gks_gesteuert - 28
+  4: weichen_block - 28
+  5: isolierstoß - 36
+  6: haltepunkt - 13
+  7: sverbinder - 18
+  8: prellbock – 4
+  9: haltetafel – 2
+  10: weichenende – 7
+  11: weichengruppenende – 5
+
+ERRORS (all details):
+
+•	3 Weichenendgruppe wrong coordinate attached 
+•	2x weichen blocks took the 4 numbers from a different box
+•	2x weichen_block show 4 Os instead of 0s 
+•	3x sverbinder 3 coordainte number 1 is missing because of merging with neighbouring element
+•	2x signal U499 instead of U400
+•	1 isolierstoß one digit ismising in coordinate 
+
+PLAN 8
+Type: B/W 
+Complexity: mittel (angular data )
+Time: __7_ min __10_ sec
+
+COUNTS (per class):
+names:
+  0: signal - 17
+  1: gm_block - 18
+  2: gks_festkodiert - 6
+  3: gks_gesteuert - 14
+  4: weichen_block - 17
+  5: isolierstoß - 18
+  6: haltepunkt - 2
+  7: sverbinder - 12
+  8: prellbock – kein Prellbock im Plan
+  9: haltetafel – 1
+  10: weichenende – keine weichenedned im plan 
+  11: weichengruppenende – 2
+
+ERRORS (all details):
+
+•	4 linking errors gks took the coordinate of the isolierstoß and the isolierstoß took og gks 2 isntances of each 
+
+ 
+PLAN 9
+Type: B/W 
+Complexity: mittel 
+Time: __9_ min __2_ sec
+
+COUNTS (per class):
+names:
+  0: signal – 25
+  1: gm_block - 16
+  2: gks_festkodiert - 7
+  3: gks_gesteuert - 16
+  4: weichen_block - 12
+  5: isolierstoß - 12
+  6: haltepunkt - 6
+  7: sverbinder - 18
+  8: prellbock – kein Prellbock im Plan
+  9: haltetafel – kein haltetafel im plan
+  10: weichenende – keine weichenedned im plan 
+  11: weichengruppenende – keine weichengruppendned im plan
+
+ERRORS (all details):
+
+•	3x weichen block (3 0s read as O, 3 digits not read cut off by bbox, 4 Os instead of 4 0s )
+•	2 singals wrong detected (2 false positives all real symbols are well detected)
+•	1 isolierstoß coordinate couldn’t be dteced 
+•	1 isoplierstoß wasn’t detected 
+
+

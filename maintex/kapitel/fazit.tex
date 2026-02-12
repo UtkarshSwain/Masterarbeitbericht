@@ -6,25 +6,25 @@ Dieses Kapitel reflektiert kritisch die in Kapitel~\ref{chap:evaluation} präsen
 \section{Einordnung der Ergebnisse}
 \label{sec:einordnung}
 
-Die Evaluationsergebnisse zeigen, dass der entwickelte Prototyp die grundlegenden Ziele der Arbeit nicht nur erreicht, sondern in mehreren Dimensionen deutlich übertrifft: Die automatisierte Extraktion strukturierter Daten aus technischen Gleisplänen ist mit einer End-to-End-Genauigkeit von 98.76\% möglich, und der Prototyp bietet eine Zeitersparnis von 75.3\% gegenüber manuellen Prozessen.
+Die Evaluationsergebnisse zeigen, dass der entwickelte Prototyp die grundlegenden Ziele der Arbeit nicht nur erreicht, sondern in mehreren Dimensionen deutlich übertrifft: Die automatisierte Extraktion strukturierter Daten aus technischen Gleisplänen ist mit einer End-to-End-Genauigkeit von 97.22\% möglich, und der Prototyp bietet eine Zeitersparnis von 75.3\% gegenüber manuellen Prozessen.
 
 \subsection{Erfüllung der Kernziele}
 
 \textbf{Objekterkennung:} Die erreichte mAP@0.5 von 98.4\% auf dem Validierungssatz übertrifft den Stand der Technik für domänenspezifische Objekterkennung in technischen Zeichnungen deutlich. Besonders bemerkenswert ist die erfolgreiche Umsetzung der Rotationsinvarianz (FA-002), die durch die Kombination von YOLOv8-OBB und synthetischer Augmentation erreicht wurde. Die Analyse in Abschnitt~\ref{subsec:e2e_test_eval} zeigt, dass 38 Objekte mit Rotationswinkeln $|\theta| > 30^\circ$ sogar höhere Konfidenzwerte aufweisen (0.946 vs. 0.890) als horizontal ausgerichtete Objekte, was die Robustheit des Ansatzes eindrucksvoll belegt. Die Varianz von weniger als 1\% zwischen verschiedenen Orientierungen demonstriert, dass die synthetische Rotation während des Trainings erfolgreich war.
 
-\textbf{End-to-End Pipeline:} Die Gesamtsystemgenauigkeit von 98.76\% auf dem Testsatz (vgl. Tabelle~\ref{tab:e2e_summary}) demonstriert, dass die Integration mehrerer komplexer Komponenten (YOLO, OCR, Linking, Validierung) erfolgreich gelungen ist. Dies übertrifft die Anforderung NFA-003 ($\geq$ 85\%) um 13.76 Prozentpunkte. Noch wichtiger ist, dass von 644 extrahierten Objekten nur 8 Fehler auftraten (1.24\%), was bedeutet, dass 636 Objekte (98.76\%) vollständig korrekt -- inklusive Detektion, OCR, Linking und Fahrtrichtung -- extrahiert wurden. Die erreichte Zeitersparnis von 75.3\% (von durchschnittlich 64 Minuten manueller Arbeit auf 15.8 Minuten mit KI-Unterstützung) validiert den praktischen Nutzen des Systems und erfüllt die Anforderung NFA-006 an Prozessoptimierung.
+\textbf{End-to-End Pipeline:} Die Gesamtsystemgenauigkeit von 97.22\% auf dem Testsatz (vgl. Tabelle~\ref{tab:e2e_summary}) demonstriert, dass die Integration mehrerer komplexer Komponenten (YOLO, OCR, Linking, Validierung) erfolgreich gelungen ist. Dies übertrifft die Anforderung NFA-003 ($\geq$ 85\%) um 12.22 Prozentpunkte. Noch wichtiger ist, dass von 1473 extrahierten Objekten nur 41 Fehler auftraten (2.78\%), was bedeutet, dass 1432 Objekte (97.22\%) vollständig korrekt -- inklusive Detektion, OCR, Linking und Fahrtrichtung -- extrahiert wurden. Die erreichte Zeitersparnis von 75.3\% (von durchschnittlich 64 Minuten manueller Arbeit auf 15.8 Minuten mit KI-Unterstützung) validiert den praktischen Nutzen des Systems und erfüllt die Anforderung NFA-006 an Prozessoptimierung.
 
-\textbf{Praxistauglichkeit:} Die erfolgreiche Evaluation auf sieben realen Siemens Mobility Gleisplänen aus verschiedenen Bahnhofskonfigurationen belegt die Übertragbarkeit der Laborergebnisse auf operative Szenarien. Die implementierte Benutzeroberfläche mit Validierungsdialog und Jump-to-Detection-Funktionalität ermöglicht einen effizienten Human-in-the-Loop-Workflow, der die verbleibenden 1.24\% fehlerhafter Extraktionen effektiv adressiert. Besonders wichtig ist, dass die Evaluierung zeigte, dass kein einziges Symbol übersehen wurde (100\% Recall auf Testsatz), was für sicherheitskritische Anwendungen von entscheidender Bedeutung ist.
+\textbf{Praxistauglichkeit:} Die erfolgreiche Evaluation auf neun realen Siemens Mobility Gleisplänen aus verschiedenen Bahnhofskonfigurationen belegt die Übertragbarkeit der Laborergebnisse auf operative Szenarien. Die implementierte Benutzeroberfläche mit Validierungsdialog und Jump-to-Detection-Funktionalität ermöglicht einen effizienten Human-in-the-Loop-Workflow, der die verbleibenden 2.78\% fehlerhafter Extraktionen effektiv adressiert. Besonders wichtig ist, dass die Evaluierung zeigte, dass kein einziges Symbol übersehen wurde (100\% Recall auf Testsatz), was für sicherheitskritische Anwendungen von entscheidender Bedeutung ist.
 
 \subsection{Vergleich mit verwandten Arbeiten}
 
 Im Kontext der in Kapitel~\ref{chap:related_work} diskutierten Literatur positioniert sich diese Arbeit an der Schnittstelle zwischen generischen Document Understanding Systemen und hochspezialisierten Domänenlösungen.
 
-\textbf{Gegenüber LayoutLM/Document AI:} Während generische Modelle wie LayoutLM \cite{layoutlm} auf massive Vortrainings-Datensätze (Millionen von Dokumenten) angewiesen sind und dennoch Schwierigkeiten mit domänenspezifischen technischen Symbolen haben, demonstriert diese Arbeit, dass ein gezieltes Training auf bahntechnischen Daten mit vergleichsweise kleinem Datensatz (25 Originalpläne, erweitert durch synthetische Augmentation auf effektiv 250 Trainingsbilder) State-of-the-Art-Ergebnisse erzielen kann. Die hier erreichte End-to-End-Genauigkeit von 98.76\% ist vergleichbar mit den besten dokumentierten Ergebnissen generischer Modelle auf standardisierten Benchmarks, jedoch für eine deutlich spezialisierte und visuell komplexere Domäne.
+\textbf{Gegenüber LayoutLM/Document AI:} Während generische Modelle wie LayoutLM \cite{layoutlm} auf massive Vortrainings-Datensätze (Millionen von Dokumenten) angewiesen sind und dennoch Schwierigkeiten mit domänenspezifischen technischen Symbolen haben, demonstriert diese Arbeit, dass ein gezieltes Training auf bahntechnischen Daten mit vergleichsweise kleinem Datensatz (25 Originalpläne, erweitert durch synthetische Augmentation auf effektiv 250 Trainingsbilder) State-of-the-Art-Ergebnisse erzielen kann. Die hier erreichte End-to-End-Genauigkeit von 97.22\% ist vergleichbar mit den besten dokumentierten Ergebnissen generischer Modelle auf standardisierten Benchmarks, jedoch für eine deutlich spezialisierte und visuell komplexere Domäne.
 
 \textbf{Gegenüber P\&ID-Erkennung:} Arbeiten zur automatischen Verarbeitung von Piping \& Instrumentation Diagrams \cite{pid_recognition} erreichen typischerweise Genauigkeiten von 85-90\% bei der Symbolerkennung und 70-80\% bei der Gesamtextraktion. Die hier erreichten 97.5\% Precision und 95.7\% Recall bei der Objekterkennung übertreffen diese Werte deutlich, was auf die Effektivität der OBB-basierten Architektur und der synthetischen Rotationsaugmentation zurückzuführen ist. Insbesondere die Fähigkeit, rotierte Symbole mit gleicher Genauigkeit wie horizontal ausgerichtete zu erkennen, stellt einen messbaren Fortschritt dar.
 
-\textbf{OCR für technische Zeichnungen:} Im Vergleich zu klassischen OCR-Ansätzen auf technischen Zeichnungen (Tesseract: typisch 70-80\% Field Accuracy) erreicht die implementierte Multi-Engine-Pipeline mit orientierungsadaptiver Verarbeitung signifikant höhere Erkennungsraten. Die Analyse der End-to-End-Fehler (Tabelle~\ref{tab:e2e_error_breakdown}) zeigt, dass nur 3 von 644 Objekten (0.47\%) aufgrund von OCR-Fehlern inkorrekt extrahiert wurden, was einer impliziten OCR-Genauigkeit von 99.53\% entspricht. Dies ist besonders bemerkenswert, da viele dieser Texte rotiert, klein (teilweise unter 30 Pixel Höhe) oder durch Führungslinien überlagert sind.
+\textbf{OCR für technische Zeichnungen:} Im Vergleich zu klassischen OCR-Ansätzen auf technischen Zeichnungen (Tesseract: typisch 70-80\% Field Accuracy) erreicht die implementierte Multi-Engine-Pipeline mit orientierungsadaptiver Verarbeitung signifikant höhere Erkennungsraten. Die Analyse der End-to-End-Fehler (Tabelle~\ref{tab:e2e_error_breakdown}) zeigt, dass 27 von 1473 Objekten (1.83\%) aufgrund von OCR-Fehlern inkorrekt extrahiert wurden, was einer impliziten OCR-Genauigkeit von 98.17\% entspricht. Dies ist bemerkenswert, da viele dieser Texte rotiert, klein (teilweise unter 30 Pixel Höhe) oder durch Führungslinien überlagert sind.
 
 \section{Kritische Reflexion}
 \label{sec:kritische_reflexion}
@@ -57,7 +57,7 @@ Dies war jedoch im Zeitrahmen einer Masterarbeit nicht realisierbar. Die Plausib
 
 \textbf{Modulare vs. End-to-End Architektur:} Die gewählte modulare Pipeline-Architektur (YOLO → OCR → Linking → Validierung) bietet hohe Interpretierbarkeit und Debuggability: Fehler können eindeutig einer Komponente zugeordnet werden, wie die Fehleranalyse in Tabelle~\ref{tab:error_source_analysis_test} zeigt. Diese Transparenz ist für sicherheitskritische Anwendungen essenziell.
 
-Jedoch propagieren sich Fehler zwischen den Stufen: Ein fehlerhaft rotierter Bounding-Box-Winkel aus YOLO führt zu falscher Textausrichtung in der OCR-Komponente, was wiederum die Linking-Qualität beeinträchtigt. Die Fehleranalyse zeigt, dass 2 der 8 Fehler (25\%) auf solche Kaskadeneffekte zurückzuführen sind.
+Jedoch propagieren sich Fehler zwischen den Stufen: Ein fehlerhaft rotierter Bounding-Box-Winkel aus YOLO führt zu falscher Textausrichtung in der OCR-Komponente, was wiederum die Linking-Qualität beeinträchtigt. Die Fehleranalyse zeigt, dass 2 der 41 Fehler (25\%) auf solche Kaskadeneffekte zurückzuführen sind.
 
 Ein End-to-End trainierbares System (z.B. ein Transformer-basiertes Modell, das direkt von Pixel zu strukturiertem Output lernt) könnte potentiell solche Kaskadenfehler vermeiden und höhere Gesamtgenauigkeit erreichen. Jedoch würde dies:
 \begin{itemize}
@@ -69,7 +69,7 @@ Ein End-to-End trainierbares System (z.B. ein Transformer-basiertes Modell, das 
 
 Die gewählte modulare Architektur stellt daher einen bewussten Kompromiss zwischen erreichbarer Genauigkeit und praktischer Realisierbarkeit dar.
 
-\textbf{Regelbasiertes vs. Lernbasiertes Linking:} Die implementierte Linking-Komponente kombiniert geometrische Heuristiken (Proximity-Suche, Richtungspräferenzen) mit adaptivem Lernen (Pattern-Erkennung bei erfolgreichen Verknüpfungen). Die Fehleranalyse zeigt, dass 2 von 644 Objekten (0.31\%) aufgrund von Linking-Fehlern inkorrekt extrahiert wurden. Diese Fehler traten ausschließlich in hochkomplexen Bereichen auf, in denen:
+\textbf{Regelbasiertes vs. Lernbasiertes Linking:} Die implementierte Linking-Komponente kombiniert geometrische Heuristiken (Proximity-Suche, Richtungspräferenzen) mit adaptivem Lernen (Pattern-Erkennung bei erfolgreichen Verknüpfungen). Die Fehleranalyse zeigt, dass 13 von 1473 Objekten (0.88\%) aufgrund von Linking-Fehlern inkorrekt extrahiert wurden. Diese Fehler traten ausschließlich in hochkomplexen Bereichen auf, in denen:
 \begin{itemize}
     \item Mehrere Koordinatenangaben in ähnlicher Distanz zu einem Symbol lagen (Ambiguität)
     \item Überlappende Bounding Boxes die eindeutige Zuordnung erschwerten
@@ -78,7 +78,7 @@ Die gewählte modulare Architektur stellt daher einen bewussten Kompromiss zwisc
 
 Ein vollständig neuronaler Ansatz -- beispielsweise Graph Neural Networks (GNNs) zur Modellierung von Symbol-Text-Relationen -- könnte komplexere räumliche Zusammenhänge lernen und solche Ambiguitäten auflösen. Jedoch würde dies wiederum deutlich mehr annotierte Daten erfordern: Während für die aktuelle Lösung nur Symbol- und Text-Bounding Boxes annotiert werden mussten, müssten für GNN-Training explizite Relation-Annotationen (Kanten im Graph) zwischen allen Symbol-Text-Paaren vorliegen.
 
-Die gewählte hybride Strategie stellt einen pragmatischen Kompromiss dar und erreicht bereits 99.69\% Linking-Genauigkeit. Die verbleibenden 0.31\% Fehler könnten durch erweiterte Heuristiken (z.B. Berücksichtigung von Gleisverläufen als topologische Constraints) weiter reduziert werden, ohne die Datenkomplexität zu erhöhen.
+Die gewählte hybride Strategie stellt einen pragmatischen Kompromiss dar und erreicht bereits 99.12\% Linking-Genauigkeit. Die verbleibenden 0.88\% Fehler könnten durch erweiterte Heuristiken (z.B. Berücksichtigung von Gleisverläufen als topologische Constraints) weiter reduziert werden, ohne die Datenkomplexität zu erhöhen.
 
 \textbf{CPU vs. GPU Inferenz:} Die Entscheidung für CPU-basierte Inferenz erfüllt die Anforderung NFA-001 (On-Premise auf Standard-Hardware ohne spezielle Beschleuniger), führt jedoch zu Verarbeitungszeiten von durchschnittlich 12.3 Minuten pro Plan. Die Zeitanalyse in Tabelle~\ref{tab:time_breakdown} zeigt, dass 75.3\% dieser Zeit auf die YOLO-Inferenz entfallen.
 
@@ -95,11 +95,11 @@ Eine sinnvolle Weiterentwicklung wäre eine hybride Lösung, die GPU-Beschleunig
 
 \subsection{Nicht erreichte oder partiell erfüllte Anforderungen}
 
-\textbf{Vollautomatischer Betrieb (1.24\% Fehlerrate):} Obwohl die End-to-End-Genauigkeit mit 98.76\% die Zielanforderung von 85\% (NFA-003) deutlich übertrifft, bedeutet dies dennoch, dass 1.24\% der Objekte manuelle Korrektur erfordern. Bei einem durchschnittlichen Plan mit 92 Objekten entspricht dies etwa einem fehlerhaften Objekt pro Plan.
+\textbf{Vollautomatischer Betrieb (2.78\% Fehlerrate):} Obwohl die End-to-End-Genauigkeit mit 97.22\% die Zielanforderung von 85\% (NFA-003) deutlich übertrifft, bedeutet dies dennoch, dass 2.78\% der Objekte manuelle Korrektur erfordern. Bei einem durchschnittlichen Plan mit 92 Objekten entspricht dies etwa einem fehlerhaften Objekt pro Plan.
 
 Für einen vollautomatischen Einsatz ohne menschliche Prüfung wäre eine Fehlerrate von nahezu 0\% erforderlich, insbesondere bei sicherheitskritischen Bahnanwendungen. Das System ist daher als \textit{Assistenzsystem} konzipiert, das die menschliche Expertise unterstützt, aber nicht vollständig ersetzt. Dies entspricht dem in NFA-006 definierten Paradigmenwechsel vom \enquote{4-Augen-Prinzip} (zwei Menschen prüfen) zu \enquote{Mensch prüft KI}.
 
-Positiv ist jedoch festzustellen, dass alle 8 Fehler im Testsatz durch die implementierte Validierungskomponente erkannt und zur manuellen Prüfung markiert wurden. Dies reduziert den manuellen Aufwand erheblich: Statt 644 Objekte manuell zu extrahieren, müssen nur 8 identifizierte Problemfälle geprüft werden -- eine Reduktion um 98.8\%.
+Positiv ist jedoch festzustellen, dass alle 41 Fehler im Testsatz durch die implementierte Validierungskomponente erkannt und zur manuellen Prüfung markiert wurden. Dies reduziert den manuellen Aufwand erheblich: Statt 1473 Objekte manuell zu extrahieren, müssen nur 41 identifizierte Problemfälle geprüft werden -- eine Reduktion um 98.8\%.
 
 \textbf{Layout-Generalisierung (Eingeschränkte Übertragbarkeit):} Der Prototyp wurde ausschließlich auf dem Trainguard MT ZUB Layout von Siemens Mobility trainiert und evaluiert. Die strikte Anforderung von exakt 500 DPI Auflösung (vgl. NFA-009) und die Spezialisierung auf die 13 definierten Symbolklassen bedeuten, dass der Prototyp \textit{nicht ohne Weiteres} auf andere Gleisplan-Layouts übertragbar ist.
 
@@ -134,7 +134,7 @@ Die Evaluation und der praktische Einsatz des Prototyps haben mehrere fundamenta
 \begin{itemize}
     \item \textbf{Gescannte Papierpläne}: Artefakte wie Falten, Verfärbungen oder Scan-Linien stören die YOLO-Detektion. In einem informellen Test mit einem gescannten Altplan (nicht im offiziellen Testsatz) sank der Recall von 100\% auf 87\%.
 
-    \item \textbf{Mehrfach konvertierte PDFs}: Jede Konvertierung (z.B. PDF → Bild → PDF) führt zu Kompressionsartefakten und Informationsverlust. Bei einem Plan, der 3× konvertiert wurde, stieg die OCR-Fehlerrate von 0.47\% auf geschätzt 8\%.
+    \item \textbf{Mehrfach konvertierte PDFs}: Jede Konvertierung (z.B. PDF → Bild → PDF) führt zu Kompressionsartefakten und Informationsverlust. Bei einem Plan, der 3× konvertiert wurde, stieg die OCR-Fehlerrate von 1.83\% auf geschätzt 8\%.
 
     \item \textbf{Handschriftliche Annotationen}: Handschriftliche Ergänzungen oder Stempel (z.B. \enquote{Geprüft}, Datumsangaben) werden vom YOLO-Modell gelegentlich als Symbole fehlinterpretiert. Die NMS-Schwelle filtert die meisten solcher False Positives, jedoch nicht alle.
 
@@ -168,7 +168,7 @@ Die modulare Architektur ermöglicht prinzipiell die Erweiterung um solche Klass
 \textbf{OCR-Robustheit bei extremen Bedingungen:} Trotz Multi-Engine-Kaskadierung (PaddleOCR → Tesseract → EasyOCR) und orientierungsadaptiver Verarbeitung verbleiben systematische OCR-Fehler in Extremfällen:
 
 \begin{itemize}
-    \item \textbf{Zeichen-Verwechslungen}: O/0, I/1/l bei stark pixeligen Texten (Höhe $<$ 25 Pixel). Dies führte zu 2 der 3 OCR-Fehler im Testsatz.
+    \item \textbf{Zeichen-Verwechslungen}: O/0, I/1/l bei stark pixeligen Texten (Höhe $<$ 25 Pixel). Dies führte zu 9 der 27 OCR-Fehler im Testsatz (O/0-Verwechslung).
 
     \item \textbf{Fehlende Zeichen}: Bei stark komprimierten Scans (JPEG-Qualität $<$ 70) werden teilweise Zeichen übersprungen. Beispiel: \enquote{A102} → \enquote{A12}.
 
@@ -177,12 +177,12 @@ Die modulare Architektur ermöglicht prinzipiell die Erweiterung um solche Klass
     \item \textbf{Sonderzeichen}: Bruchstriche (z.B. bei Kilometrierungen wie \enquote{12,5/7}) oder Schrägstriche werden inkonsistent erkannt.
 \end{itemize}
 
-Die effektive OCR-Genauigkeit von 99.53\% (nur 3 Fehler bei 644 Texten) ist dennoch herausragend, jedoch zeigt die Fehleranalyse, dass bereits ein einziger Zeichenfehler in einer Signalbezeichnung zu einem funktional inkorrekten Datensatz führt (Field Accuracy Paradigma).
+Die effektive OCR-Genauigkeit von 98.17\% (27 Fehler bei 1473 Objekten) ist dennoch gut, jedoch zeigt die Fehleranalyse, dass bereits ein einziger Zeichenfehler in einer Signalbezeichnung zu einem funktional inkorrekten Datensatz führt (Field Accuracy Paradigma).
 
 \textbf{Linking-Ambiguität in dichten Bereichen:} Die proximity-basierte Linking-Strategie versagt gelegentlich in hochkomplexen Bahnhofsbereichen:
 
 \begin{itemize}
-    \item \textbf{Multiple Kandidaten}: In einem Testfall lagen drei Koordinatenangaben innerhalb von 150 Pixeln um ein Signal. Die Distanz-basierte Heuristik wählte die falsche Koordinate (Fehler 1 von 2 Linking-Fehlern).
+    \item \textbf{Multiple Kandidaten}: In mehreren Testfällen lagen mehrere Koordinatenangaben innerhalb von 150 Pixeln um ein Symbol. Die Distanz-basierte Heuristik wählte gelegentlich die falsche Koordinate (8 der 13 Linking-Fehler).
 
     \item \textbf{Überlappende Bounding Boxes}: Bei dicht angeordneten Symbolen (z.B. Weichenstraßen) überlappen sich die OCR-Suchregionen, was zu Fehlzuordnungen führen kann.
 
@@ -214,7 +214,7 @@ Für industrielle Szenarien mit hunderten Plänen ist dies problematisch. Eine p
 
 \subsection{Prozessuale Limitationen}
 
-\textbf{Manuelle Nachbearbeitung erforderlich:} Die 1.24\% Fehlerrate bedeutet in der Praxis:
+\textbf{Manuelle Nachbearbeitung erforderlich:} Die 2.78\% Fehlerrate bedeutet in der Praxis:
 
 \begin{itemize}
     \item \textbf{Kein vollautomatischer Einsatz}: Das System kann nicht ohne menschliche Qualitätskontrolle eingesetzt werden. Ein Ingenieur muss die Ergebnisse validieren.
@@ -224,7 +224,7 @@ Für industrielle Szenarien mit hunderten Plänen ist dies problematisch. Eine p
     \item \textbf{Verantwortlichkeit ungeklärt}: Bei Fehlern, die durch den Prototyp entstehen und nicht erkannt werden, stellt sich die Haftungsfrage. Rechtlich ist dies ein ungelöstes Problem der KI-Assistenzsysteme.
 \end{itemize}
 
-Positiv ist, dass die Validierungskomponente alle 8 Fehler im Testsatz korrekt identifiziert und zur manuellen Prüfung markiert hat. Dies bedeutet, dass der Prüfer nur ca. 1-2\% der Objekte überprüfen muss, statt alle 100\%.
+Positiv ist, dass die Validierungskomponente alle 41 Fehler im Testsatz korrekt identifiziert und zur manuellen Prüfung markiert hat. Dies bedeutet, dass der Prüfer nur ca. 1-2\% der Objekte überprüfen muss, statt alle 100\%.
 
 \textbf{Fehlendes semantisches Verständnis:} Das System extrahiert Daten, prüft jedoch nicht deren semantische Konsistenz:
 
@@ -313,7 +313,7 @@ Diese Verbesserungen können mit überschaubarem Aufwand (1-2 Personenwochen pro
     \end{itemize}
 \end{itemize}
 
-\textbf{Geschätzte Verbesserung durch kurzfristige Maßnahmen:} End-to-End Accuracy von 98.76\% → 99.2-99.5\% (Reduktion der Fehlerrate um 35-60\%).
+\textbf{Geschätzte Verbesserung durch kurzfristige Maßnahmen:} End-to-End Accuracy von 97.22\% → 99.2-99.5\% (Reduktion der Fehlerrate um 35-60\%).
 
 \subsection{Mittelfristige Erweiterungen (6-12 Monate)}
 
@@ -341,7 +341,7 @@ Dies ist die vom Nutzer priorisierte Verbesserung und hat das größte Potenzial
 
     \item \textbf{Datenanforderungen}: Geschätzt 50-100 vollständig annotierte Pläne mit expliziten Relation-Labels. Dies entspricht ca. 3000-6000 Symbol-Text-Paaren.
 
-    \item \textbf{Erwarteter Nutzen}: Reduktion der Linking-Fehler von 0.31\% auf geschätzt 0.05-0.10\%, was die Gesamt-E2E-Accuracy auf 99.0-99.2\% heben würde.
+    \item \textbf{Erwarteter Nutzen}: Reduktion der Linking-Fehler von 0.88\% auf geschätzt 0.20-0.30\%, was die Gesamt-E2E-Accuracy auf 98.5-99.0\% heben würde.
 \end{itemize}
 
 \textbf{Datenaugmentation erweitern:}
@@ -427,7 +427,7 @@ Dies ist die vom Nutzer priorisierte Verbesserung und hat das größte Potenzial
     \item \textbf{Erwarteter Nutzen}: Reduktion der Verarbeitungszeit auf $<$ 3 Minuten pro Plan bei GPU-Verfügbarkeit; verbesserte Skalierbarkeit für Batch-Verarbeitung. Training bei nativer Auflösung könnte zusätzlich die Detektionsgenauigkeit bei kleinen Symbolen verbessern.
 \end{itemize}
 
-\textbf{Geschätzte Verbesserung durch mittelfristige Maßnahmen:} End-to-End Accuracy von 98.76\% → 99.3-99.6\%; Verarbeitungszeit von 12.3 min → 2-3 min (GPU) oder 10 min (optimiertes CPU).
+\textbf{Geschätzte Verbesserung durch mittelfristige Maßnahmen:} End-to-End Accuracy von 97.22\% → 99.3-99.6\%; Verarbeitungszeit von 12.3 min → 2-3 min (GPU) oder 10 min (optimiertes CPU).
 
 \subsection{Langfristige Forschungsrichtungen (12+ Monate)}
 
@@ -662,7 +662,7 @@ Abschließend wird ein Ausblick auf zukünftige Entwicklungen gegeben, die sowoh
 
 \textbf{Geplante Entwicklungsschritte bei Siemens Mobility:}
 
-Die erfolgreiche Evaluation (98.76\% E2E-Accuracy, 75.3\% Zeitersparnis) hat zu internen Diskussionen über den Produktiveinsatz geführt. Ein möglicher Rollout-Plan könnte folgendermaßen aussehen:
+Die erfolgreiche Evaluation (97.22\% E2E-Accuracy, 75.3\% Zeitersparnis) hat zu internen Diskussionen über den Produktiveinsatz geführt. Ein möglicher Rollout-Plan könnte folgendermaßen aussehen:
 
 \begin{enumerate}
     \item \textbf{Pilotphase (Q2 2026)}: Einsatz in 2-3 ausgewählten Projekten mit intensivem Monitoring:
@@ -685,7 +685,7 @@ Die erfolgreiche Evaluation (98.76\% E2E-Accuracy, 75.3\% Zeitersparnis) hat zu 
         \item Fine-Tuning des YOLO-Modells mit korrigierten Annotationen
         \item Erweiterung der OCR-Validierungsregeln basierend auf beobachteten Fehlermustern
         \item Update der Linking-Heuristiken mit neu identifizierten Layoutmustern
-        \item Ziel: Steigerung der E2E-Accuracy von 98.76\% auf $>$ 99\%
+        \item Ziel: Steigerung der E2E-Accuracy von 97.22\% auf $>$ 99\%
     \end{itemize}
 
     \item \textbf{Produktivbetrieb (2027)}: Rollout für breitere Anwenderbasis:
@@ -755,7 +755,7 @@ Die rasante Entwicklung großer multimodaler Modelle (GPT-4 Vision, Gemini 1.5, 
 Jedoch bleibt offen, ob diese Modelle die hier erreichte Präzision für hochspezialisierte technische Zeichnungen erreichen werden:
 
 \begin{itemize}
-    \item \textbf{Genauigkeitsanforderungen}: 98.76\% E2E-Accuracy erfordert nahezu perfekte Fehlervermeidung. Foundation Models neigen zu \enquote{Halluzinationen} und inkonsistenten Outputs.
+    \item \textbf{Genauigkeitsanforderungen}: 97.22\% E2E-Accuracy erfordert nahezu perfekte Fehlervermeidung. Foundation Models neigen zu \enquote{Halluzinationen} und inkonsistenten Outputs.
 
     \item \textbf{Sicherheitskritische Anwendungen}: Bei Bahnanlagen sind Fehler potentiell lebensgefährlich. Die Nachvollziehbarkeit und Reproduzierbarkeit von Foundation Model Outputs ist problematisch.
 
@@ -874,12 +874,12 @@ Die in Kapitel~\ref{chap:einleitung} formulierten Forschungsfragen können auf B
 \begin{enumerate}
     \item \textbf{Deep Learning für Objekterkennung:} YOLOv8 mit Oriented Bounding Boxes (OBB) ermöglicht die rotationsinvariante Detektion domänenspezifischer Symbole mit einer mAP@0.5 von 98.4\% (Tabelle~\ref{tab:detection_overall}).
 
-    \item \textbf{Hybride OCR-Strategie:} Die Multi-Engine-Kaskade (PaddleOCR → Tesseract → EasyOCR) mit orientierungsadaptiver Vorverarbeitung (Dual-Angle-Routing) erreicht eine implizite OCR-Genauigkeit von 99.53\% (nur 3 von 644 Objekten mit OCR-Fehlern).
+    \item \textbf{Hybride OCR-Strategie:} Die Multi-Engine-Kaskade (PaddleOCR → Tesseract → EasyOCR) mit orientierungsadaptiver Vorverarbeitung (Dual-Angle-Routing) erreicht eine implizite OCR-Genauigkeit von 98.17\% (27 von 1473 Objekten mit OCR-Fehlern).
 
-    \item \textbf{Regelbasiertes Linking:} Räumliche Verknüpfungsalgorithmen mit lokaler Koordinatentransformation (Abschnitt~\ref{sec:Koordinatentransformation}) assoziieren Symbole und Texte mit 99.69\% Genauigkeit (642/644 korrekte Verknüpfungen).
+    \item \textbf{Regelbasiertes Linking:} Räumliche Verknüpfungsalgorithmen mit lokaler Koordinatentransformation (Abschnitt~\ref{sec:Koordinatentransformation}) assoziieren Symbole und Texte mit hoher Genauigkeit.
 \end{enumerate}
 
-Die End-to-End-Genauigkeit von \textbf{98.76\%} auf dem Testsatz (Tabelle~\ref{tab:e2e_overall_test}) belegt die Validität der Überführung in strukturierte Datenmodelle. Die PostgreSQL-Persistierung mit JSONB-Speicherung gewährleistet die strukturierte Datenhaltung, während der Excel-Export die Integration in nachgelagerte Planungsprozesse ermöglicht.
+Die End-to-End-Genauigkeit von \textbf{97.22\%} auf dem Testsatz (Tabelle~\ref{tab:e2e_overall_test}) belegt die Validität der Überführung in strukturierte Datenmodelle. Die PostgreSQL-Persistierung mit JSONB-Speicherung gewährleistet die strukturierte Datenhaltung, während der Excel-Export die Integration in nachgelagerte Planungsprozesse ermöglicht.
 
 \subsection{Teilforschungsfrage 1 (TF1)}
 
@@ -915,7 +915,7 @@ Die erreichten Metriken (Precision: 97.5\%, Recall: 95.7\%, mAP@0.5: 98.4\%) üb
     \item \textbf{Regex-basierte Validierung:} Extrahierte Texte werden gegen domänenspezifische Muster geprüft (Signal: \texttt{[A-Z]\{1,4\}\textbackslash d\{1,4\}}, Koordinate: \texttt{\textbackslash d+[.,]\textbackslash d+}), um fehlerhafte Zuordnungen zu erkennen.
 \end{enumerate}
 
-Mit nur 2 Linking-Fehlern bei 644 Objekten (0.31\% Fehlerrate) demonstriert dieser Ansatz, dass auch bei hoher Objektdichte -- die Testpläne enthielten durchschnittlich 92 Objekte pro Plan -- eine zuverlässige semantische Zuordnung möglich ist.
+Mit 13 Linking-Fehlern bei 1473 Objekten (0.88\% Fehlerrate) demonstriert dieser Ansatz, dass auch bei hoher Objektdichte -- die Testpläne enthielten durchschnittlich 164 Objekte pro Plan -- eine zuverlässige semantische Zuordnung möglich ist.
 
 \subsection{Teilforschungsfrage 3 (TF3)}
 
@@ -960,12 +960,12 @@ Die Validierung anhand zweier realer Planversionen mit 41 manuell verifizierten 
 
 \subsection{Zusammenfassung}
 
-Alle Teilforschungsfragen konnten durch die entwickelte Lösung positiv beantwortet werden. Die Hauptforschungsfrage nach der Automatisierbarkeit der Datenextraktion aus technischen Zeichnungen wird durch die erreichte End-to-End-Genauigkeit von 98.76\% und Zeitersparnis von 75.3\% eindeutig bestätigt. Die Kombination aus Deep Learning (YOLOv8-OBB), hybrider OCR-Strategie (Multi-Engine-Kaskade) und regelbasiertem Linking stellt einen effektiven Ansatz dar, der auch mit begrenzten Trainingsdaten (25 Originalpläne) State-of-the-Art-Ergebnisse erzielt.
+Alle Teilforschungsfragen konnten durch die entwickelte Lösung positiv beantwortet werden. Die Hauptforschungsfrage nach der Automatisierbarkeit der Datenextraktion aus technischen Zeichnungen wird durch die erreichte End-to-End-Genauigkeit von 97.22\% und Zeitersparnis von 75.3\% eindeutig bestätigt. Die Kombination aus Deep Learning (YOLOv8-OBB), hybrider OCR-Strategie (Multi-Engine-Kaskade) und regelbasiertem Linking stellt einen effektiven Ansatz dar, der auch mit begrenzten Trainingsdaten (25 Originalpläne) State-of-the-Art-Ergebnisse erzielt.
 
 \section{Abschließende Bewertung}
 \label{sec:abschliessend}
 
-Diese Masterarbeit demonstriert die Machbarkeit einer automatisierten Pipeline zur Extraktion strukturierter Daten aus technischen Gleisplänen mit State-of-the-Art-Leistung. Der entwickelte Prototyp erreicht eine Objekterkennungsgenauigkeit von mAP@0.5: 98.4\% (Validierungssatz) und eine End-to-End-Genauigkeit von \textbf{98.76\%} (Testsatz), womit die Zielanforderung von 85\% (NFA-003) um 13.76 Prozentpunkte übertroffen wird.
+Diese Masterarbeit demonstriert die Machbarkeit einer automatisierten Pipeline zur Extraktion strukturierter Daten aus technischen Gleisplänen mit State-of-the-Art-Leistung. Der entwickelte Prototyp erreicht eine Objekterkennungsgenauigkeit von mAP@0.5: 98.4\% (Validierungssatz) und eine End-to-End-Genauigkeit von \textbf{97.22\%} (Testsatz), womit die Zielanforderung von 85\% (NFA-003) um 13.76 Prozentpunkte übertroffen wird.
 
 \textbf{Zentrale Beiträge der Arbeit:}
 
@@ -976,7 +976,7 @@ Diese Masterarbeit demonstriert die Machbarkeit einer automatisierten Pipeline z
 
     \item \textbf{Praktisch}: Funktionsfähiger Prototyp mit PyQt5-basierter Benutzeroberfläche für realistische Workflows. Die Zeitersparnis von 75.3\% (64 min → 15.8 min pro Plan) und die Human-in-the-Loop-Validierung ermöglichen effizienten Produktiveinsatz.
 
-    \item \textbf{Wissenschaftlich}: Systematische Evaluation auf drei Ebenen (YOLO-Detection, OCR/Linking-Komponenten, End-to-End-System) mit transparenter Fehleranalyse. Die Identifikation spezifischer Fehlerursachen (OCR: 0.47\%, Linking: 0.31\%, Fahrtrichtung: 0.15\%) ermöglicht gezielte Verbesserungen.
+    \item \textbf{Wissenschaftlich}: Systematische Evaluation auf drei Ebenen (YOLO-Detection, OCR/Linking-Komponenten, End-to-End-System) mit transparenter Fehleranalyse. Die Identifikation spezifischer Fehlerursachen (OCR: 1.83\%, Linking: 0.88\%, Detection: 0.07\%) ermöglicht gezielte Verbesserungen.
 \end{itemize}
 
 \textbf{Limitationen und Herausforderungen:}
@@ -988,7 +988,7 @@ Die kritische Reflexion offenbart mehrere Einschränkungen:
 
     \item \textbf{Auflösungsabhängigkeit}: Die strikte 500 DPI Anforderung begrenzt die Flexibilität; niedrigere Auflösungen führen zu drastisch reduzierter Genauigkeit.
 
-    \item \textbf{Verbleibende Fehlerrate}: 1.24\% der Objekte erfordern manuelle Korrektur, was vollautomatischen Betrieb verhindert. Dies ist für sicherheitskritische Anwendungen jedoch akzeptabel -- der Prototyp ist als Assistenzsystem konzipiert.
+    \item \textbf{Verbleibende Fehlerrate}: 2.78\% der Objekte erfordern manuelle Korrektur, was vollautomatischen Betrieb verhindert. Dies ist für sicherheitskritische Anwendungen jedoch akzeptabel -- der Prototyp ist als Assistenzsystem konzipiert.
 
     \item \textbf{Tile-Boundary-Probleme}: Objekte an Kachelgrenzen verursachen gelegentlich Duplikate oder fehlerhafte Linking-Entscheidungen.
 
@@ -1021,7 +1021,7 @@ Diese Arbeit validiert den Ansatz, domänenspezifische Computer-Vision-Lösungen
     \item \textbf{Rein regelbasierten Systemen}, die mit wenig Daten auskommen, aber schwer wartbar, nicht robust und limitiert in der Generalisierung sind
 \end{itemize}
 
-Die erfolgreiche Evaluation auf realen Siemens Mobility Daten belegt, dass der entwickelte Prototyp das Potenzial hat, manuelle Prozesse signifikant zu beschleunigen (75.3\% Zeitersparnis) und damit einen konkreten Beitrag zur Digitalisierung der Eisenbahninfrastruktur zu leisten. Die hohe Genauigkeit (98.76\%), kombiniert mit transparenten Validierungsmechanismen und Human-in-the-Loop-Integration, positioniert das System als praktikable Lösung für den produktiven Einsatz in sicherheitskritischen Umgebungen.
+Die erfolgreiche Evaluation auf realen Siemens Mobility Daten belegt, dass der entwickelte Prototyp das Potenzial hat, manuelle Prozesse signifikant zu beschleunigen (75.3\% Zeitersparnis) und damit einen konkreten Beitrag zur Digitalisierung der Eisenbahninfrastruktur zu leisten. Die hohe Genauigkeit (97.22\%), kombiniert mit transparenten Validierungsmechanismen und Human-in-the-Loop-Integration, positioniert das System als praktikable Lösung für den produktiven Einsatz in sicherheitskritischen Umgebungen.
 
 \textbf{Ausblick:}
 

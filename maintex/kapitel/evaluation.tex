@@ -45,11 +45,11 @@ Komplexitätsstufen & Einfach (2), Mittel (2), Komplex (3) \\
 \hline
 \multicolumn{2}{|l|}{\textit{Durchschnittliche Symbolanzahl pro Plan}} \\
 \hline
-\hspace{3mm} Signale & 25 \\
-\hspace{3mm} GKS (beide Arten) & 37 \\
-\hspace{3mm} GM-Blöcke & 31 \\
-\hspace{3mm} \textbf{Summe (12 Klassen)} & \textbf{92} \\
-Gesamtanzahl evaluierter Objekte & 644 \\
+\hspace{3mm} Signale & 28 \\
+\hspace{3mm} GKS (beide Arten) & 31 \\
+\hspace{3mm} GM-Blöcke & 27 \\
+\hspace{3mm} \textbf{Summe (12 Klassen)} & \textbf{164} \\
+Gesamtanzahl evaluierter Objekte & 1473 \\
 Tiles pro Plan (Durchschnitt) & $\approx$ 40 \\
 Auflösungsbereich & 500 DPI \\
 \hline
@@ -319,11 +319,20 @@ Die Gesamtsystemleistung wird durch die End-to-End Accuracy gemessen, die alle P
 \hline
 \textbf{Objektklasse} & \textbf{Gesamt} & \textbf{Korrekt} & \textbf{Genauigkeit} \\
 \hline
-signal (Name + Position + Richtung) & 172 & 169 & 98.26\% \\
-gks (Nummer + Position, beide Typen) & 256 & 254 & 99.22\% \\
-gm\_block (Position) & 216 & 213 & 98.61\% \\
+signal & 256 & 252 & 98.44\% \\
+gm\_block & 247 & 246 & 99.60\% \\
+gks\_gesteuert & 201 & 199 & 99.00\% \\
+sverbinder & 205 & 201 & 98.05\% \\
+isolierstoß & 183 & 176 & 96.17\% \\
+weichen\_block & 174 & 158 & 90.80\% \\
+gks\_festkodiert & 77 & 75 & 97.40\% \\
+haltepunkt & 76 & 74 & 97.37\% \\
+weichenende & 23 & 23 & 100.00\% \\
+weichengruppenende & 13 & 10 & 76.92\% \\
+prellbock & 10 & 10 & 100.00\% \\
+haltetafel & 8 & 8 & 100.00\% \\
 \hline
-\textbf{Durchschnitt (alle Klassen)} & \textbf{644} & \textbf{636} & \textbf{98.76\%} \\
+\textbf{Summe (alle 12 Klassen)} & \textbf{1473} & \textbf{1432} & \textbf{97.22\%} \\
 \hline
 \end{tabular}
 \caption{End-to-End Genauigkeit pro Objektklasse (9 Testpläne)}
@@ -335,8 +344,8 @@ gm\_block (Position) & 216 & 213 & 98.61\% \\
 \hline
 \textbf{Metrik} & \textbf{Zielwert (NFA-003)} & \textbf{Erreicht} & \textbf{Status} \\
 \hline
-Vollständig korrekt extrahiert (alle Klassen) & $\geq$ 85\% & 98.76\% & \checkmark \\
-Manuelle Korrektur erforderlich & $\leq$ 15\% & 1.24\% & \checkmark \\
+Vollständig korrekt extrahiert (alle Klassen) & $\geq$ 85\% & 97.22\% & \checkmark \\
+Manuelle Korrektur erforderlich & $\leq$ 15\% & 2.78\% & \checkmark \\
 \hline
 \end{tabular}
 \caption{End-to-End Systemgenauigkeit im Vergleich zum Anforderungsziel}
@@ -368,9 +377,9 @@ Die hohe Fahrtrichtungsgenauigkeit von 99.42\% (171/172) bestätigt die Effektiv
 geometrischen Ableitung aus der Signal-GKS-Relation (vgl. Anforderung \textbf{FA-006}). 
 Der einzige Fehler trat in Plan~6 auf, wo die zugehörige GKS nicht korrekt detektiert 
 wurde, wodurch die geometrische Analyse fehlschlug.
-Das System erreicht eine End-to-End-Genauigkeit von \textbf{98.76\%} auf dem Testsatz, was die Anforderung NFA-003 ($\geq$ 85\%) deutlich übertrifft. Dies bedeutet, dass bei 98.76\% aller extrahierten Objekte Name/Nummer, Position und (bei Signalen) Fahrtrichtung vollständig korrekt extrahiert wurden. Nur 1.24\% der Objekte erfordern manuelle Nachbearbeitung.
+Das System erreicht eine End-to-End-Genauigkeit von \textbf{97.22\%} auf dem Testsatz, was die Anforderung NFA-003 ($\geq$ 85\%) deutlich übertrifft. Dies bedeutet, dass bei 97.22\% aller extrahierten Objekte Name/Nummer, Position und (bei Signalen) Fahrtrichtung vollständig korrekt extrahiert wurden. Nur 2.78\% der Objekte erfordern manuelle Nachbearbeitung.
 
-\textbf{Hinweis zur Generalisierung:} Die evaluierten sieben Testpläne mit 644 Objekten repräsentieren eine aussagekräftige Stichprobe des Leistungsspektrums. Bei umfangreicheren Tests auf diversen Plänen mit variierenden Qualitätsmerkmalen (z.B. unterschiedliche Auflösungen, Scan-Artefakte, abweichende Layoutstile) ist eine gewisse Varianz der Genauigkeit zu erwarten. Basierend auf der beobachteten Fehlerverteilung und unter Berücksichtigung potenzieller Herausforderungen bei komplexeren oder qualitativ schlechteren Eingabedaten wird eine realistische End-to-End-Genauigkeit im Bereich von \textbf{90-95\%} für den produktiven Einsatz erwartet. Dies würde die Anforderung NFA-003 ($\geq$ 85\%) weiterhin komfortabel erfüllen und einen akzeptablen Korrekturaufwand von 5-10\% gewährleisten.
+\textbf{Hinweis zur Generalisierung:} Die evaluierten neun Testpläne mit 1473 Objekten repräsentieren eine aussagekräftige Stichprobe des Leistungsspektrums. Bei umfangreicheren Tests auf diversen Plänen mit variierenden Qualitätsmerkmalen (z.B. unterschiedliche Auflösungen, Scan-Artefakte, abweichende Layoutstile) ist eine gewisse Varianz der Genauigkeit zu erwarten. Basierend auf der beobachteten Fehlerverteilung und unter Berücksichtigung potenzieller Herausforderungen bei komplexeren oder qualitativ schlechteren Eingabedaten wird eine realistische End-to-End-Genauigkeit im Bereich von \textbf{90-95\%} für den produktiven Einsatz erwartet. Dies würde die Anforderung NFA-003 ($\geq$ 85\%) weiterhin komfortabel erfüllen und einen akzeptablen Korrekturaufwand von 5-10\% gewährleisten.
 
 \subsubsection{Rotationsanalyse (Validierung FA-002 und FA-005)}
 
@@ -432,8 +441,8 @@ Plan 6 & 15/16 & 23/23 & 16/16 & 54/55 & 1× Signal: Fahrtrichtung \\
 Plan 7 & 40/40 & 55/55 & 46/46 & 141/141 & Keine Fehler (perfekt) \\
  & (100\%) & (100\%) & (100\%) & (100\%) & (\enquote{w}/\enquote{W} irrelevant) \\
 \hline
-\textbf{Gesamt} & \textbf{169/172} & \textbf{254/256} & \textbf{213/216} & \textbf{636/644} & \textbf{8 Fehler} \\
- & \textbf{(98.26\%)} & \textbf{(99.22\%)} & \textbf{(98.61\%)} & \textbf{(98.76\%)} & \\
+\textbf{Gesamt} & \textbf{250/256} & \textbf{272/278} & \textbf{241/247} & \textbf{1432/1473} & \textbf{41 Fehler} \\
+ & \textbf{(98.26\%)} & \textbf{(99.22\%)} & \textbf{(98.61\%)} & \textbf{(97.22\%)} & \\
 \hline
 \end{tabular}
 \caption{Detaillierte End-to-End Ergebnisse pro Testplan mit Fehlertyp-Annotation}
@@ -449,47 +458,42 @@ aus der Signal-GKS-Relation erreicht eine Genauigkeit von 99.42\% (171/172 Signa
 Der einzige Fehler trat in Plan~6 auf, wo die zugehörige GKS nicht korrekt mit dem 
 Signal verknüpft werden konnte.
 
-\textbf{FA-007 (Symbol-Koordinaten-Verknüpfung):} Der Proximity-basierte Linking-Algorithmus 
-erreicht eine Verknüpfungsgenauigkeit von 99.69\% (642/644). Die 2 Linking-Fehler 
-(1× atypische Koordinatenposition, 1× fehlende Fahrtrichtungsableitung) sind auf 
+\textbf{FA-007 (Symbol-Koordinaten-Verknüpfung):} Der Proximity-basierte Linking-Algorithmus
+erreicht eine hohe Verknüpfungsgenauigkeit. Die aufgetretenen Linking-Fehler sind auf
 ungewöhnliche Layoutvarianten zurückzuführen.
 \textbf{Fehlerquellenanalyse:}
 
-Um die Optimierungspotenziale zu identifizieren, wurden die 8 aufgetretenen Fehler detailliert nach Fehlerquelle und Root Cause analysiert:
+Um die Optimierungspotenziale zu identifizieren, wurden die 41 aufgetretenen Fehler detailliert nach Fehlerquelle und Root Cause analysiert:
 
 \begin{table}[H]
 \centering
 \small
-\begin{tabular}{|l|l|l|p{4.5cm}|}
+\begin{tabular}{|l|r|l|p{5cm}|}
 \hline
-\textbf{Plan} & \textbf{Objekt} & \textbf{Fehlertyp} & \textbf{Root Cause} \\
+\textbf{Plan} & \textbf{Fehler} & \textbf{Betroffene Klassen} & \textbf{Hauptfehlerursachen} \\
 \hline
-Plan 1 & 1× GM & YOLO-Fehler & Bounding Box zu groß (147×95 px statt typisch 40-60 px) → OCR erhielt zu viel Hintergrund → Extraktion fehlgeschlagen \\
+Plan 1 & 2 & sverbinder, haltepunkt & Nachbarrauschen: Extra Zeichen durch benachbarte Elemente \\
 \hline
-Plan 2 & 1× GM & YOLO-Fehler & Bounding Box zu groß → OCR-Extraktion fehlgeschlagen \\
+Plan 2 & 2 & weichen\_block, haltepunkt & OCR: falsches Zeichen; Linking: falsche Koordinate \\
 \hline
-Plan 3 & 1× GM & Linking-Fehler & Koordinate rechts statt unterhalb des GM-Symbols → nicht gefunden (atypisches Layout) \\
+Plan 3 & 1 & weichen\_block & O/0-Verwechslung in Koordinaten (2 Instanzen) \\
 \hline
-Plan 5 & 2× Signal & OCR-Fehler & Koordinaten nicht extrahiert (Ursache unklar, vermutlich niedrige OCR-Konfidenz) \\
+Plan 4 & 8 & weichen\_block, signal, isolierstoß, gm\_block & O/0-Verwechslung (4×), U499→U400 (1×), fehlende Ziffern (3×) \\
 \hline
-Plan 5 & 1× GKS & OCR-Fehler & Falsche Koordinate gelesen: \enquote{114.567} statt \enquote{14.567} (Linie neben Text als Ziffer \enquote{1} interpretiert) \\
+Plan 5 & 2 & weichen\_block, signal & Nachbarrauschen (1×), Koordinate nicht erkannt (1×) \\
 \hline
-Plan 5 & 1× GKS & YOLO-Fehler & Fehlklassifikation: \textit{gks\_gesteuert} als \textit{gks\_festkodiert} erkannt (visuelle Ähnlichkeit der Symboltypen) \\
+Plan 6 & 4 & weichen\_block, isolierstoß & Nachbarrauschen (2×), fehlende Ziffern (2×) \\
 \hline
-Plan 6 & 1× Signal & Linking-Fehler & Fahrtrichtung nicht extrahiert (geometrische Ableitung fehlgeschlagen, vermutlich fehlende GKS-Detektion) \\
+Plan 7 & 13 & weichen\_block, sverbinder, signal, isolierstoß, weichengruppenende & Falsche Koordinatenzuordnung (5×), O/0-Verwechslung (2×), fehlende Ziffern (4×), U499→U400 (2×) \\
 \hline
-Plan 7 & 0 Fehler & --- & Perfekte Extraktion aller 141 Objekte \\
+Plan 8 & 4 & gks, isolierstoß & Linking: Koordinaten zwischen gks und isolierstoß vertauscht (2× jeweils) \\
 \hline
-\multicolumn{4}{|l|}{\textit{Zusätzliche Beobachtungen (nicht als Fehler gewertet):}} \\
+Plan 9 & 5 & weichen\_block, isolierstoß & O/0-Verwechslung (2×), Bbox-Ziffern (1×), OCR fehlgeschlagen (1×), nicht erkannt (1×) \\
 \hline
-Plan 3 & 1× Signal & OCR-Warnung & Kleinbuchstabe \enquote{w} statt \enquote{W} in Koordinate (irrelevant, da nur Zahlen benötigt) \\
-\hline
-Plan 4 & 1× Signal, 1× GM & OCR-Warnung & Kleinbuchstabe \enquote{w} statt \enquote{W} in Koordinaten (irrelevant für Extraktion) \\
-\hline
-Plan 7 & 1× Signal, 1× GM & OCR-Warnung & Kleinbuchstabe \enquote{w} statt \enquote{W} in Koordinaten (irrelevant für Extraktion) \\
+\textbf{Gesamt} & \textbf{41} & \textbf{12 Klassen} & \textbf{OCR: 27, Linking: 13, Detection: 1} \\
 \hline
 \end{tabular}
-\caption{Detaillierte Fehleranalyse mit Root Causes (9 Testpläne)}
+\caption{Fehlerverteilung nach Plan mit Root Causes (9 Testpläne)}
 \label{tab:error_root_causes_test}
 \end{table}
 
@@ -499,16 +503,23 @@ Plan 7 & 1× Signal, 1× GM & OCR-Warnung & Kleinbuchstabe \enquote{w} statt \en
 \hline
 \textbf{Fehlerursache} & \textbf{Anzahl Fehler} & \textbf{Anteil} \\
 \hline
-YOLO: Bounding Box zu groß & 2 & 25.0\% \\
-YOLO: Fehlklassifikation (GKS-Typ) & 1 & 12.5\% \\
-OCR: Koordinate nicht extrahiert & 2 & 25.0\% \\
-OCR: Falsche Ziffer (Linie als \enquote{1} interpretiert) & 1 & 12.5\% \\
-Linking: Koordinate an atypischer Position & 1 & 12.5\% \\
-Linking: Fahrtrichtung nicht abgeleitet & 1 & 12.5\% \\
+\multicolumn{3}{|l|}{\textit{OCR-Fehler (27 gesamt, 65.9\%)}} \\
 \hline
-YOLO Detection-Fehler (Symbol nicht erkannt) & 0 & 0.0\% \\
+O vs. 0 Verwechslung & 9 & 22.0\% \\
+Nachbarrauschen (extra Zeichen erfasst) & 8 & 19.5\% \\
+Fehlende Ziffern (Bbox-bedingt) & 7 & 17.1\% \\
+OCR komplett fehlgeschlagen & 5 & 12.2\% \\
+Zeichen falsch (U499 → U400) & 3 & 7.3\% \\
 \hline
-\textbf{Gesamt} & \textbf{8} & \textbf{100\%} \\
+\multicolumn{3}{|l|}{\textit{Linking-Fehler (13 gesamt, 31.7\%)}} \\
+\hline
+Falsche Koordinatenzuordnung & 8 & 19.5\% \\
+\hline
+\multicolumn{3}{|l|}{\textit{Detection-Fehler (1 gesamt, 2.4\%)}} \\
+\hline
+Symbol nicht erkannt & 1 & 2.4\% \\
+\hline
+\textbf{Gesamt} & \textbf{41} & \textbf{100\%} \\
 \hline
 \end{tabular}
 \caption{Verteilung der End-to-End Fehler nach Fehlerursache (9 Pläne)}
@@ -517,58 +528,47 @@ YOLO Detection-Fehler (Symbol nicht erkannt) & 0 & 0.0\% \\
 
 \textbf{Erkenntnisse zur Fehlerverteilung:}
 
-Die detaillierte Analyse offenbart spezifische technische Limitationen, die gezielt adressiert werden können:
+Die detaillierte Analyse der 41 Fehler offenbart spezifische technische Limitationen, die gezielt adressiert werden können:
 
 \begin{enumerate}
-    \item \textbf{YOLO Bounding Box Regression (2 Fehler, 25.0\%):} 
-    Bei zwei GM-Blöcken erzeugte YOLO ungewöhnlich große Bounding Boxes (z.B. 147×95 Pixel statt der typischen 40-60 Pixel). Dies ist ein \textbf{YOLO-Fehler}, nicht ein OCR-Fehler: Die Objekterkennung detektierte das Symbol korrekt (IoU mit Ground Truth $\geq$ 0.5), aber die Bounding Box Regression war unpräzise und inkludierte zu viel Hintergrund-Kontext. Die nachgelagerte OCR-Verarbeitung erhielt dadurch eine suboptimale Region-of-Interest mit niedrigem Signal-zu-Rausch-Verhältnis, was zur fehlgeschlagenen Texterkennung führte. Eine adaptive ROI-Extraktion mit symbolspezifischem Padding oder Post-Processing der YOLO-Boxen durch Tight-Fitting-Algorithmen könnte diese Fehler vermeiden.
-    
-    \item \textbf{OCR-Extraktion fehlgeschlagen (2 Fehler, 25.0\%):} 
-    Bei zwei Signal-Instanzen in Plan 5 wurden keine Koordinaten extrahiert, obwohl die Symbole korrekt detektiert und die Bounding Boxes adäquat dimensioniert wurden. Die genaue Ursache ist unklar, vermutlich niedrige OCR-Konfidenz oder ungünstige Orientierung. Diese Fälle würden durch die Validierungswerkzeuge automatisch als \enquote{fehlende Verknüpfung} markiert.
-    
-    \item \textbf{OCR-Fehlinterpretation durch visuelle Artefakte (1 Fehler, 12.5\%):} 
-    Eine horizontale Linie neben der Koordinatenbeschriftung wurde als Ziffer \enquote{1} interpretiert, was zu \enquote{114.567} statt \enquote{14.567} führte. Solche Artefakte sind in technischen Zeichnungen häufig (Führungslinien, Maßketten). Die Regex-Validierung identifiziert solche Anomalien (Koordinate außerhalb erwarteten Bereichs), aber korrigiert sie nicht automatisch.
-    
-    \item \textbf{Linking bei atypischem Layout (1 Fehler, 12.5\%):} 
-    Bei einem GM-Block in Plan 3 befand sich die Koordinatenbeschriftung rechts statt unterhalb des Symbols. Der Proximity-basierte Linking-Algorithmus sucht primär unterhalb und oberhalb, was zu einer fehlenden Verknüpfung führte. Eine Erweiterung des Suchradius oder adaptives Lernen der Layoutpräferenzen würde diesen Fall abdecken.
-    
-    \item \textbf{Fahrtrichtungs-Ableitung fehlgeschlagen (1 Fehler, 12.5\%):}
-    Bei einem Signal in Plan 6 konnte die Fahrtrichtung nicht durch geometrische Analyse abgeleitet werden, vermutlich aufgrund fehlender oder falsch detektierter GKS. Dies ist ein Linking-Fehler, da die geometrische Verknüpfung zwischen Signal und GKS nicht hergestellt werden konnte.
-    
-    \item \textbf{Ein Classification-Fehler bei GKS-Typen (1 Fehler, 12.5\%):} 
-        In Plan~5 wurde eine \textit{gks\_gesteuert} fälschlicherweise als 
-        \textit{gks\_festkodiert} klassifiziert. Dies bestätigt die in der 
-        Konfusionsmatrix (Abbildung~\ref{fig:confusion_matrix_eval}) beobachtete 
-        Verwechslungstendenz zwischen diesen visuell ähnlichen Symboltypen. 
-        Die beiden GKS Arten unterscheiden sich nur durch interne 
-        Symboldetails (fest kodierter vs. programmierbarer Code), was die 
-        Unterscheidung für das neuronale Netz erschwert.
-        
-    \item \textbf{Keine Detection-Fehler (0 Fehler):} 
-        Bemerkenswert ist, dass YOLO alle 644 Symbole korrekt detektierte -- 
-        kein einziges Symbol wurde übersehen (100\% Recall auf dem Testsatz). 
-        Die YOLO-bezogenen Fehler beschränken sich auf Bounding-Box-Regression 
-        (2 Fehler) und Klassifikation (1 Fehler), nicht auf fundamentale 
-        Detektionsfehler.
-    
-    \item \textbf{Groß-/Kleinschreibung bei irrelevanten Zeichen (3 Beobachtungen, nicht gewertet):}
-    Bei drei Koordinatenangaben wurde der Buchstabe \enquote{W} (in \enquote{Gl.W123}) als \enquote{w} gelesen. Da die Extraktionslogik nur numerische Koordinatenwerte verwendet und alphabetische Gleisbezeichnungen verwirft, hatte dies keinen funktionalen Einfluss. Diese Beobachtung zeigt jedoch, dass die OCR bei gemischten alphanumerischen Texten gelegentlich Case-Fehler produziert.
+    \item \textbf{O vs. 0 Verwechslung (9 Fehler, 22.0\%):}
+    Der häufigste Fehlertyp betrifft die Verwechslung von Buchstabe \enquote{O} und Ziffer \enquote{0} in Koordinatenangaben der \textit{weichen\_block}-Klasse. Diese visuell nahezu identischen Zeichen werden von der OCR-Engine inkonsistent erkannt. Eine domänenspezifische Nachverarbeitung, die \enquote{O} in numerischen Kontexten automatisch zu \enquote{0} korrigiert, würde diese Fehler eliminieren.
+
+    \item \textbf{Nachbarrauschen (8 Fehler, 19.5\%):}
+    Bei diesen Fehlern wurden zusätzliche Zeichen aus benachbarten Textelementen erfasst. Betroffen sind hauptsächlich \textit{sverbinder}, \textit{weichen\_block} und \textit{haltepunkt}. Ursache ist die Überlappung von Suchregionen mit benachbarten Beschriftungen. Eine engere Begrenzung der OCR-Suchregion oder kontextbasierte Filterung würde diese Fehler reduzieren.
+
+    \item \textbf{Fehlende Ziffern durch Bbox-Begrenzung (7 Fehler, 17.1\%):}
+    Bei diesen Fällen wurden Ziffern abgeschnitten, weil die Bounding Box den vollständigen Text nicht einschloss. Betroffen sind \textit{isolierstoß}, \textit{sverbinder} und \textit{weichen\_block}. Eine Erweiterung des Suchradius um die Bounding Box oder adaptive Padding-Strategien würden diese Fehler vermeiden.
+
+    \item \textbf{Falsche Koordinatenzuordnung (8 Fehler, 19.5\%):}
+    Diese Linking-Fehler umfassen falsch zugeordnete Koordinaten (z.B. \textit{weichengruppenende} mit falscher Koordinate) sowie vertauschte Zuordnungen zwischen \textit{gks} und \textit{isolierstoß}. Der Proximity-basierte Algorithmus wählte in diesen Fällen die falsche Kandidaten-Koordinate. Verbesserungen durch kontextbasiertes Ranking oder maschinelles Lernen der Layoutpräferenzen sind möglich.
+
+    \item \textbf{OCR komplett fehlgeschlagen (5 Fehler, 12.2\%):}
+    Bei diesen Instanzen konnte die OCR-Kaskade keine verwertbaren Ergebnisse liefern. Betroffen sind hauptsächlich \textit{isolierstoß}, \textit{signal} und \textit{gm\_block}. Die Ursachen variieren zwischen niedriger Bildqualität, ungünstiger Textorientierung und komplexem Hintergrund.
+
+    \item \textbf{Zeichen falsch erkannt -- U499 statt U400 (3 Fehler, 7.3\%):}
+    Bei drei \textit{signal}-Instanzen wurde die Signalbezeichnung \enquote{U400} als \enquote{U499} erkannt. Die Verwechslung von \enquote{00} und \enquote{99} deutet auf eine systematische OCR-Schwäche bei dieser Zeichenkombination hin.
+
+    \item \textbf{Symbol nicht erkannt (1 Fehler, 2.4\%):}
+    Ein einzelner \textit{isolierstoß} in Plan 9 wurde von YOLO nicht detektiert.
+        Dies ist der einzige fundamentale Detection-Fehler im gesamten Testsatz,
+        was eine Detection-Rate von 99.93\% (1472/1473) bestätigt.
 \end{enumerate}
 
-Die Fehleranalyse zeigt folgende Verteilung:
+Die Fehleranalyse zeigt folgende Verteilung nach Komponente:
 \begin{itemize}
-    \item 3 YOLO-bezogen (37.5\%): 2× Bounding-Box-Regression, 1× Fehlklassifikation
-    \item 3 OCR-bezogen (37.5\%): 2× fehlende Extraktion, 1× Fehlinterpretation
-    \item 2 Linking-bezogen (25.0\%): 1× atypische Position, 1× Fahrtrichtung nicht abgeleitet
+    \item \textbf{27 OCR-Fehler (65.9\%)}: O/0-Verwechslung, Nachbarrauschen, fehlende Ziffern, U499/U400, fehlgeschlagene Extraktion
+    \item \textbf{13 Linking-Fehler (31.7\%)}: Falsche Koordinatenzuordnung, vertauschte Verknüpfungen
+    \item \textbf{1 Detection-Fehler (2.4\%)}: Symbol nicht erkannt
 \end{itemize}
 
-Diese Verteilung identifiziert klare Optimierungsansätze in allen drei Hauptkomponenten der Pipeline. Die 100\% Erfolgsrate bei Detection und Classification bestätigt die Produktionsreife der YOLO-Komponente, während die Bounding Box Regression sowie die OCR- und Linking-Module Verbesserungspotenzial aufweisen.
+Diese Verteilung zeigt, dass die \textbf{OCR-Komponente} den größten Optimierungsbedarf aufweist (65.9\% der Fehler). Die YOLO-Detection ist mit 99.93\% nahezu perfekt, während das Linking-Modul moderate Verbesserungen erfordert.
 
 \textbf{Validierung FA-004 und FA-005:}
 
-\textbf{FA-004 (OCR-Genauigkeit):} Die OCR-Komponente ist in die End-to-End-Genauigkeit 
-von 98.76\% integriert. Von den 8 aufgetretenen Fehlern sind 3 OCR-bedingt (37.5\%), 
-was einer OCR-spezifischen Fehlerrate von 0.47\% (3/644) entspricht.
+\textbf{FA-004 (OCR-Genauigkeit):} Die OCR-Komponente ist in die End-to-End-Genauigkeit
+von 97.22\% integriert. Die OCR-bedingten Fehler umfassen fehlende Koordinatenextraktion
+und Fehlinterpretationen durch visuelle Artefakte.
 
 Die Robustheit gegenüber Rotation (FA-005) wird durch die Dual-Winkel-Routing-
 Architektur (§\ref{sec:ocrpipeline}) gewährleistet. Die rotationsabhängige 
@@ -610,7 +610,7 @@ Einfach ($<$60 Obj.) & Plan 1, 6 & 113 & 98.23\% & 2 \\
 Mittel (60--100 Obj.) & Plan 2, 4 & 144 & 99.31\% & 1 \\
 Komplex ($>$100 Obj.) & Plan 3, 5, 7 & 387 & 98.71\% & 5 \\
 \hline
-\textbf{Gesamt} & \textbf{9 Pläne} & \textbf{644} & \textbf{98.76\%} & \textbf{8} \\
+\textbf{Gesamt} & \textbf{9 Pläne} & \textbf{1473} & \textbf{97.22\%} & \textbf{41} \\
 \hline
 \end{tabular}
 \caption{End-to-End Accuracy nach Plankomplexität (alle 9 Testpläne)}
@@ -656,7 +656,7 @@ bleibt jedoch konstant niedrig.
 
 \textbf{Praxistauglichkeit:}
 \begin{itemize}
-    \item Die E2E-Genauigkeit von 98.76\% auf dem Testsatz übertrifft die Anforderung \textbf{NFA-003} ($\geq$ 85\%) deutlich
+    \item Die E2E-Genauigkeit von 97.22\% auf dem Testsatz übertrifft die Anforderung \textbf{NFA-003} ($\geq$ 85\%) deutlich
     \item Für den produktiven Einsatz wird eine realistische Genauigkeit von 90-95\% erwartet, abhängig von Planqualität und -komplexität
     \item Die extrem niedrige Fehlerrate minimiert den manuellen Korrekturaufwand erheblich
     \item Das System ist produktionsreif für den Einsatz bei Siemens Mobility
@@ -881,13 +881,13 @@ und~\ref{subsec:e2e_test_eval} (End-to-End-Evaluation) validiert:
     (Tabelle~\ref{tab:rotation_analysis})
     \item \textbf{FA-003} (Zielobjekte): Alle 13~Symbolklassen erfolgreich detektiert 
     (Tabelle~\ref{tab:detection_per_class})
-    \item \textbf{FA-004} (OCR-Genauigkeit): Integriert in E2E-Genauigkeit von 98.76\% 
+    \item \textbf{FA-004} (OCR-Genauigkeit): Integriert in E2E-Genauigkeit von 97.22\% 
     (Tabelle~\ref{tab:e2e_per_class_test})
     \item \textbf{FA-005} (OCR-Robustheit): 100\% OCR-Erfolg bei Steilrotation 
     (Tabelle~\ref{tab:rotation_analysis})
     \item \textbf{FA-006} (Fahrtrichtung): 99.42\% Genauigkeit 
     (Tabelle~\ref{tab:signal_attribute_accuracy})
-    \item \textbf{FA-007} (Symbol-Koordinaten-Verknüpfung): 99.69\% Linking-Genauigkeit 
+    \item \textbf{FA-007} (Symbol-Koordinaten-Verknüpfung): 99.12\% Linking-Genauigkeit 
     (§\ref{subsec:e2e_test_eval})
 \end{itemize}
 
@@ -911,7 +911,7 @@ FA-011 & Diff-Vergleich zweier Planversionen (Plan~3 vs. modifizierte Kopie); Ve
 \hline
 \multicolumn{3}{|c|}{\textit{Benutzerinteraktion und Konfiguration (FA-012 bis FA-014)}} \\
 \hline
-FA-012 & Visuelle Validierung durch Bounding-Box-Overlays für alle 644 Testobjekte; Prüfung der korrekten Werten nach Klasse & Bestanden \\
+FA-012 & Visuelle Validierung durch Bounding-Box-Overlays für alle 1473 Testobjekte; Prüfung der korrekten Werten nach Klasse & Bestanden \\
 \hline
 FA-013 & GUI-Workflow: PDF-Upload → Analyse-Start → Ergebnisanzeige → Export; Test durch 3 Anwender ohne CLI-Kenntnisse & Bestanden \\
 \hline
@@ -1058,12 +1058,12 @@ Abschn.~\ref{subsec:e2e_test_eval}, Tab.~\ref{tab:rotation_analysis}: 38 Objekte
 
 \hyperref[req:FA-003]{FA-003} & Zielobjekte (13 Klassen) &
 Abschn.~\ref{sec:yolo_implementation}: Alle 13~Symbolklassen &
-Abschn.~\ref{subsec:e2e_test_eval}: 636/644 Objekte korrekt (98.76\%)\\
+Abschn.~\ref{subsec:e2e_test_eval}: 1432/1473 Objekte korrekt (97.22\%)\\
 \hline
 
 \hyperref[req:FA-004]{FA-004} & OCR-Genauigkeit (in E2E integriert) &
 Abschn.~\ref{sec:ocrpipeline}: Multi-Engine Kaskade (PaddleOCR, Tesseract, EasyOCR) &
-Abschn.~\ref{subsec:e2e_test_eval}: 3 OCR-bedingte Fehler (0.47\% Fehlerrate) \\
+Abschn.~\ref{subsec:e2e_test_eval}: 27 OCR-bedingte Fehler (1.83\% Fehlerrate) \\
 \hline
 
 \hyperref[req:FA-005]{FA-005} & OCR-Robustheit (Rauschen, Rotation) &
@@ -1078,7 +1078,7 @@ Abschn.~\ref{subsec:e2e_test_eval}: 171/172 korrekt (99.42\%), Tab.~\ref{tab:sig
 
 \hyperref[req:FA-007]{FA-007} & Symbol-Koordinaten-Verknüpfung &
 Abschn.~\ref{sec:intelligentesymboltextverknüpfung}: Proximity-basiertes Linking &
-Abschn.~\ref{subsec:e2e_test_eval}: 642/644 Verknüpfungen korrekt (99.69\%) \\
+Abschn.~\ref{subsec:e2e_test_eval}: Verknüpfungen mit hoher Genauigkeit \\
 \hline
 
 \hyperref[req:FA-008]{FA-008} & Manuelle Korrektur (Human-in-the-Loop) &
@@ -1144,7 +1144,7 @@ Abschn.~\ref{subsec:nfa_validation}: Lizenzprüfung dokumentiert \\
 
 \hyperref[req:NFA-003]{NFA-003} & Gesamtgenauigkeit $\geq$ 85\% &
 Gesamte Pipeline (Kap.~\ref{chap:implementierung}) &
-Abschn.~\ref{subsec:e2e_test_eval}: 98.76\% erreicht \\
+Abschn.~\ref{subsec:e2e_test_eval}: 97.22\% erreicht \\
 \hline
 
 \hyperref[req:NFA-004]{NFA-004} & Robustheit (fehlerhafte Eingaben) &
@@ -1203,10 +1203,10 @@ Tabelle~\ref{tab:alle_anforderungen} fasst die Erfüllung aller in Kapitel~\ref{
 FA-001 & Erkennungsrate $\geq$ 90\% & \checkmark (95.7\% Val, 100\% Test) \\
 FA-002 & Rotationsinvarianz & \checkmark (100\% bei $|\theta|>30^\circ$) \\
 FA-003 & Zielobjekte detektierbar & \checkmark \\
-FA-004 & OCR-Genauigkeit & \checkmark (integriert in 98.76\% E2E) \\
+FA-004 & OCR-Genauigkeit & \checkmark (integriert in 97.22\% E2E) \\
 FA-005 & OCR-Robustheit & \checkmark (100\% bei $|\theta|>30^\circ$) \\
 FA-006 & Fahrtrichtungsdetektion & \checkmark (99.42\%) \\
-FA-007 & Symbol-Koordinaten-Verknüpfung & \checkmark (99.69\%) \\
+FA-007 & Symbol-Koordinaten-Verknüpfung & \checkmark (99.12\%) \\
 FA-008 & Manuelle Korrektur & \checkmark \\
 FA-009 & Excel-Integration & \checkmark \\
 FA-010 & Strukturerhalt & \checkmark \\
@@ -1219,7 +1219,7 @@ FA-014 & Modularität & \checkmark \\
 \hline
 NFA-001 & On-Premise-Verarbeitung & \checkmark \\
 NFA-002 & Lizenzkonformität & \checkmark \\
-NFA-003 & Gesamtsystem-Genauigkeit $\geq$ 85\% & \checkmark (98.76\%) \\
+NFA-003 & Gesamtsystem-Genauigkeit $\geq$ 85\% & \checkmark (97.22\%) \\
 NFA-004 & Robustheit & \checkmark \\
 NFA-005 & Prüfbarkeit & \checkmark \\
 NFA-006 & Prozessoptimierung & \checkmark (75\% Zeitersparnis) \\
@@ -1250,11 +1250,11 @@ Die systematische Evaluation des entwickelten Prototyps auf einem unabhängigen 
 
 \textbf{Symbol-Text-Verknüpfung:}
 \begin{itemize}
-    \item Sehr hohe Linking-Genauigkeit: 642 von 644 Verknüpfungen korrekt (99.69\%)
-    \item 2 Linking-Fehler aufgetreten:
+    \item Sehr hohe Linking-Genauigkeit bei Symbol-Koordinaten-Verknüpfungen
+    \item 13 Linking-Fehler aufgetreten:
     \begin{itemize}
-        \item 1× GM-Koordinate an atypischer Position (rechts statt unterhalb)
-        \item 1× Fahrtrichtung nicht abgeleitet (fehlende GKS-Detektion)
+        \item 8× Falsche Koordinatenzuordnung (weichengruppenende, haltepunkt, gks, isolierstoß)
+        \item 5× Koordinaten vertauscht zwischen benachbarten Symbolen
     \end{itemize}
     \item Fahrtrichtungsdetektion: 171 von 172 Signalen korrekt (99.42\%)
     \item Proximity-basierter Algorithmus robust für typische Layouts
@@ -1262,9 +1262,9 @@ Die systematische Evaluation des entwickelten Prototyps auf einem unabhängigen 
 
 \textbf{End-to-End Systemleistung:}
 \begin{itemize}
-    \item Gesamtgenauigkeit von \textbf{98.76\%} auf dem Testsatz übertrifft Zielwert von 85\% (NFA-003) deutlich
-    \item Nur 8 von 644 Objekten (1.24\%) erforderten Korrektur
-    \item Fehlerverteilung: 3 YOLO-bezogen (37.5\%), 3 OCR-bezogen (37.5\%), 2 Linking-bezogen (25.0\%)
+    \item Gesamtgenauigkeit von \textbf{97.22\%} auf dem Testsatz übertrifft Zielwert von 85\% (NFA-003) deutlich
+    \item Nur 41 von 1473 Objekten (2.78\%) erforderten Korrektur
+    \item Fehlerverteilung: 27 OCR-Fehler (65.9\%), 13 Linking-Fehler (31.7\%), 1 Detection-Fehler (2.4\%)
     \item Stabile Leistung über alle Komplexitätsstufen (98.23\% -- 99.31\%)
     \item Für produktiven Einsatz auf diversen Plänen wird realistische Genauigkeit von 90--95\% erwartet
     \item Umfangreiche Validierungs- und Korrekturwerkzeuge reduzieren Prüfaufwand um 85\% durch gezielte Fehleridentifikation
