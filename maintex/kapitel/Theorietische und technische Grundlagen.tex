@@ -576,7 +576,7 @@ wird in Kapitel~\ref{chap:konzeption} dokumentiert.
 
 Die beschriebenen OBB-Eigenschaften sind besonders relevant für die automatisierte Analyse von Gleisplänen. Technische Zeichnungen dieses Typs weisen drei charakteristische Merkmale auf, die den Einsatz orientierter Bounding Boxes notwendig machen. Symbole folgen der Topologie der Gleisachsen und können daher in jedem Winkel $\theta \in [0^\circ, 360^\circ)$ vorliegen. In Bahnhöfen und Weichenstraßen treten Symbole räumlich konzentriert auf, wobei AABB-basierte NMS zu Fehlunterdrückungen führen würde. Die vom OBB-Detektor gelieferte Rotation $\theta$ ist für nachgelagerte Prozesse wie die orientierungsabhängige OCR (vgl. Kapitel 6.3) essentiell, da Textlabels entsprechend ihrer Ausrichtung verarbeitet werden müssen.
 
-Die in Kapitel 4 definierten funktionalen Anforderungen an die Symbolerkennung erfordern daher zwingend den Einsatz rotationsinvarianter Detektionsverfahren. Die in Kapitel 6 beschriebene Implementierung nutzt YOLOv8-OBB mit Standard-Konfiguration für die Detektion von 13 domänenspezifischen Symbolklassen (vgl. Tabelle~\ref{tab:kernklassen} und \ref{tab:auxiliarklassen} in Kapitel 4).
+Die in Kapitel 4 definierten funktionalen Anforderungen an die Symbolerkennung erfordern daher zwingend den Einsatz rotationsinvarianter Detektionsverfahren. Die in Kapitel 6 beschriebene Implementierung nutzt YOLOv8-OBB mit Standard-Konfiguration für die Detektion von 13 domänenspezifischen Symbolklassen (vgl. Tabelle~\ref{tab:symbolklassen} in Kapitel 4).
 
 \section{Optical Character Recognition (OCR)}
 \label{sec:ocr}
@@ -1580,7 +1580,7 @@ Das Konzept der Änderungserkennung ist Ingenieuren aus dem Stücklistenwesen be
 \begin{itemize}
     \item \textbf{Neue Positionen}: Bauteile, die hinzugekommen sind
     \item \textbf{Entfallene Positionen}: Bauteile, die entfernt wurden
-    \item \textbf{Geänderte Positionen}: Bauteile mit modifizierten Attributen (Menge, Material, etc.)
+    \item \textbf{Verschobene Positionen}: Bauteile an geänderter Einbauposition
 \end{itemize}
 
 Dieselbe Logik lässt sich auf technische Zeichnungen übertragen.
@@ -1675,12 +1675,10 @@ Abbildung~\ref{fig:revision_example} zeigt typische Änderungen zwischen zwei Do
 \hline
 \textbf{Entfernung} & Element existiert nur in der alten Version & Ein Haltepunkt wurde stillgelegt \\
 \hline
-\textbf{Modifikation} & Element existiert in beiden Versionen, aber mit geänderten Attributen & Die Bezeichnung eines Signals wurde korrigiert \\
-\hline
-\textbf{Verschiebung} & Element existiert in beiden Versionen, aber an unterschiedlicher Position & Ein Symbol wurde im Plan neu platziert \\
+\textbf{Verschiebung} & Element existiert in beiden Versionen, aber mit geänderter Kilometrierung & Die Streckenposition eines Signals wurde korrigiert \\
 \hline
 \end{tabular}
-\caption{Die vier Grundtypen von Änderungen zwischen Dokumentversionen}
+\caption{Die drei Grundtypen von Änderungen zwischen Dokumentversionen}
 \label{tab:change_categories}
 \end{table}
 
@@ -1688,8 +1686,63 @@ Abbildung~\ref{fig:revision_example} zeigt typische Änderungen zwischen zwei Do
 
 Um Änderungen automatisch zu erkennen, muss zunächst festgestellt werden, welche Elemente in beiden Versionen \enquote{dasselbe} Objekt darstellen. Dies erfolgt über \textbf{eindeutige Identifikationsmerkmale} -- vergleichbar mit Artikelnummern in einer Stückliste oder Sachnummern in einem PDM-System \cite{stark2022}.
 
-Für technische Zeichnungen können solche Identifikatoren aus den Objektattributen abgeleitet werden. Ein Signal mit der Bezeichnung \enquote{AS102} erhält beispielsweise eine eindeutige Kennung, die aus Objekttyp und Bezeichnung zusammengesetzt wird. Mit solchen Identifikatoren lässt sich die Änderungserkennung auf Mengenoperationen zurückführen: Elemente nur in Version A wurden \textit{entfernt}, Elemente nur in Version B wurden \textit{hinzugefügt}, und Elemente in beiden Versionen sind entweder \textit{unverändert} oder \textit{modifiziert}. Die algorithmische Umsetzung wird in Kapitel~\ref{chap:implementierung}, Abschnitt~\ref{subsec:vergleichundänderung} beschrieben.
+Für technische Zeichnungen können solche Identifikatoren aus den Objektattributen abgeleitet werden. Ein Signal mit der Bezeichnung \enquote{AS102} erhält beispielsweise eine eindeutige Kennung, die aus Objekttyp und Bezeichnung zusammengesetzt wird. Die algorithmische Umsetzung wird in Kapitel~\ref{chap:implementierung}, Abschnitt~\ref{subsec:vergleichundänderung} beschrieben.
 
+\subsection{Das Zuordnungsproblem und der Hungarian Algorithm}
+\label{subsec:hungarian_algorithm}
+
+Die Kernherausforderung bei der Änderungserkennung besteht in der optimalen Zuordnung von Elementen zwischen zwei Versionen. Bei eindeutigen Identifikatoren (z.\,B. Signalbezeichnungen) ist die Zuordnung trivial. Problematisch wird es jedoch bei Elementen ohne eindeutige Bezeichner oder bei Duplikaten -- mehrere gleichartige Elemente an ähnlichen Positionen.
+
+\subsubsection{Das Assignment Problem}
+
+Formal handelt es sich um ein \textit{Assignment Problem} (Zuordnungsproblem): Gegeben seien zwei Mengen $A = \{a_1, \ldots, a_m\}$ (Elemente der Altversion) und $B = \{b_1, \ldots, b_n\}$ (Elemente der Neuversion) sowie eine Kostenmatrix $C \in \mathbb{R}^{m \times n}$, wobei $c_{ij}$ die \enquote{Kosten} (oder negativen Ähnlichkeitswert) für die Zuordnung von $a_i$ zu $b_j$ angibt. Gesucht ist eine Zuordnung, die die Gesamtkosten minimiert \cite{Kuhn1955, Munkres1957}.
+
+\subsubsection{Greedy-Ansatz und dessen Limitierungen}
+
+Ein naiver Greedy-Ansatz würde für jedes Element der Altversion iterativ den besten noch verfügbaren Partner wählen:
+
+\begin{equation}
+\text{match}(a_i) = \arg\max_{b_j \in B_{\text{verfügbar}}} \text{score}(a_i, b_j)
+\end{equation}
+
+Dieser Ansatz ist jedoch \textbf{nicht optimal}, da frühe Entscheidungen spätere Zuordnungsmöglichkeiten einschränken können. Bei Duplikaten (z.\,B. zwei Sverbinder an Position km 0.054) können alle Paare ähnliche Scores erhalten, und die reihenfolgeabhängige Greedy-Auswahl führt zu suboptimalen oder falschen Zuordnungen \cite{Burkard2012}.
+
+\subsubsection{Der Hungarian Algorithm}
+
+Der \textit{Hungarian Algorithm}, auch bekannt als \textit{Kuhn-Munkres-Algorithmus}, löst das Assignment Problem in polynomieller Zeit $\mathcal{O}(n^3)$ und garantiert eine \textbf{global optimale} Zuordnung \cite{Kuhn1955, Munkres1957}.
+
+Der Algorithmus basiert auf dem Konzept der \textit{augmentierenden Pfade} und transformiert die Kostenmatrix iterativ, bis eine optimale Zuordnung gefunden wird. Die wesentlichen Schritte sind:
+
+\begin{enumerate}
+    \item \textbf{Matrixreduktion}: Subtraktion des Zeilenminimums von jeder Zeile, dann des Spaltenminimums von jeder Spalte
+    \item \textbf{Nullenüberdeckung}: Finden einer minimalen Anzahl von Linien, die alle Nullen überdecken
+    \item \textbf{Optimierung}: Falls die Anzahl der Linien kleiner als $n$, wird die Matrix weiter transformiert
+    \item \textbf{Zuordnung}: Wenn $n$ Linien benötigt werden, existiert eine optimale Zuordnung über die Nullen
+\end{enumerate}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{|l|c|c|}
+\hline
+\textbf{Eigenschaft} & \textbf{Greedy} & \textbf{Hungarian} \\
+\hline
+Zeitkomplexität & $\mathcal{O}(n^2)$ & $\mathcal{O}(n^3)$ \\
+\hline
+Optimalität & Lokal & \textbf{Global} \\
+\hline
+Duplikatbehandlung & Reihenfolgeabhängig & \textbf{Optimal} \\
+\hline
+Falsche Zuordnungen & Häufig bei Duplikaten & Minimiert \\
+\hline
+\end{tabular}
+\caption{Vergleich von Greedy- und Hungarian-Algorithmus für das Zuordnungsproblem}
+\label{tab:greedy_vs_hungarian}
+\end{table}
+
+\subsubsection{Anwendung auf die Änderungserkennung}
+
+Für die Änderungserkennung in technischen Zeichnungen wird der Hungarian Algorithm klassenweise angewendet: Für jede Objektklasse (Signale, GKS, Koordinaten, etc.) wird eine separate Kostenmatrix erstellt, wobei die Kosten aus der Ähnlichkeit der Elemente (Textübereinstimmung, räumliche Nähe, Koordinatendifferenz) abgeleitet werden. Zuordnungen mit einem Score unterhalb eines Schwellenwerts werden verworfen -- die entsprechenden Elemente gelten als hinzugefügt bzw. entfernt.
 
 %==============================================================================
 \section{Konfigurationsbasierte Systemanpassung}
@@ -2072,12 +2125,12 @@ Die in diesem Kapitel dargestellten theoretischen Konzepte bilden das Fundament 
     \item \textbf{Objekterkennung} (Abschnitt~\ref{sec:obb}): Neuronale Netze für die Detektion von Symbolen
     \item \textbf{Texterkennung} (Abschnitt~\ref{sec:ocr}): OCR-Verfahren für die Extraktion von Beschriftungen
     \item \textbf{Räumliche Verknüpfung} (Abschnitt~\ref{sec:spatial_relations}): Proximale Algorithmen mit lokalen Koordinatensystemen
-    \item \textbf{Änderungserkennung} (Abschnitt~\ref{sec:change_detection}): Mengenbasierter Vergleich von Dokumentversionen
+    \item \textbf{Änderungserkennung} (Abschnitt~\ref{sec:change_detection}): Hungarian Algorithm für optimale Elementzuordnung zwischen Dokumentversionen
     \item \textbf{Konfigurierbarkeit} (Abschnitt~\ref{sec:config_based_adaptation}): Trennung von Code und Domänenwissen
     \item \textbf{Qualitätssicherung} (Abschnitt~\ref{sec:traceability_qa}): Rückverfolgbarkeit und mehrstufige Validierung
 \end{itemize}
 
-Die vorgestellten theoretischen Konzepte adressieren gezielt die in Kapitel~\ref{chap:einleitung} beschriebene Problemstellung: Während die manuelle Übertragung technischer Pläne in strukturierte Datenformate zeitintensiv, fehleranfällig und kaum skalierbar ist, ermöglichen Deep-Learning-basierte Objekterkennungsverfahren in Kombination mit OCR-Technologien die automatisierte Extraktion von Symbolen und Textinformationen. Die räumliche Verknüpfung dieser Entitäten durch proximale Algorithmen bildet die Grundlage für eine semantische Interpretation, während die mengenbasierte Änderungserkennung erstmals eine automatisierte Verfolgung von Planmodifikationen ermöglicht. Besonders bedeutsam ist die durchgängige Rückverfolgbarkeit: Durch die Speicherung von Quellenreferenzen und Positionsangaben entsteht eine bidirektionale Verknüpfung zwischen extrahierten Daten und ihrer grafischen Repräsentation im Originaldokument – ein wesentlicher Unterschied zu rein manuellen Workflows, bei denen diese Verknüpfung implizit bleibt und die Validierung erheblich erschwert.
+Die vorgestellten theoretischen Konzepte adressieren gezielt die in Kapitel~\ref{chap:einleitung} beschriebene Problemstellung: Während die manuelle Übertragung technischer Pläne in strukturierte Datenformate zeitintensiv, fehleranfällig und kaum skalierbar ist, ermöglichen Deep-Learning-basierte Objekterkennungsverfahren in Kombination mit OCR-Technologien die automatisierte Extraktion von Symbolen und Textinformationen. Die räumliche Verknüpfung dieser Entitäten durch proximale Algorithmen bildet die Grundlage für eine semantische Interpretation, während der Hungarian Algorithm für die Änderungserkennung erstmals eine optimale automatisierte Zuordnung und Verfolgung von Planänderungen ermöglicht. Besonders bedeutsam ist die durchgängige Rückverfolgbarkeit: Durch die Speicherung von Quellenreferenzen und Positionsangaben entsteht eine bidirektionale Verknüpfung zwischen extrahierten Daten und ihrer grafischen Repräsentation im Originaldokument – ein wesentlicher Unterschied zu rein manuellen Workflows, bei denen diese Verknüpfung implizit bleibt und die Validierung erheblich erschwert.
 
 Diese theoretischen Grundlagen schaffen damit die Voraussetzungen für ein hybrides System, das die Stärken automatischer Verfahren (Geschwindigkeit, Konsistenz, Skalierbarkeit) mit menschlicher Expertise (Domänenwissen, Plausibilitätsprüfung) kombiniert. Die konfigurationsbasierte Anpassbarkeit gewährleistet dabei, dass das System auf wechselnde Anforderungen reagieren kann, ohne den Programmcode zu verändern – ein entscheidender Faktor für die praktische Anwendbarkeit in industriellen Kontexten mit heterogenen Plandarstellungen und kundenspezifischen Symbolbibliotheken.
 

@@ -15,68 +15,11 @@ Eine zentrale Anforderung ist die zuverlässige Detektion bahntechnischer Symbol
 
     \item \textbf{FA-002}\label{req:FA-002} \textbf{Rotationsinvarianz:} Wenn Symbole in beliebigen Winkeln ($0^\circ$ bis $360^\circ$) orientiert sind, \textbf{muss} der Prototyp in der Lage sein, diese Objekte korrekt zu \textbf{klassifizieren} und deren Rotationswinkel mit einer Genauigkeit von $\pm 5^\circ$ zu \textbf{bestimmen}.
 
-    \item \textbf{FA-003}\label{req:FA-003} \textbf{Detektionsziele:} Der Prototyp \textbf{muss} die in Tabelle~\ref{tab:kernklassen} spezifizierten Kernklassen \textbf{detektieren}. Zusätzlich \textbf{soll} der Prototyp die in Tabelle~\ref{tab:auxiliarklassen} definierten Auxiliarklassen \textbf{detektieren}. Diese Zweiteilung ergibt sich aus der unterschiedlichen Relevanz: Kernklassen sind für den produktiven Planungsprozess unverzichtbar und werden quantitativ evaluiert, während Auxiliarklassen die Erweiterbarkeit des Systems demonstrieren und für spezifische Anwendungsfälle vorgesehen sind.
-\end{itemize} 
-\subsubsection{Kernklassen (produktionsrelevant)}
+    \item \textbf{FA-003}\label{req:FA-003} \textbf{Detektionsziele:} Der Prototyp \textbf{muss} 13 Symbolklassen detektieren (Tabelle~\ref{tab:symbolklassen}). Die Klasse \textit{coordinate} liefert Positionsinformationen (Kilometrierung), die den jeweiligen anderen Klassen zugeordnet werden. Alle 13 Klassen werden in Kapitel~\ref{chap:evaluation} quantitativ evaluiert.
+\end{itemize}
+\subsubsection{Symbolklassen}
 
-Die folgenden fünf Objektklassen bilden den Kern der Extraktionsaufgabe und werden 
-in Kapitel~\ref{chap:evaluation} quantitativ evaluiert:
-
-\begin{longtable}{|p{5cm}|p{7cm}|}
-    \hline
-    \textbf{Objektklasse} & \textbf{Symbol} \\
-    \hline
-    \endhead
-
-    Signal & 
-    \parbox[c]{7cm}{\centering
-        \vspace{0.2cm}
-        \includegraphics[width=2cm]{images/symbols/Signal2.png}
-        \vspace{0.2cm}
-    } \\
-    \hline 
-
-    Koordinate (Positionsangabe) & 
-    \parbox[c]{7cm}{\centering
-        \vspace{0.2cm}
-        \includegraphics[width=2cm]{images/symbols/Position.png}
-        \vspace{0.2cm}
-    } \\
-    \hline
-
-    GKS (festkodiert) & 
-    \parbox[c]{7cm}{\centering
-        \vspace{0.2cm}
-        \includegraphics[width=2cm]{images/symbols/GKS1.png}
-        \vspace{0.2cm}
-    } \\
-    \hline
-
-    GKS (gesteuert) & 
-    \parbox[c]{7cm}{\centering
-        \vspace{0.2cm}
-        \includegraphics[width=2cm]{images/symbols/GKS2.png}
-        \vspace{0.2cm}
-    } \\
-    \hline
-
-    Gleismagnet & 
-    \parbox[c]{7cm}{\centering
-        \vspace{0.2cm}
-        \includegraphics[width=2cm]{images/symbols/gleismagnet.png}
-        \vspace{0.2cm}
-    } \\
-    \hline
-
-    \caption{Kernklassen für die Datenextraktion (vollständig evaluiert)}
-    \label{tab:kernklassen}
-\end{longtable}
-
-\subsubsection{Auxiliarklassen (Erweiterbarkeit)}
-
-Zur Demonstration der Modularität und Erweiterbarkeit des Prototyps (vgl. Anforderung FA-014) werden zusätzlich acht weitere Objektklassen implementiert. Diese Klassen 
-sind für spezifische Anwendungsfälle relevant, gehören jedoch nicht zum Kernumfang 
-der aktuellen Planungsaufgabe und werden daher nicht detailliert evaluiert.
+Die folgenden 13 Objektklassen bilden die Detektionsziele des Prototyps. Die Klasse \textit{coordinate} nimmt dabei eine besondere Rolle ein: Sie liefert die Positionsinformation (Kilometrierung), die den anderen 12 Klassen zugeordnet wird:
 
 \begin{longtable}{|p{5cm}|p{7.5cm}|}
     \hline
@@ -84,15 +27,55 @@ der aktuellen Planungsaufgabe und werden daher nicht detailliert evaluiert.
     \hline
     \endhead
 
-    Weichenblock & 
+    Koordinate (Positionsangabe) &
+    \parbox[c]{7cm}{\centering
+        \vspace{0.2cm}
+        \includegraphics[width=2cm]{images/symbols/Position.png}
+        \vspace{0.2cm}
+    } \\
+    \hline
+
+    Signal &
+    \parbox[c]{7cm}{\centering
+        \vspace{0.2cm}
+        \includegraphics[width=2cm]{images/symbols/Signal2.png}
+        \vspace{0.2cm}
+    } \\
+    \hline
+
+    GKS (festkodiert) &
+    \parbox[c]{7cm}{\centering
+        \vspace{0.2cm}
+        \includegraphics[width=2cm]{images/symbols/GKS1.png}
+        \vspace{0.2cm}
+    } \\
+    \hline
+
+    GKS (gesteuert) &
+    \parbox[c]{7cm}{\centering
+        \vspace{0.2cm}
+        \includegraphics[width=2cm]{images/symbols/GKS2.png}
+        \vspace{0.2cm}
+    } \\
+    \hline
+
+    Gleismagnet &
+    \parbox[c]{7cm}{\centering
+        \vspace{0.2cm}
+        \includegraphics[width=2cm]{images/symbols/gleismagnet.png}
+        \vspace{0.2cm}
+    } \\
+    \hline
+
+    Weichenblock &
     \parbox[c]{7cm}{\centering
         \vspace{0.2cm}
         \includegraphics[width=3cm]{images/symbols/Weiche2.png}
         \vspace{0.2cm}
     } \\
-    \hline 
+    \hline
 
-    Haltepunkt & 
+    Haltepunkt &
     \parbox[c]{7cm}{\centering
         \vspace{0.2cm}
         \includegraphics[width=2cm]{images/symbols/haltepunkt3.png}
@@ -100,7 +83,7 @@ der aktuellen Planungsaufgabe und werden daher nicht detailliert evaluiert.
     } \\
     \hline
 
-    Isolierstoß & 
+    Isolierstoß &
     \parbox[c]{7cm}{\centering
         \vspace{0.2cm}
         \includegraphics[width=1cm]{images/symbols/Isolierstoß§.png}
@@ -108,7 +91,7 @@ der aktuellen Planungsaufgabe und werden daher nicht detailliert evaluiert.
     } \\
     \hline
 
-    S-Verbinder & 
+    S-Verbinder &
     \parbox[c]{7cm}{\centering
         \vspace{0.2cm}
         \includegraphics[width=3cm]{images/symbols/SVERBINDER.png}
@@ -116,7 +99,7 @@ der aktuellen Planungsaufgabe und werden daher nicht detailliert evaluiert.
     } \\
     \hline
 
-    Prellbock & 
+    Prellbock &
     \parbox[c]{7cm}{\centering
         \vspace{0.2cm}
         \includegraphics[width=2cm]{images/symbols/prellblock.png}
@@ -124,7 +107,7 @@ der aktuellen Planungsaufgabe und werden daher nicht detailliert evaluiert.
     } \\
     \hline
 
-    Haltetafel & 
+    Haltetafel &
     \parbox[c]{7cm}{\centering
         \vspace{0.2cm}
         \includegraphics[width=3cm]{images/symbols/Haltetafel.png}
@@ -132,7 +115,7 @@ der aktuellen Planungsaufgabe und werden daher nicht detailliert evaluiert.
     } \\
     \hline
 
-    Ende Weichen & 
+    Ende Weichen &
     \parbox[c]{7cm}{\centering
         \vspace{0.2cm}
         \includegraphics[width=3cm]{images/symbols/weichenende.png}
@@ -140,7 +123,7 @@ der aktuellen Planungsaufgabe und werden daher nicht detailliert evaluiert.
     } \\
     \hline
 
-    Weichengruppenende & 
+    Weichengruppenende &
     \parbox[c]{7cm}{\centering
         \vspace{0.2cm}
         \includegraphics[width=3cm]{images/symbols/weichengruppeende.png}
@@ -148,12 +131,9 @@ der aktuellen Planungsaufgabe und werden daher nicht detailliert evaluiert.
     } \\
     \hline
 
-    \caption{Auxiliarklassen zur Demonstration der Erweiterbarkeit (nicht evaluiert)}
-    \label{tab:auxiliarklassen}
+    \caption{13 Symbolklassen für die Datenextraktion}
+    \label{tab:symbolklassen}
 \end{longtable}
-
-\textbf{Hinweis:} Die Auxiliarklassen werden im Rahmen des YOLOv8-Trainings (Abschnitt~\ref{sec:yolo_implementation}) mit annotiert und erreichen vergleichbare Detektionsleistungen wie die Kernklassen. Die Fokussierung der End-to-End-Evaluation auf die Kernklassen erfolgte aufgrund der notwendigen Eingrenzung des Evaluationsumfangs. Bemerkenswert ist, dass das Modell auch visuell sehr ähnliche Symbole (z.\,B. Haltepunkt-Varianten H, Weichen W, Weichengruppen WG) zuverlässig unterscheiden kann. Eine detaillierte Analyse 
-dieser Feinunterscheidungen war jedoch nicht Gegenstand dieser Arbeit.
 
 \subsection{Texterkennung und OCR-Integration}
 \begin{itemize}

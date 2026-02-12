@@ -569,24 +569,23 @@ Die Änderungserkennung basiert auf einem zweistufigen Vergleichsansatz:
         
         Beispiel: Ein Signal mit der Bezeichnung \enquote{AS102} erhält die UID \texttt{signal\_AS102}.
   
-  \item \textbf{Differenzbildung}: Durch Mengenoperationen auf den UID-Mengen werden 
-        Änderungen kategorisiert:
+  \item \textbf{Differenzbildung}: Mittels Hungarian Algorithm werden Elemente optimal
+        zugeordnet und Änderungen kategorisiert:
         \begin{itemize}
           \item \textbf{Hinzugefügt}: Objekte, die nur in der neuen Version existieren
           \item \textbf{Entfernt}: Objekte, die nur in der alten Version existieren
-          \item \textbf{Modifiziert}: Objekte mit gleicher UID, aber unterschiedlichen 
-                Attributen (Position, Text)
+          \item \textbf{Verschoben}: Objekte mit geänderter Kilometrierung (coord\_value)
         \end{itemize}
 \end{enumerate}
 
-\subsubsection{Hybrid-Matching für Positionsänderungen}
+\subsubsection{Optimale Zuordnung mittels Hungarian Algorithm}
 
-Wenn ein Symbol räumlich verschoben wurde, kann die UID-basierte Zuordnung versagen. 
-Daher wird ein Hybrid-Ansatz verwendet:
+Für die Zuordnung von Elementen zwischen zwei Planversionen wird der Hungarian Algorithm
+eingesetzt, der eine global optimale Zuweisung garantiert. Dies ist besonders wichtig bei:
 
 \begin{itemize}
-  \item \textbf{Primär}: Räumlicher Abgleich über OBB-Überlappung (IoU)
-  \item \textbf{Fallback}: Textbasierter Abgleich über Ähnlichkeitsmetriken
+  \item \textbf{Duplikaten}: Mehrere gleichartige Elemente an ähnlichen Positionen
+  \item \textbf{Fehlenden Bezeichnern}: Symbol-Klassen ohne eindeutige Textkennung
 \end{itemize}
 
 Die Ergebnisse werden als strukturierter Änderungsbericht exportiert, der die Art der 

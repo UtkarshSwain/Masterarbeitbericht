@@ -111,7 +111,7 @@ Für eine Übertragung auf andere Bahnbetreiber oder Sicherungssysteme wäre erf
     \item Modifikation der Linking-Heuristiken bei abweichenden Konventionen
 \end{itemize}
 
-Dies ist jedoch eine konzeptionelle Limitation, keine technische: Die modulare Architektur (FA-014) wurde explizit so designed, dass solche Anpassungen durch Austausch von Konfigurationsdateien und Modell-Gewichten möglich sind, ohne die Kernlogik zu ändern. Die erfolgreiche Integration von 8 Auxiliarklassen zusätzlich zu den 5 Kernklassen demonstriert diese Erweiterbarkeit.
+Dies ist jedoch eine konzeptionelle Limitation, keine technische: Die modulare Architektur (FA-014) wurde explizit so designed, dass solche Anpassungen durch Austausch von Konfigurationsdateien und Modell-Gewichten möglich sind, ohne die Kernlogik zu ändern. Die erfolgreiche Integration aller 13~Symbolklassen demonstriert diese Erweiterbarkeit.
 
 \textbf{Auflösungsabhängigkeit (Kritische Limitation):} Die starke Abhängigkeit von der 500 DPI Auflösung ist eine fundamentale technische Limitation. Wie in Abschnitt~\ref{subsec:datenformate} erläutert, wurde das YOLO-Modell ausschließlich auf bei 500 DPI gerenderten Bildausschnitten trainiert. Bei abweichenden Auflösungen führt dies zu:
 \begin{itemize}
@@ -151,7 +151,7 @@ Die Evaluation und der praktische Einsatz des Prototyps haben mehrere fundamenta
     \item \textbf{Historische Pläne (vor 1990)}: Handgezeichnete Symbole mit hoher Varianz -- Erkennungsrate unter 50\%.
 \end{itemize}
 
-\textbf{Symbolklassen-Abdeckung:} Die 13 implementierten Symbolklassen (5 Kern + 8 Auxiliar) decken die wichtigsten Elemente für Siemens Mobility Trainguard MT Projekte ab. Jedoch existieren zahlreiche weitere Bahnelemente, die aktuell nicht erkannt werden:
+\textbf{Symbolklassen-Abdeckung:} Die 13 implementierten Symbolklassen decken die wichtigsten Elemente für Siemens Mobility Trainguard MT Projekte ab. Jedoch existieren zahlreiche weitere Bahnelemente, die aktuell nicht erkannt werden:
 
 \begin{itemize}
     \item Spezielle Sicherungselemente: Entgleisungsschutzweichen, Gleissperren, Radlenker
@@ -915,7 +915,7 @@ Die erreichten Metriken (Precision: 97.5\%, Recall: 95.7\%, mAP@0.5: 98.4\%) üb
     \item \textbf{Regex-basierte Validierung:} Extrahierte Texte werden gegen domänenspezifische Muster geprüft (Signal: \texttt{[A-Z]\{1,4\}\textbackslash d\{1,4\}}, Koordinate: \texttt{\textbackslash d+[.,]\textbackslash d+}), um fehlerhafte Zuordnungen zu erkennen.
 \end{enumerate}
 
-Mit nur 2 Linking-Fehlern bei 644 Objekten (0.31\% Fehlerrate) demonstriert dieser Ansatz, dass auch bei hoher Objektdichte -- die Testpläne enthielten durchschnittlich 92 Kernklassen-Objekte pro Plan -- eine zuverlässige semantische Zuordnung möglich ist.
+Mit nur 2 Linking-Fehlern bei 644 Objekten (0.31\% Fehlerrate) demonstriert dieser Ansatz, dass auch bei hoher Objektdichte -- die Testpläne enthielten durchschnittlich 92 Objekte pro Plan -- eine zuverlässige semantische Zuordnung möglich ist.
 
 \subsection{Teilforschungsfrage 3 (TF3)}
 
@@ -933,7 +933,7 @@ Mit nur 2 Linking-Fehlern bei 644 Objekten (0.31\% Fehlerrate) demonstriert dies
     \item \textbf{Erweiterbare Exportschicht:} Die Trennung von Datenextraktion und -export ermöglicht die Hinzufügung neuer Ausgabeformate ohne Modifikation der Kernpipeline.
 \end{itemize}
 
-Die erfolgreiche Integration von 8 Auxiliarklassen (zusätzlich zu den 5 Kernklassen) ohne architektonische Änderungen validiert dieses Design. Die Erweiterung erforderte lediglich: (1) Annotation und Training des YOLO-Modells, (2) Definition klassenspezifischer Linking-Parameter, (3) Hinzufügung von Regex-Mustern für die Textvalidierung.
+Die erfolgreiche Integration aller 13~Symbolklassen validiert dieses Design. Die Hinzufügung neuer Klassen erfordert lediglich: (1) Annotation und Training des YOLO-Modells, (2) Definition klassenspezifischer Linking-Parameter, (3) Hinzufügung von Regex-Mustern für die Textvalidierung.
 
 \subsection{Teilforschungsfrage 4 (TF4)}
 
@@ -950,11 +950,10 @@ Die erfolgreiche Integration von 8 Auxiliarklassen (zusätzlich zu den 5 Kernkla
     \begin{itemize}
         \item \textit{Hinzugefügt}: Objekt in neuer Version vorhanden, nicht in alter
         \item \textit{Gelöscht}: Objekt in alter Version vorhanden, nicht in neuer
-        \item \textit{Verschoben}: Position geändert (Schwellenwert: > 50 Pixel)
-        \item \textit{Attributänderung}: Bezeichnung, Koordinate oder andere Attribute modifiziert
+        \item \textit{Verschoben}: Kilometrierung geändert (basierend auf coord\_value)
     \end{itemize}
 
-    \item \textbf{Visualisierung:} Die UI stellt Änderungen durch farbkodierte Overlays dar (grün: hinzugefügt, rot: gelöscht, orange: modifiziert) mit tabellarischer Zusammenfassung und Jump-to-Detection-Funktionalität.
+    \item \textbf{Visualisierung:} Die UI stellt Änderungen durch farbkodierte Overlays dar (grün: hinzugefügt, rot: gelöscht, gelb: verschoben) mit tabellarischer Zusammenfassung und Jump-to-Detection-Funktionalität.
 \end{enumerate}
 
 Die Validierung anhand zweier realer Planversionen mit 41 manuell verifizierten Änderungen bestätigt die Funktionsfähigkeit des Ansatzes. Der strukturbasierte Vergleich ist robuster gegenüber visuellen Variationen (Scanqualität, Kompressionsartefakte) als pixelbasierte Differenzbildung und ermöglicht die Kategorisierung auf semantischer Ebene.

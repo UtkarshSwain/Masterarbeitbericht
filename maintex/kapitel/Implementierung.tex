@@ -115,7 +115,7 @@ Symbolklassen erfordert lediglich Anpassungen in \texttt{core/detection.py} und
 %   [3] Augmentation purpose clarified (rotation robustness + class balance)
 %   [4] Coordinate dominance explained
 %   [5] S-Verbinder/Isolierstoß plausibility addressed
-%   [6] Auxiliarklassen as deliberate scope limitation
+%   [6] All 13 classes evaluated (coordinate as linking class)
 %   [7] Training section added with full hyperparameters + convergence (YOLOv8l-OBB)
 % =============================================================================
 
@@ -155,13 +155,7 @@ $(w, h)$ und Rotationswinkel~$\theta$:
 
 CVAT exportiert im YOLO-OBB-Format, bei dem jede Bounding Box durch ihre vier normalisierten Eckpunktkoordinaten $\{(x_i/W,\; y_i/H)\}_{i=1}^{4}$ beschrieben wird, wobei $W$ und $H$ die Bildbreite bzw.\ -höhe bezeichnen.
 
-Der finale Datensatz umfasst insgesamt \textbf{13~Symbolklassen}, die gemäß Anforderung \textbf{FA-003} in zwei Kategorien unterteilt werden:
-
-\begin{itemize}
-    \item \textbf{Kernklassen} (5~Klassen): \textit{signal}, \textit{coordinate}, \textit{gks\_festkodiert}, \textit{gks\_gesteuert} und \textit{gm\_block}. Diese repräsentieren die für die Projektierung bei Siemens Mobility essentiellen Fahrstraßen- und Stellwerkselemente und bilden den Fokus der End-to-End-Evaluation in Kapitel~\ref{chap:evaluation}.
-    
-    \item \textbf{Auxiliarklassen} (8~Klassen): \textit{sverbinder}, \textit{haltepunkt}, \textit{weichen\_block}, \textit{isolierstoß}, \textit{prellbock}, \textit{haltetafel}, \textit{endeweichen} und \textit{weichengruppeende}. Diese Klassen wurden gezielt in einem repräsentativen Subset der Bildausschnitte annotiert, um die Erweiterbarkeit des Systems zu demonstrieren (vgl.\ Anforderung \textbf{NFA-008}). Die Einschränkung auf ein Subset diente dazu, den Annotationsaufwand auf die projektierungsrelevanten Kernklassen zu fokussieren und den Gesamtumfang der Arbeit handhabbar zu halten.
-\end{itemize}
+Der finale Datensatz umfasst insgesamt \textbf{13~Symbolklassen} gemäß Anforderung \textbf{FA-003}: \textit{coordinate}, \textit{signal}, \textit{gks\_festkodiert}, \textit{gks\_gesteuert}, \textit{gm\_block}, \textit{sverbinder}, \textit{haltepunkt}, \textit{weichen\_block}, \textit{isolierstoß}, \textit{prellbock}, \textit{haltetafel}, \textit{endeweichen} und \textit{weichengruppeende}. Die Klasse \textit{coordinate} nimmt eine besondere Rolle ein: Sie liefert die Positionsinformation (Kilometrierung), die den anderen 12~Klassen zugeordnet wird. Alle 13~Klassen werden in Kapitel~\ref{chap:evaluation} quantitativ evaluiert.
 
 % ── 6.2.1.3  Augmentation ───────────────────────────────────────────────────
 \subsubsection{Synthetische Datenaugmentation durch Rotation}
@@ -252,29 +246,19 @@ Tabelle~\ref{tab:dataset_distribution} zeigt die vollständige Verteilung der An
 \hline
 \textbf{Klasse} & \textbf{Train Bild.} & \textbf{Train Inst.} & \textbf{Val Bild.} & \textbf{Val Inst.} & \textbf{Gesamt} \\
 \hline
-\multicolumn{6}{|c|}{\textit{Kernklassen (produktionsrelevant)}} \\
-\hline
 coordinate       & 890 & 5.945 & 207 & 1.483 & 7.428 \\
 signal           & 681 & 1.875 & 164 &   473 & 2.348 \\
 gm\_block        & 585 &   843 & 143 &   201 & 1.044 \\
 gks\_gesteuert   & 586 &   651 & 147 &   157 &   808 \\
 gks\_festkodiert & 390 &   479 &  88 &   122 &   601 \\
-\hline
-\textbf{Summe Kern} & \textbf{---} & \textbf{9.793} & \textbf{---} & \textbf{2.436} & \textbf{12.229 (78,5\,\%)} \\
-\hline
-\multicolumn{6}{|c|}{\textit{Auxiliarklassen (Erweiterbarkeit)}} \\
-\hline
-sverbinder          & 611 &   703 & 140 & 150 &   853 \\
-isolierstoß         & 264 &   618 &  67 & 147 &   765 \\
-weichen\_block      & 325 &   514 &  67 & 129 &   643 \\
-haltepunkt          & 376 &   388 &  92 &  92 &   480 \\
-endeweichen         & 170 &   198 &  50 &  50 &   248 \\
-prellbock           & 109 &   125 &  31 &  31 &   156 \\
-haltetafel          &  81 &    93 &  23 &  23 &   116 \\
-weichengruppeende   &  74 &    74 &  18 &  18 &    92 \\
-\hline
-\textbf{Summe Auxiliar} & \textbf{---} & \textbf{2.713} & \textbf{---} & \textbf{640} & \textbf{3.353 (21,5\,\%)} \\
-\hline
+sverbinder       & 611 &   703 & 140 &   150 &   853 \\
+isolierstoß      & 264 &   618 &  67 &   147 &   765 \\
+weichen\_block   & 325 &   514 &  67 &   129 &   643 \\
+haltepunkt       & 376 &   388 &  92 &    92 &   480 \\
+endeweichen      & 170 &   198 &  50 &    50 &   248 \\
+prellbock        & 109 &   125 &  31 &    31 &   156 \\
+haltetafel       &  81 &    93 &  23 &    23 &   116 \\
+weichengruppeende&  74 &    74 &  18 &    18 &    92 \\
 \hline
 \textbf{Gesamt} & \textbf{923\textsuperscript{*}} & \textbf{12.506} & \textbf{208\textsuperscript{*}} & \textbf{3.076} & \textbf{15.582} \\
 \hline
@@ -310,7 +294,7 @@ Abbildung~\ref{fig:labels_distribution} visualisiert die Charakteristika des Tra
 \paragraph{Diskussion der Klassenverteilung.}
 Die \textbf{Dominanz der Koordinaten-Klasse} ist ein inhärentes Merkmal von Gleisplänen und kein Artefakt des Datensatzes: Grundsätzlich besitzt jedes Objekt in einem Gleisplan -- ob Signal, GKS-Platte, Weiche oder Haltepunkt -- eine eigene Kilometerangabe. Die Anzahl der Koordinatenbeschriftungen entspricht daher annähernd der Summe aller übrigen Objektinstanzen. Ein direkter Größenvergleich zwischen der Koordinaten-Klasse und einzelnen Symbolklassen ist somit methodisch nur bedingt aussagekräftig, da Koordinaten funktional eine Referenzklasse darstellen, die alle anderen Symbolklassen begleitet.
 
-Die \textbf{Instanzzahlen der Auxiliarklassen} erfordern eine differenzierte Betrachtung. Aus eisenbahntechnischer Sicht wäre zu erwarten, dass S-Verbinder und Isolierstöße in realen Gleisplänen mindestens ebenso häufig vorkommen wie Signale, da jedes Signal theoretisch einen S-Verbinder oder Isolierstoß in unmittelbarer Nähe besitzt, ergänzt durch weitere Vorkommen am Ende des Durchrutschweges, in Weichenbereichen und als Trennung mehrerer Gleisabschnitte \cite{Pachl}. Die im Datensatz beobachteten Instanzzahlen (S-Verbinder: 853, Isolierstoß: 765 vs.\ Signal: 2.348~gesamt) spiegeln diese theoretische Häufigkeit nicht vollständig wider. Diese Diskrepanz resultiert aus der \textit{bewussten Priorisierung der Annotationsarbeit} auf die fünf Kernklassen: Während Signale und Koordinaten in allen 24~Gleisplänen systematisch und vollständig annotiert wurden, erfolgte die Annotation der acht Auxiliarklassen in einem repräsentativen Subset der Bildausschnitte. Diese Einschränkung war notwendig, um den manuellen Annotationsaufwand auf die projektierungsrelevanten Kernklassen zu konzentrieren und den Gesamtumfang der Arbeit handhabbar zu halten. Die Auxiliarklassen dienen primär dem Nachweis der Erweiterbarkeit des Systems (Anforderung \textbf{NFA-008}) und nicht einer vollständigen Abdeckung aller Gleisplanelemente. Die detaillierte quantitative Evaluation der Erkennungsleistung über alle Klassen erfolgt in Kapitel~\ref{chap:evaluation}.
+Die \textbf{Instanzzahlen einzelner Klassen} variieren entsprechend ihrer natürlichen Häufigkeit in Gleisplänen. Aus eisenbahntechnischer Sicht wäre zu erwarten, dass S-Verbinder und Isolierstöße in realen Gleisplänen mindestens ebenso häufig vorkommen wie Signale, da jedes Signal theoretisch einen S-Verbinder oder Isolierstoß in unmittelbarer Nähe besitzt, ergänzt durch weitere Vorkommen am Ende des Durchrutschweges, in Weichenbereichen und als Trennung mehrerer Gleisabschnitte \cite{Pachl}. Die im Datensatz beobachteten Instanzzahlen spiegeln die tatsächliche Verteilung in den annotierten 24~Gleisplänen wider. Die detaillierte quantitative Evaluation der Erkennungsleistung über alle 13~Klassen erfolgt in Kapitel~\ref{chap:evaluation}.
 
 
 % ─────────────────────────────────────────────────────────────────────────────
@@ -455,34 +439,24 @@ Abbildung~\ref{fig:pr_curve} zeigt die Precision-Recall-Kurven für alle 13~Symb
 \hline
 \textbf{Klasse} & \textbf{Val Inst.} & \textbf{AP@0.5} & \textbf{Bewertung} \\
 \hline
-\multicolumn{4}{|c|}{\textit{Kernklassen}} \\
-\hline
 gm\_block        &   201 & 99,5\,\% & Exzellent \\
+sverbinder       &   150 & 99,5\,\% & Exzellent \\
+prellbock        &    31 & 99,5\,\% & Exzellent \\
+endeweichen      &    50 & 99,5\,\% & Exzellent \\
+weichengruppeende&    18 & 99,0\,\% & Exzellent \\
 coordinate       & 1.483 & 98,7\,\% & Exzellent \\
+haltepunkt       &    92 & 98,7\,\% & Exzellent \\
+haltetafel       &    23 & 98,4\,\% & Exzellent \\
 gks\_festkodiert &   122 & 97,8\,\% & Sehr gut \\
+isolierstoß      &   147 & 97,8\,\% & Sehr gut \\
+weichen\_block   &   129 & 97,7\,\% & Sehr gut \\
 signal           &   473 & 97,6\,\% & Sehr gut \\
 gks\_gesteuert   &   157 & 95,1\,\% & Gut \\
-\hline
-\textbf{$\varnothing$ Kernklassen} & \textbf{2.436} & \textbf{97,7\,\%} & \\
-\hline
-\multicolumn{4}{|c|}{\textit{Auxiliarklassen}} \\
-\hline
-sverbinder          & 150 & 99,5\,\% & Exzellent \\
-prellbock           &  31 & 99,5\,\% & Exzellent \\
-endeweichen         &  50 & 99,5\,\% & Exzellent \\
-weichengruppeende   &  18 & 99,0\,\% & Exzellent \\
-haltepunkt          &  92 & 98,7\,\% & Exzellent \\
-haltetafel          &  23 & 98,4\,\% & Exzellent \\
-isolierstoß         & 147 & 97,8\,\% & Sehr gut \\
-weichen\_block      & 129 & 97,7\,\% & Sehr gut \\
-\hline
-\textbf{$\varnothing$ Auxiliarklassen} & \textbf{640} & \textbf{98,8\,\%} & \\
-\hline
 \hline
 \textbf{$\varnothing$ Alle Klassen} & \textbf{3.076} & \textbf{98,4\,\%} & \\
 \hline
 \end{tabular}
-\caption{Klassenspezifische AP@0.5 auf dem Validierungsdatensatz, sortiert nach Kategorie und absteigend nach AP@0.5}
+\caption{Klassenspezifische AP@0.5 auf dem Validierungsdatensatz, sortiert nach absteigender AP@0.5}
 \label{tab:per_class_ap}
 \end{table}
 
@@ -1834,32 +1808,28 @@ Die Multiplikatoren wurden empirisch auf Basis der typischen Layoutkonventionen 
 \centering
 \begin{tabular}{|l|c|c|r|r|c|}
 \hline
-\textbf{Klasse} & $\boldsymbol{k_{dy}}$ & $\boldsymbol{k_{dx}}$ & \textbf{$dy_{\text{max}}$} & \textbf{$dx_{\text{max}}$} & \textbf{Typ} \\
+\textbf{Klasse} & $\boldsymbol{k_{dy}}$ & $\boldsymbol{k_{dx}}$ & \textbf{$dy_{\text{max}}$} & \textbf{$dx_{\text{max}}$} & \textbf{Rolle} \\
 \hline
-\multicolumn{6}{|c|}{\textit{Kernklassen}} \\
+coordinate & --- & --- & \multicolumn{2}{c|}{(Verknüpfungsziel)} & Koordinate \\
 \hline
-signal & 1.0 & 1.0 & 80--130 px & 30--50 px & Kern \\
-gks\_festkodiert & 1.0 & 1.0 & 80--130 px & 30--50 px & Kern \\
-gks\_gesteuert & 1.0 & 1.0 & 80--130 px & 30--50 px & Kern \\
-gm\_block & 1.0 & 1.0 & 80--130 px & 30--50 px & Kern \\
-coordinate & --- & --- & \multicolumn{2}{c|}{(wird verknüpft, nicht Anker)} & Kern \\
-\hline
-\multicolumn{6}{|c|}{\textit{Auxiliarklassen}} \\
-\hline
-haltepunkt & 1.0 & 1.0 & 80--130 px & 30--50 px & Auxiliar \\
-sverbinder & 1.0 & 1.0 & 80--130 px & 30--50 px & Auxiliar \\
-isolierstoß & 1.0 & 1.0 & 80--130 px & 30--50 px & Auxiliar \\
-haltetafel & 1.0 & 2.0 & 80--130 px & 60--100 px & Auxiliar \\
-prellbock & 1.0 & 2.0 & 80--130 px & 60--100 px & Auxiliar \\
-weichenende & 1.0 & 3.0 & 80--130 px & 90--150 px & Auxiliar \\
-weichengruppenende & 1.0 & 4.0 & 80--130 px & 120--200 px & Auxiliar \\
+signal & 1.0 & 1.0 & 80--130 px & 30--50 px & Anker \\
+gks\_festkodiert & 1.0 & 1.0 & 80--130 px & 30--50 px & Anker \\
+gks\_gesteuert & 1.0 & 1.0 & 80--130 px & 30--50 px & Anker \\
+gm\_block & 1.0 & 1.0 & 80--130 px & 30--50 px & Anker \\
+haltepunkt & 1.0 & 1.0 & 80--130 px & 30--50 px & Anker \\
+sverbinder & 1.0 & 1.0 & 80--130 px & 30--50 px & Anker \\
+isolierstoß & 1.0 & 1.0 & 80--130 px & 30--50 px & Anker \\
+haltetafel & 1.0 & 2.0 & 80--130 px & 60--100 px & Anker \\
+prellbock & 1.0 & 2.0 & 80--130 px & 60--100 px & Anker \\
+weichenende & 1.0 & 3.0 & 80--130 px & 90--150 px & Anker \\
+weichengruppenende & 1.0 & 4.0 & 80--130 px & 120--200 px & Anker \\
 \hline
 \end{tabular}
 \caption{Klassenspezifische Linking-Parameter. Die Wertebereiche für $dy_{\text{max}}$ und $dx_{\text{max}}$ basieren auf typischen Symbolgrößen von 50--80 Pixeln bei 500 DPI.}
 \label{tab:linking_multipliers}
 \end{table}
 
-Die erhöhten horizontalen Multiplikatoren ($k_{dx} > 1$) für Auxiliarklassen wie \textit{haltetafel}, \textit{prellbock} und \textit{weichengruppenende} reflektieren deren typische Layoutcharakteristik: Diese Symbole haben häufig horizontal versetzte Beschriftungen, während die Kernklassen überwiegend vertikal ausgerichtete Text-Symbol-Relationen aufweisen.
+Die erhöhten horizontalen Multiplikatoren ($k_{dx} > 1$) für Klassen wie \textit{haltetafel}, \textit{prellbock} und \textit{weichengruppenende} reflektieren deren typische Layoutcharakteristik: Diese Symbole haben häufig horizontal versetzte Beschriftungen, während andere Klassen überwiegend vertikal ausgerichtete Text-Symbol-Relationen aufweisen.
 
 \subsubsection{Spezialfälle mit festen Suchparametern}
 
@@ -1907,9 +1877,9 @@ Gleismittellinie & $d_{\text{ray}}$ & 1500 px & Sicherheitslimit für Ray-Castin
 Neben der Distanzprüfung wird für jede Symbolklasse eine erwartete Richtung definiert, in der sich der zugehörige Text relativ zum Symbol befinden sollte. Die Richtungsbedingungen werden im lokalen Koordinatensystem (vgl. Abschnitt~\ref{sec:Koordinatentransformation}) formuliert:
 
 \begin{itemize}
-    \item \textbf{Kernklassen (Signal, GKS, GM-Block):} Text primär \emph{unterhalb} des Symbols erwartet ($dy_{\text{local}} > 0$). Dies entspricht der standardisierten Zeichnungskonvention für Bahnanlagenpläne.
-    
-    \item \textbf{Auxiliarklassen mit erhöhtem $k_{dx}$:} Flexiblere Richtungstoleranz, da Beschriftungen auch seitlich positioniert sein können ($dy_{\text{local}} > 0$ \textbf{oder} $|dx_{\text{local}}| < dx_{\text{max}}$).
+    \item \textbf{Klassen mit $k_{dx} = 1.0$ (Signal, GKS, GM-Block, etc.):} Text primär \emph{unterhalb} des Symbols erwartet ($dy_{\text{local}} > 0$). Dies entspricht der standardisierten Zeichnungskonvention für Bahnanlagenpläne.
+
+    \item \textbf{Klassen mit erhöhtem $k_{dx}$ (Haltetafel, Prellbock, etc.):} Flexiblere Richtungstoleranz, da Beschriftungen auch seitlich positioniert sein können ($dy_{\text{local}} > 0$ \textbf{oder} $|dx_{\text{local}}| < dx_{\text{max}}$).
 \end{itemize}
 
 Für den Spezialfall der \textit{tight}-Verknüpfung (bei eindeutiger räumlicher Nähe) wird der horizontale Suchbereich reduziert:
@@ -2014,9 +1984,7 @@ Die probabilistische Fenstersuche wird nur dann aktiviert, wenn mindestens 10 va
     \node[red!70, font=\small, anchor=south east] at (1.2,0.9) {Gelernter Offset};
     
     % Expected position
-    \filldraw[red] (2.5,1.8) circle (4pt);
     \node[red, font=\small, anchor=south] at (2.5,2.5) {Erwartete Position};
-    \node[red, font=\small] at (2.5,1.4) {$(\mu_x, \mu_y)$};
     
     % Probabilistic window (larger, clearer)
     \draw[very thick, red, dashed, line width=1.5pt] (1.3,0.6) rectangle (3.7,3.0);
@@ -2063,9 +2031,9 @@ Dieser adaptive Mechanismus ermöglicht es dem Prototyp, sich an plan-spezifisch
 
 In Gleisplänen ist die Fahrtrichtung eines Signals ein kritisches Attribut, das angibt, in welche Richtung das Signal wirkt und für welche Fahrtrichtung es relevant ist. Die konventionelle Kodierung sieht zwei mögliche Fahrtrichtungen vor: Richtung A entspricht üblicherweise der Fahrt in positiver Streckenrichtung, Richtung B der Fahrt in negativer Streckenrichtung. 
 
-Anstatt die Fahrtrichtung als separate Klassifikationsaufgabe zu behandeln, wird sie im implementierten System durch geometrische Analyse der räumlichen Beziehung zwischen Signal und zugeordneter GKS(festkodiert) bestimmt. Diese Methode nutzt die in Gleisplänen übliche Konvention, dass die relative Position der GKS(festkodiert) zum Signal die Fahrtrichtung kodiert.
+Anstatt die Fahrtrichtung als separate Klassifikationsaufgabe zu behandeln, wird sie im implementierten System durch geometrische Analyse der räumlichen Beziehung zwischen Signal und zugeordneter GKS(gesteuert) bestimmt. Diese Methode nutzt die in Gleisplänen übliche Konvention, dass die relative Position der GKS(gesteuert) zum Signal die Fahrtrichtung kodiert.
 
-Die Fahrtrichtung wird durch die Vorzeichenbetrachtung der lokalen y-Koordinate der GKS(festkodiert) relativ zum Signal bestimmt. Hierbei wird die in Abschnitt \ref{sec:Koordinatentransformation} beschriebene Koordinatentransformation angewendet, um die Position der GKS(festkodiert) im lokalen Koordinatensystem des Signals zu ermitteln. Die Entscheidungsregel lautet:
+Die Fahrtrichtung wird durch die Vorzeichenbetrachtung der lokalen y-Koordinate der GKS (gesteuert) relativ zum Signal bestimmt. Hierbei wird die in Abschnitt \ref{sec:Koordinatentransformation} beschriebene Koordinatentransformation angewendet, um die Position der GKS(gesteuert) im lokalen Koordinatensystem des Signals zu ermitteln. Die Entscheidungsregel lautet:
 
 \begin{equation}
 \text{Fahrtrichtung} = \begin{cases} 
@@ -2207,10 +2175,7 @@ Die Validierungsarchitektur basiert auf einem modularen Framework, das die extra
 Ein Validierungsproblem wird durch folgende Eigenschaften beschrieben. Der Schweregrad klassifiziert das Problem in die Kategorien Fehler, Warnung oder Information, wobei Fehler kritische Inkonsistenzen darstellen, die zwingend einer Korrektur bedürfen, während Warnungen auf potenzielle Probleme hinweisen, die einer Überprüfung bedürfen. Die Kategorie beschreibt die Art des Problems, beispielsweise Formatfehler, Duplikate oder fehlende Daten. Das betroffene Feld identifiziert die spezifische Datenspalte, in der das Problem auftritt. Bei automatisch korrigierbaren Problemen wird zusätzlich ein Korrekturvorschlag mit dem empfohlenen neuen Wert bereitgestellt. Die Konfidenz des Korrekturvorschlags wird als normalisierter Wert im Intervall $[0, 1]$ angegeben, wobei höhere Werte eine größere Zuverlässigkeit der vorgeschlagenen Korrektur indizieren.
 
 Die Validierung erfolgt durch sequenzielle Ausführung aller implementierten Prüfungen, wobei das Ergebnis die Gesamtheit aller identifizierten Probleme sowie statistische Kennzahlen zur Fehlerverteilung umfasst. Diese strukturierte Repräsentation ermöglicht sowohl die programmatische Weiterverarbeitung als auch die Präsentation in einer benutzerfreundlichen Oberfläche.
-\textbf{Validierungsfokus:} Die regelbasierte Validierung konzentriert sich primär auf 
-die fünf Kernklassen, da diese für den produktiven Einsatz bei Siemens Mobility 
-relevant sind. Für Auxiliarklassen werden grundlegende Formatprüfungen durchgeführt, 
-jedoch keine domänenspezifischen Plausibilitätsprüfungen.
+\textbf{Validierungsfokus:} Die regelbasierte Validierung umfasst alle 13 Symbolklassen. Jede Klasse besitzt klassenspezifische Validierungsregeln, die auf deren typischen Textformaten und Plausibilitätsanforderungen basieren.
 \subsubsection{Dreistufige Validierungsstrategie}
 
 Die Validierung ist hierarchisch in drei Ebenen organisiert, die aufeinander aufbauen und unterschiedliche Aspekte der Datenqualität adressieren. Diese Strukturierung ermöglicht eine systematische Fehleridentifikation von grundlegenden Formatproblemen bis hin zu komplexen semantischen Inkonsistenzen.
@@ -2271,7 +2236,7 @@ Die Validierung ist hierarchisch in drei Ebenen organisiert, die aufeinander auf
 
 Die erste Ebene, die syntaktische Validierung, prüft die formale Korrektheit der extrahierten Texte anhand klassenspezifischer Muster. Für jede Objektklasse wurde ein regulärer Ausdruck definiert, der das erwartete Textformat beschreibt. Diese Muster basieren auf der Analyse realer Gleispläne und den geltenden Standards für Signalbezeichnungen und Kilometrierungen.
 
-Für Signalbezeichnungen wird das Muster durch den regulären Ausdruck beschrieben, der eine bis vier Großbuchstaben (einschließlich deutscher Umlaute Ä, Ö, Ü) gefolgt von einer bis vier Ziffern erwartet. Das entsprechende Regex-Muster lautet: ein bis vier Zeichen aus der Menge A bis Z sowie Ä, Ö, Ü, gefolgt von einer bis vier Ziffern. Dieses Format entspricht der standardisierten Signalnomenklatur, bei der Buchstaben den Signaltyp oder die Streckenbezeichnung kodieren, während Ziffern die spezifische Signalnummer angeben. Beispiele für gültige Signalbezeichnungen sind somit A101, BHR201 oder F3a.
+Für Signalbezeichnungen wird das Regex-Muster \texttt{[A-ZÄÖÜ]\{1,4\}[0-9]\{1,4\}} verwendet, das ein bis vier Großbuchstaben (einschließlich deutscher Umlaute) gefolgt von einer bis vier Ziffern erwartet. Dieses Format entspricht der standardisierten Signalnomenklatur, bei der Buchstaben den Signaltyp oder die Streckenbezeichnung kodieren, während Ziffern die spezifische Signalnummer angeben. Beispiele für gültige Signalbezeichnungen sind A101 oder BHR201.
 
 Für GKS  gilt ein numerisches Format mit drei bis vier Ziffern. GKS werden ausschließlich durch diese Ziffernfolgen identifiziert, beispielsweise 1234 oder 567.
 
@@ -2283,7 +2248,7 @@ Die zweite Ebene, die semantische Validierung, überprüft die inhaltliche Plaus
 
 Bei mehrfach vorkommenden Signalen wird die Konsistenz der zugeordneten Attribute überprüft. Ein Signal mit identischer Bezeichnung sollte in allen Instanzen dieselbe Kilometrierung aufweisen, da physisch identische Signale an einem festen geografischen Punkt lokalisiert sind. Ebenso wird die Konsistenz der Fahrtrichtung geprüft, wobei Inkonsistenzen auf Erkennungsfehler oder tatsächliche Duplikate hindeuten können.
 
-Die dritte Ebene, die räumliche Validierung, analysiert die geometrischen Beziehungen zwischen den erkannten Objekten. Für Objektklassen, die zwingend eine Kilometrierung benötigen wie Signale, GKS, Weichenblöcke und Streckentrenner wird geprüft, ob eine Koordinate in räumlicher Nähe vorhanden ist. Die Definition räumlicher Nähe erfolgt klassenspezifisch gemäß den in Abschnitt~\ref{subsec:proximity_linking} definierten dynamischen Suchbereichen. Für die Kernklassen (Signal, GKS, GM-Block) resultiert dies typischerweise in vertikalen Suchbereichen von 80--130 Pixeln und horizontalen Bereichen von 30--50 Pixeln (vgl. Tabelle~\ref{tab:linking_multipliers}). Diese Schwellenwerte basieren auf der durchschnittlichen Größe der Symbole und der typischen Anordnung von Text relativ zu Symbolen in Gleisplänen.
+Die dritte Ebene, die räumliche Validierung, analysiert die geometrischen Beziehungen zwischen den erkannten Objekten. Für Objektklassen, die zwingend eine Kilometrierung benötigen wie Signale, GKS, Weichenblöcke und S-Verbinder wird geprüft, ob eine Koordinate in räumlicher Nähe vorhanden ist. Die Definition räumlicher Nähe erfolgt klassenspezifisch gemäß den in Abschnitt~\ref{subsec:proximity_linking} definierten dynamischen Suchbereichen. Für Klassen wie Signal, GKS und GM-Block resultiert dies typischerweise in vertikalen Suchbereichen von 80--130 Pixeln und horizontalen Bereichen von 30--50 Pixeln (vgl. Tabelle~\ref{tab:linking_multipliers}). Diese Schwellenwerte basieren auf der durchschnittlichen Größe der Symbole und der typischen Anordnung von Text relativ zu Symbolen in Gleisplänen.
 
 Zusätzlich werden YOLO-Konfidenzwerte gegen klassenspezifische Schwellenwerte validiert. Jede Objektklasse besitzt einen eigenen Mindestkonfidenzwert, der aus der Trainingsphase des YOLO-Modells abgeleitet wurde. Erkennungen unterhalb dieser Schwellenwerte werden als unsicher gekennzeichnet und zur manuellen Überprüfung vorgeschlagen.
 
@@ -2305,7 +2270,7 @@ Leerzeichenfehler (Whitespace-Fehler) entstehen, wenn OCR-Engines fälschlicherw
 
 Die Normalisierung der Fahrtrichtungsangaben adressiert das Problem, dass OCR-Engines die vorgeschriebenen Großbuchstaben A und B gelegentlich als Kleinbuchstaben a und b interpretieren. Die Korrektur erfolgt durch Konversion zu Großbuchstaben, sofern der erkannte Text genau einem Zeichen entspricht und entweder a oder b ist. Diese hochspezifische Regel erreicht eine Konfidenz von 0.90.
 
-Für GKS-Nummern wurde beobachtet, dass OCR-Engines gelegentlich Trennzeichen wie Bindestriche oder Punkte in reine Ziffernfolgen einfügen. Die Korrekturstrategie entfernt alle nicht-numerischen Zeichen aus GKS-Codes und validiert anschließend, ob das Ergebnis dem erwarteten Format von drei bis vier Ziffern entspricht. Aufgrund der höheren Unsicherheit dieser Transformation wird eine Konfidenz von 0.70 vergeben, da in Einzelfällen die entfernten Zeichen tatsächlich Teil der korrekten Bezeichnung sein könnten.
+Für GKS-Nummern wurde beobachtet, dass OCR-Engines gelegentlich Trennzeichen wie Bindestriche oder Punkte in reine Ziffernfolgen einfügen. Die Korrekturstrategie entfernt alle nicht-numerischen Zeichen aus GKS Namen und validiert anschließend, ob das Ergebnis dem erwarteten Format von drei bis vier Ziffern entspricht. Aufgrund der höheren Unsicherheit dieser Transformation wird eine Konfidenz von 0.70 vergeben, da in Einzelfällen die entfernten Zeichen tatsächlich Teil der korrekten Bezeichnung sein könnten.
 
 \subsubsection{Konfidenzbasierte Anwendungsstrategie}
 
@@ -2397,7 +2362,7 @@ Weitere Tabs bieten gefilterte Ansichten, die ausschließlich Fehler, Warnungen 
 % Severity colors
 \node[font=\small\bfseries] at (0,2) {Schweregrad:};
 \node[rectangle, draw, fill=red!20, minimum width=2cm, minimum height=0.6cm] at (0,1.3) {Fehler};
-\node[rectangle, draw, fill=orange!20, minimum width=2cm, minimum height=0.6cm] at (0,0.6) {Warnung};
+\node[rectangle, draw, fill=yellow!40, minimum width=2cm, minimum height=0.6cm] at (0,0.6) {Warnung};
 \node[rectangle, draw, fill=blue!20, minimum width=2cm, minimum height=0.6cm] at (0,-0.1) {Hinweis};
 
 % Confidence colors
@@ -2434,7 +2399,7 @@ Die technische Implementierung dieser Funktionalität basiert auf dem Signal-Slo
 
 \subsubsection{Interaktiver Validierungsworkflow}
 
-Der typische Arbeitsablauf bei der Validierung und Korrektur extrahierter Daten gliedert sich in mehrere Phasen. Initial wählt der Benutzer die Validierungsfunktion aus dem Anwendungsmenü, was die Ausführung aller konfigurierten Validierungsprüfungen auf dem aktuellen Datensatz initiiert. Die Validierungsengine analysiert sequenziell alle Daten und sammelt identifizierte Probleme in einer strukturierten Liste.
+Der typische Arbeitsablauf bei der Validierung und Korrektur extrahierter Daten gliedert sich in mehrere Phasen. Zunächst wählt der Benutzer die Validierungsfunktion im Anwendungsmenü aus, wodurch alle konfigurierten Validierungsprüfungen für den aktuellen Datensatz gestartet werden. Die Validierungsengine analysiert sequenziell alle Daten und sammelt identifizierte Probleme in einer strukturierten Liste.
 
 Nach Abschluss der Validierung wird der Ergebnisdialog präsentiert, der eine statistische Zusammenfassung der identifizierten Probleme am oberen Rand anzeigt. Diese Zusammenfassung quantifiziert die Anzahl der Fehler, Warnungen und Hinweise sowie die Anzahl automatisch korrigierbarer Probleme, aufgeschlüsselt nach Konfidenzklassen. Diese Übersicht ermöglicht eine schnelle Einschätzung des Validierungsstatus und der erforderlichen Korrekturmaßnahmen.
 
@@ -2622,14 +2587,13 @@ Die Verwendung von UIDs ermöglicht eine effiziente Objektzuordnung zwischen Pla
 
 \subsubsection{Differenzalgorithmus}
 
-Der Vergleichsalgorithmus basiert auf mengentheoretischen Operationen zwischen zwei Extraktionsmengen $A$ (Altversion) und $B$ (Neuversion). Seien $A = \{a_1, a_2, \ldots, a_m\}$ und $B = \{b_1, b_2, \ldots, b_n\}$ die Mengen extrahierter Objekte mit ihren UIDs als Mengenelemente.
+Der Vergleichsalgorithmus verwendet den \textit{Hungarian Algorithm} (Kuhn-Munkres-Algorithmus) zur optimalen Zuordnung von Elementen zwischen zwei Extraktionsmengen $A$ (Altversion) und $B$ (Neuversion). Im Gegensatz zu einfachen mengentheoretischen Operationen ermöglicht dieser Ansatz eine robuste Behandlung von Duplikaten und Elementen ohne eindeutige Identifikatoren.
 
-
-\textbf{Primäre Differenzmengen:}
+\textbf{Resultierende Änderungsmengen:}
 \begin{align}
-\Delta_{\text{add}} &= B \setminus A \quad \text{(hinzugefügte Objekte)} \\
-\Delta_{\text{rem}} &= A \setminus B \quad \text{(entfernte Objekte)} \\
-\Delta_{\text{pot}} &= A \cap B \quad \text{(potentiell modifizierte Objekte)}
+\Delta_{\text{add}} &= \{b \in B \mid \nexists\, a \in A: \text{matched}(a, b)\} \quad \text{(hinzugefügte Objekte)} \\
+\Delta_{\text{rem}} &= \{a \in A \mid \nexists\, b \in B: \text{matched}(a, b)\} \quad \text{(entfernte Objekte)} \\
+\Delta_{\text{mov}} &= \{(a, b) \mid \text{matched}(a, b) \land \text{coord}(a) \neq \text{coord}(b)\} \quad \text{(verschobene Objekte)}
 \end{align}
 
 \begin{figure}[H]
@@ -2645,7 +2609,7 @@ Der Vergleichsalgorithmus basiert auf mengentheoretischen Operationen zwischen z
 
     % Region labels, adjusted position (moved up)
     \node at (-1.5, 1.5) {\textbf{$\Delta_{\text{rem}}$}};
-    \node at (2, 1.5) {\textbf{$\Delta_{\text{pot}}$}};
+    \node at (2, 1.5) {\textbf{Matched}};
     \node at (5.5, 1.5) {\textbf{$\Delta_{\text{add}}$}};
 
     % Example objects, adjusted positions to fit the larger circles
@@ -2663,70 +2627,24 @@ Der Vergleichsalgorithmus basiert auf mengentheoretischen Operationen zwischen z
 \caption{Mengentheoretische Visualisierung des Diff-Algorithmus}
 \label{fig:diff_algorithm}
 \end{figure}
-Für Objekte in der Schnittmenge $\Delta_{\text{pot}}$ wird eine attributbasierte Änderungsanalyse durchgeführt. Sei $o_A \in A$ und $o_B \in B$ ein korrespondierendes Objektpaar mit identischer UID, dann erfolgt der Vergleich folgender Attribute:
-
-\textbf{Textmodifikation:}
-\begin{equation}
-\text{isModified}_{\text{text}}(o_A, o_B) = \begin{cases}
-\text{true}, & \text{falls } \text{content}(o_A) \neq \text{content}(o_B) \\
-\text{false}, & \text{sonst}
-\end{cases}
-\end{equation}
-
-\textbf{Positionsänderung:}
-Zur Detektion signifikanter Positionsänderungen wird die euklidische Distanz zwischen den Zentroiden berechnet:
-
-\begin{equation}
-d(o_A, o_B) = \sqrt{(x_B - x_A)^2 + (y_B - y_A)^2}
-\end{equation}
-
-wobei $(x_A, y_A)$ und $(x_B, y_B)$ die Koordinaten der jeweiligen Objektzentroiden in Pixeln bezeichnen. Ein Objekt gilt als räumlich verschoben, falls:
+Für erfolgreich zugeordnete Objektpaare (matched) wird geprüft, ob sich der Kilometrierungswert (\texttt{coord\_value}) geändert hat. Ein Objekt gilt als verschoben, falls:
 
 \begin{equation}
 \text{isMoved}(o_A, o_B) = \begin{cases}
-\text{true}, & \text{falls } d(o_A, o_B) > \tau_{\text{dist}} \\
+\text{true}, & \text{falls } |\text{coord}(o_A) - \text{coord}(o_B)| > 0 \\
 \text{false}, & \text{sonst}
 \end{cases}
 \end{equation}
 
+Die Schwere der Verschiebung wird nach der Differenz in Metern klassifiziert:
 
-\begin{figure}[H]
-\centering
-\begin{tikzpicture}[scale=1.0]
-    % Grid
-    \draw[step=1cm, gray!30, very thin] (0,0) grid (10,8);
-    
-    % Object in Version A (old position)
-    \draw[thick, fill=blue!30] (2,4) rectangle (3.5,5.5);
-    \node at (2.75, 4.75) {\textbf{A}};
-    \node[below, font=\small] at (2.75, 4) {$(x_A, y_A)$};
-    \node[below, font=\footnotesize] at (2.75, 3.6) {$(1024, 768)$};
-    
-    % Object in Version B (new position)
-    \draw[thick, fill=red!30] (7,6) rectangle (8.5,7.5);
-    \node at (7.75, 6.75) {\textbf{B}};
-    \node[below, font=\small] at (7.75, 6) {$(x_B, y_B)$};
-    \node[below, font=\footnotesize] at (7.75, 5.6) {$(1050, 770)$};
-    
-    % Distance line
-    \draw[thick, dashed, color=black] (2.75, 4.75) -- (7.75, 6.75);
-    \node[above, rotate=22, color=black, font=\small] at (5.25, 5.75) {$d = \sqrt{(x_B-x_A)^2 + (y_B-y_A)^2}$};
-    
-    % Threshold circle (schematic)
-    \draw[dotted, thick, color=green!70!black] (2.75, 4.75) circle (1.5cm);
-    \node[font=\footnotesize, color=green!70!black] at (4.5, 3.8) {$\tau_{\text{dist}} = 50$ px};
-    
-    % Annotation
-    \node[align=center, font=\small] at (5, 1) {
-        Objekt als \textbf{verschoben} markiert,\\
-        da $d > \tau_{\text{dist}}$
-    };
-\end{tikzpicture}
-\caption{Geometrische Darstellung der Positionsänderungserkennung mit euklidischer Distanz}
-\label{fig:position_change}
-\end{figure}
-
-Der empirisch ermittelte Schwellenwert $\tau_{\text{dist}} = 50$ Pixel berücksichtigt geringfügige Positionsschwankungen durch PDF-Rendering-Variationen und fokussiert auf semantisch relevante Verschiebungen.
+\begin{equation}
+\text{severity}(\Delta_{\text{coord}}) = \begin{cases}
+\text{MINOR}, & \text{falls } \Delta_{\text{coord}} < 5\,\text{m} \\
+\text{MODERATE}, & \text{falls } 5\,\text{m} \leq \Delta_{\text{coord}} \leq 20\,\text{m} \\
+\text{MAJOR}, & \text{falls } \Delta_{\text{coord}} > 20\,\text{m}
+\end{cases}
+\end{equation}
 
 \subsubsection{Strukturierte Änderungsdokumentation}
 
@@ -2739,10 +2657,9 @@ Die identifizierten Änderungen werden in einem strukturierten Change Report dok
 \hline
 \textbf{UID} & \textbf{Änderungstyp} & \textbf{Zustand (Alt)} & \textbf{Zustand (Neu)} \\
 \hline
-signal\_AS102 & Verschoben & $x=1024, y=768$ & $x=1050, y=770$ \\
-signal\_F5 & Hinzugefügt & $-$ & $x=2300, y=1200$ \\
-gks\_98765 & Entfernt & $x=1500, y=900$ & $-$ \\
-coordinate\_18.1606 & Textänderung & Text: ``18.1606'' & Text: ``18.1608'' \\
+signal\_AS102 & Verschoben & km 18.1606 & km 18.1650 ($+4{,}4$\,m) \\
+signal\_F5 & Hinzugefügt & $-$ & km 23.4500 \\
+gks\_98765 & Entfernt & km 15.2300 & $-$ \\
 \hline
 \end{tabular}
 \caption{Beispielhafte Change Report Struktur mit verschiedenen Änderungstypen}
@@ -2759,7 +2676,11 @@ Die Implementierung umfasst eine dedizierte grafische Benutzeroberfläche zur Vi
 \label{fig:diff_ui}
 \end{figure}
 
-Der Dialog zeigt eine tabellarische Übersicht aller identifizierten Änderungen mit Spalten für Objektklasse, Text, Feldname, alte und neue Werte sowie Seitenzuordnung. In diesem Beispiel wurden fünf GKS-Koordinaten modifiziert, wobei die Verschiebungen im Bereich von +0{,}0m bis +0{,}6m liegen. Die Änderungstypen werden durch Icons visualisiert: Hinzugefügte Elemente erhalten ein grünes Plus-Symbol, entfernte Elemente ein rotes Minus-Symbol, und modifizierte Werte werden orange hervorgehoben. Diese Darstellung erfüllt Anforderung FA-011 und ermöglicht Ingenieuren eine schnelle Identifikation relevanter Planänderungen ohne manuelle Vergleichsarbeit.
+Der Dialog zeigt eine tabellarische Übersicht aller identifizierten Änderungen mit Spalten für Objektklasse, Kennung, alte und neue km-Position sowie Seitenzuordnung. In diesem Beispiel wurden fünf GKS-Koordinaten als verschoben erkannt. Die Änderungstypen werden durch Icons visualisiert: Hinzugefügte Elemente erhalten ein grünes Plus-Symbol, entfernte Elemente ein rotes Minus-Symbol, und verschobene Elemente werden gelb hervorgehoben.
+
+\textbf{Anmerkung zu mehrfachen Einträgen:} Die Tabelle zeigt drei Einträge für GKS 0303 und zwei Einträge für GKS 0305. Dies ist kein Fehler, sondern resultiert aus der Struktur der verglichenen Gleispläne: Diese enthalten drei Streckenabschnitte (Varianten), wobei dieselbe GKS-Kennung in mehreren Abschnitten vorkommen kann. Jede Instanz wird separat verglichen, da sie unterschiedliche Kilometrierungen aufweisen kann.
+
+Diese Darstellung erfüllt Anforderung FA-011 und ermöglicht Ingenieuren eine schnelle Identifikation relevanter Planänderungen ohne manuelle Vergleichsarbeit.
 
 Ein konkretes Beispiel einer detektierten Koordinatenänderung zeigen die Abbildungen~\ref{fig:gks_change_before} und~\ref{fig:gks_change_after} für die GKS-Platte mit der Kennung 0305.
 
@@ -2885,7 +2806,7 @@ Das Metadatenmodell umfasst folgende Informationsebenen:
 
 \textbf{Temporale Zuordnung:}
 \begin{itemize}
-    \item ISO 8601 formatierter Zeitstempel der Extraktion
+    \item ISO 8601~\cite{ISO8601} formatierter Zeitstempel der Extraktion
 \end{itemize}
 
 \subsubsection{Integration in die Benutzeroberfläche}
@@ -3109,7 +3030,7 @@ Assistenten zur Definition zusätzlicher Symbolklassen und demonstriert die
 Erweiterbarkeit des Systems gemäß Anforderung \textbf{NFA-008}.
 
 Nach Abschluss der automatischen Analyse wechselt die Anwendung automatisch 
-in den Bearbeitungs- und Korrekturmodus (Abschnitt~\ref{subsec:interaktiveergebnistabelle}), 
+in den Bearbeitungs- und Korrekturmodus (\ref{fig:complete_ui}), 
 in dem die extrahierten Daten validiert und bei Bedarf manuell korrigiert 
 werden können.
 
@@ -3179,13 +3100,13 @@ wobei 72 die Standard-DPI-Referenz für PDF-Dokumente darstellt. Der Zoomfaktor 
 \end{figure}
 \subsubsection{Overlay-Darstellung}
 
-Über dem gerenderten PDF wird eine transparente Grafikschicht gelegt, auf der die erkannten Bounding Boxes (OBBs) als Polygone visualisiert werden. Jede Objektklasse erhält eine distinkte Farbcodierung zur unmittelbaren visuellen Unterscheidbarkeit:
+Über dem gerenderten PDF wird eine transparente Grafikschicht gelegt, auf der die erkannten Bounding Boxes (OBBs) als Polygone visualisiert werden. Alle 12 Objektklassen werden einheitlich in Grün dargestellt, um eine klare visuelle Abgrenzung vom Dokumentinhalt zu gewährleisten. Jede Bounding Box zeigt zusätzlich folgende Informationen als Textlabel an:
 
 \begin{itemize}
-    \item Signal: Rot (\texttt{RGB}(255, 0, 0))
-    \item GKS: Blau (\texttt{RGB}(0, 0, 255))
-    \item Weiche: Grün (\texttt{RGB}(0, 255, 0))
-    \item Koordinate: Magenta (\texttt{RGB}(255, 0, 255))
+    \item Objektbezeichnung (z.\,B. Signalname, GKS-Nummer)
+    \item Konfidenzwert der Detektion
+    \item Rotationswinkel der OBB
+    \item Verknüpfte Koordinate (falls vorhanden)
 \end{itemize}
 
 \subsection{Interaktive Ergebnistabelle}
@@ -3196,7 +3117,7 @@ Die Ergebnisdarstellung erfolgt in einer Baumstruktur mit zweistufiger Hierarchi
 
 \begin{enumerate}
     \item \textbf{Klasse}: Objekttyp (Signal, Weiche, etc.)
-    \item \textbf{Text}: Extrahierter OCR-Text (Ankertext oder Koordinatentext)
+    \item \textbf{Text}: Extrahierter OCR-Text (Objekttext oder Koordinatennummer)
     \item \textbf{Koordinate}: Zugeordneter Koordinatenwert
     \item \textbf{Konfidenz}: YOLO-Detektionskonfidenz $\in [0, 1]$
     \item \textbf{Seite}: Seitennummer im PDF-Dokument
@@ -3274,22 +3195,26 @@ wobei $r_i$ die Zeilen-ID, $f_i$ das Feld, $v_{\text{old},i}$ den alten und $v_{
 
 Der Versionsvergleich visualisiert zwei Gleispläne (Version A und Version B) nebeneinander in einem geteilten Anzeigebereich. Jede Version erhält ein eigenständiges PDF-Rendering mit korrespondierenden Overlays. Die Aufteilung des Anzeigebereichs ist dynamisch anpassbar, sodass der Benutzer die Größenverhältnisse nach Bedarf verändern kann.
 
-Die Änderungskategorien werden farbcodiert:
+\subsubsection{Matching-Algorithmus}
+
+Die Zuordnung korrespondierender Elemente zwischen zwei Planversionen erfolgt mittels des \textit{Hungarian Algorithm} (Kuhn-Munkres-Algorithmus), der eine global optimale Zuweisung gewährleistet. Im Gegensatz zu einem Greedy-Ansatz, der bei Duplikaten (mehrere Elemente derselben Klasse an ähnlichen Positionen) zu fehlerhaften Zuordnungen führen kann, findet der Hungarian-Algorithmus die Zuweisung mit maximalem Gesamtscore.
+
+Das Matching erfolgt in zwei Phasen:
+
+\textbf{Phase 1 -- UUID-Matching:} Elemente mit identischer \texttt{detection\_id} werden direkt zugeordnet, da diese eine eindeutige Identifikation garantieren.
+
+\textbf{Phase 2 -- Semantisches Fallback-Matching:} Für nicht-zugeordnete Elemente wird der Hungarian-Algorithmus klassenweise angewendet. Dabei wird eine Kostenmatrix $C$ erstellt, wobei $C_{ij} = -\text{score}(a_i, b_j)$ den negativen Ähnlichkeitsscore zwischen Element $a_i$ der Altversion und Element $b_j$ der Neuversion darstellt.
+
+Die Scoring-Funktion berücksichtigt klassenspezifische Kriterien:
 
 \begin{itemize}
-    \item \textbf{Hinzugefügt} (Grün): Element existiert nur in Version B
-    \item \textbf{Entfernt} (Rot): Element existiert nur in Version A
-    \item \textbf{Verschoben} (Gelb): Position weicht um $\geq \delta_{\text{pos}}$ Pixel ab (Standard: $\delta_{\text{pos}} = 50$)
-    \item \textbf{Modifiziert} (Orange): Textänderung bei identischer Position
+    \item \textbf{OCR-Klassen} (Signal, GKS): Primär Textähnlichkeit des Ankertextes, ergänzt durch Koordinaten- und Positionsboni. Kein Distanz-Cutoff, da eindeutige Bezeichner vorliegen.
+    \item \textbf{Symbol-Klassen} (Sverbinder, GM-Block, etc.): Primär Koordinatenwert-Übereinstimmung mit hartem Cutoff bei $\Delta_{\text{coord}} > 100$\,m, da keine eindeutigen Bezeichner existieren.
 \end{itemize}
 
-Die Positionsabweichung $d$ zwischen zwei Elementen mit Zentren $(x_A, y_A)$ und $(x_B, y_B)$ wird als euklidische Distanz berechnet:
+Eine Zuordnung wird akzeptiert, wenn der Score den Schwellenwert $\theta = 0{,}7$ überschreitet. Nicht zugeordnete Elemente der Altversion gelten als \textit{gelöscht}, nicht zugeordnete Elemente der Neuversion als \textit{hinzugefügt}.
 
-\begin{equation}
-d = \sqrt{(x_B - x_A)^2 + (y_B - y_A)^2}
-\end{equation}
-
-Ein Element gilt als verschoben, wenn $d \geq \delta_{\text{pos}}$ bei identischer Objekt-ID.
+Ein Element gilt als \textit{verschoben}, wenn sich dessen Kilometrierungswert (\texttt{coord\_value}) zwischen den Versionen geändert hat. Die Schwere der Verschiebung wird nach Distanz klassifiziert: geringfügig ($< 5$\,m), moderat ($5$--$20$\,m) oder signifikant ($> 20$\,m).
 
 \subsubsection{Synchronisierte Navigation}
 
@@ -3309,24 +3234,17 @@ wobei $s_A$ die Scrollposition in Viewer A, $h_A$ dessen Gesamthöhe und entspre
 Abbildung~\ref{fig:diff_dialog} zeigt den Dialog zum Vergleich zweier Planversionen. 
 Nach Auswahl der zu vergleichenden PDFs (PDF~1 als Referenz, PDF~2 als aktualisierte 
 Version) analysiert das System automatisch alle Unterschiede. Die Zusammenfassung 
-kategorisiert die Änderungen in fünf Typen: \textit{Hinzugefügt} (neue Elemente in 
-PDF~2), \textit{Gelöscht} (fehlende Elemente in PDF~2), \textit{Verschoben} (gleiche 
-Kennung, unterschiedliche km-Position), \textit{Modifiziert} (geänderte Feldwerte) 
-und \textit{Unverändert}. Im dargestellten Beispiel wurden zwischen zwei Versionen 
+kategorisiert die Ergebnisse in drei Änderungstypen: \textit{Hinzugefügt} (neue Elemente in
+PDF~2), \textit{Gelöscht} (fehlende Elemente in PDF~2) und \textit{Verschoben} (gleiche
+Kennung, unterschiedliche Kilometrierung). Zusätzlich werden \textit{Unveränderte} Elemente angezeigt. Im dargestellten Beispiel wurden zwischen zwei Versionen 
 des Plans SgSl0603 insgesamt 41 Änderungen erkannt: 21 hinzugefügte, 15 gelöschte 
-und 5 verschobene Elemente bei 224 unveränderten Objekten. Die einzelnen Tabs 
+und 5 verschobene Elemente. Die einzelnen Tabs 
 ermöglichen die detaillierte Inspektion jeder Änderungskategorie.
 \subsection{Export-Funktionalität}
 \label{subsec:exportfunktionlität}
 \subsubsection{Excel-Export}
 
-Der Excel-Export erzeugt strukturierte Arbeitsblätter mit automatischer Spaltenformatierung. Jede Objektklasse erhält ein eigenes Tabellenblatt mit klassenspezifischen Spalten. Die Farbcodierung übernimmt die UI-Farbschemata zur konsistenten visuellen Darstellung:
-
-\begin{itemize}
-    \item Signale: Roter Zeilenhintergrund (\texttt{RGB}(255, 200, 200))
-    \item Weichen: Grüner Zeilenhintergrund (\texttt{RGB}(200, 255, 200))
-    \item Koordinaten: Blauer Zeilenhintergrund (\texttt{RGB}(200, 200, 255))
-\end{itemize}
+Der Excel-Export erzeugt strukturierte Arbeitsblätter mit automatischer Spaltenformatierung. Jede Objektklasse erhält ein eigenes Tabellenblatt mit klassenspezifischen Spalten.
 
 Zusätzlich wird ein \textit{Metadata}-Sheet erzeugt, das Verarbeitungsmetadaten enthält:
 
@@ -3344,15 +3262,20 @@ und die Anforderungen FA-009 (Excel-Integration) sowie FA-010 (Strukturerhalt)
 adressiert. Die wichtigsten Funktionen umfassen:
 
 \begin{itemize}
-    \item \textbf{Klassenbasierte Auswahl:} Hierarchische Baumansicht aller 
+    \item \textbf{Vorlagen:} Zwei vordefinierte Spaltenauswahlen für unterschiedliche Anwendergruppen:
+    \begin{itemize}
+        \item \textit{Techniker}: Reduzierte Ansicht mit Klassenname, Koordinate und Fahrtrichtung -- optimiert für Bahntechniker, die nur die betriebsrelevanten Daten benötigen
+        \item \textit{Entwickler}: Vollständige Ansicht mit allen technischen Details (Bounding-Box-Koordinaten, Rotationswinkel, Konfidenzwerte) -- für KI-Entwickler zur Modellvalidierung
+    \end{itemize}
+    \item \textbf{Klassenbasierte Auswahl:} Hierarchische Baumansicht aller
     Objektklassen mit Anzahl der Instanzen; selektiver Export einzelner Klassen
-    \item \textbf{Live-Vorschau:} Tabellarische Vorschau der zu exportierenden 
+    \item \textbf{Live-Vorschau:} Tabellarische Vorschau der zu exportierenden
     Daten mit Möglichkeit zum Ausschließen einzelner Zeilen
-    \item \textbf{Zieloptionen:} Export in neue Datei oder Anhängen an bestehende 
+    \item \textbf{Zieloptionen:} Export in neue Datei oder Anhängen an bestehende
     Excel-Datei mit wählbarer Startposition (Blatt, Spalte, Zeile)
-    \item \textbf{Formatierung:} Optionen für Überschriften, Spaltenbreiten, 
+    \item \textbf{Formatierung:} Optionen für Überschriften, Spaltenbreiten,
     fixierte Kopfzeile, Zahlenformat und Leerzellenbehandlung
-    \item \textbf{Gruppierung:} Export aller Klassen in ein Blatt, als Sektionen, 
+    \item \textbf{Gruppierung:} Export aller Klassen in ein Blatt, als Sektionen,
     oder auf separate Arbeitsblätter (vgl. Abbildung~\ref{fig:export_result})
 \end{itemize}
 
@@ -3447,6 +3370,7 @@ die Differenz in Metern angegeben.
 \label{fig:diff_export}
 \end{figure}
 
+Wie bereits in Abbildung~\ref{fig:diff_ui} erläutert, können GKS-Kennungen mehrfach auftreten, wenn der Gleisplan mehrere Streckenabschnitte enthält. Die exportierte Tabelle spiegelt diese Struktur wider: GKS 0303 erscheint dreimal und GKS 0305 zweimal, entsprechend ihrer Instanzen in den verschiedenen Planabschnitten.
 
 \section{Zusammenfassung}
 
@@ -3457,10 +3381,7 @@ Dieses Kapitel stellte die technische Realisierung der automatisierten Datenextr
 Die Extraktionspipeline besteht aus folgenden Hauptmodulen:
 
 \textbf{Objekterkennung (Abschnitt \ref{sec:yolo_implementation}):}
-Das YOLOv8-OBB Modell wurde auf einem Datensatz mit 13 Symbolklassen trainiert, 
-wobei fünf \textit{Kernklassen} (signal, coordinate, gks\_festkodiert, gks\_gesteuert, 
-gm\_block) den Fokus der Evaluation bilden und acht \textit{Auxiliarklassen} die 
-Erweiterbarkeit des Systems demonstrieren (vgl. Anforderungen FA-003 und NFA-008).
+Das YOLOv8-OBB Modell wurde auf einem Datensatz mit 13 Symbolklassen trainiert (vgl. Anforderung FA-003). Die Klasse \textit{coordinate} liefert Positionsinformationen, die den anderen 12~Klassen zugeordnet werden. Alle 13~Klassen werden in Kapitel~\ref{chap:evaluation} quantitativ evaluiert.
 
 \textbf{OCR-Pipeline (Abschnitt \ref{sec:ocrpipeline}):}
 Die orientierungsadaptive OCR-Pipeline bildet das Herzstück der Textextraktion. Durch die Kaskadierung dreier OCR-Engines (PaddleOCR, Tesseract, EasyOCR) wird eine hohe Erkennungsrobustheit erreicht. Das Dual-Winkel-Routing-System behandelt sowohl achsenparallele als auch beliebig rotierte Texte mittels unterschiedlicher Transformationsstrategien. Klassenspezifische Vorverarbeitungspipelines passen die Bildaufbereitung an die jeweiligen Charakteristika der Symbole an (z.B. adaptive Padding für Signale, morphologische Filterung für GKS). Die Validierung erfolgt durch regex-basierte Pattern-Matching-Verfahren mit konfidenzgewichteten Scoring-Mechanismen.
@@ -3474,7 +3395,7 @@ Die intelligente Linking-Komponente ordnet extrahierte Texte ihren zugehörigen 
 Ein mehrstufiges Validierungsframework prüft extrahierte Daten syntaktisch (regex-basiert), semantisch (Plausibilitätsbereiche) und referentiell (Vollständigkeit von Relationen). Automatische Korrekturen behandeln häufige OCR-Fehler, während fehlerhafte Einträge zur manuellen Überprüfung gekennzeichnet werden. Die Integration mit der UI ermöglicht einen interaktiven Validierungsworkflow.
 
 \textbf{Versionsvergleich und Rückverfolgbarkeit (Abschnitt \ref{sec:unterstützendekomponente}):}
-Die Versionsvergleichskomponente nutzt UID-basierte Identifikation zur Detektion von Änderungen, Hinzufügungen und Entfernungen zwischen Planrevisionen. Mengenoperationen auf den extrahierten Objekten ermöglichen eine effiziente Differenzberechnung. Das Rückverfolgbarkeitssystem persistiert für jedes extrahierte Element die Quellkoordinaten und PDF-Metadaten, wodurch eine bidirektionale Navigation zwischen Datenansicht und Plandarstellung ermöglicht wird.
+Die Versionsvergleichskomponente verwendet den Hungarian-Algorithmus zur optimalen Zuordnung von Elementen zwischen Planrevisionen. Änderungen werden in drei Kategorien klassifiziert: hinzugefügt, entfernt und verschoben (basierend auf Kilometrierungsänderungen). Das Rückverfolgbarkeitssystem persistiert für jedes extrahierte Element die Quellkoordinaten und PDF-Metadaten, wodurch eine bidirektionale Navigation zwischen Datenansicht und Plandarstellung ermöglicht wird.
 
 \textbf{Benutzeroberfläche (Abschnitt \ref{sec:benutzeroberfläche}):}
 Die PyQt5-basierte Benutzeroberfläche integriert die Pipeline-Komponenten in einem interaktiven Workflow. Der PDF-Viewer visualisiert Detektionen mittels farbcodierter Overlays und unterstützt Click-to-Highlight-Navigation. Die Ergebnistabelle bietet Sortier- und Filterfunktionen sowie Inline-Editing für Korrekturen. Der Validierungsdialog strukturiert fehlerhafte Einträge nach Fehlertyp und ermöglicht Batch-Operationen. Die Vergleichsansicht stellt Änderungen zwischen Planversionen side-by-side dar.
