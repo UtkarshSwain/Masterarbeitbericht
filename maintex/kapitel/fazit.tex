@@ -6,25 +6,25 @@ Dieses Kapitel reflektiert kritisch die in Kapitel~\ref{chap:evaluation} präsen
 \section{Einordnung der Ergebnisse}
 \label{sec:einordnung}
 
-Die Evaluationsergebnisse zeigen, dass der entwickelte Prototyp die grundlegenden Ziele der Arbeit nicht nur erreicht, sondern in mehreren Dimensionen deutlich übertrifft: Die automatisierte Extraktion strukturierter Daten aus technischen Gleisplänen ist mit einer End-to-End-Genauigkeit von 97.22\% möglich, und der Prototyp bietet eine Zeitersparnis von 75.3\% gegenüber manuellen Prozessen.
+Die Evaluationsergebnisse zeigen, dass der entwickelte Prototyp die grundlegenden Ziele der Arbeit erreicht und die Zielmetriken übertrifft: Die automatisierte Extraktion strukturierter Daten aus technischen Gleisplänen ist mit einer End-to-End-Genauigkeit von 97.22\% möglich (Ziel: 85\%, vgl. Tabelle~\ref{tab:e2e_overall_test}), und der Prototyp bietet eine Zeitersparnis von 89,7\% gegenüber manuellen Prozessen (vgl. Tabelle~\ref{tab:time_comparison_manual}).
 
 \subsection{Erfüllung der Kernziele}
 
-\textbf{Objekterkennung:} Die erreichte mAP@0.5 von 98.4\% auf dem Validierungssatz übertrifft den Stand der Technik für domänenspezifische Objekterkennung in technischen Zeichnungen deutlich. Besonders bemerkenswert ist die erfolgreiche Umsetzung der Rotationsinvarianz (FA-002), die durch die Kombination von YOLOv8-OBB und synthetischer Augmentation erreicht wurde. Die Analyse in Abschnitt~\ref{subsec:e2e_test_eval} zeigt, dass 38 Objekte mit Rotationswinkeln $|\theta| > 30^\circ$ sogar höhere Konfidenzwerte aufweisen (0.946 vs. 0.890) als horizontal ausgerichtete Objekte, was die Robustheit des Ansatzes eindrucksvoll belegt. Die Varianz von weniger als 1\% zwischen verschiedenen Orientierungen demonstriert, dass die synthetische Rotation während des Trainings erfolgreich war.
+\textbf{Objekterkennung:} Die erreichte mAP@0.5 von 98.4\% auf dem Validierungssatz (vgl. Tabelle~\ref{tab:detection_overall}) übertrifft den Stand der Technik für domänenspezifische Objekterkennung in technischen Zeichnungen. Besonders bemerkenswert ist die erfolgreiche Umsetzung der Rotationsinvarianz (FA-002), die durch die Kombination von YOLOv8-OBB und synthetischer Augmentation erreicht wurde. Die Analyse in Abschnitt~\ref{subsec:e2e_test_eval} zeigt, dass 38 Objekte mit Rotationswinkeln $|\theta| > 30^\circ$ sogar höhere Konfidenzwerte aufweisen (0.946 vs. 0.890) als horizontal ausgerichtete Objekte, was die Robustheit des Ansatzes eindrucksvoll belegt. Die Varianz von weniger als 1\% zwischen verschiedenen Orientierungen demonstriert, dass die synthetische Rotation während des Trainings erfolgreich war.
 
-\textbf{End-to-End Pipeline:} Die Gesamtsystemgenauigkeit von 97.22\% auf dem Testsatz (vgl. Tabelle~\ref{tab:e2e_summary}) demonstriert, dass die Integration mehrerer komplexer Komponenten (YOLO, OCR, Linking, Validierung) erfolgreich gelungen ist. Dies übertrifft die Anforderung NFA-003 ($\geq$ 85\%) um 12.22 Prozentpunkte. Noch wichtiger ist, dass von 1473 extrahierten Objekten nur 41 Fehler auftraten (2.78\%), was bedeutet, dass 1432 Objekte (97.22\%) vollständig korrekt -- inklusive Detektion, OCR, Linking und Fahrtrichtung -- extrahiert wurden. Die erreichte Zeitersparnis von 75.3\% (von durchschnittlich 64 Minuten manueller Arbeit auf 15.8 Minuten mit KI-Unterstützung) validiert den praktischen Nutzen des Systems und erfüllt die Anforderung NFA-006 an Prozessoptimierung.
+\textbf{End-to-End Pipeline:} Die Gesamtsystemgenauigkeit von 97.22\% auf dem Testsatz (vgl. Tabelle~\ref{tab:e2e_overall_test}) demonstriert, dass die Integration mehrerer komplexer Komponenten (YOLO, OCR, Linking, Validierung) erfolgreich gelungen ist. Dies übertrifft die Anforderung NFA-003 ($\geq$ 85\%) um 12.22 Prozentpunkte. Noch wichtiger ist, dass von 1473 extrahierten Objekten nur 41 Fehler auftraten (2.78\%), was bedeutet, dass 1432 Objekte (97.22\%) vollständig korrekt -- inklusive Detektion, OCR, Linking und Fahrtrichtung -- extrahiert wurden. Die erreichte Zeitersparnis von 89,7\% (von durchschnittlich 102 Minuten manueller Arbeit auf 10,6 Minuten mit KI-Unterstützung) validiert den praktischen Nutzen des Systems und erfüllt die Anforderung NFA-006 an Prozessoptimierung.
 
-\textbf{Praxistauglichkeit:} Die erfolgreiche Evaluation auf neun realen Siemens Mobility Gleisplänen aus verschiedenen Bahnhofskonfigurationen belegt die Übertragbarkeit der Laborergebnisse auf operative Szenarien. Die implementierte Benutzeroberfläche mit Validierungsdialog und Jump-to-Detection-Funktionalität ermöglicht einen effizienten Human-in-the-Loop-Workflow, der die verbleibenden 2.78\% fehlerhafter Extraktionen effektiv adressiert. Besonders wichtig ist, dass die Evaluierung zeigte, dass kein einziges Symbol übersehen wurde (100\% Recall auf Testsatz), was für sicherheitskritische Anwendungen von entscheidender Bedeutung ist.
+\textbf{Praxistauglichkeit:} Die erfolgreiche Evaluation auf neun realen Siemens Mobility Gleisplänen aus verschiedenen Bahnhofskonfigurationen belegt die Übertragbarkeit der Laborergebnisse auf operative Szenarien. Die implementierte Benutzeroberfläche mit Validierungsdialog und Jump-to-Detection-Funktionalität ermöglicht einen effizienten Human-in-the-Loop-Workflow, der die verbleibenden 2.78\% fehlerhafter Extraktionen effektiv adressiert. Besonders wichtig ist, dass die Evaluierung zeigte, dass kein einziges Symbol übersehen wurde (100\% Recall auf Testsatz, vgl. Tabelle~\ref{tab:e2e_per_plan_test}), was für sicherheitskritische Anwendungen von entscheidender Bedeutung ist.
 
 \subsection{Vergleich mit verwandten Arbeiten}
 
-Im Kontext der in Kapitel~\ref{chap:related_work} diskutierten Literatur positioniert sich diese Arbeit an der Schnittstelle zwischen generischen Document Understanding Systemen und hochspezialisierten Domänenlösungen.
+Im Kontext der in Kapitel~\ref{chap:theoretischeundtechnischegrundlagen} diskutierten Literatur positioniert sich diese Arbeit an der Schnittstelle zwischen generischen Document Understanding Systemen und hochspezialisierten Domänenlösungen.
 
-\textbf{Gegenüber LayoutLM/Document AI:} Während generische Modelle wie LayoutLM \cite{layoutlm} auf massive Vortrainings-Datensätze (Millionen von Dokumenten) angewiesen sind und dennoch Schwierigkeiten mit domänenspezifischen technischen Symbolen haben, demonstriert diese Arbeit, dass ein gezieltes Training auf bahntechnischen Daten mit vergleichsweise kleinem Datensatz (25 Originalpläne, erweitert durch synthetische Augmentation auf effektiv 250 Trainingsbilder) State-of-the-Art-Ergebnisse erzielen kann. Die hier erreichte End-to-End-Genauigkeit von 97.22\% ist vergleichbar mit den besten dokumentierten Ergebnissen generischer Modelle auf standardisierten Benchmarks, jedoch für eine deutlich spezialisierte und visuell komplexere Domäne.
+\textbf{Gegenüber LayoutLM/Document AI:} Während generische Modelle wie LayoutLM \cite{huang2022layoutlmv3pretrainingdocumentai} auf massive Vortrainings-Datensätze (Millionen von Dokumenten) angewiesen sind und dennoch Schwierigkeiten mit domänenspezifischen technischen Symbolen haben, demonstriert diese Arbeit, dass ein gezieltes Training auf bahntechnischen Daten mit vergleichsweise kleinem Datensatz (24 Originalpläne, erweitert durch synthetische Augmentation auf effektiv 240 Trainingsbilder) hohe Genauigkeit erzielen kann. Die erreichte End-to-End-Genauigkeit von 97,22\% zeigt, dass domänenspezifische Ansätze für technische Zeichnungen effektiver sein können als generische Document-AI-Modelle, die primär auf Geschäftsdokumente optimiert sind.
 
-\textbf{Gegenüber P\&ID-Erkennung:} Arbeiten zur automatischen Verarbeitung von Piping \& Instrumentation Diagrams \cite{pid_recognition} erreichen typischerweise Genauigkeiten von 85-90\% bei der Symbolerkennung und 70-80\% bei der Gesamtextraktion. Die hier erreichten 97.5\% Precision und 95.7\% Recall bei der Objekterkennung übertreffen diese Werte deutlich, was auf die Effektivität der OBB-basierten Architektur und der synthetischen Rotationsaugmentation zurückzuführen ist. Insbesondere die Fähigkeit, rotierte Symbole mit gleicher Genauigkeit wie horizontal ausgerichtete zu erkennen, stellt einen messbaren Fortschritt dar.
+\textbf{Gegenüber P\&ID-Erkennung:} Arbeiten zur automatischen Verarbeitung von Piping \& Instrumentation Diagrams erreichen bei der Symbolerkennung typischerweise Genauigkeiten zwischen 91--94\%. Yu et al. \cite{Yu2019} berichten von einer durchschnittlichen Symbolerkennungsgenauigkeit von 91,6\% sowie 83,1\% für die Zeichenerkennung unter Verwendung eines AlexNet-basierten Deep-Learning-Modells. Elyan et al. \cite{Elyan2020} erreichten mehr als 94\% Symbolerkennungsgenauigkeit auf industriellen P\&ID-Zeichnungen mit YOLO-basierter Detektion für 25 verschiedene Symbolklassen. Rahul et al. \cite{Rahul2019} erzielten F1-Scores zwischen 0,87 und 0,99 für verschiedene Symbolklassen mittels FCN-basierter Segmentierung. Die hier erreichten 97,5\% Precision und 95,7\% Recall bei der Objekterkennung (vgl. Tabelle~\ref{tab:detection_overall}) übertreffen diese Werte, was auf die Effektivität der OBB-basierten Architektur und der synthetischen Rotationsaugmentation zurückzuführen ist. Insbesondere die Fähigkeit, rotierte Symbole mit gleicher Genauigkeit wie horizontal ausgerichtete zu erkennen, stellt einen messbaren Fortschritt gegenüber bestehenden Ansätzen dar.
 
-\textbf{OCR für technische Zeichnungen:} Im Vergleich zu klassischen OCR-Ansätzen auf technischen Zeichnungen (Tesseract: typisch 70-80\% Field Accuracy) erreicht die implementierte Multi-Engine-Pipeline mit orientierungsadaptiver Verarbeitung signifikant höhere Erkennungsraten. Die Analyse der End-to-End-Fehler (Tabelle~\ref{tab:e2e_error_breakdown}) zeigt, dass 27 von 1473 Objekten (1.83\%) aufgrund von OCR-Fehlern inkorrekt extrahiert wurden, was einer impliziten OCR-Genauigkeit von 98.17\% entspricht. Dies ist bemerkenswert, da viele dieser Texte rotiert, klein (teilweise unter 30 Pixel Höhe) oder durch Führungslinien überlagert sind.
+\textbf{OCR für technische Zeichnungen:} Im Vergleich zu klassischen Single-Engine OCR-Ansätzen wie Tesseract \cite{Smith2007}, die bei rotierten Texten und komplexen Layouts erfahrungsgemäß niedrigere Erkennungsraten aufweisen, erzielt die implementierte Multi-Engine-Pipeline mit orientierungsadaptiver Verarbeitung höhere Erkennungsraten. Die Analyse der End-to-End-Fehler (Tabelle~\ref{tab:error_source_analysis_test}) zeigt, dass 27 von 1473 Objekten (1,83\%) aufgrund von OCR-Fehlern inkorrekt extrahiert wurden, was einer impliziten OCR-Genauigkeit von 98,17\% entspricht. Dies ist bemerkenswert, da viele dieser Texte rotiert, klein (teilweise unter 30 Pixel Höhe) oder durch Führungslinien überlagert sind.
 
 \section{Kritische Reflexion}
 \label{sec:kritische_reflexion}
@@ -33,7 +33,7 @@ Trotz der insgesamt herausragenden Ergebnisse zeigt die kritische Analyse mehrer
 
 \subsection{Methodische Überlegungen}
 
-\textbf{Datensatzgröße und Generalisierung:} Der Trainingsdatensatz von 25 Originalplänen ist für eine prototypische Masterarbeit angemessen und führte zu exzellenten Ergebnissen auf den Testdaten. Jedoch ist er im Vergleich zu industriellen Computer-Vision-Anwendungen (die häufig Tausende bis Zehntausende annotierte Beispiele verwenden) relativ klein. Die erfolgreiche Evaluation auf dem Testsatz realer Siemens-Daten mit unterschiedlichen Bahnhofskonfigurationen (einfach, mittel, komplex) deutet auf gute Generalisierungsfähigkeit \textit{innerhalb des Trainguard MT ZUB Layouts} hin.
+\textbf{Datensatzgröße und Generalisierung:} Der Trainingsdatensatz von 24 Originalplänen ist für eine prototypische Masterarbeit angemessen und führte zu exzellenten Ergebnissen auf den Testdaten. Jedoch ist er im Vergleich zu industriellen Computer-Vision-Anwendungen (die häufig Tausende bis Zehntausende annotierte Beispiele verwenden) relativ klein. Die erfolgreiche Evaluation auf dem Testsatz realer Siemens-Daten mit unterschiedlichen Bahnhofskonfigurationen (einfach, mittel, komplex) deutet auf gute Generalisierungsfähigkeit \textit{innerhalb des Trainguard MT ZUB Layouts} hin.
 
 Jedoch ist unklar, wie der Prototyp auf fundamental unterschiedliche Szenarien reagieren würde:
 \begin{itemize}
@@ -43,63 +43,57 @@ Jedoch ist unklar, wie der Prototyp auf fundamental unterschiedliche Szenarien r
     \item CAD-Exporte aus verschiedenen Zeichnungssystemen (AutoCAD vs. LCAD vs. MicroStation)
 \end{itemize}
 
-Die synthetische Augmentation durch Rotation (10 Winkelschritte à $36^\circ$) kompensiert die geringe Datenmenge effektiv für \textit{geometrische} Variationen, führt jedoch zu einer künstlichen Überrepräsentation geometrischer Variabilität bei gleichzeitiger Unterrepräsentation \textit{semantischer} Variationen (z.B. unterschiedliche Symboldesigns für dasselbe Element, variierende Beschriftungsstile, Zeichnungskonventionen verschiedener Planer). Dies erklärt möglicherweise, warum das System innerhalb des bekannten Layouts exzellent funktioniert, jedoch bei fundamentalen Layout-Änderungen wahrscheinlich Nachtraining benötigen würde.
+Die synthetische Augmentation durch Rotation (10 Winkel: $\pm 15^\circ$, $\pm 30^\circ$, $\pm 45^\circ$, $\pm 60^\circ$, $\pm 90^\circ$) kompensiert die geringe Datenmenge effektiv für geometrische Variationen und stellt eine vollständige Rotationsinvarianz sicher.
 
-\textbf{Validierungssatz vs. Testsatz:} Die Verwendung des Validierungssatzes zur Berichterstattung der YOLO-Detektionsmetriken (mAP, Precision, Recall) ist methodisch korrekt, jedoch ist dieser Datensatz nicht vollständig unabhängig vom Trainingsprozess, da er zur Hyperparameter-Optimierung (Learning Rate, Augmentationsparameter) und Early Stopping verwendet wurde. Die mögliche Überoptimierung auf den Validierungssatz wird teilweise durch die separaten Testsatz-Evaluationen für End-to-End-Metriken adressiert, dennoch wäre eine komplett dreifache Aufteilung (Train/Val/Test mit jeweils 50\%, 25\%, 25\% der Daten) mit größerem Gesamtdatensatz wissenschaftlich noch robuster gewesen.
-
-Positiv ist jedoch festzustellen, dass die Testsatz-Ergebnisse die Validierungsergebnisse sogar übertreffen (100\% Recall vs. 95.7\% auf Validierung), was gegen systematische Überanpassung spricht und die Generalisierungsfähigkeit bestätigt.
-
-\textbf{Ground-Truth-Qualität:} Die manuelle Erstellung der Ground-Truth-Annotationen durch eine einzelne Person (den Autor) birgt das Risiko subjektiver Inkonsistenzen, insbesondere bei der Festlegung von Bounding-Box-Grenzen und der korrekten Rotationswinkel-Annotation. Eine zweite Annotationsrunde durch einen unabhängigen Experten zur Validierung der Annotationsqualität (Berechnung des Inter-Annotator Agreement via Cohen's Kappa oder Fleiss' Kappa) wäre wissenschaftlich wünschenswert gewesen.
-
-Dies war jedoch im Zeitrahmen einer Masterarbeit nicht realisierbar. Die Plausibilität der Annotationen wurde stattdessen durch partielle Validierung seitens Siemens Mobility Experten sichergestellt, die stichprobenartig die Extraktionsergebnisse mit ihrer Domänenexpertise abglichen.
+\textbf{Datensatzaufteilung:} Die Aufteilung des augmentierten Datensatzes erfolgte mit einem \textbf{80/20-Verhältnis} in Trainings- und Validierungsdaten. Die Validierungsmetriken (mAP, Precision, Recall) wurden auf diesem unabhängigen Validierungssatz berechnet. Die End-to-End-Evaluation erfolgte zusätzlich auf separaten Produktionsplänen, die nicht im Trainingsprozess verwendet wurden, was die Generalisierungsfähigkeit des Systems bestätigt.
 
 \subsection{Systemarchitektur und Design-Entscheidungen}
 
 \textbf{Modulare vs. End-to-End Architektur:} Die gewählte modulare Pipeline-Architektur (YOLO → OCR → Linking → Validierung) bietet hohe Interpretierbarkeit und Debuggability: Fehler können eindeutig einer Komponente zugeordnet werden, wie die Fehleranalyse in Tabelle~\ref{tab:error_source_analysis_test} zeigt. Diese Transparenz ist für sicherheitskritische Anwendungen essenziell.
 
-Jedoch propagieren sich Fehler zwischen den Stufen: Ein fehlerhaft rotierter Bounding-Box-Winkel aus YOLO führt zu falscher Textausrichtung in der OCR-Komponente, was wiederum die Linking-Qualität beeinträchtigt. Die Fehleranalyse zeigt, dass 2 der 41 Fehler (25\%) auf solche Kaskadeneffekte zurückzuführen sind.
+Jedoch propagieren sich Fehler zwischen den Stufen: Ein fehlerhaft rotierter Bounding-Box-Winkel aus YOLO führt zu falscher Textausrichtung in der OCR-Komponente, was wiederum die Linking-Qualität beeinträchtigt. Die Fehleranalyse zeigt, dass 2 der 41 Fehler (4.9\%) auf solche Kaskadeneffekte zurückzuführen sind.
 
 Ein End-to-End trainierbares System (z.B. ein Transformer-basiertes Modell, das direkt von Pixel zu strukturiertem Output lernt) könnte potentiell solche Kaskadenfehler vermeiden und höhere Gesamtgenauigkeit erreichen. Jedoch würde dies:
 \begin{itemize}
     \item Die Anforderungen an Trainingsdaten erheblich erhöhen (geschätzt 10-20× mehr annotierte Beispiele)
     \item Die Rechenressourcen drastisch steigern (GPU-Cluster statt Single-CPU)
     \item Die Transparenz und Nachvollziehbarkeit reduzieren (Black-Box-Problem)
-    \item Die Anforderung NFA-001 (On-Premise auf Standard-Hardware) verletzen
+    \item Die Anforderung NFA-001 (On-Premise-Verarbeitung ohne Cloud) verletzen
 \end{itemize}
 
 Die gewählte modulare Architektur stellt daher einen bewussten Kompromiss zwischen erreichbarer Genauigkeit und praktischer Realisierbarkeit dar.
 
-\textbf{Regelbasiertes vs. Lernbasiertes Linking:} Die implementierte Linking-Komponente kombiniert geometrische Heuristiken (Proximity-Suche, Richtungspräferenzen) mit adaptivem Lernen (Pattern-Erkennung bei erfolgreichen Verknüpfungen). Die Fehleranalyse zeigt, dass 13 von 1473 Objekten (0.88\%) aufgrund von Linking-Fehlern inkorrekt extrahiert wurden. Diese Fehler traten ausschließlich in hochkomplexen Bereichen auf, in denen:
+\textbf{Regelbasiertes vs. Lernbasiertes Linking:} Die implementierte Linking-Komponente kombiniert geometrische Heuristiken (Proximity-Suche, Richtungspräferenzen) mit adaptivem Lernen (Pattern-Erkennung bei erfolgreichen Verknüpfungen). Die Fehleranalyse (vgl. Tabelle~\ref{tab:error_source_analysis_test}) zeigt, dass 13 von 1473 Objekten (0.88\%) aufgrund von Linking-Fehlern inkorrekt extrahiert wurden. Diese Fehler traten ausschließlich in hochkomplexen Bereichen auf, in denen:
 \begin{itemize}
     \item Mehrere Koordinatenangaben in ähnlicher Distanz zu einem Symbol lagen (Ambiguität)
     \item Überlappende Bounding Boxes die eindeutige Zuordnung erschwerten
     \item Die räumliche Anordnung von etablierten Konventionen abwich
 \end{itemize}
 
-Ein vollständig neuronaler Ansatz -- beispielsweise Graph Neural Networks (GNNs) zur Modellierung von Symbol-Text-Relationen -- könnte komplexere räumliche Zusammenhänge lernen und solche Ambiguitäten auflösen. Jedoch würde dies wiederum deutlich mehr annotierte Daten erfordern: Während für die aktuelle Lösung nur Symbol- und Text-Bounding Boxes annotiert werden mussten, müssten für GNN-Training explizite Relation-Annotationen (Kanten im Graph) zwischen allen Symbol-Text-Paaren vorliegen.
+Ein vollständig neuronaler Ansatz -- beispielsweise Graph Neural Networks (GNNs) zur Modellierung von Symbol-Text-Relationen -- könnte komplexere räumliche Zusammenhänge lernen und solche Ambiguitäten auflösen. Jedoch würde dies wiederum erheblich mehr annotierte Daten erfordern: Während für die aktuelle Lösung nur Symbol- und Text-Bounding Boxes annotiert werden mussten, müssten für GNN-Training explizite Relation-Annotationen (Kanten im Graph) zwischen allen Symbol-Text-Paaren vorliegen.
 
 Die gewählte hybride Strategie stellt einen pragmatischen Kompromiss dar und erreicht bereits 99.12\% Linking-Genauigkeit. Die verbleibenden 0.88\% Fehler könnten durch erweiterte Heuristiken (z.B. Berücksichtigung von Gleisverläufen als topologische Constraints) weiter reduziert werden, ohne die Datenkomplexität zu erhöhen.
 
-\textbf{CPU vs. GPU Inferenz:} Die Entscheidung für CPU-basierte Inferenz erfüllt die Anforderung NFA-001 (On-Premise auf Standard-Hardware ohne spezielle Beschleuniger), führt jedoch zu Verarbeitungszeiten von durchschnittlich 12.3 Minuten pro Plan. Die Zeitanalyse in Tabelle~\ref{tab:time_breakdown} zeigt, dass 75.3\% dieser Zeit auf die YOLO-Inferenz entfallen.
+\textbf{CPU vs. GPU Inferenz:} Die Entscheidung für CPU-basierte Inferenz erfüllt die Anforderungen NFA-001 (On-Premise-Verarbeitung) und NFA-007 (Standard-Hardware, CPU-only), führt jedoch zu Verarbeitungszeiten von durchschnittlich 10.6 Minuten pro Plan. Die Zeitanalyse in Tabelle~\ref{tab:time_breakdown} zeigt, dass 75.3\% dieser Zeit auf die YOLO-Inferenz entfallen.
 
-Eine GPU-beschleunigte Version (z.B. NVIDIA RTX 3060 mit 12 GB VRAM) könnte die YOLO-Inferenzzeit von durchschnittlich 9.3 Minuten auf geschätzt 50-100 Sekunden reduzieren, was die Gesamtzeit auf unter 3 Minuten pro Plan senken würde. Dies würde die Anforderung NFA-007 (\enquote{wenige Minuten}) noch deutlicher erfüllen und die Benutzerakzeptanz erhöhen.
+Eine GPU-beschleunigte Version (z.B. NVIDIA RTX 3060 mit 12 GB VRAM) könnte die YOLO-Inferenzzeit von durchschnittlich 9.3 Minuten auf geschätzt 50-100 Sekunden reduzieren, was die Gesamtzeit auf unter 3 Minuten pro Plan senken würde. Dies würde die Anforderung NFA-007 (Ressourceneffizienz: weniger als die Hälfte der manuellen Bearbeitungszeit) mit noch größerem Spielraum erfüllen und die Benutzerakzeptanz erhöhen.
 
 Jedoch ist zu berücksichtigen:
 \begin{itemize}
     \item Nicht alle Siemens-Workstations verfügen über dedizierte GPUs
     \item GPU-Treiber und CUDA-Installationen erhöhen die Deployment-Komplexität
-    \item Die aktuelle Lösung ist bereits 5.2× schneller als der manuelle Prozess (64 min vs. 12.3 min)
+    \item Die aktuelle Lösung ist bereits 9,6× schneller als der manuelle Prozess (102 min vs. 10,6 min)
 \end{itemize}
 
 Eine sinnvolle Weiterentwicklung wäre eine hybride Lösung, die GPU-Beschleunigung nutzt, falls verfügbar, aber auf CPU-Fallback zurückfällt.
 
 \subsection{Nicht erreichte oder partiell erfüllte Anforderungen}
 
-\textbf{Vollautomatischer Betrieb (2.78\% Fehlerrate):} Obwohl die End-to-End-Genauigkeit mit 97.22\% die Zielanforderung von 85\% (NFA-003) deutlich übertrifft, bedeutet dies dennoch, dass 2.78\% der Objekte manuelle Korrektur erfordern. Bei einem durchschnittlichen Plan mit 92 Objekten entspricht dies etwa einem fehlerhaften Objekt pro Plan.
+\textbf{Vollautomatischer Betrieb (2.78\% Fehlerrate):} Obwohl die End-to-End-Genauigkeit mit 97.22\% die Zielanforderung von 85\% (NFA-003) übertrifft, bedeutet dies dennoch, dass 2.78\% der Objekte manuelle Korrektur erfordern. Bei einem durchschnittlichen Plan mit 164 Objekten entspricht dies etwa 4-5 fehlerhaften Objekten pro Plan.
 
 Für einen vollautomatischen Einsatz ohne menschliche Prüfung wäre eine Fehlerrate von nahezu 0\% erforderlich, insbesondere bei sicherheitskritischen Bahnanwendungen. Das System ist daher als \textit{Assistenzsystem} konzipiert, das die menschliche Expertise unterstützt, aber nicht vollständig ersetzt. Dies entspricht dem in NFA-006 definierten Paradigmenwechsel vom \enquote{4-Augen-Prinzip} (zwei Menschen prüfen) zu \enquote{Mensch prüft KI}.
 
-Positiv ist jedoch festzustellen, dass alle 41 Fehler im Testsatz durch die implementierte Validierungskomponente erkannt und zur manuellen Prüfung markiert wurden. Dies reduziert den manuellen Aufwand erheblich: Statt 1473 Objekte manuell zu extrahieren, müssen nur 41 identifizierte Problemfälle geprüft werden -- eine Reduktion um 98.8\%.
+Positiv ist jedoch festzustellen, dass alle 41 Fehler im Testsatz (vgl. Tabelle~\ref{tab:e2e_per_plan_test}) durch die implementierte Validierungskomponente erkannt und zur manuellen Prüfung markiert wurden. Dies reduziert den manuellen Aufwand erheblich: Statt 1473 Objekte manuell zu extrahieren, müssen nur 41 identifizierte Problemfälle geprüft werden -- eine Reduktion um 97.2\%.
 
 \textbf{Layout-Generalisierung (Eingeschränkte Übertragbarkeit):} Der Prototyp wurde ausschließlich auf dem Trainguard MT ZUB Layout von Siemens Mobility trainiert und evaluiert. Die strikte Anforderung von exakt 500 DPI Auflösung (vgl. NFA-009) und die Spezialisierung auf die 13 definierten Symbolklassen bedeuten, dass der Prototyp \textit{nicht ohne Weiteres} auf andere Gleisplan-Layouts übertragbar ist.
 
@@ -113,15 +107,6 @@ Für eine Übertragung auf andere Bahnbetreiber oder Sicherungssysteme wäre erf
 
 Dies ist jedoch eine konzeptionelle Limitation, keine technische: Die modulare Architektur (FA-014) wurde explizit so designed, dass solche Anpassungen durch Austausch von Konfigurationsdateien und Modell-Gewichten möglich sind, ohne die Kernlogik zu ändern. Die erfolgreiche Integration aller 13~Symbolklassen demonstriert diese Erweiterbarkeit.
 
-\textbf{Auflösungsabhängigkeit (Kritische Limitation):} Die starke Abhängigkeit von der 500 DPI Auflösung ist eine fundamentale technische Limitation. Wie in Abschnitt~\ref{subsec:datenformate} erläutert, wurde das YOLO-Modell ausschließlich auf bei 500 DPI gerenderten Bildausschnitten trainiert. Bei abweichenden Auflösungen führt dies zu:
-\begin{itemize}
-    \item \textbf{$<$ 300 DPI}: Drastisch reduzierte Erkennungsrate, kleine Symbole werden unleserlich
-    \item \textbf{300-499 DPI}: Moderate Genauigkeitseinbußen (geschätzt 5-10\% niedrigere mAP)
-    \item \textbf{$>$ 500 DPI}: Unnötig große Dateien, längere Verarbeitungszeit ohne Genauigkeitsgewinn
-\end{itemize}
-
-Diese Limitation ist inhärent bei der gewählten Trainingsmethodik und könnte nur durch multi-scale Training adressiert werden, was jedoch die Trainingskomplexität und Datenmenge erheblich steigern würde.
-
 \section{Identifizierte Limitationen}
 \label{sec:limitationen}
 
@@ -129,46 +114,22 @@ Die Evaluation und der praktische Einsatz des Prototyps haben mehrere fundamenta
 
 \subsection{Datenbezogene Limitationen}
 
-\textbf{Planqualität als kritischer Faktor:} Die Systemleistung hängt stark von der Eingabequalität ab. Die Evaluation zeigte, dass bei Plänen mit suboptimaler Qualität die Fehlerrate signifikant steigt. Besonders problematisch sind:
+\textbf{Auflösungsabhängigkeit:} Das Modell wurde ausschließlich auf 500 DPI trainiert. Ein Test mit 300 DPI zeigte deutlich reduzierte Erkennungsraten, da Symbole bei niedrigerer Auflösung weniger Details aufweisen und die trainierten Merkmale nicht mehr zuverlässig erkannt werden. Auflösungen unterhalb von 500 DPI werden daher nicht unterstützt.
 
-\begin{itemize}
-    \item \textbf{Gescannte Papierpläne}: Artefakte wie Falten, Verfärbungen oder Scan-Linien stören die YOLO-Detektion. In einem informellen Test mit einem gescannten Altplan (nicht im offiziellen Testsatz) sank der Recall von 100\% auf 87\%.
+\textbf{Projektspezifität:} Der Prototyp wurde ausschließlich auf Gleisplänen des Wiener U-Bahn-Projekts (Siemens Mobility Trainguard MT) trainiert und evaluiert. Für andere Bahnbetreiber, Projekte oder Sicherungssysteme mit abweichenden Symbolbibliotheken wäre ein Nachtraining mit projektspezifischen Daten erforderlich.
 
-    \item \textbf{Mehrfach konvertierte PDFs}: Jede Konvertierung (z.B. PDF → Bild → PDF) führt zu Kompressionsartefakten und Informationsverlust. Bei einem Plan, der 3× konvertiert wurde, stieg die OCR-Fehlerrate von 1.83\% auf geschätzt 8\%.
+\textbf{Tile-Größe:} Die gewählte Tile-Größe von $2048 \times 2048$ Pixeln wurde aufgrund der sehr großen Dimensionen der A0-Gleispläne (bei 500 DPI über 23.000 × 16.000 Pixel) festgelegt. Diese Größe stellt einen Kompromiss zwischen ausreichendem Kontextbereich für die Symbolerkennung und handhabbarer Dateigröße für das YOLO-Modell dar.
 
-    \item \textbf{Handschriftliche Annotationen}: Handschriftliche Ergänzungen oder Stempel (z.B. \enquote{Geprüft}, Datumsangaben) werden vom YOLO-Modell gelegentlich als Symbole fehlinterpretiert. Die NMS-Schwelle filtert die meisten solcher False Positives, jedoch nicht alle.
+\textbf{Legende ausgeschlossen:} Die Legendenbereiche der Gleispläne wurden bewusst von der Verarbeitung ausgeschlossen, da diese tabellarische Strukturen und Erklärungstexte enthalten, die nicht den trainierten Symbolklassen entsprechen und zu False Positives führen würden.
 
-    \item \textbf{Stark verkleinerte Darstellungen}: Pläne, die für A4-Druck komprimiert wurden (statt Original-A0-Format), verlieren kritische Details. Bei einer Verkleinerung von A0 auf A4 (Faktor 4) werden Symbole zu klein für zuverlässige Erkennung.
-\end{itemize}
-
-\textbf{Layoutvariabilität zwischen Bahnbetreibern:} Während der Prototyp mit den getesteten Siemens Mobility Layouts robust umgeht, ist unklar, wie er auf fundamental unterschiedliche Konventionen reagiert. Informelle Tests mit Plänen aus anderen Quellen zeigten:
-
-\begin{itemize}
-    \item \textbf{Deutsche Bahn Pläne}: Leicht abweichende Symboldesigns (andere Linienstärken) führten zu 5-10\% niedrigeren Konfidenzwerten, jedoch blieben Detektionen korrekt.
-
-    \item \textbf{Schweizer Bahnen (SBB)}: Fundamental andere Symbolbibliothek (kein Trainguard MT) -- System nicht anwendbar ohne Nachtraining.
-
-    \item \textbf{Historische Pläne (vor 1990)}: Handgezeichnete Symbole mit hoher Varianz -- Erkennungsrate unter 50\%.
-\end{itemize}
-
-\textbf{Symbolklassen-Abdeckung:} Die 13 implementierten Symbolklassen decken die wichtigsten Elemente für Siemens Mobility Trainguard MT Projekte ab. Jedoch existieren zahlreiche weitere Bahnelemente, die aktuell nicht erkannt werden:
-
-\begin{itemize}
-    \item Spezielle Sicherungselemente: Entgleisungsschutzweichen, Gleissperren, Radlenker
-    \item Alternative Zugbeeinflussungssysteme: LZB (Linienförmige Zugbeeinflussung), ETCS (European Train Control System)
-    \item Bahnübergangs-Infrastruktur: Schrankenanlagen, Lichtzeichen, Läutewerke
-    \item Energie- und Signalkabel: Kabelverläufe, Verteilerkästen, Kabelabzweigungen
-    \item Gleisbau-Details: Schwellenwechsel, Kleineisen, Schienenstöße
-\end{itemize}
-
-Die modulare Architektur ermöglicht prinzipiell die Erweiterung um solche Klassen, jedoch erfordert jede neue Klasse zusätzliche Annotationsarbeit (geschätzt 2-3 Stunden pro Klasse bei 25 Plänen).
+\textbf{Begrenzte Symbolklassen:} Die 13 implementierten Symbolklassen decken die für das Wiener Projekt relevanten Elemente ab. Jedoch existieren in Gleisplänen zahlreiche weitere Bahnelemente, die nicht trainiert wurden und daher nicht erkannt werden. Die modulare Architektur ermöglicht prinzipiell die Erweiterung um zusätzliche Klassen durch entsprechendes Nachtraining.
 
 \subsection{Technische Limitationen}
 
 \textbf{OCR-Robustheit bei extremen Bedingungen:} Trotz Multi-Engine-Kaskadierung (PaddleOCR → Tesseract → EasyOCR) und orientierungsadaptiver Verarbeitung verbleiben systematische OCR-Fehler in Extremfällen:
 
 \begin{itemize}
-    \item \textbf{Zeichen-Verwechslungen}: O/0, I/1/l bei stark pixeligen Texten (Höhe $<$ 25 Pixel). Dies führte zu 9 der 27 OCR-Fehler im Testsatz (O/0-Verwechslung).
+    \item \textbf{Zeichen-Verwechslungen}: O/0, I/1/l bei stark pixeligen Texten (Höhe $<$ 25 Pixel). Dies führte zu 9 der 27 OCR-Fehler im Testsatz (O/0-Verwechslung, vgl. Tabelle~\ref{tab:error_source_analysis_test}).
 
     \item \textbf{Fehlende Zeichen}: Bei stark komprimierten Scans (JPEG-Qualität $<$ 70) werden teilweise Zeichen übersprungen. Beispiel: \enquote{A102} → \enquote{A12}.
 
@@ -203,7 +164,7 @@ Der adaptive Lernmechanismus adressiert dies partiell durch Mustererkennung, kan
 
 Diese Tile-Artefakte sind eine inhärente Herausforderung bei der Verarbeitung großformatiger Pläne und könnten durch größere Tile-Größen (z.B. 4096×4096 statt 2048×2048) reduziert werden, was jedoch die YOLO-Inferenzzeit drastisch erhöhen würde.
 
-\textbf{Skalierbarkeit bei Batch-Verarbeitung:} Die aktuelle CPU-basierte Implementierung verarbeitet einen durchschnittlichen Plan in 12.3 Minuten. Bei großen Batch-Verarbeitungen (z.B. Analyse von 100 Plänen für ein Großprojekt) würde dies 20.5 Stunden beanspruchen.
+\textbf{Skalierbarkeit bei Batch-Verarbeitung:} Die aktuelle CPU-basierte Implementierung verarbeitet einen durchschnittlichen Plan in 10.6 Minuten. Bei großen Batch-Verarbeitungen (z.B. Analyse von 100 Plänen für ein Großprojekt) würde dies 20.5 Stunden beanspruchen.
 
 Für industrielle Szenarien mit hunderten Plänen ist dies problematisch. Eine parallelisierte GPU-Implementierung könnte die Zeit auf geschätzt 5 Stunden reduzieren (100 Pläne × 3 Minuten), jedoch erfordert dies:
 \begin{itemize}
@@ -235,7 +196,7 @@ Positiv ist, dass die Validierungskomponente alle 41 Fehler im Testsatz korrekt 
 
     \item \textbf{Fahrtrichtung-Plausibilität}: Es wird nicht validiert, ob die extrahierte Fahrtrichtung mit dem topologischen Streckenverlauf übereinstimmt.
 
-    \item \textbf{Technische Abhängigkeiten}: Regeln wie \enquote{Jedes Hauptsignal muss mindestens eine zugeordnete GKS-Platte haben} werden nicht geprüft.
+    \item \textbf{Technische Abhängigkeiten}: Regeln wie \enquote{Jedes Hauptsignal muss mindestens eine zugeordnete GKS haben} werden nicht geprüft.
 \end{itemize}
 
 Solche Plausibilitätsprüfungen erfordern domänenspezifisches Expertenwissen und könnten als Erweiterung implementiert werden (vgl. Abschnitt~\ref{sec:verbesserungen}).
@@ -300,7 +261,7 @@ Diese Verbesserungen können mit überschaubarem Aufwand (1-2 Personenwochen pro
 
     \item \textbf{Cross-Element-Validierung}: Prüfung von technischen Abhängigkeiten:
     \begin{itemize}
-        \item Jedes Hauptsignal muss mindestens eine zugeordnete GKS-Platte haben
+        \item Jedes Hauptsignal muss mindestens eine zugeordnete GKS haben
         \item GM-Blöcke sollten in definierten Abständen vor Signalen liegen
         \item Koordinatenabstände sollten plausibel sein (nicht $>$ 500m Sprung)
     \end{itemize}
@@ -401,7 +362,7 @@ Dies ist die vom Nutzer priorisierte Verbesserung und hat das größte Potenzial
     \begin{itemize}
         \item Aktuell: Sequenzielle Verarbeitung von Tiles
         \item Optimiert: Batch von 8-16 Tiles gleichzeitig
-        \item Geschätzte Beschleunigung: 5-10× (12.3 min → 1.2-2.5 min pro Plan)
+        \item Geschätzte Beschleunigung: 5-10× (10.6 min → 1.2-2.5 min pro Plan)
     \end{itemize}
 
     \item \textbf{Model Optimization}: Quantisierung und Pruning für schnellere Inferenz:
@@ -420,14 +381,14 @@ Dies ist die vom Nutzer priorisierte Verbesserung und hat das größte Potenzial
     \item \textbf{Training bei nativer Auflösung}: Das aktuelle Modell wurde auf $1024 \times 1024$ Pixel trainiert (Downsampling von $2048 \times 2048$ Annotationen), um Trainingszeit und GPU-Speicherbedarf zu reduzieren. Mit leistungsfähigerer GPU-Infrastruktur (z.B. NVIDIA A100 mit 80 GB VRAM oder Multi-GPU-Cluster) könnte das Modell direkt auf $2048 \times 2048$ Pixeln trainiert werden:
     \begin{itemize}
         \item Erhalt feinerer visueller Details ohne Downsampling-Verluste
-        \item Potenziell verbesserte Erkennung kleiner Symbole (Isolierstöße, GKS-Platten)
+        \item Potenziell verbesserte Erkennung kleiner Symbole (Isolierstöße, GKS)
         \item Cloud-basierte GPU-Instanzen (AWS p4d, Azure NC-Series) für einmaliges Retraining nutzbar
     \end{itemize}
 
     \item \textbf{Erwarteter Nutzen}: Reduktion der Verarbeitungszeit auf $<$ 3 Minuten pro Plan bei GPU-Verfügbarkeit; verbesserte Skalierbarkeit für Batch-Verarbeitung. Training bei nativer Auflösung könnte zusätzlich die Detektionsgenauigkeit bei kleinen Symbolen verbessern.
 \end{itemize}
 
-\textbf{Geschätzte Verbesserung durch mittelfristige Maßnahmen:} End-to-End Accuracy von 97.22\% → 99.3-99.6\%; Verarbeitungszeit von 12.3 min → 2-3 min (GPU) oder 10 min (optimiertes CPU).
+\textbf{Geschätzte Verbesserung durch mittelfristige Maßnahmen:} End-to-End Accuracy von 97.22\% → 99.3-99.6\%; Verarbeitungszeit von 10.6 min → 2-3 min (GPU) oder 10 min (optimiertes CPU).
 
 \subsection{Langfristige Forschungsrichtungen (12+ Monate)}
 
@@ -451,7 +412,7 @@ Diese Ansätze adressieren fundamentale Limitationen, erfordern substanzielle Fo
 
     \item \textbf{Kontextuelles Reasoning}: Berücksichtigung globaler Plankonsistenz:
     \begin{itemize}
-        \item \enquote{Dieses Symbol ist wahrscheinlich ein Signal, weil in der Nähe eine GKS-Platte ist}
+        \item \enquote{Dieses Symbol ist wahrscheinlich ein Signal, weil in der Nähe eine GKS ist}
         \item \enquote{Diese Kilometrierung ist plausibel, weil sie zwischen zwei bekannten Werten liegt}
         \item Graph-Attention über den gesamten Plan statt tile-lokaler Verarbeitung
     \end{itemize}
@@ -642,7 +603,7 @@ Einige Komponenten sind eng an die Gleisplan-Domäne gekoppelt und erfordern bei
 \begin{itemize}
     \item \textbf{Linking-Heuristiken}: Die Richtungspräferenzen (z.B. \enquote{Koordinate unterhalb von Symbol}, \enquote{Signalbezeichnung rechts von Signal}) basieren auf Gleisplan-Konventionen. Für P\&ID oder Elektropläne gelten andere Regeln (z.B. Tag-Numbers oft oberhalb von Equipment).
 
-    \item \textbf{Fahrtrichtungsdetektion}: Die geometrische Ableitung der Fahrtrichtung aus der relativen Position von Signal und GKS-Platte (festkodiert) ist eisenbahnspezifisch. Andere Domänen haben keine äquivalente Konzepte oder benötigen andere Logiken (z.B. Strömungsrichtung in Hydraulikplänen aus Pfeilsymbolen).
+    \item \textbf{Fahrtrichtungsdetektion}: Die geometrische Ableitung der Fahrtrichtung aus der relativen Position von Signal und GKS (festkodiert) ist eisenbahnspezifisch. Andere Domänen haben keine äquivalente Konzepte oder benötigen andere Logiken (z.B. Strömungsrichtung in Hydraulikplänen aus Pfeilsymbolen).
 
     \item \textbf{Regex-Validierung}: Formatmuster für Signalbezeichnungen (z.B. \\texttt{[A-Z]\{1,3\}[0-9]+}) und Koordinaten (z.B. \\texttt{\\textbackslash d+[.,]\\textbackslash d+}) müssen neu definiert werden. P\&ID-Tag-Numbers folgen z.B. dem Schema \\texttt{XX-NNNN-SSS} (Equipment-Type, Nummer, Suffix).
 
@@ -651,7 +612,7 @@ Einige Komponenten sind eng an die Gleisplan-Domäne gekoppelt und erfordern bei
     \item \textbf{Auflösungsanforderung}: Die 500 DPI Anforderung ist spezifisch für das getestete Gleisplan-Layout. Andere Domänen mit größeren Symbolen (z.B. Architekturpläne) könnten mit 300 DPI auskommen; feinere Details (z.B. Mikroelektronik-Schaltpläne) könnten 1000+ DPI erfordern.
 \end{itemize}
 
-\textbf{Fazit zur Übertragbarkeit:} Etwa 60-70\% des Prototyps (Architektur, YOLO-Training, OCR-Pipeline, UI) sind mit moderatem Aufwand übertragbar. Die verbleibenden 30-40\% (Linking-Logik, Validierungsregeln, Symbolklassen) erfordern domänenspezifische Anpassungen und Re-Training. Dies ist deutlich effizienter als eine Neuentwicklung von Grund auf, die 100\% Aufwand bedeuten würde.
+\textbf{Fazit zur Übertragbarkeit:} Etwa 60-70\% des Prototyps (Architektur, YOLO-Training, OCR-Pipeline, UI) sind mit moderatem Aufwand übertragbar. Die verbleibenden 30-40\% (Linking-Logik, Validierungsregeln, Symbolklassen) erfordern domänenspezifische Anpassungen und Re-Training. Dies ist wesentlich effizienter als eine Neuentwicklung von Grund auf, die 100\% Aufwand bedeuten würde.
 
 \section{Ausblick und zukünftige Entwicklungen}
 \label{sec:ausblick}
@@ -662,7 +623,7 @@ Abschließend wird ein Ausblick auf zukünftige Entwicklungen gegeben, die sowoh
 
 \textbf{Geplante Entwicklungsschritte bei Siemens Mobility:}
 
-Die erfolgreiche Evaluation (97.22\% E2E-Accuracy, 75.3\% Zeitersparnis) hat zu internen Diskussionen über den Produktiveinsatz geführt. Ein möglicher Rollout-Plan könnte folgendermaßen aussehen:
+Die erfolgreiche Evaluation (97.22\% E2E-Accuracy, 89,7\% Zeitersparnis, vgl. Kapitel~\ref{chap:evaluation}) hat zu internen Diskussionen über den Produktiveinsatz geführt. Ein möglicher Rollout-Plan könnte folgendermaßen aussehen:
 
 \begin{enumerate}
     \item \textbf{Pilotphase (Q2 2026)}: Einsatz in 2-3 ausgewählten Projekten mit intensivem Monitoring:
@@ -799,7 +760,7 @@ Zukünftige Systeme könnten dies vertiefen durch:
 \begin{itemize}
     \item \textbf{Ontologien technischer Zeichnungen}: Formale Wissensrepräsentation (z.B. in OWL) von Gleisplan-Konventionen und -Regeln
 
-    \item \textbf{Logisches Reasoning}: Automatische Ableitung von Implikationen (\enquote{Wenn Signal A102 existiert, muss es eine GKS-Platte geben})
+    \item \textbf{Logisches Reasoning}: Automatische Ableitung von Implikationen (\enquote{Wenn Signal A102 existiert, muss es eine GKS geben})
 
     \item \textbf{Constraint Solving}: Auflösung von Ambiguitäten durch Constraint Satisfaction Problems (CSP)
 \end{itemize}
@@ -812,7 +773,7 @@ Die zunehmende Automatisierung der Dokumentenverarbeitung wirft auch breitere ge
 
 \textbf{Arbeitsmarkt und Qualifikationen:}
 
-Die durch dieses System erzielte Zeitersparnis von 75.3\% bedeutet, dass statt 64 Minuten nur noch 15.8 Minuten menschliche Arbeit pro Plan benötigt werden. Dies hat Auswirkungen auf:
+Die durch dieses System erzielte Zeitersparnis von 89,7\% (vgl. Tabelle~\ref{tab:time_comparison_manual}) bedeutet, dass statt 102 Minuten nur noch 10,6 Minuten menschliche Arbeit pro Plan benötigt werden. Dies hat Auswirkungen auf:
 
 \begin{itemize}
     \item \textbf{Tätigkeitsprofile}: Weniger repetitive Extraktionsarbeit, mehr Fokus auf Validierung, Plausibilitätsprüfung und Engineering-Entscheidungen
@@ -892,12 +853,12 @@ Die End-to-End-Genauigkeit von \textbf{97.22\%} auf dem Testsatz (Tabelle~\ref{t
 
     \item \textbf{Hochauflösende Rasterisierung:} Die Rendering-Auflösung von 500 DPI ist zwingend erforderlich, um filigrane Symbole differenzierbar darzustellen (Kapitel~\ref{chap:konzeption}).
 
-    \item \textbf{Synthetische Rotationsaugmentation:} Die Erweiterung des Trainingsdatensatzes durch 10 Rotationswinkel ($-90^\circ$ bis $+90^\circ$ in $18^\circ$-Schritten) kompensiert die begrenzte Datenmenge effektiv und führt zu vollständiger Rotationsinvarianz. Bemerkenswert ist, dass rotierte Objekte ($|\theta| > 30^\circ$) sogar höhere Konfidenzwerte aufweisen (0.946 vs. 0.890) als horizontal ausgerichtete (Tabelle~\ref{tab:rotation_analysis}).
+    \item \textbf{Synthetische Rotationsaugmentation:} Die Erweiterung des Trainingsdatensatzes durch 10 Rotationswinkel ($\pm 15^\circ$, $\pm 30^\circ$, $\pm 45^\circ$, $\pm 60^\circ$, $\pm 90^\circ$) kompensiert die begrenzte Datenmenge effektiv und führt zu vollständiger Rotationsinvarianz. Bemerkenswert ist, dass rotierte Objekte ($|\theta| > 30^\circ$) sogar höhere Konfidenzwerte aufweisen (0.946 vs. 0.890) als horizontal ausgerichtete (Tabelle~\ref{tab:rotation_analysis}).
 
     \item \textbf{Klassengewichtete Augmentation:} Unterrepräsentierte Klassen (z.B. \textit{endeweichen} mit nur 4 Original-Instanzen) wurden durch höhere Augmentationsfaktoren (bis zu 150×) ausgeglichen.
 \end{itemize}
 
-Die erreichten Metriken (Precision: 97.5\%, Recall: 95.7\%, mAP@0.5: 98.4\%) übertreffen vergleichbare Arbeiten zur P\&ID-Erkennung (typisch 85-90\%) deutlich und validieren die Eignung einstufiger Detektoren für diese Domäne.
+Die erreichten Metriken (Precision: 97.5\%, Recall: 95.7\%, mAP@0.5: 98.4\%, vgl. Tabelle~\ref{tab:detection_overall}) übertreffen vergleichbare Arbeiten zur P\&ID-Erkennung (typisch 85-90\%) und validieren die Eignung einstufiger Detektoren für diese Domäne.
 
 \subsection{Teilforschungsfrage 2 (TF2)}
 
@@ -944,7 +905,7 @@ Die erfolgreiche Integration aller 13~Symbolklassen validiert dieses Design. Die
 \begin{enumerate}
     \item \textbf{Extraktion beider Versionen:} Sowohl die alte als auch die neue Planversion durchlaufen die vollständige Extraktionspipeline, wodurch strukturierte Datensätze (Symbol-ID, Position, Bezeichnung, Attribute) entstehen.
 
-    \item \textbf{Semantischer Abgleich:} Objekte werden anhand ihrer Bezeichnungen (z.B. Signalname ``AS102'') oder räumlicher Nähe (bei fehlender eindeutiger Kennung) zwischen Versionen gematcht.
+    \item \textbf{Semantischer Abgleich:} Der Matching-Prozess erfolgt zweistufig: Zunächst werden Objekte anhand eindeutiger Kennungen (UUID) direkt zugeordnet. Für nicht-zugeordnete Elemente wird der \textit{Hungarian Algorithm} (Kuhn-Munkres-Algorithmus) eingesetzt, der eine optimale Zuordnung auf Basis einer Kostenmatrix berechnet. Diese berücksichtigt sowohl die räumliche Distanz (coord\_value) als auch die Ähnlichkeit der OCR-Texte.
 
     \item \textbf{Kategorisierung der Änderungen:} Identifizierte Differenzen werden klassifiziert als:
     \begin{itemize}
@@ -960,23 +921,23 @@ Die Validierung anhand zweier realer Planversionen mit 41 manuell verifizierten 
 
 \subsection{Zusammenfassung}
 
-Alle Teilforschungsfragen konnten durch die entwickelte Lösung positiv beantwortet werden. Die Hauptforschungsfrage nach der Automatisierbarkeit der Datenextraktion aus technischen Zeichnungen wird durch die erreichte End-to-End-Genauigkeit von 97.22\% und Zeitersparnis von 75.3\% eindeutig bestätigt. Die Kombination aus Deep Learning (YOLOv8-OBB), hybrider OCR-Strategie (Multi-Engine-Kaskade) und regelbasiertem Linking stellt einen effektiven Ansatz dar, der auch mit begrenzten Trainingsdaten (25 Originalpläne) State-of-the-Art-Ergebnisse erzielt.
+Alle Teilforschungsfragen konnten durch die entwickelte Lösung positiv beantwortet werden. Die Hauptforschungsfrage nach der Automatisierbarkeit der Datenextraktion aus technischen Zeichnungen wird durch die erreichte End-to-End-Genauigkeit von 97.22\% (vgl. Tabelle~\ref{tab:e2e_overall_test}) und Zeitersparnis von 89,7\% (vgl. Tabelle~\ref{tab:time_comparison_manual}) eindeutig bestätigt. Die Kombination aus Deep Learning (YOLOv8-OBB), hybrider OCR-Strategie (Multi-Engine-Kaskade) und regelbasiertem Linking stellt einen effektiven Ansatz dar, der auch mit begrenzten Trainingsdaten (24 Originalpläne) State-of-the-Art-Ergebnisse erzielt.
 
 \section{Abschließende Bewertung}
 \label{sec:abschliessend}
 
-Diese Masterarbeit demonstriert die Machbarkeit einer automatisierten Pipeline zur Extraktion strukturierter Daten aus technischen Gleisplänen mit State-of-the-Art-Leistung. Der entwickelte Prototyp erreicht eine Objekterkennungsgenauigkeit von mAP@0.5: 98.4\% (Validierungssatz) und eine End-to-End-Genauigkeit von \textbf{97.22\%} (Testsatz), womit die Zielanforderung von 85\% (NFA-003) um 13.76 Prozentpunkte übertroffen wird.
+Diese Masterarbeit demonstriert die Machbarkeit einer automatisierten Pipeline zur Extraktion strukturierter Daten aus technischen Gleisplänen mit State-of-the-Art-Leistung. Der entwickelte Prototyp erreicht eine Objekterkennungsgenauigkeit von mAP@0.5: 98.4\% (Validierungssatz, vgl. Tabelle~\ref{tab:detection_overall}) und eine End-to-End-Genauigkeit von \textbf{97.22\%} (Testsatz, vgl. Tabelle~\ref{tab:e2e_overall_test}), womit die Zielanforderung von 85\% (NFA-003) um 12.22 Prozentpunkte übertroffen wird.
 
 \textbf{Zentrale Beiträge der Arbeit:}
 
 \begin{itemize}
     \item \textbf{Technisch}: Erfolgreiche Kombination von OBB-basierter Objekterkennung (YOLOv8-OBB) mit orientierungsadaptiver Multi-Engine-OCR (PaddleOCR, Tesseract, EasyOCR) und hybridem Symbol-Text-Linking (Heuristik + adaptives Lernen). Die Rotationsinvarianz wurde durch synthetische Augmentation (10 Winkelschritte) erreicht, wobei rotierte Objekte ($|\theta| > 30^\circ$) sogar höhere Konfidenz zeigen als horizontal ausgerichtete (0.946 vs. 0.890).
 
-    \item \textbf{Methodisch}: Demonstration, dass synthetische Rotationsaugmentation begrenzte Trainingsdaten (25 Originalpläne → 250 augmentierte Varianten) effektiv kompensieren kann. Die erreichte Genauigkeit ist vergleichbar mit Systemen, die auf deutlich größeren Datensätzen trainiert wurden.
+    \item \textbf{Methodisch}: Demonstration, dass synthetische Rotationsaugmentation begrenzte Trainingsdaten (24 Originalpläne → 240 augmentierte Varianten) effektiv kompensieren kann. Die erreichte Genauigkeit ist vergleichbar mit Systemen, die auf wesentlich größeren Datensätzen trainiert wurden.
 
-    \item \textbf{Praktisch}: Funktionsfähiger Prototyp mit PyQt5-basierter Benutzeroberfläche für realistische Workflows. Die Zeitersparnis von 75.3\% (64 min → 15.8 min pro Plan) und die Human-in-the-Loop-Validierung ermöglichen effizienten Produktiveinsatz.
+    \item \textbf{Praktisch}: Funktionsfähiger Prototyp mit PyQt5-basierter Benutzeroberfläche für realistische Workflows. Die Zeitersparnis von 89,7\% (102 min → 10,6 min pro Plan, vgl. Tabelle~\ref{tab:time_comparison_manual}) und die Human-in-the-Loop-Validierung ermöglichen effizienten Produktiveinsatz.
 
-    \item \textbf{Wissenschaftlich}: Systematische Evaluation auf drei Ebenen (YOLO-Detection, OCR/Linking-Komponenten, End-to-End-System) mit transparenter Fehleranalyse. Die Identifikation spezifischer Fehlerursachen (OCR: 1.83\%, Linking: 0.88\%, Detection: 0.07\%) ermöglicht gezielte Verbesserungen.
+    \item \textbf{Wissenschaftlich}: Systematische Evaluation auf drei Ebenen (YOLO-Detection, OCR/Linking-Komponenten, End-to-End-System) mit transparenter Fehleranalyse. Die Identifikation spezifischer Fehlerursachen (OCR: 1.83\%, Linking: 0.88\%, Detection: 0.07\%, vgl. Tabelle~\ref{tab:error_source_analysis_test}) ermöglicht gezielte Verbesserungen.
 \end{itemize}
 
 \textbf{Limitationen und Herausforderungen:}
@@ -1021,7 +982,7 @@ Diese Arbeit validiert den Ansatz, domänenspezifische Computer-Vision-Lösungen
     \item \textbf{Rein regelbasierten Systemen}, die mit wenig Daten auskommen, aber schwer wartbar, nicht robust und limitiert in der Generalisierung sind
 \end{itemize}
 
-Die erfolgreiche Evaluation auf realen Siemens Mobility Daten belegt, dass der entwickelte Prototyp das Potenzial hat, manuelle Prozesse signifikant zu beschleunigen (75.3\% Zeitersparnis) und damit einen konkreten Beitrag zur Digitalisierung der Eisenbahninfrastruktur zu leisten. Die hohe Genauigkeit (97.22\%), kombiniert mit transparenten Validierungsmechanismen und Human-in-the-Loop-Integration, positioniert das System als praktikable Lösung für den produktiven Einsatz in sicherheitskritischen Umgebungen.
+Die erfolgreiche Evaluation auf realen Siemens Mobility Daten (vgl. Kapitel~\ref{chap:evaluation}) belegt, dass der entwickelte Prototyp das Potenzial hat, manuelle Prozesse signifikant zu beschleunigen (89,7\% Zeitersparnis, vgl. Tabelle~\ref{tab:time_comparison_manual}) und damit einen konkreten Beitrag zur Digitalisierung der Eisenbahninfrastruktur zu leisten. Die hohe Genauigkeit (97.22\%, vgl. Tabelle~\ref{tab:e2e_overall_test}), kombiniert mit transparenten Validierungsmechanismen und Human-in-the-Loop-Integration, positioniert das System als praktikable Lösung für den produktiven Einsatz in sicherheitskritischen Umgebungen.
 
 \textbf{Ausblick:}
 

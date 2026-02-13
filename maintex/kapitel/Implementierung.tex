@@ -292,7 +292,7 @@ Die Daten wurden in eine standardisierte COCO-Verzeichnisstruktur (Abbildung~\re
 Abbildung~\ref{fig:labels_distribution} visualisiert die Charakteristika des Trainingsdatensatzes. Die Klassenverteilung zeigt die nach Augmentation resultierende Verteilung mit der erwartungsgemäß dominierenden Koordinaten-Klasse (5.945~Trainingsinstanzen), gefolgt von Signalen (1.875~Trainingsinstanzen). Die räumliche Verteilung der Bounding-Box-Zentren zeigt eine gleichmäßige Abdeckung des Bildbereichs ohne systematische Häufungen oder Leerräume, was auf eine gute Repräsentativität des Datensatzes hindeutet. Die Größenverteilung verdeutlicht die charakteristisch kleinen Objektdimensionen der Gleisplansymbole, die überwiegend im Bereich von 2--10\,\% der normalisierten Bilddimensionen liegen.
 
 \paragraph{Diskussion der Klassenverteilung.}
-Die \textbf{Dominanz der Koordinaten-Klasse} ist ein inhärentes Merkmal von Gleisplänen und kein Artefakt des Datensatzes: Grundsätzlich besitzt jedes Objekt in einem Gleisplan -- ob Signal, GKS-Platte, Weiche oder Haltepunkt -- eine eigene Kilometerangabe. Die Anzahl der Koordinatenbeschriftungen entspricht daher annähernd der Summe aller übrigen Objektinstanzen. Ein direkter Größenvergleich zwischen der Koordinaten-Klasse und einzelnen Symbolklassen ist somit methodisch nur bedingt aussagekräftig, da Koordinaten funktional eine Referenzklasse darstellen, die alle anderen Symbolklassen begleitet.
+Die \textbf{Dominanz der Koordinaten-Klasse} ist ein inhärentes Merkmal von Gleisplänen und kein Artefakt des Datensatzes: Grundsätzlich besitzt jedes Objekt in einem Gleisplan -- ob Signal, GKS, Weiche oder Haltepunkt -- eine eigene Kilometerangabe. Die Anzahl der Koordinatenbeschriftungen entspricht daher annähernd der Summe aller übrigen Objektinstanzen. Ein direkter Größenvergleich zwischen der Koordinaten-Klasse und einzelnen Symbolklassen ist somit methodisch nur bedingt aussagekräftig, da Koordinaten funktional eine Referenzklasse darstellen, die alle anderen Symbolklassen begleitet.
 
 Die \textbf{Instanzzahlen einzelner Klassen} variieren entsprechend ihrer natürlichen Häufigkeit in Gleisplänen. Aus eisenbahntechnischer Sicht wäre zu erwarten, dass S-Verbinder und Isolierstöße in realen Gleisplänen mindestens ebenso häufig vorkommen wie Signale, da jedes Signal theoretisch einen S-Verbinder oder Isolierstoß in unmittelbarer Nähe besitzt, ergänzt durch weitere Vorkommen am Ende des Durchrutschweges, in Weichenbereichen und als Trennung mehrerer Gleisabschnitte \cite{Pachl}. Die im Datensatz beobachteten Instanzzahlen spiegeln die tatsächliche Verteilung in den annotierten 24~Gleisplänen wider. Die detaillierte quantitative Evaluation der Erkennungsleistung über alle 13~Klassen erfolgt in Kapitel~\ref{chap:evaluation}.
 
@@ -1784,7 +1784,7 @@ Für jeden Textkandidaten im Umkreis eines Symbols wird diese Transformation dur
 
 Im Gegensatz zu statischen Suchradien verwendet die Implementierung einen \textit{dimensionsadaptiven} Ansatz, bei dem die Suchbereiche dynamisch aus den Abmessungen der detektierten Bounding Boxes berechnet werden. Dies gewährleistet Robustheit gegenüber unterschiedlichen Symbolgrößen und Planauflösungen.
 
-Für die Verknüpfung eines Ankersymbols (z.B. Signal, GKS-Platte) mit seiner zugehörigen Koordinatenbeschriftung werden die maximalen Suchentfernungen wie folgt berechnet:
+Für die Verknüpfung eines Ankersymbols (z.B. Signal, GKS) mit seiner zugehörigen Koordinatenbeschriftung werden die maximalen Suchentfernungen wie folgt berechnet:
 
 \textbf{Vertikaler Suchbereich:}
 \begin{equation}
@@ -1867,7 +1867,7 @@ Gleismittellinie & $d_{\text{ray}}$ & 1500 px & Sicherheitslimit für Ray-Castin
 
 \textbf{Physikalische Interpretation:} Bei einer Renderauflösung von 500 DPI entsprechen die Parameter folgenden physikalischen Abständen:
 \begin{itemize}
-    \item 250 px $\approx$ 12,7 mm (typischer Abstand zwischen Signal und zugehöriger GKS-Platte)
+    \item 250 px $\approx$ 12,7 mm (typischer Abstand zwischen Signal und zugehöriger GKS)
     \item 120 px $\approx$ 6 mm (horizontale Toleranz für leicht versetzte Symbole)
     \item 300 px $\approx$ 15 mm (erweiterter Fallback-Suchbereich)
 \end{itemize}
@@ -2682,7 +2682,7 @@ Der Dialog zeigt eine tabellarische Übersicht aller identifizierten Änderungen
 
 Diese Darstellung erfüllt Anforderung FA-011 und ermöglicht Ingenieuren eine schnelle Identifikation relevanter Planänderungen ohne manuelle Vergleichsarbeit.
 
-Ein konkretes Beispiel einer detektierten Koordinatenänderung zeigen die Abbildungen~\ref{fig:gks_change_before} und~\ref{fig:gks_change_after} für die GKS-Platte mit der Kennung 0305.
+Ein konkretes Beispiel einer detektierten Koordinatenänderung zeigen die Abbildungen~\ref{fig:gks_change_before} und~\ref{fig:gks_change_after} für die GKS mit der Kennung 0305.
 
 \begin{figure}[H]
 \centering
