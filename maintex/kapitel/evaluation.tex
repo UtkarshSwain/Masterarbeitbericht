@@ -27,12 +27,14 @@ Für die Evaluation der vollständigen Extraktionspipeline (Detektion → OCR �
 
 \textbf{Datensatztrennung:} Die neun Testpläne wurden zufällig aus einem separaten Datenpool ausgewählt, der zu keinem Zeitpunkt für Training oder Validierung des YOLO-Modells verwendet wurde. Diese strikte Trennung gewährleistet eine vollständig unabhängige Evaluation der Systemleistung.
 
-\textbf{Methodische Einschränkung:} Aufgrund des erheblichen manuellen Aufwands zur Erstellung vollständiger Ground-Truth-Daten für A0-Gleispläne (durchschnittlich 2-3 Stunden pro Plan) sowie der begrenzten Verfügbarkeit weiterer ungesehener Pläne wurden neun Pläne unterschiedlicher Komplexität für die End-to-End-Evaluation ausgewählt. Diese Pläne repräsentieren verschiedene Komplexitätsstufen und ermöglichen eine realistische Bewertung der Systemleistung. Für eine vollständig unabhängige Evaluation wären zusätzliche, komplett ungesehene Pläne wünschenswert gewesen, was im Zeitrahmen dieser Masterarbeit jedoch nicht realisierbar war.
+\textbf{Methodische Einschränkung:} Aufgrund des erheblichen manuellen Aufwands zur Erstellung vollständiger Ground-Truth-Daten für A0-Gleispläne (durchschnittlich 2--3 Stunden pro Plan) sowie der begrenzten Verfügbarkeit weiterer ungesehener Pläne wurden neun Pläne unterschiedlicher Komplexität für die End-to-End-Evaluation ausgewählt. Diese Pläne repräsentieren verschiedene Komplexitätsstufen und ermöglichen eine realistische Bewertung der Systemleistung. Für eine vollständig unabhängige Evaluation wären zusätzliche, komplett ungesehene Pläne wünschenswert gewesen, was im Zeitrahmen dieser Masterarbeit jedoch nicht realisierbar war.
 
 \textbf{Evaluationsumfang:} Die End-to-End-Evaluation umfasst alle 12~Symbolklassen, die mit Koordinaten verknüpft werden. Die Klasse \textit{coordinate} liefert Positionsinformationen und wird als verknüpftes Attribut der anderen Klassen bewertet -- d.h. eine Koordinate gilt als korrekt, wenn sie dem richtigen Symbol zugeordnet wurde.
 
 \begin{table}[H]
 \centering
+\caption{Charakteristika des Testdatensatzes (A0-Gleispläne)}
+\label{tab:test_dataset_stats}
 \begin{tabular}{|l|r|}
 \hline
 \textbf{Attribut} & \textbf{Wert} \\
@@ -43,7 +45,7 @@ Seiten pro Plan & 1 \\
 Herkunft & Siemens Mobility Projekte \\
 Komplexitätsstufen & Einfach (2), Mittel (3), Komplex (4) \\
 \hline
-\multicolumn{2}{|l|}{\textit{Durchschnittliche Symbolanzahl pro Plan (12 Ankerklassen)}} \\
+\multicolumn{2}{|l|}{\textit{Durchschnittliche Symbolanzahl pro Plan (12 Symbolklassen)}} \\
 \hline
 \hspace{3mm} Signale & 28 \\
 \hspace{3mm} GM-Blöcke & 27 \\
@@ -53,19 +55,17 @@ Komplexitätsstufen & Einfach (2), Mittel (3), Komplex (4) \\
 \hspace{3mm} Weichen-Blöcke & 19 \\
 \hspace{3mm} GKS festkodiert & 9 \\
 \hspace{3mm} Haltepunkte & 8 \\
-\hspace{3mm} Weichenenden & 3 \\
-\hspace{3mm} Weichengruppenenden & 1 \\
+\hspace{3mm} Weichenende & 3 \\
+\hspace{3mm} Weichengruppenende & 1 \\
 \hspace{3mm} Prellböcke & 1 \\
 \hspace{3mm} Haltetafeln & 1 \\
 \hline
-\hspace{3mm} \textbf{Summe (12 Ankerklassen)} & \textbf{164} \\
+\hspace{3mm} \textbf{Summe (12 Symbolklassen)} & \textbf{164} \\
 Gesamtanzahl evaluierter Objekte & 1473 \\
 Tiles pro Plan (Durchschnitt) & $\approx$ 40 \\
 Auflösungsbereich & 500 DPI \\
 \hline
 \end{tabular}
-\caption{Charakteristika des Testdatensatzes (A0-Gleispläne)}
-\label{tab:test_dataset_stats}
 \end{table}
 
 \textbf{Ground-Truth-Erstellung:} Für jeden Testplan wurde eine manuelle Referenzdatei erstellt, die alle relevanten Extraktionsziele enthält:
@@ -89,6 +89,8 @@ Um die Robustheit des Prototyps unter verschiedenen Bedingungen zu evaluieren, w
 
 \begin{table}[H]
 \centering
+\caption{Komplexitätskategorien der A0-Testpläne}
+\label{tab:complexity_categories}
 \begin{tabular}{|l|p{8cm}|r|}
 \hline
 \textbf{Kategorie} & \textbf{Charakteristik} & \textbf{Anzahl} \\
@@ -100,8 +102,6 @@ Mittel & Moderate Symboldichte (100--130 Symbole), gelegentliche Überlappungen,
 Komplex & Hohe Symboldichte ($>$ 180 Symbole), viele überlappende Elemente, dichte Weichenbereiche, typisch für große Bahnhofsköpfe & 4 \\
 \hline
 \end{tabular}
-\caption{Komplexitätskategorien der A0-Testpläne}
-\label{tab:complexity_categories}
 \end{table}
 
 Diese Kategorisierung ermöglicht eine differenzierte Analyse der Systemleistung in Abhängigkeit von der Plankomplexität und identifiziert kritische Schwellenwerte für Symboldichte und räumliche Überlappung.
@@ -120,11 +120,11 @@ Für die Bewertung der YOLO-basierten Objekterkennung werden die in Abschnitt~\r
     \item \textbf{Precision}: Anteil korrekter Detektionen an allen Vorhersagen
     \item \textbf{Recall}: Anteil gefundener Objekte an allen vorhandenen Objekten
     \item \textbf{F1-Score}: Harmonisches Mittel aus Precision und Recall
-    \item \textbf{mAP@0.5}: Mean Average Precision bei IoU-Schwelle von 50\%
-    \item \textbf{mAP@0.5:0.95}: mAP gemittelt über IoU-Schwellen von 50\% bis 95\%
+    \item \textbf{mAP@0,5}: Mean Average Precision bei IoU-Schwelle von 50\,\%
+    \item \textbf{mAP@0,5:0,95}: mAP gemittelt über IoU-Schwellen von 50\,\% bis 95\,\%
 \end{itemize}
 
-Eine Detektion gilt als \textit{True Positive}, wenn die Intersection over Union (IoU) mit der Ground-Truth-Box $\geq$ 0.5 beträgt und die Klassenvorhersage korrekt ist.
+Eine Detektion gilt als \textit{True Positive}, wenn die Intersection over Union (IoU) mit der Ground-Truth-Box $\geq$ 0,5 beträgt und die Klassenvorhersage korrekt ist.
 
 \subsubsection{Metriken für die Texterkennung}
 
@@ -150,14 +150,14 @@ der OCR-Ergebnisse quantifiziert, die klassenspezifische Formatmuster erfüllen.
 
 \subsubsection{End-to-End Systemmetrik}
 
-Die Gesamtsystemleistung wird durch die \textbf{End-to-End Accuracy} gemessen, die dem in Anforderung \textbf{NFA-003} definierten Zielwert entspricht:
+Die Gesamtsystemleistung wird durch die \textbf{End-to-End Accuracy} gemessen, die dem in Anforderung \hyperref[req:NFA-003]{NFA-003} definierten Zielwert entspricht:
 \begin{equation}
 \text{E2E Accuracy} = \frac{\text{Vollständig korrekt extrahierte Objekte}}{\text{Gesamtanzahl Objekte}} \times 100\%
 \end{equation}
 
 Ein Objekt gilt als \enquote{vollständig korrekt extrahiert}, wenn alle folgenden Bedingungen erfüllt sind:
 \begin{enumerate}
-    \item Das Symbol wurde korrekt detektiert (IoU $\geq$ 0.5 mit Ground Truth)
+    \item Das Symbol wurde korrekt detektiert (IoU $\geq$ 0,5 mit Ground Truth)
     \item Die Klassifikation ist korrekt
     \item Der OCR-Text stimmt exakt mit dem Ground Truth überein (falls anwendbar)
     \item Alle erforderlichen Verknüpfungen (z.B. zu Koordinaten) sind korrekt (falls anwendbar)
@@ -170,6 +170,8 @@ Die Evaluation wurde auf einer standardisierten Hardware- und Softwarekonfigurat
 
 \begin{table}[H]
 \centering
+\caption{Hardware- und Softwarekonfiguration der Testumgebung}
+\label{tab:testumgebung}
 \begin{tabular}{|l|l|}
 \hline
 \textbf{Komponente} & \textbf{Spezifikation} \\
@@ -197,11 +199,9 @@ Tesseract & 5.3.0 \\
 PostgreSQL & 14.9 \\
 \hline
 \end{tabular}
-\caption{Hardware- und Softwarekonfiguration der Testumgebung}
-\label{tab:testumgebung}
 \end{table}
 
-Die Wahl einer CPU-basierten Inferenzumgebung reflektiert die Anforderung \textbf{NFA-001}, die eine On-Premise-Verarbeitung auf Standard-Workstations ohne dedizierte GPU vorsieht. Alle Zeitmessungen wurden als Mittelwert über drei Durchläufe berechnet, um Varianz durch Systemlast zu minimieren.
+Die Wahl einer CPU-basierten Inferenzumgebung reflektiert die Anforderung \hyperref[req:NFA-001]{NFA-001}, die eine On-Premise-Verarbeitung auf Standard-Workstations ohne dedizierte GPU vorsieht. Alle Zeitmessungen wurden als Mittelwert über drei Durchläufe berechnet, um Varianz durch Systemlast zu minimieren.
 
 \section{Ergebnisanalyse}
 \label{sec:ergebnisanalyse}
@@ -219,75 +219,75 @@ Das trainierte YOLOv8l-OBB Modell wurde auf dem Validierungsdatensatz (208 Bilde
 
 \begin{table}[H]
 \centering
+\caption{Aggregierte Detektionsmetriken auf dem Validierungsdatensatz (instanzgewichteter Durchschnitt)}
+\label{tab:detection_overall}
 \begin{tabular}{|l|r|}
 \hline
 \textbf{Metrik} & \textbf{Wert} \\
 \hline
-Precision (Durchschnitt) & 97.5\% \\
-Recall (Durchschnitt) & 95.7\% \\
-F1-Score & 96.6\% \\
-mAP@0.5 & 98.4\% \\
-mAP@0.5:0.95 & 92.7\% \\
+Precision (Durchschnitt) & 97,5\,\% \\
+Recall (Durchschnitt) & 95,7\,\% \\
+F1-Score & 96,6\,\% \\
+mAP@0,5 & 98,4\,\% \\
+mAP@0,5:0,95 & 92,7\,\% \\
 \hline
 \end{tabular}
-\caption{Aggregierte Detektionsmetriken auf dem Validierungsdatensatz}
-\label{tab:detection_overall}
 \end{table}
 
-Der erreichte Recall von 95.7\% übertrifft die Anforderung \textbf{FA-001} deutlich, die eine Mindesterkennungsrate von 90\% fordert. Die hohe Precision von 97.5\% zeigt, dass das Modell nur wenige Falschdetektionen produziert -- von 100 vorhergesagten Objekten sind durchschnittlich 97-98 korrekt. Der F1-Score von 96.6\% belegt die ausgewogene Leistung zwischen Precision und Recall, was für produktive Anwendungen essentiell ist: Das System findet nahezu alle vorhandenen Objekte (hoher Recall) und produziert dabei nur wenige Fehlalarme (hohe Precision).
+Der erreichte Recall von 95,7\,\% übertrifft die Anforderung \hyperref[req:FA-001]{FA-001} deutlich, die eine Mindesterkennungsrate von 90\,\% fordert. Die hohe Precision von 97,5\,\% zeigt, dass das Modell nur wenige Falschdetektionen produziert -- von 100 vorhergesagten Objekten sind durchschnittlich 97--98 korrekt. Der F1-Score von 96,6\,\% belegt die ausgewogene Leistung zwischen Precision und Recall, was für produktive Anwendungen essentiell ist: Das System findet nahezu alle vorhandenen Objekte (hoher Recall) und produziert dabei nur wenige Fehlalarme (hohe Precision).
 
-Die mAP@0.5 von 98.4\% demonstriert die exzellente Detektionsqualität bei einem IoU-Schwellenwert von 50\%. Dies bedeutet, dass die vorhergesagten Bounding Boxes im Durchschnitt zu mindestens 50\% mit den Ground-Truth-Boxen überlappen, was für nachgelagerte OCR-Verarbeitung ausreichend präzise ist. Die mAP@0.5:0.95 von 92.7\% bestätigt die robuste Leistung auch bei strengeren Überlappungskriterien (IoU von 50\% bis 95\% in 5\%-Schritten gemittelt). Der Abstand von 5.7 Prozentpunkten zwischen mAP@0.5 und mAP@0.5:0.95 ist für orientierte Bounding Boxes typisch und liegt im erwarteten Bereich.
+Die mAP@0,5 von 98,4\,\% demonstriert die exzellente Detektionsqualität bei einem IoU-Schwellen\-wert von 50\,\%. Dies bedeutet, dass die vorhergesagten Bounding Boxes im Durchschnitt zu mindestens 50\,\% mit den Ground-Truth-Boxen überlappen, was für nachgelagerte OCR-Verarbeitung ausreichend präzise ist. Die mAP@0,5:0,95 von 92,7\,\% bestätigt die robuste Leistung auch bei strengeren Überlappungskriterien (IoU von 50\,\% bis 95\,\% in 5\,\%-Schritten gemittelt). Der Abstand von 5,7 Prozentpunkten zwischen mAP@0,5 und mAP@0,5:0,95 ist für orientierte Bounding Boxes typisch und liegt im erwarteten Bereich. Insbesondere bei rotierten Objekten ist eine geringfügige Abweichung der Eckpunkte zu erwarten, da das Modell die Orientierung zusätzlich zu Position und Größe schätzen muss. Die konsistent hohen Werte über alle Metriken hinweg bestätigen, dass das trainierte YOLOv8-OBB-Modell für den produktiven Einsatz in der Gleisplananalyse geeignet ist.
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.85\textwidth]{images/Kapitel7/BoxPR_curve.png}
-    \caption{Precision-Recall-Kurven für alle Objektklassen auf dem Validierungsdatensatz. Die Fläche unter jeder Kurve entspricht dem klassenspezifischen AP-Wert. Der Gesamtwert mAP@0.5 beträgt 98,4\,\%.}
+    \caption{Precision-Recall-Kurven für alle Objektklassen auf dem Validierungsdatensatz. Die Fläche unter jeder Kurve entspricht dem klassenspezifischen AP-Wert. Der Gesamtwert mAP@0,5 beträgt 98,4\,\%.}
     \label{fig:pr_curve_eval}
 \end{figure}
 
 Die Precision-Recall-Kurven in Abbildung~\ref{fig:pr_curve_eval} visualisieren das Verhältnis zwischen Precision und Recall für verschiedene Konfidenzschwellenwerte. Die nahezu rechteckige Form der Kurven für die meisten Klassen bestätigt die hohe Detektionsqualität. Lediglich bei den GKS-Klassen zeigt sich ein geringfügig früherer Precision-Abfall bei hohen Recall-Werten, was auf die in Abschnitt~\ref{subsec:e2e_test_eval} diskutierten Verwechslungen zwischen \texttt{gks\_festkodiert} und \texttt{gks\_gesteuert} zurückzuführen ist.
 \subsubsection{Klassenspezifische Analyse}
 
-Die Detektionsleistung variiert zwischen den verschiedenen Symbolklassen moderat. Tabelle~\ref{tab:detection_per_class} zeigt die klassenspezifischen Metriken für alle 13~Klassen. Precision und Recall wurden basierend auf den Werten der Konfusionsmatrix (Abbildung~\ref{fig:confusion_matrix_eval}) berechnet, während die mAP@0.5-Werte die durchschnittliche Precision über alle Recall-Stufen repräsentieren.
+Die Detektionsleistung variiert zwischen den verschiedenen Symbolklassen moderat. Tabelle~\ref{tab:detection_per_class} zeigt die klassenspezifischen Metriken für alle 13~Klassen. Precision und Recall wurden basierend auf den Werten der Konfusionsmatrix (Abbildung~\ref{fig:confusion_matrix_eval}) berechnet, während die mAP@0,5-Werte die durchschnittliche Precision über alle Recall-Stufen repräsentieren.
 
 \begin{table}[H]
 \centering
+\caption{Detektionsmetriken für alle 13~Klassen auf dem Validierungsdatensatz. Der Makro-Durchschnitt gewichtet alle Klassen gleich, unabhängig von der Instanzanzahl.}
+\label{tab:detection_per_class}
 \begin{tabular}{|l|r|r|r|r|}
 \hline
-\textbf{Klasse} & \textbf{Instanzen (Val)} & \textbf{Precision} & \textbf{Recall} & \textbf{mAP@0.5} \\
+\textbf{Klasse} & \textbf{Instanzen (Val)} & \textbf{Precision} & \textbf{Recall} & \textbf{mAP@0,5} \\
 \hline
-signal & 473 & 94.9\% & 98.5\% & 97.6\% \\
-coordinate & 1.483 & 97.7\% & 98.6\% & 98.7\% \\
-gks\_festkodiert & 122 & 98.3\% & 95.8\% & 97.8\% \\
-gks\_gesteuert & 157 & 94.5\% & 97.5\% & 95.1\% \\
-gm\_block & 201 & 97.6\% & 97.6\% & 99.5\% \\
-sverbinder & 150 & --- & --- & 99.5\% \\
-prellbock & 31 & --- & --- & 99.5\% \\
-endeweichen & 50 & --- & --- & 99.5\% \\
-weichengruppeende & 18 & --- & --- & 99.0\% \\
-haltepunkt & 92 & --- & --- & 98.7\% \\
-haltetafel & 23 & --- & --- & 98.4\% \\
-isolierstoß & 147 & --- & --- & 97.8\% \\
-weichen\_block & 129 & --- & --- & 97.7\% \\
+signal & 473 & 94,9\,\% & 98,5\,\% & 97,6\,\% \\
+coordinate & 1.483 & 97,7\,\% & 98,6\,\% & 98,7\,\% \\
+gks\_festkodiert & 122 & 98,3\,\% & 95,8\,\% & 97,8\,\% \\
+gks\_gesteuert & 157 & 94,5\,\% & 97,5\,\% & 95,1\,\% \\
+gm\_block & 201 & 97,6\,\% & 97,6\,\% & 99,5\,\% \\
+sverbinder & 150 & 94,3\,\% & 100,0\,\% & 99,5\,\% \\
+prellbock & 31 & 96,9\,\% & 100,0\,\% & 99,5\,\% \\
+weichenende & 50 & 94,3\,\% & 100,0\,\% & 99,5\,\% \\
+weichengruppenende & 18 & 85,7\,\% & 100,0\,\% & 99,0\,\% \\
+haltepunkt & 92 & 97,9\,\% & 100,0\,\% & 98,7\,\% \\
+haltetafel & 23 & 79,3\,\% & 100,0\,\% & 98,4\,\% \\
+isolierstoß & 147 & 97,8\,\% & 92,5\,\% & 97,8\,\% \\
+weichen\_block & 129 & 88,7\,\% & 97,7\,\% & 97,7\,\% \\
 \hline
-\textbf{Alle Klassen (Durchschnitt)} & \textbf{3.076} & \textbf{---} & \textbf{---} & \textbf{98.4\%} \\
+\textbf{Makro-Durchschnitt} & \textbf{3.076} & \textbf{93,7\,\%} & \textbf{98,3\,\%} & \textbf{98,4\,\%} \\
 \hline
 \end{tabular}
-\caption{Detektionsmetriken für alle 13~Klassen auf dem Validierungsdatensatz. mAP@0.5 aus den Precision-Recall-Kurven.}
-\label{tab:detection_per_class}
 \end{table}
-\textbf{Validierung FA-001, FA-002 und FA-003:}
+\textbf{Validierung \hyperref[req:FA-001]{FA-001}, \hyperref[req:FA-002]{FA-002} und \hyperref[req:FA-003]{FA-003}:}
 
-\textbf{FA-001 (Erkennungsrate $\geq$ 90\%):} Der erreichte Recall von 95.7\% auf dem 
-Validierungssatz und 100\% auf dem Testsatz (kein Symbol übersehen) übertrifft die 
+\textbf{\hyperref[req:FA-001]{FA-001} (Erkennungsrate $\geq$ 90\,\%):} Der erreichte Recall von 95,7\,\% auf dem
+Validierungssatz und 100\,\% auf dem Testsatz (kein Symbol übersehen) übertrifft die
 geforderte Mindesterkennungsrate deutlich.
 
-\textbf{FA-002 (Rotationsinvarianz):} Die OBB-Architektur in Kombination mit der 
+\textbf{\hyperref[req:FA-002]{FA-002} (Rotationsinvarianz):} Die OBB-Architektur in Kombination mit der 
 synthetischen Rotationsaugmentation (10 Winkel von $-90^\circ$ bis $+90^\circ$, vgl. Abschnitt~\ref{subsec:modelltraining} gewährleistet robuste Erkennung bei beliebigen 
 Symbolorientierungen. Die quantitative Analyse in Tabelle~\ref{tab:rotation_analysis} 
-bestätigt dies: 38 Objekte mit Steilrotation ($|\theta| > 30^\circ$) erreichen eine 
-höhere Detektionskonfidenz (0.946) als kardinal orientierte Objekte (0.890).
+bestätigt dies: 38 Objekte mit Steilrotation ($|\theta| > 30^\circ$) erreichen eine
+höhere Detektionskonfidenz (0,946) als kardinal orientierte Objekte (0,890).
 
-\textbf{FA-003 (Zielobjekte):} Alle 13~Symbolklassen werden zuverlässig detektiert. Die Klasse \textit{coordinate} liefert Positionsinformationen, die den anderen 12~Klassen zugeordnet werden.
+\textbf{\hyperref[req:FA-003]{FA-003} (Zielobjekte):} Alle 13~Symbolklassen werden zuverlässig detektiert. Die Klasse \textit{coordinate} liefert Positionsinformationen, die den anderen 12~Klassen zugeordnet werden.
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.7\textwidth]{images/Kapitel7/confusion_matrix.png}
@@ -299,67 +299,67 @@ fälschlicherweise als \textit{gks\_festkodiert} klassifiziert wurden.}
 Die Analyse der klassenspezifischen Ergebnisse offenbart mehrere bedeutende Beobachtungen:
 
 \begin{itemize}
-    \item \textbf{Konsistent hohe Performance aller Klassen}: Alle 13~Klassen erreichen mAP@0.5-Werte über 95\%, was die Robustheit des Modells belegt.
+    \item \textbf{Konsistent hohe Performance aller Klassen}: Alle 13~Klassen erreichen mAP@0,5-Werte über 95\,\%, was die Robustheit des Modells belegt.
 
-    \item \textbf{Klassen-spezifische Precision-Recall-Profile}: Die Klasse \textit{signal} zeigt einen interessanten Trade-off mit niedrigerer Precision (94.9\%) aber höherem Recall (98.5\%). Dies ist für sicherheitskritische Signalerkennung vorteilhaft: Lieber einige Falschdetektionen in Kauf nehmen, als ein tatsächliches Signal zu übersehen. Im Gegensatz dazu erreicht \textit{gks\_festkodiert} die höchste Precision (98.3\%) bei etwas niedrigerem Recall (95.8\%), was die distinktive visuelle Erscheinung dieser Symbolklasse reflektiert.
+    \item \textbf{Klassen-spezifische Precision-Recall-Profile}: Die Klasse \textit{signal} zeigt einen interessanten Trade-off mit niedrigerer Precision (94,9\,\%) aber höherem Recall (98,5\,\%). Dies ist für sicherheitskritische Signalerkennung vorteilhaft: Lieber einige Falschdetektionen in Kauf nehmen, als ein tatsächliches Signal zu übersehen. Im Gegensatz dazu erreicht \textit{gks\_festkodiert} die höchste Precision (98,3\,\%) bei etwas niedrigerem Recall (95,8\,\%), was die distinktive visuelle Erscheinung dieser Symbolklasse reflektiert.
 
-    \item \textbf{Perfekt balancierte Klassen}: Die Klassen \textit{gm\_block} (97.6\% P/R) und \textit{coordinate} (97.7\% P, 98.6\% R) zeigen nahezu identische Precision- und Recall-Werte, was auf eine optimale Detektionsqualität ohne systematische Bias hinweist.
+    \item \textbf{Perfekt balancierte Klassen}: Die Klassen \textit{gm\_block} (97,6\,\% P/R) und \textit{coordinate} (97,7\,\% P, 98,6\,\% R) zeigen nahezu identische Precision- und Recall-Werte, was auf eine optimale Detektionsqualität ohne systematische Bias hinweist.
 
-    \item \textbf{Herausforderung bei GKS-Varianten}: Die Klasse \textit{gks\_gesteuert} zeigt mit 94.5\% die niedrigste Precision, was auf die hohe visuelle Ähnlichkeit zu \textit{gks\_festkodiert} zurückzuführen ist. Die Konfusionsmatrix (Abbildung~\ref{fig:confusion_matrix_eval}) zeigt, dass 4 Instanzen von \textit{gks\_gesteuert} fälschlicherweise als \textit{gks\_festkodiert} klassifiziert wurden, während 1 Instanz von \textit{gks\_festkodiert} als \textit{gks\_gesteuert} fehlklassifiziert wurde. Diese beiden GKS-Arten unterscheiden sich nur durch eine kleine Linie oberhalb des Symbols (vgl. Tabelle~\ref{tab:symbolklassen}), was die Unterscheidung für das neuronale Netz erschwert.
+    \item \textbf{Herausforderung bei GKS-Varianten}: Die Klasse \textit{gks\_gesteuert} zeigt mit 94,5\,\% die niedrigste Precision, was auf die hohe visuelle Ähnlichkeit zu \textit{gks\_festkodiert} zurückzuführen ist. Die Konfusionsmatrix (Abbildung~\ref{fig:confusion_matrix_eval}) zeigt, dass 4 Instanzen von \textit{gks\_gesteuert} fälschlicherweise als \textit{gks\_festkodiert} klassifiziert wurden, während 1 Instanz von \textit{gks\_festkodiert} als \textit{gks\_gesteuert} fehlklassifiziert wurde. Diese beiden GKS-Arten unterscheiden sich nur durch eine kleine Linie oberhalb des Symbols (vgl. Tabelle~\ref{tab:symbolklassen}), was die Unterscheidung für das neuronale Netz erschwert.
 
-    \item \textbf{mAP als synthetische Metrik}: Die mAP@0.5-Werte liegen durchweg 1-3 Prozentpunkte über den jeweiligen Precision-Werten, da mAP die durchschnittliche Precision über alle Recall-Stufen misst. Klassen mit nahezu rechteckigen Precision-Recall-Kurven (siehe Abbildung~\ref{fig:pr_curve_eval}) wie \textit{gm\_block} (99.5\% mAP) zeigen, dass hohe Precision auch bei variierenden Konfidenzschwellen erhalten bleibt.
+    \item \textbf{mAP als synthetische Metrik}: Die mAP@0,5-Werte liegen durchweg 1--3 Prozentpunkte über den jeweiligen Precision-Werten, da mAP die durchschnittliche Precision über alle Recall-Stufen misst. Klassen mit nahezu rechteckigen Precision-Recall-Kurven (siehe Abbildung~\ref{fig:pr_curve_eval}) wie \textit{gm\_block} (99,5\,\% mAP) zeigen, dass hohe Precision auch bei variierenden Konfidenzschwellen erhalten bleibt.
 
-    \item \textbf{Robuste Erkennung seltener Klassen}: Die erfolgreiche Erkennung seltener Klassen wie \textit{weichengruppenende} (74 Trainingsinstanzen, 99.0\% mAP) und \textit{haltetafel} (93 Trainingsinstanzen, 98.4\% mAP) demonstriert die Effektivität der synthetischen Rotationsaugmentation zur Verbesserung der Erkennungsleistung bei unterrepräsentierten Klassen.
+    \item \textbf{Robuste Erkennung seltener Klassen}: Die erfolgreiche Erkennung seltener Klassen wie \textit{weichengruppenende} (74 Trainingsinstanzen, 99,0\,\% mAP) und \textit{haltetafel} (93 Trainingsinstanzen, 98,4\,\% mAP) demonstriert die Effektivität der synthetischen Rotationsaugmentation zur Verbesserung der Erkennungsleistung bei unterrepräsentierten Klassen.
 \end{itemize}
 
 \subsection{End-to-End Systemevaluation auf dem Testsatz}
 \label{subsec:e2e_test_eval}
 
-Die Evaluation der vollständigen Extraktionspipeline (Detektion → OCR → Linking → Validierung) erfolgt auf dem unabhängigen Testsatz realer Siemens Mobility Gleispläne. Diese Evaluation misst die tatsächliche Systemleistung unter realistischen Bedingungen und validiert die Anforderungen \textbf{FA-004} bis \textbf{FA-014} sowie \textbf{NFA-003} bis \textbf{NFA-007}.
+Die Evaluation der vollständigen Extraktionspipeline (Detektion → OCR → Linking → Validierung) erfolgt auf dem unabhängigen Testsatz realer Siemens Mobility Gleispläne. Diese Evaluation misst die tatsächliche Systemleistung unter realistischen Bedingungen und validiert die Anforderungen \hyperref[req:FA-004]{FA-004} bis \hyperref[req:FA-014]{FA-014} sowie \hyperref[req:NFA-003]{NFA-003} bis \hyperref[req:NFA-007]{NFA-007}.
 
 \subsubsection{End-to-End Systemgenauigkeit}
 
-Die Gesamtsystemleistung wird durch die End-to-End Accuracy gemessen, die alle Pipeline-Stufen integriert und der in Anforderung \textbf{NFA-003} definierten Zielmetrik entspricht. Die Evaluation umfasst alle 12~Symbolklassen, die mit Koordinaten verknüpft werden.
+Die Gesamtsystemleistung wird durch die End-to-End Accuracy gemessen, die alle Pipeline-Stufen integriert und der in Anforderung \hyperref[req:NFA-003]{NFA-003} definierten Zielmetrik entspricht. Die Evaluation umfasst alle 12~Symbolklassen, die mit Koordinaten verknüpft werden.
 
 \textbf{Aggregierte Ergebnisse über alle Testpläne:}
 
 \begin{table}[H]
 \centering
+\caption{End-to-End Genauigkeit pro Objektklasse (9 Testpläne)}
+\label{tab:e2e_per_class_test}
 \begin{tabular}{|l|r|r|r|}
 \hline
 \textbf{Objektklasse} & \textbf{Gesamt} & \textbf{Korrekt} & \textbf{Genauigkeit} \\
 \hline
-signal & 256 & 252 & 98.44\% \\
-gm\_block & 247 & 246 & 99.60\% \\
-gks\_gesteuert & 201 & 199 & 99.00\% \\
-sverbinder & 205 & 201 & 98.05\% \\
-isolierstoß & 183 & 176 & 96.17\% \\
-weichen\_block & 174 & 158 & 90.80\% \\
-gks\_festkodiert & 77 & 75 & 97.40\% \\
-haltepunkt & 76 & 74 & 97.37\% \\
-weichenende & 23 & 23 & 100.00\% \\
-weichengruppenende & 13 & 10 & 76.92\% \\
-prellbock & 10 & 10 & 100.00\% \\
-haltetafel & 8 & 8 & 100.00\% \\
+signal & 256 & 252 & 98,44\,\% \\
+gm\_block & 247 & 246 & 99,60\,\% \\
+gks\_gesteuert & 201 & 199 & 99,00\,\% \\
+sverbinder & 205 & 201 & 98,05\,\% \\
+isolierstoß & 183 & 176 & 96,17\,\% \\
+weichen\_block & 174 & 158 & 90,80\,\% \\
+gks\_festkodiert & 77 & 75 & 97,40\,\% \\
+haltepunkt & 76 & 74 & 97,37\,\% \\
+weichenende & 23 & 23 & 100,00\,\% \\
+weichengruppenende & 13 & 10 & 76,92\,\% \\
+prellbock & 10 & 10 & 100,00\,\% \\
+haltetafel & 8 & 8 & 100,00\,\% \\
 \hline
-\textbf{Summe (alle 12 Klassen)} & \textbf{1473} & \textbf{1432} & \textbf{97.22\%} \\
+\textbf{Summe (alle 12 Klassen)} & \textbf{1473} & \textbf{1432} & \textbf{97,22\,\%} \\
 \hline
 \end{tabular}
-\caption{End-to-End Genauigkeit pro Objektklasse (9 Testpläne)}
-\label{tab:e2e_per_class_test}
 \end{table}
 \begin{table}[H]
 \centering
+\caption{End-to-End Systemgenauigkeit im Vergleich zum Anforderungsziel}
+\label{tab:e2e_overall_test}
 \begin{tabular}{|l|r|r|r|}
 \hline
 \textbf{Metrik} & \textbf{Zielwert (NFA-003)} & \textbf{Erreicht} & \textbf{Status} \\
 \hline
-Vollständig korrekt extrahiert (alle Klassen) & $\geq$ 85\% & 97.22\% & \checkmark \\
-Manuelle Korrektur erforderlich & $\leq$ 15\% & 2.78\% & \checkmark \\
+Vollständig korrekt extrahiert (alle Klassen) & $\geq$ 85\,\% & 97,22\,\% & \checkmark \\
+Manuelle Korrektur erforderlich & $\leq$ 15\,\% & 2,78\,\% & \checkmark \\
 \hline
 \end{tabular}
-\caption{End-to-End Systemgenauigkeit im Vergleich zum Anforderungsziel}
-\label{tab:e2e_overall_test}
 \end{table}
 Da Signale das komplexeste Extraktionsziel darstellen (drei Attribute: Name, Koordinate, 
 Fahrtrichtung), wird deren Genauigkeit in Tabelle~\ref{tab:signal_attribute_accuracy} 
@@ -367,31 +367,31 @@ detailliert aufgeschlüsselt.
 
 \begin{table}[H]
 \centering
+\caption{Attribut-spezifische Genauigkeit für Signale (9 Testpläne). Ein Signal gilt als
+vollständig korrekt, wenn alle drei Attribute fehlerfrei extrahiert wurden.}
+\label{tab:signal_attribute_accuracy}
 \begin{tabular}{|l|r|r|r|}
 \hline
 \textbf{Attribut} & \textbf{Gesamt} & \textbf{Korrekt} & \textbf{Genauigkeit} \\
 \hline
-Signalname (OCR) & 256 & 253 & 98.83\% \\
-Koordinate (OCR + Linking) & 256 & 255 & 99.61\% \\
-Fahrtrichtung (Geometrische Ableitung) & 256 & 255 & 99.61\% \\
+Signalname (OCR) & 256 & 253 & 98,83\,\% \\
+Koordinate (OCR + Linking) & 256 & 255 & 99,61\,\% \\
+Fahrtrichtung (Geometrische Ableitung) & 256 & 255 & 99,61\,\% \\
 \hline
-\textbf{Vollständig korrekt (alle 3 Attribute)} & \textbf{256} & \textbf{251} & \textbf{98.05\%} \\
+\textbf{Vollständig korrekt (alle 3 Attribute)} & \textbf{256} & \textbf{251} & \textbf{98,05\,\%} \\
 \hline
 \end{tabular}
-\caption{Attribut-spezifische Genauigkeit für Signale (9 Testpläne). Ein Signal gilt als 
-vollständig korrekt, wenn alle drei Attribute fehlerfrei extrahiert wurden.}
-\label{tab:signal_attribute_accuracy}
 \end{table}
 
-Die hohe Fahrtrichtungsgenauigkeit von 99.61\% (255/256) bestätigt die Effektivität der
-geometrischen Ableitung aus der Signal-GKS-Relation (vgl. Anforderung \textbf{FA-006}).
+Die hohe Fahrtrichtungsgenauigkeit von 99,61\,\% (255/256) bestätigt die Effektivität der
+geometrischen Ableitung aus der Signal-GKS-Relation (vgl. Anforderung \hyperref[req:FA-006]{FA-006}).
 Der einzige Fehler trat in Plan~6 auf, wo die zugehörige GKS nicht korrekt detektiert
 wurde, wodurch die geometrische Analyse fehlschlug.
-Das System erreicht eine End-to-End-Genauigkeit von \textbf{97.22\%} auf dem Testsatz, was die Anforderung NFA-003 ($\geq$ 85\%) deutlich übertrifft. Dies bedeutet, dass bei 97.22\% aller extrahierten Objekte Name/Nummer, Position und (bei Signalen) Fahrtrichtung vollständig korrekt extrahiert wurden. Nur 2.78\% der Objekte erfordern manuelle Nachbearbeitung.
+Das System erreicht eine End-to-End-Genauigkeit von \textbf{97,22\,\%} auf dem Testsatz, was die Anforderung \hyperref[req:NFA-003]{NFA-003} ($\geq$ 85\,\%) deutlich übertrifft. Dies bedeutet, dass bei 97,22\,\% aller extrahierten Objekte Name/Nummer, Position und (bei Signalen) Fahrtrichtung vollständig korrekt extrahiert wurden. Nur 2,78\,\% der Objekte erfordern manuelle Nachbearbeitung.
 
-\textbf{Hinweis zur Generalisierung:} Die evaluierten neun Testpläne mit 1473 Objekten repräsentieren eine aussagekräftige Stichprobe des Leistungsspektrums. Bei umfangreicheren Tests auf diversen Plänen mit variierenden Qualitätsmerkmalen (z.B. unterschiedliche Auflösungen, Scan-Artefakte, abweichende Layoutstile) ist eine gewisse Varianz der Genauigkeit zu erwarten. Basierend auf der beobachteten Fehlerverteilung und unter Berücksichtigung potenzieller Herausforderungen bei komplexeren oder qualitativ schlechteren Eingabedaten wird eine realistische End-to-End-Genauigkeit im Bereich von \textbf{90-95\%} für den produktiven Einsatz erwartet. Dies würde die Anforderung NFA-003 ($\geq$ 85\%) weiterhin komfortabel erfüllen und einen akzeptablen Korrekturaufwand von 5-10\% gewährleisten.
+\textbf{Hinweis zur Generalisierung:} Die evaluierten neun Testpläne mit 1473 Objekten repräsentieren eine aussagekräftige Stichprobe des Leistungsspektrums. Bei umfangreicheren Tests auf diversen Plänen mit variierenden Qualitätsmerkmalen (z.B. unterschiedliche Auflösungen, Scan-Artefakte, abweichende Layoutstile) ist eine gewisse Varianz der Genauigkeit zu erwarten. Basierend auf der beobachteten Fehlerverteilung und unter Berücksichtigung potenzieller Herausforderungen bei komplexeren oder qualitativ schlechteren Eingabedaten wird eine realistische End-to-End-Genauigkeit im Bereich von \textbf{90--95\,\%} für den produktiven Einsatz erwartet. Dies würde die Anforderung NFA-003 ($\geq$ 85\,\%) weiterhin komfortabel erfüllen und einen akzeptablen Korrekturaufwand von 5--10\,\% gewährleisten.
 
-\subsubsection{Rotationsanalyse (Validierung FA-002 und FA-005)}
+\subsubsection{Rotationsanalyse (Validierung \hyperref[req:FA-002]{FA-002} und \hyperref[req:FA-005]{FA-005})}
 
 
 \begin{table}[H]
@@ -402,20 +402,20 @@ Das System erreicht eine End-to-End-Genauigkeit von \textbf{97.22\%} auf dem Tes
 \toprule
 \textbf{Kategorie} & \textbf{Anzahl} & \textbf{OCR-Erfolg} & \textbf{Ø Konfidenz} \\
 \midrule
-Kardinal ($|\theta| \leq 5^\circ$) & 238 & 96.6\% & 0.890 \\
-Steilrotation ($|\theta| > 30^\circ$) & 38 & 100.0\% & 0.946 \\
+Kardinal ($|\theta| \leq 5^\circ$) & 238 & 96,6\,\% & 0,890 \\
+Steilrotation ($|\theta| > 30^\circ$) & 38 & 100,0\,\% & 0,946 \\
 \midrule
-Gesamt & 276 & 97.1\% & 0.898 \\
+Gesamt & 276 & 97,1\,\% & 0,898 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-Tabelle~\ref{tab:rotation_analysis} zeigt die rotationsabhängige Leistungsanalyse 
-für Plan~1. Von 276 extrahierten Objekten weisen 38 (13.8\%) eine Steilrotation 
-von $|\theta| > 30^\circ$ auf, darunter sieben GKS-Symbole mit Winkeln zwischen 
-$-37.1^\circ$ und $+38.6^\circ$. Die steilrotierten Objekte erreichen eine höhere mittlere 
-Detektionskonfidenz (0.946) als kardinal orientierte Objekte (0.890) sowie eine 
-OCR-Erfolgsrate von 100\% gegenüber 96.6\%. Diese Ergebnisse bestätigen die 
+Tabelle~\ref{tab:rotation_analysis} zeigt die rotationsabhängige Leistungsanalyse
+für Plan~1. Von 276 extrahierten Objekten weisen 38 (13,8\,\%) eine Steilrotation
+von $|\theta| > 30^\circ$ auf, darunter sieben GKS-Symbole mit Winkeln zwischen
+$-37,1^\circ$ und $+38,6^\circ$. Die steilrotierten Objekte erreichen eine höhere mittlere
+Detektionskonfidenz (0,946) als kardinal orientierte Objekte (0,890) sowie eine
+OCR-Erfolgsrate von 100\,\% gegenüber 96,6\,\%. Diese Ergebnisse bestätigen die 
 Wirksamkeit der in Abschnitt~\ref{subsec:Datensatzerstellung} beschriebenen synthetischen 
 Rotationsaugmentation sowie des Angular-Path-Routings im OCR-Modul in Abschnitt \ref{subsec:dualwinkelrouting}.
 
@@ -425,40 +425,40 @@ Rotationsaugmentation sowie des Angular-Path-Routings im OCR-Modul in Abschnitt 
 
 \begin{table}[H]
 \centering
+\caption{Detaillierte End-to-End Ergebnisse pro Testplan mit Fehlertyp-Annotation.
+FP = False Positives (Extra-Erkennungen), die im Validierungsschritt entfernt werden können und daher nicht als Fehler gezählt werden.}
+\label{tab:e2e_per_plan_test}
 \begin{tabular}{|l|l|r|r|r|r|p{4.2cm}|}
 \hline
 \textbf{Plan} & \textbf{Komplexität} & \textbf{Objekte} & \textbf{Fehler} & \textbf{FP} & \textbf{Accuracy} & \textbf{Fehlertyp} \\
 \hline
-Plan 1 & Einfach & 101 & 2 & 3 & 98.02\% & 1× Sverbinder: OCR, 1× Haltepunkt: Koordinate \\
+Plan 1 & Einfach & 101 & 2 & 3 & 98,02\,\% & 1× Sverbinder: OCR, 1× Haltepunkt: Koordinate \\
 \hline
-Plan 2 & Einfach & 82 & 2 & 1 & 97.56\% & 1× Weichen-Block: OCR, 1× Haltepunkt: Koordinate \\
+Plan 2 & Einfach & 82 & 2 & 1 & 97,56\,\% & 1× Weichen-Block: OCR, 1× Haltepunkt: Koordinate \\
 \hline
-Plan 3 & Mittel & 122 & 1 & 0 & 99.18\% & 1× Weichen-Block: OCR (2 Os statt 0s in einer Instanz) \\
+Plan 3 & Mittel & 122 & 1 & 0 & 99,18\,\% & 1× Weichen-Block: OCR (2 Os statt 0s in einer Instanz) \\
 \hline
-Plan 4 & Komplex & 265 & 8 & 0 & 96.98\% & 4× Weichen-Block: OCR, 2× Isolierstoß: Koord., 1× Signal: OCR, 1× GM: Koord. \\
+Plan 4 & Komplex & 265 & 8 & 0 & 96,98\,\% & 4× Weichen-Block: OCR, 2× Isolierstoß: Koord., 1× Signal: OCR, 1× GM: Koord. \\
 \hline
-Plan 5 & Groß/Farbig & 191 & 2 & 2 & 98.95\% & 1× Weichen-Block: OCR, 1× Signal: Koordinate \\
+Plan 5 & Groß/Farbig & 191 & 2 & 2 & 98,95\,\% & 1× Weichen-Block: OCR, 1× Signal: Koordinate \\
 \hline
-Plan 6 & Sehr groß & 260 & 4 & 0 & 98.46\% & 2× Weichen-Block: OCR, 2× Isolierstoß: Koordinate \\
+Plan 6 & Sehr groß & 260 & 4 & 0 & 98,46\,\% & 2× Weichen-Block: OCR, 2× Isolierstoß: Koordinate \\
 \hline
-Plan 7 & Komplex & 233 & 13 & 0 & 94.42\% & 4× Weichen-Block: OCR, 3× Weichengr.ende: Koord., 3× Sverbinder: OCR, 2× Signal: OCR, 1× Iso.: Koord. \\
+Plan 7 & Komplex & 233 & 13 & 0 & 94,42\,\% & 4× Weichen-Block: OCR, 3× Weichengr.ende: Koord., 3× Sverbinder: OCR, 2× Signal: OCR, 1× Iso.: Koord. \\
 \hline
-Plan 8 & Mittel & 107 & 4 & 0 & 96.26\% & 4× Linking-Fehler (GKS/Isolierstoß vertauscht) \\
+Plan 8 & Mittel & 107 & 4 & 0 & 96,26\,\% & 4× Linking-Fehler (GKS/Isolierstoß vertauscht) \\
 \hline
-Plan 9 & Mittel & 112 & 5 & 2 & 95.54\% & 3× Weichen-Block: OCR, 1× Isolierstoß: Koord., 1× nicht erkannt \\
+Plan 9 & Mittel & 112 & 5 & 2 & 95,54\,\% & 3× Weichen-Block: OCR, 1× Isolierstoß: Koord., 1× nicht erkannt \\
 \hline
 \hline
-\textbf{Gesamt} & --- & \textbf{1473} & \textbf{41} & \textbf{8} & \textbf{97.22\%} & --- \\
+\textbf{Gesamt} & --- & \textbf{1473} & \textbf{41} & \textbf{8} & \textbf{97,22\,\%} & --- \\
 \hline
 \end{tabular}
-\caption{Detaillierte End-to-End Ergebnisse pro Testplan mit Fehlertyp-Annotation.
-FP = False Positives (Extra-Erkennungen), die im Validierungsschritt entfernt werden können und daher nicht als Fehler gezählt werden.}
-\label{tab:e2e_per_plan_test}
 \end{table}
-\textbf{Validierung FA-006 und FA-007:}
+\textbf{Validierung \hyperref[req:FA-006]{FA-006} und \hyperref[req:FA-007]{FA-007}:}
 
-\textbf{FA-006 (Fahrtrichtungsdetektion):} Die geometrische Ableitung der Fahrtrichtung
-aus der Signal-GKS-Relation erreicht eine Genauigkeit von 99.61\% (255/256 Signale).
+\textbf{\hyperref[req:FA-006]{FA-006} (Fahrtrichtungsdetektion):} Die geometrische Ableitung der Fahrtrichtung
+aus der Signal-GKS-Relation erreicht eine Genauigkeit von 99,61\,\% (255/256 Signale).
 Der einzige Fehler trat in Plan~6 auf, wo die zugehörige GKS nicht korrekt mit dem
 Signal verknüpft werden konnte.
 
@@ -469,7 +469,7 @@ die Ableitung der Fahrtrichtung aus der optischen Rotation des Signalsymbols, k�
 diese Abhängigkeit eliminieren. Dies wäre insbesondere für die Übertragbarkeit auf andere
 Bahnsysteme relevant, bei denen keine GKS-Symbole vorhanden sind.
 
-\textbf{FA-007 (Symbol-Koordinaten-Verknüpfung):} Der Proximity-basierte Linking-Algorithmus
+\textbf{\hyperref[req:FA-007]{FA-007} (Symbol-Koordinaten-Verknüpfung):} Der Proximity-basierte Linking-Algorithmus
 erreicht eine hohe Verknüpfungsgenauigkeit. Die aufgetretenen Linking-Fehler sind auf
 ungewöhnliche Layoutvarianten zurückzuführen.
 \textbf{Fehlerquellenanalyse:}
@@ -478,8 +478,10 @@ Um die Optimierungspotenziale zu identifizieren, wurden die 41 aufgetretenen Feh
 
 \begin{table}[H]
 \centering
+\caption{Fehlerverteilung nach Plan mit Root Causes (9 Testpläne)}
+\label{tab:error_root_causes_test}
 \footnotesize
-\begin{tabularx}{\textwidth}{|l|r|l|X|}
+\begin{tabularx}{\textwidth}{|l|r|p{4cm}|X|}
 \hline
 \textbf{Plan} & \textbf{Fehler} & \textbf{Betroffene Klassen} & \textbf{Hauptfehlerursachen} \\
 \hline
@@ -504,39 +506,39 @@ Plan 9 & 5 & weichen\_block, isolierstoß & O/0-Verwechslung (2×), Bbox-Ziffern
 \textbf{Gesamt} & \textbf{41} & \textbf{12 Klassen} & \textbf{OCR: 27, Linking: 13, Detection: 1} \\
 \hline
 \end{tabularx}
-\caption{Fehlerverteilung nach Plan mit Root Causes (9 Testpläne)}
-\label{tab:error_root_causes_test}
 \end{table}
+
+Tabelle~\ref{tab:error_root_causes_test} zeigt die planspezifische Fehlerverteilung und verdeutlicht, dass die Fehleranzahl stark mit der Plankomplexität korreliert: Plan~7 mit der höchsten Symboldichte weist auch die meisten Fehler auf. Um systematische Schwachstellen der Pipeline zu identifizieren, aggregiert Tabelle~\ref{tab:error_source_analysis_test} die Fehler nach ihrer technischen Ursache.
 
 \begin{table}[H]
 \centering
+\caption{Verteilung der End-to-End Fehler nach Fehlerursache (9 Pläne)}
+\label{tab:error_source_analysis_test}
 \begin{tabular}{|l|r|r|}
 \hline
 \textbf{Fehlerursache} & \textbf{Anzahl Fehler} & \textbf{Anteil} \\
 \hline
-\multicolumn{3}{|l|}{\textit{OCR-Fehler (27 gesamt, 65.9\%)}} \\
+\multicolumn{3}{|l|}{\textit{OCR-Fehler (27 gesamt, 65,9\,\%)}} \\
 \hline
-O vs. 0 Verwechslung & 9 & 22.0\% \\
-Nachbarrauschen (extra Zeichen erfasst) & 5 & 12.2\% \\
-Fehlende Ziffern (Bbox-bedingt) & 6 & 14.6\% \\
-OCR komplett fehlgeschlagen & 4 & 9.8\% \\
-Zeichen falsch (U499 → U400) & 3 & 7.3\% \\
+O vs. 0 Verwechslung & 9 & 22,0\,\% \\
+Nachbarrauschen (extra Zeichen erfasst) & 5 & 12,2\,\% \\
+Fehlende Ziffern (Bbox-bedingt) & 6 & 14,6\,\% \\
+OCR komplett fehlgeschlagen & 4 & 9,8\,\% \\
+Zeichen falsch (U499 → U400) & 3 & 7,3\,\% \\
 \hline
-\multicolumn{3}{|l|}{\textit{Linking-Fehler (13 gesamt, 31.7\%)}} \\
+\multicolumn{3}{|l|}{\textit{Linking-Fehler (13 gesamt, 31,7\,\%)}} \\
 \hline
-Falsche Koordinatenzuordnung & 8 & 19.5\% \\
-Vertauschte Verknüpfungen & 4 & 9.8\% \\
-Fehlende Verknüpfung & 1 & 2.4\% \\
+Falsche Koordinatenzuordnung & 8 & 19,5\,\% \\
+Vertauschte Verknüpfungen & 4 & 9,8\,\% \\
+Fehlende Verknüpfung & 1 & 2,4\,\% \\
 \hline
-\multicolumn{3}{|l|}{\textit{Detection-Fehler (1 gesamt, 2.4\%)}} \\
+\multicolumn{3}{|l|}{\textit{Detection-Fehler (1 gesamt, 2,4\,\%)}} \\
 \hline
-Symbol nicht erkannt & 1 & 2.4\% \\
+Symbol nicht erkannt & 1 & 2,4\,\% \\
 \hline
 \textbf{Gesamt} & \textbf{41} & \textbf{100\%} \\
 \hline
 \end{tabular}
-\caption{Verteilung der End-to-End Fehler nach Fehlerursache (9 Pläne)}
-\label{tab:error_source_analysis_test}
 \end{table}
 
 \textbf{Erkenntnisse zur Fehlerverteilung:}
@@ -544,54 +546,54 @@ Symbol nicht erkannt & 1 & 2.4\% \\
 Die detaillierte Analyse der 41 Fehler offenbart spezifische technische Limitationen, die gezielt adressiert werden können:
 
 \begin{enumerate}
-    \item \textbf{O vs. 0 Verwechslung (9 Fehler, 22.0\%):}
+    \item \textbf{O vs. 0 Verwechslung (9 Fehler, 22,0\,\%):}
     Der häufigste Fehlertyp betrifft die Verwechslung von Buchstabe \enquote{O} und Ziffer \enquote{0} in Koordinatenangaben der \textit{weichen\_block}-Klasse. Diese visuell nahezu identischen Zeichen werden von der OCR-Engine inkonsistent erkannt. Eine domänenspezifische Nachverarbeitung, die \enquote{O} in numerischen Kontexten automatisch zu \enquote{0} korrigiert, würde diese Fehler eliminieren.
 
-    \item \textbf{Nachbarrauschen (5 Fehler, 12.2\%):}
+    \item \textbf{Nachbarrauschen (5 Fehler, 12,2\,\%):}
     Bei diesen Fehlern wurden zusätzliche Zeichen aus benachbarten Textelementen erfasst. Betroffen sind hauptsächlich \textit{sverbinder}, \textit{weichen\_block} und \textit{haltepunkt}. Ursache ist die Überlappung von Suchregionen mit benachbarten Beschriftungen. Eine engere Begrenzung der OCR-Suchregion oder kontextbasierte Filterung würde diese Fehler reduzieren.
 
-    \item \textbf{Fehlende Ziffern durch Bbox-Begrenzung (6 Fehler, 14.6\%):}
+    \item \textbf{Fehlende Ziffern durch Bbox-Begrenzung (6 Fehler, 14,6\,\%):}
     Bei diesen Fällen wurden Ziffern abgeschnitten, weil die Bounding Box den vollständigen Text nicht einschloss. Betroffen sind \textit{isolierstoß}, \textit{sverbinder} und \textit{weichen\_block}. Eine Erweiterung des Suchradius um die Bounding Box oder adaptive Padding-Strategien würden diese Fehler vermeiden.
 
-    \item \textbf{Linking-Fehler (13 Fehler, 31.7\%):}
+    \item \textbf{Linking-Fehler (13 Fehler, 31,7\,\%):}
     Die Linking-Fehler gliedern sich in drei Untertypen: \textbf{Falsche Koordinatenzuordnung} (8 Fehler) betrifft hauptsächlich \textit{weichengruppenende} und \textit{haltepunkt}, bei denen die nächstgelegene Koordinate nicht die korrekte war. \textbf{Vertauschte Verknüpfungen} (4 Fehler) traten in Plan~8 auf, wo \textit{gks} und \textit{isolierstoß} gegenseitig die falschen Koordinaten zugewiesen bekamen. \textbf{Fehlende Verknüpfung} (1 Fehler) beschreibt einen Fall, bei dem keine passende Koordinate gefunden wurde.
 
-    \item \textbf{OCR komplett fehlgeschlagen (4 Fehler, 9.8\%):}
+    \item \textbf{OCR komplett fehlgeschlagen (4 Fehler, 9,8\,\%):}
     Bei diesen Instanzen konnte die OCR-Kaskade keine verwertbaren Ergebnisse liefern. Betroffen sind hauptsächlich \textit{isolierstoß}, \textit{signal} und \textit{gm\_block}. Die Ursachen variieren zwischen niedriger Bildqualität, ungünstiger Textorientierung und komplexem Hintergrund.
 
-    \item \textbf{Zeichen falsch erkannt -- U499 statt U400 (3 Fehler, 7.3\%):}
+    \item \textbf{Zeichen falsch erkannt -- U499 statt U400 (3 Fehler, 7,3\,\%):}
     Bei drei \textit{signal}-Instanzen wurde die Signalbezeichnung \enquote{U400} als \enquote{U499} erkannt. Die Verwechslung von \enquote{00} und \enquote{99} deutet auf eine systematische OCR-Schwäche bei dieser Zeichenkombination hin.
 
-    \item \textbf{Symbol nicht erkannt (1 Fehler, 2.4\%):}
+    \item \textbf{Symbol nicht erkannt (1 Fehler, 2,4\,\%):}
     Ein einzelner \textit{isolierstoß} in Plan 9 wurde von YOLO nicht detektiert.
     Dies ist der einzige fundamentale Detection-Fehler im gesamten Testsatz,
-    was eine Detection-Rate von 99.93\% (1472/1473) bestätigt.
+    was eine Detection-Rate von 99,93\,\% (1472/1473) bestätigt.
 \end{enumerate}
 
 Die Fehleranalyse zeigt folgende Verteilung nach Komponente:
 \begin{itemize}
-    \item \textbf{27 OCR-Fehler (65.9\%)}: O/0-Verwechslung, Nachbarrauschen, fehlende Ziffern, U499/U400, fehlgeschlagene Extraktion
-    \item \textbf{13 Linking-Fehler (31.7\%)}: Falsche Koordinatenzuordnung, vertauschte Verknüpfungen
-    \item \textbf{1 Detection-Fehler (2.4\%)}: Symbol nicht erkannt
+    \item \textbf{27 OCR-Fehler (65,9\,\%)}: O/0-Verwechslung, Nachbarrauschen, fehlende Ziffern, U499/U400, fehlgeschlagene Extraktion
+    \item \textbf{13 Linking-Fehler (31,7\,\%)}: Falsche Koordinatenzuordnung, vertauschte Verknüpfungen
+    \item \textbf{1 Detection-Fehler (2,4\,\%)}: Symbol nicht erkannt
 \end{itemize}
 
-Diese Verteilung zeigt, dass die \textbf{OCR-Komponente} den größten Optimierungsbedarf aufweist (65.9\% der Fehler). Die YOLO-Detection ist mit 99.93\% nahezu perfekt, während das Linking-Modul moderate Verbesserungen erfordert.
+Diese Verteilung zeigt, dass die \textbf{OCR-Komponente} den größten Optimierungsbedarf aufweist (65,9\,\% der Fehler). Die YOLO-Detection ist mit 99,93\,\% nahezu perfekt, während das Linking-Modul moderate Verbesserungen erfordert.
 
-\textbf{Validierung FA-004 und FA-005:}
+\textbf{Validierung \hyperref[req:FA-004]{FA-004} und \hyperref[req:FA-005]{FA-005}:}
 
-\textbf{FA-004 (OCR-Genauigkeit):} Die OCR-Komponente ist in die End-to-End-Genauigkeit
-von 97.22\% integriert. Die OCR-bedingten Fehler umfassen fehlende Koordinatenextraktion
+\textbf{\hyperref[req:FA-004]{FA-004} (OCR-Genauigkeit):} Die OCR-Komponente ist in die End-to-End-Genauigkeit
+von 97,22\,\% integriert. Die OCR-bedingten Fehler umfassen fehlende Koordinatenextraktion
 und Fehlinterpretationen durch visuelle Artefakte.
 
-Die Robustheit gegenüber Rotation (FA-005) wird durch die Dual-Winkel-Routing-
+Die Robustheit gegenüber Rotation (\hyperref[req:FA-005]{FA-005}) wird durch die Dual-Winkel-Routing-
 Architektur (Abschnitt~\ref{sec:ocrpipeline}) gewährleistet. Die rotationsabhängige 
 Leistungsanalyse für Plan~1 (Tabelle~\ref{tab:rotation_analysis}) zeigt, dass 
-steilrotierte Objekte ($|\theta| > 30^\circ$) sogar bessere Ergebnisse erzielen als 
-kardinal orientierte Objekte (100\% vs. 96.6\% OCR-Erfolg). Das Beispiel in 
+steilrotierte Objekte ($|\theta| > 30^\circ$) sogar bessere Ergebnisse erzielen als
+kardinal orientierte Objekte (100\,\% vs. 96,6\,\% OCR-Erfolg). Das Beispiel in 
 Abbildung~\ref{fig:angular_ocr_example} illustriert den Angular-Path-Routing-Mechanismus 
 bei $\theta = 37{,}5^\circ$.
 
-\textbf{Methodische Anmerkung zu FA-004/FA-005:} Die OCR-Leistung wird bewusst 
+\textbf{Methodische Anmerkung zu \hyperref[req:FA-004]{FA-004}/\hyperref[req:FA-005]{FA-005}:} Die OCR-Leistung wird bewusst 
 nicht durch isolierte zeichenbasierte Metriken (CER, WER) evaluiert, sondern 
 durch die \textit{Feldgenauigkeit} im End-to-End-Kontext. Diese Entscheidung 
 basiert auf folgenden Überlegungen:
@@ -615,25 +617,25 @@ zeigt die End-to-End-Genauigkeit für jede Kategorie.
 
 \begin{table}[H]
 \centering
+\caption{End-to-End Accuracy nach Plankomplexität (alle 9 Testpläne)}
+\label{tab:e2e_by_complexity_test}
 \begin{tabular}{|l|l|r|r|r|}
 \hline
 \textbf{Kategorie} & \textbf{Pläne} & \textbf{Objekte} & \textbf{E2E Accuracy} & \textbf{Fehler} \\
 \hline
-Einfach & Plan 1, 2 & 183 & 97.81\% & 4 \\
-Mittel & Plan 3, 8, 9 & 341 & 97.07\% & 10 \\
-Komplex & Plan 4, 5, 6, 7 & 949 & 97.15\% & 27 \\
+Einfach & Plan 1, 2 & 183 & 97,81\,\% & 4 \\
+Mittel & Plan 3, 8, 9 & 341 & 97,07\,\% & 10 \\
+Komplex & Plan 4, 5, 6, 7 & 949 & 97,15\,\% & 27 \\
 \hline
-\textbf{Gesamt} & \textbf{9 Pläne} & \textbf{1473} & \textbf{97.22\%} & \textbf{41} \\
+\textbf{Gesamt} & \textbf{9 Pläne} & \textbf{1473} & \textbf{97,22\,\%} & \textbf{41} \\
 \hline
 \end{tabular}
-\caption{End-to-End Accuracy nach Plankomplexität (alle 9 Testpläne)}
-\label{tab:e2e_by_complexity_test}
 \end{table}
 
-Die Systemleistung bleibt über alle Komplexitätsstufen hinweg stabil (97.07\% -- 97.81\%),
+Die Systemleistung bleibt über alle Komplexitätsstufen hinweg stabil (97,07\,\% -- 97,81\,\%),
 was die Robustheit des Ansatzes bestätigt. Die höchste Genauigkeit wird bei einfachen
-Plänen erreicht (97.81\%), während mittlere und komplexe Pläne vergleichbare
-Ergebnisse zeigen (97.07\% bzw. 97.15\%). Die Fehlerverteilung korreliert erwartungsgemäß mit der Objektanzahl: 
+Plänen erreicht (97,81\,\%), während mittlere und komplexe Pläne vergleichbare
+Ergebnisse zeigen (97,07\,\% bzw. 97,15\,\%). Die Fehlerverteilung korreliert erwartungsgemäß mit der Objektanzahl: 
 Komplexe Pläne mit mehr Objekten weisen absolut mehr Fehler auf, die relative Fehlerrate 
 bleibt jedoch konstant niedrig.
 
@@ -652,7 +654,7 @@ bleibt jedoch konstant niedrig.
 \textbf{Typische Fehlerquellen:}
 \begin{enumerate}
     \item \textbf{Oversized Bounding Boxes bei GM-Blöcken (2 Fehler)}: 
-    YOLO erzeugte bei einigen GM-Symbolen ungewöhnlich große Bounding Boxes (z.B. 147×95 Pixel statt typisch 40-60 Pixel). Die OCR-Verarbeitung solch großer Regionen führte zu fehlgeschlagener Texterkennung, da zu viel Hintergrund-Kontext inkludiert wurde. Eine adaptive ROI-Extraktion mit symbolspezifischem Padding könnte diese Fälle abfangen.
+    YOLO erzeugte bei einigen GM-Symbolen ungewöhnlich große Bounding Boxes (z.B. 147×95 Pixel statt typisch 40--60 Pixel). Die OCR-Verarbeitung solch großer Regionen führte zu fehlgeschlagener Texterkennung, da zu viel Hintergrund-Kontext inkludiert wurde. Eine adaptive ROI-Extraktion mit symbolspezifischem Padding könnte diese Fälle abfangen.
     
     \item \textbf{OCR-Extraktion fehlgeschlagen bei Signalen (2 Fehler)}: 
     Bei zwei Signalen in Plan 4 wurden trotz korrekter Symbol-Detektion keine Koordinaten extrahiert. Die Ursache ist vermutlich niedrige OCR-Konfidenz oder ungünstige Text-Orientierung. Diese Fälle werden durch die Validierungswerkzeuge als \enquote{fehlende Verknüpfung} automatisch markiert.
@@ -669,8 +671,8 @@ bleibt jedoch konstant niedrig.
 
 \textbf{Praxistauglichkeit:}
 \begin{itemize}
-    \item Die E2E-Genauigkeit von 97.22\% auf dem Testsatz übertrifft die Anforderung \textbf{NFA-003} ($\geq$ 85\%) deutlich
-    \item Für den produktiven Einsatz wird eine realistische Genauigkeit von 90-95\% erwartet, abhängig von Planqualität und -komplexität
+    \item Die E2E-Genauigkeit von 97,22\,\% auf dem Testsatz übertrifft die Anforderung \hyperref[req:NFA-003]{NFA-003} ($\geq$ 85\,\%) deutlich
+    \item Für den produktiven Einsatz wird eine realistische Genauigkeit von 90--95\,\% erwartet, abhängig von Planqualität und -komplexität
     \item Die extrem niedrige Fehlerrate minimiert den manuellen Korrekturaufwand erheblich
     \item Das System ist produktionsreif für den Einsatz bei Siemens Mobility
 \end{itemize}
@@ -678,7 +680,7 @@ bleibt jedoch konstant niedrig.
 \subsubsection{Validierungs- und Korrekturwerkzeuge}
 \label{subsubsec:validation_tools}
 
-Um den verbleibenden manuellen Korrekturaufwand (geschätzt 5-10\% der Objekte bei produktivem Einsatz) zu minimieren und die Qualitätssicherung zu erleichtern, wurden umfangreiche Validierungs- und Korrekturwerkzeuge in die Benutzeroberfläche integriert. Diese erfüllen die Anforderungen \textbf{FA-008} (Manuelle Korrektur), \textbf{FA-012} (Visuelle Validierung) und \textbf{NFA-005} (Prüfbarkeit).
+Um den verbleibenden manuellen Korrekturaufwand (geschätzt 5--10\,\% der Objekte bei produktivem Einsatz) zu minimieren und die Qualitätssicherung zu erleichtern, wurden umfangreiche Validierungs- und Korrekturwerkzeuge in die Benutzeroberfläche integriert. Diese erfüllen die Anforderungen \hyperref[req:FA-008]{FA-008} (Manuelle Korrektur), \hyperref[req:FA-012]{FA-012} (Visuelle Validierung) und \hyperref[req:NFA-005]{NFA-005} (Prüfbarkeit).
 
 \textbf{Automatische Fehleridentifikation:}
 
@@ -686,7 +688,7 @@ Das System markiert problematische Extraktionen automatisch anhand folgender Kri
 \begin{itemize}
     \item \textbf{Regex-Validierung}: Koordinaten, Signalbezeichnungen und GKS-Nummern, die nicht den erwarteten Formatmustern entsprechen, werden als \enquote{Validierung fehlgeschlagen} gekennzeichnet
     \item \textbf{Fehlende Verknüpfungen}: Symbole ohne zugeordnete Koordinaten oder Bezeichnungen werden hervorgehoben
-    \item \textbf{Niedrige OCR-Konfidenz}: Texterkennungen mit geringer Modellkonfidenz ($<$ 0.7) werden zur Prüfung markiert
+    \item \textbf{Niedrige OCR-Konfidenz}: Texterkennungen mit geringer Modellkonfidenz ($<$ 0,7) werden zur Prüfung markiert
     \item \textbf{Anomalie-Detektion}: Ungewöhnliche Koordinatenwerte (z.B. außerhalb des erwarteten Bereichs) werden identifiziert
 \end{itemize}
 
@@ -698,27 +700,27 @@ Die GUI bietet dedizierte Ansichten zur effizienten Fehleridentifikation und -ko
     \item \textbf{Fehlerfilterung}: Schnelle Navigation zu allen als \enquote{validierungsrelevant} markierten Objekten
     \item \textbf{Inline-Editierung}: Direkte Korrektur fehlerhafter Texte und Verknüpfungen in der Benutzeroberfläche
     \item \textbf{Zoom-Funktion}: Hochauflösende Detailansicht des Original-PDFs zur Überprüfung unleserlicher Bereiche
-    \item \textbf{Änderungsverfolgung}: Alle manuellen Korrekturen werden protokolliert (Anforderung FA-011)
+    \item \textbf{Änderungsverfolgung}: Alle manuellen Korrekturen werden protokolliert (Anforderung \hyperref[req:FA-011]{FA-011})
 \end{itemize}
 
 \textbf{Effizienzgewinn durch gezielte Prüfung:}
 
-Durch die automatische Identifikation problematischer Fälle muss der Benutzer nicht alle extrahierten Objekte einzeln prüfen, sondern kann sich auf die markierten 5-10\% konzentrieren. Dies reduziert den Prüfaufwand erheblich:
+Durch die automatische Identifikation problematischer Fälle muss der Benutzer nicht alle extrahierten Objekte einzeln prüfen, sondern kann sich auf die markierten 5--10\,\% konzentrieren. Dies reduziert den Prüfaufwand erheblich:
 
 \begin{table}[H]
 \centering
+\caption{Zeitvergleich: Vollständige vs. gezielte Qualitätsprüfung mit Validierungswerkzeugen}
+\label{tab:validation_efficiency}
 \begin{tabular}{|l|r|r|}
 \hline
 \textbf{Szenario} & \textbf{Vollständige Prüfung} & \textbf{Gezielte Prüfung} \\
 \hline
 Zu prüfende Objekte (Plan mit 100 Objekten) & 100 (100\%) & $\approx$ 10 (10\%) \\
 Prüfzeit pro Objekt & 10 Sekunden & 15 Sekunden \\
-Gesamtprüfzeit & 16.7 Minuten & 2.5 Minuten \\
+Gesamtprüfzeit & 16,7 Minuten & 2,5 Minuten \\
 \textbf{Zeitersparnis} & --- & \textbf{-85\%} \\
 \hline
 \end{tabular}
-\caption{Zeitvergleich: Vollständige vs. gezielte Qualitätsprüfung mit Validierungswerkzeugen}
-\label{tab:validation_efficiency}
 \end{table}
 
 Die gezielte Prüfung erfordert mehr Zeit pro Objekt (15 statt 10 Sekunden), da die markierten Fälle tatsächlich problematisch sind und sorgfältige Analyse erfordern. Dennoch ergibt sich durch die drastische Reduktion der zu prüfenden Objekte eine Gesamtzeitersparnis von 85\%.
@@ -728,114 +730,114 @@ Die gezielte Prüfung erfordert mehr Zeit pro Objekt (15 statt 10 Sekunden), da 
 Der typische Korrektur-Workflow für einen extrahierten Gleisplan umfasst:
 \begin{enumerate}
     \item \textbf{Automatische Verarbeitung}: System extrahiert alle Objekte und markiert potenzielle Fehler
-    \item \textbf{Gefilterte Ansicht}: Benutzer ruft Liste aller markierten Objekte auf (typisch 5-10\% der Gesamtzahl)
+    \item \textbf{Gefilterte Ansicht}: Benutzer ruft Liste aller markierten Objekte auf (typisch 5--10\,\% der Gesamtzahl)
     \item \textbf{Visuelle Prüfung}: Für jedes markierte Objekt: Vergleich zwischen PDF-Original und extrahiertem Wert
     \item \textbf{Inline-Korrektur}: Bei Abweichungen: Direkte Editierung in der GUI
     \item \textbf{Re-Validierung}: System prüft korrigierte Werte erneut gegen Regex-Muster
     \item \textbf{Export}: Nach erfolgreicher Korrektur: Finaler Excel-Export mit Änderungsprotokoll
 \end{enumerate}
 
-Dieser Workflow gewährleistet, dass selbst bei erwarteten Genauigkeiten von 90-95\% im produktiven Einsatz die Qualitätssicherung effizient und systematisch erfolgen kann.
+Dieser Workflow gewährleistet, dass selbst bei erwarteten Genauigkeiten von 90--95\,\% im produktiven Einsatz die Qualitätssicherung effizient und systematisch erfolgen kann.
 
 
-\textbf{Validierung FA-008, NFA-004 und NFA-005:}
+\textbf{Validierung \hyperref[req:FA-008]{FA-008}, \hyperref[req:NFA-004]{NFA-004} und \hyperref[req:NFA-005]{NFA-005}:}
 
-\textbf{FA-008 (Manuelle Korrektur):} Der Validierungsdialog (Abb.~\ref{fig:validation_dialog_ui}) 
+\textbf{\hyperref[req:FA-008]{FA-008} (Manuelle Korrektur):} Der Validierungsdialog (Abb.~\ref{fig:validation_dialog_ui}) 
 ermöglicht die systematische Prüfung und Inline-Korrektur fehlerhafter Extraktionen. 
 Die automatische Fehleridentifikation durch Regex-Validierung und Konfidenz-Schwellenwerte 
 reduziert den manuellen Prüfaufwand um 85\% (Tab.~\ref{tab:validation_efficiency}).
 
-\textbf{NFA-004 (Robustheit):} Alle 9 Testpläne wurden ohne Systemabstürze oder 
+\textbf{\hyperref[req:NFA-004]{NFA-004} (Robustheit):} Alle 9 Testpläne wurden ohne Systemabstürze oder 
 Fehlerunterbrechungen verarbeitet. Die implementierten Fallback-Mechanismen 
 (Multi-Engine OCR-Kaskade, Regex-Validierung mit Fehlermarkierung statt Abbruch) 
 gewährleisten eine stabile Verarbeitung auch bei suboptimalen Eingabedaten.
 
-\textbf{NFA-005 (Prüfbarkeit):} Die bidirektionale Navigation zwischen Tabelle und 
+\textbf{\hyperref[req:NFA-005]{NFA-005} (Prüfbarkeit):} Die bidirektionale Navigation zwischen Tabelle und 
 PDF-Viewer (Jump-to-Detection) sowie die vollständige Metadaten-Persistierung 
 ermöglichen eine lückenlose Rückverfolgbarkeit jeder Extraktion zur Quelldokumentation.
 \subsubsection{Verarbeitungszeit-Analyse}
 \label{subsubsec:processing_time}
 
-Die Verarbeitungszeit ist ein kritischer Faktor für die praktische Nutzbarkeit des Prototyps und validiert die Anforderung \textbf{NFA-007} (Ressourceneffizienz). Die Zeitmessungen wurden auf der in Abschnitt~\ref{subsec:testumgebung} beschriebenen Standard-Workstation (AMD Ryzen 5 PRO 5650U, CPU-only, ohne GPU) für alle neun Testpläne durchgeführt.
+Die Verarbeitungszeit ist ein kritischer Faktor für die praktische Nutzbarkeit des Prototyps und validiert die Anforderung \hyperref[req:NFA-007]{NFA-007} (Ressourceneffizienz). Die Zeitmessungen wurden auf der in Abschnitt~\ref{subsec:testumgebung} beschriebenen Standard-Workstation (AMD Ryzen 5 PRO 5650U, CPU-only, ohne GPU) für alle neun Testpläne durchgeführt.
 
 \textbf{Gesamtverarbeitungszeiten nach Plankomplexität:}
 
 \begin{table}[H]
 \centering
+\caption{Verarbeitungszeiten nach Plankomplexität (CPU-only, AMD Ryzen 5 PRO 5650U)}
+\label{tab:processing_time_overall}
 \begin{tabular}{|l|r|r|r|}
 \hline
 \textbf{Plan} & \textbf{Objekte} & \textbf{Zeit (gesamt)} & \textbf{Zeit/Objekt} \\
 \hline
 \multicolumn{4}{|l|}{\textit{Einfach (80--110 Objekte)}} \\
 \hline
-Plan 1 & 101 & 8:15 (495s) & 4.9s \\
-Plan 2 & 82 & 7:00 (420s) & 5.1s \\
+Plan 1 & 101 & 8:15 (495s) & 4,9s \\
+Plan 2 & 82 & 7:00 (420s) & 5,1s \\
 \hline
-\textbf{Ø Einfach} & \textbf{92} & \textbf{7:38 (458s)} & \textbf{5.0s} \\
+\textbf{Ø Einfach} & \textbf{92} & \textbf{7:38 (458s)} & \textbf{5,0s} \\
 \hline
 \multicolumn{4}{|l|}{\textit{Mittel (105--125 Objekte)}} \\
 \hline
-Plan 3 & 122 & 8:10 (490s) & 4.0s \\
-Plan 8 & 107 & 7:10 (430s) & 4.0s \\
-Plan 9 & 112 & 9:02 (542s) & 4.8s \\
+Plan 3 & 122 & 8:10 (490s) & 4,0s \\
+Plan 8 & 107 & 7:10 (430s) & 4,0s \\
+Plan 9 & 112 & 9:02 (542s) & 4,8s \\
 \hline
-\textbf{Ø Mittel} & \textbf{114} & \textbf{8:07 (487s)} & \textbf{4.3s} \\
+\textbf{Ø Mittel} & \textbf{114} & \textbf{8:07 (487s)} & \textbf{4,3s} \\
 \hline
 \multicolumn{4}{|l|}{\textit{Komplex/Groß (190--265 Objekte)}} \\
 \hline
-Plan 4 & 265 & 15:10 (910s) & 3.4s \\
-Plan 5 & 191 & 11:10 (670s) & 3.5s \\
-Plan 6 & 260 & 15:40 (940s) & 3.6s \\
-Plan 7 & 233 & 14:10 (850s) & 3.6s \\
+Plan 4 & 265 & 15:10 (910s) & 3,4s \\
+Plan 5 & 191 & 11:10 (670s) & 3,5s \\
+Plan 6 & 260 & 15:40 (940s) & 3,6s \\
+Plan 7 & 233 & 14:10 (850s) & 3,6s \\
 \hline
-\textbf{Ø Komplex} & \textbf{237} & \textbf{14:03 (843s)} & \textbf{3.5s} \\
+\textbf{Ø Komplex} & \textbf{237} & \textbf{14:03 (843s)} & \textbf{3,5s} \\
 \hline
 \hline
-\textbf{Gesamt (9 Pläne)} & \textbf{164 Ø} & \textbf{10:39 (639s) Ø} & \textbf{3.9s} \\
+\textbf{Gesamt (9 Pläne)} & \textbf{164 Ø} & \textbf{10:39 (639s) Ø} & \textbf{3,9s} \\
 \hline
 \end{tabular}
-\caption{Verarbeitungszeiten nach Plankomplexität (CPU-only, AMD Ryzen 5 PRO 5650U)}
-\label{tab:processing_time_overall}
 \end{table}
 
-Die Messungen zeigen, dass die durchschnittliche Verarbeitungszeit von \textbf{10.6 Minuten pro Plan} die Anforderung NFA-007 erfüllt. Interessanterweise ist die Zeit pro Objekt bei komplexen Plänen (3.5s) niedriger als bei einfachen Plänen (5.0s), was auf Effizienzgewinne durch Batch-Verarbeitung bei höheren Objektdichten hindeutet.
+Die Messungen zeigen, dass die durchschnittliche Verarbeitungszeit von \textbf{10,6 Minuten pro Plan} die Anforderung \hyperref[req:NFA-007]{NFA-007} erfüllt. Interessanterweise ist die Zeit pro Objekt bei komplexen Plänen (3,5s) niedriger als bei einfachen Plänen (5,0s), was auf Effizienzgewinne durch Batch-Verarbeitung bei höheren Objektdichten hindeutet.
 
 \textbf{Zeitverteilung nach Pipeline-Stufe:}
 
-Um Optimierungspotenziale zu identifizieren, wurde die Verarbeitungszeit auf die einzelnen Pipeline-Stufen aufgeschlüsselt. Die YOLO-Inferenz dominiert mit durchschnittlich 65-77\% der Gesamtzeit, während OCR und Linking deutlich effizienter sind.
+Um Optimierungspotenziale zu identifizieren, wurde die Verarbeitungszeit auf die einzelnen Pipeline-Stufen aufgeschlüsselt. Die YOLO-Inferenz dominiert mit durchschnittlich 65--77\,\% der Gesamtzeit, während OCR und Linking deutlich effizienter sind.
 
 \begin{table}[H]
 \centering
+\caption{Zeitverteilung der Pipeline-Stufen nach Plankomplexität (Durchschnittswerte)}
+\label{tab:time_breakdown}
 \begin{tabular}{|l|r|r|r|r|r|}
 \hline
 \textbf{Stufe} & \textbf{Einfach} & \textbf{Mittel} & \textbf{Komplex} & \textbf{Ø} & \textbf{Anteil} \\
 \hline
-PDF-Rasterisierung & 17s & 25s & 33s & 27s & 3.6\% \\
-YOLO Inferenz (CPU) & 335s & 498s & 734s & 556s & 75.3\% \\
-OCR (PaddleOCR) & 40s & 60s & 113s & 76s & 10.3\% \\
-Linking + Validierung & 31s & 40s & 68s & 50s & 6.8\% \\
-Fahrtrichtung (Track Analysis) & --- & --- & --- & 30s & 4.1\% \\
+PDF-Rasterisierung & 17s & 25s & 33s & 27s & 3,6\,\% \\
+YOLO Inferenz (CPU) & 335s & 498s & 734s & 556s & 75,3\,\% \\
+OCR (PaddleOCR) & 40s & 60s & 113s & 76s & 10,3\,\% \\
+Linking + Validierung & 31s & 40s & 68s & 50s & 6,8\,\% \\
+Fahrtrichtung (Track Analysis) & --- & --- & --- & 30s & 4,1\,\% \\
 \hline
 \textbf{Gesamt} & \textbf{427s} & \textbf{628s} & \textbf{955s} & \textbf{739s} & \textbf{100\%} \\
-\textbf{(Minuten)} & \textbf{7.1} & \textbf{10.5} & \textbf{15.9} & \textbf{12.3} & --- \\
+\textbf{(Minuten)} & \textbf{7,1} & \textbf{10,5} & \textbf{15,9} & \textbf{12,3} & --- \\
 \hline
 \end{tabular}
-\caption{Zeitverteilung der Pipeline-Stufen nach Plankomplexität (Durchschnittswerte)}
-\label{tab:time_breakdown}
 \end{table}
 
 \textbf{Beobachtungen zur Zeitverteilung:}
 
 \begin{itemize}
-    \item \textbf{YOLO als Bottleneck}: Mit 75.3\% der Gesamtzeit ist die CPU-basierte YOLO-Inferenz der primäre Zeitfaktor. Die Verarbeitungszeit skaliert nahezu linear mit der Anzahl der Tiles (Durchschnitt: 5.5s pro Tile). Eine GPU-beschleunigte Inferenz würde diese Zeit auf ca. 50-100s reduzieren, was die Gesamtzeit auf unter 3 Minuten pro Plan senken würde.
+    \item \textbf{YOLO als Bottleneck}: Mit 75,3\,\% der Gesamtzeit ist die CPU-basierte YOLO-Inferenz der primäre Zeitfaktor. Die Verarbeitungszeit skaliert nahezu linear mit der Anzahl der Tiles (Durchschnitt: 5,5s pro Tile). Eine GPU-beschleunigte Inferenz würde diese Zeit auf ca. 50--100s reduzieren, was die Gesamtzeit auf unter 3 Minuten pro Plan senken würde.
     
-    \item \textbf{OCR-Effizienz}: Die OCR-Verarbeitung benötigt durchschnittlich nur 76s (10.3\%), selbst bei komplexen Plänen mit 640+ Koordinatenangaben. Die Multi-Engine-Kaskade mit Fallback-Mechanismus zeigt akzeptable Performance trotz CPU-only Verarbeitung.
+    \item \textbf{OCR-Effizienz}: Die OCR-Verarbeitung benötigt durchschnittlich nur 76s (10,3\,\%), selbst bei komplexen Plänen mit 640+ Koordinatenangaben. Die Multi-Engine-Kaskade mit Fallback-Mechanismus zeigt akzeptable Performance trotz CPU-only Verarbeitung.
     
-    \item \textbf{Linking-Overhead}: Die Linking- und Validierungsstufe ist mit 50s (6.8\%) sehr effizient. Der Proximity-basierte Algorithmus sowie die Regex-Validierung verarbeiten auch große Pläne (140+ Objekte) in unter 2 Minuten.
+    \item \textbf{Linking-Overhead}: Die Linking- und Validierungsstufe ist mit 50s (6,8\,\%) sehr effizient. Der Proximity-basierte Algorithmus sowie die Regex-Validierung verarbeiten auch große Pläne (140+ Objekte) in unter 2 Minuten.
     
-    \item \textbf{Track Analysis für Fahrtrichtung}: Die geometrische Ableitung der Fahrtrichtung durch Gleismittenlinien-Analyse (siehe Abschnitt~\ref{sec:fahrtrichtung}) benötigt durchschnittlich 30s (4.1\%). Diese Zusatzfunktionalität ist optional und kann bei Bedarf deaktiviert werden.
+    \item \textbf{Track Analysis für Fahrtrichtung}: Die geometrische Ableitung der Fahrtrichtung durch Gleismittenlinien-Analyse (siehe Abschnitt~\ref{sec:fahrtrichtung}) benötigt durchschnittlich 30s (4,1\,\%). Diese Zusatzfunktionalität ist optional und kann bei Bedarf deaktiviert werden.
     
-    \item \textbf{PDF-Rasterisierung}: Die Konvertierung von PDF zu hochauflösenden Rastergrafiken (500 DPI) ist mit 27s (3.6\%) vernachlässigbar und skaliert primär mit der physischen Plangröße, nicht mit der Symboldichte.
+    \item \textbf{PDF-Rasterisierung}: Die Konvertierung von PDF zu hochauflösenden Rastergrafiken (500 DPI) ist mit 27s (3,6\,\%) vernachlässigbar und skaliert primär mit der physischen Plangröße, nicht mit der Symboldichte.
 \end{itemize}
 
 \textbf{Vergleich mit manuellem Prozess:}
@@ -844,6 +846,8 @@ Um den praktischen Nutzen zu quantifizieren, wurde die KI-gestützte Verarbeitun
 
 \begin{table}[H]
 \centering
+\caption{Zeitvergleich: Manueller vs. KI-gestützter Prozess (Durchschnitt über 9 Testpläne).}
+\label{tab:time_comparison_manual}
 \begin{tabular}{|l|r|r|}
 \hline
 \textbf{Prozess} & \textbf{Durchschn. Objekte} & \textbf{Durchschn. Zeit} \\
@@ -854,15 +858,13 @@ KI-System (gemessen) & 164 & 10 min 38 sec \\
 \textbf{Zeitersparnis} & & \textbf{circa 91 min (89,7\%)} \\
 \hline
 \end{tabular}
-\caption{Zeitvergleich: Manueller vs. KI-gestützter Prozess (Durchschnitt über 9 Testpläne).}
-\label{tab:time_comparison_manual}
 \end{table}
 
-Der KI-gestützte Prozess reduziert den Gesamtzeitaufwand um \textbf{89,7\%}, von durchschnittlich 102 Minuten auf circa 10,6 Minuten pro Plan (\textbf{NFA-006}). Bei typischen Siemens Mobility Projekten mit 20-50 Gleisplänen ergibt sich eine Gesamtzeitersparnis von 30-76 Stunden (4-10 Arbeitstage) pro Projekt.
+Der KI-gestützte Prozess reduziert den Gesamtzeitaufwand um \textbf{89,7\,\%}, von durchschnittlich 102 Minuten auf circa 10,6 Minuten pro Plan (\hyperref[req:NFA-006]{NFA-006}). Bei typischen Siemens Mobility Projekten mit 20--50 Gleisplänen ergibt sich eine Gesamtzeitersparnis von 30--76 Stunden (4--10 Arbeitstage) pro Projekt.
 
 \textbf{Anmerkung zur Messgenauigkeit:} Der manuelle Zeitaufwand von 32s/Objekt wurde empirisch an A0-Plänen gemessen und stellt einen Durchschnittswert für typische Gleisplankonfigurationen dar.
 
-\textbf{Skalierbarkeit:} Die gemessenen Zeiten basieren auf CPU-only Verarbeitung (\textbf{NFA-001}). Die durchschnittliche Verarbeitungszeit von 10,6 Minuten pro A0-Plan auf Standard-CPU-Hardware erfüllt die Anforderung \textbf{NFA-007}. Eine optionale GPU-Beschleunigung (YOLO-Inferenz und PaddleOCR, z.B.\ NVIDIA T4) würde die Gesamtzeit schätzungsweise auf ca.\ 2-3 Minuten pro Plan reduzieren (ca.\ 3-4× schneller).
+\textbf{Skalierbarkeit:} Die gemessenen Zeiten basieren auf CPU-only Verarbeitung (\hyperref[req:NFA-001]{NFA-001}). Die durchschnittliche Verarbeitungszeit von 10,6 Minuten pro A0-Plan auf Standard-CPU-Hardware erfüllt die Anforderung \hyperref[req:NFA-007]{NFA-007}. Eine optionale GPU-Beschleunigung (YOLO-Inferenz und PaddleOCR, z.B.\ NVIDIA T4) würde die Gesamtzeit schätzungsweise auf ca.\ 2--3 Minuten pro Plan reduzieren (ca.\ 3--4× schneller).
 \subsection{Validierung weiterer funktionaler Anforderungen}
 \label{subsec:functional_validation}
 
@@ -870,60 +872,60 @@ Die quantitative Evaluation in den vorangegangenen Abschnitten fokussierte auf d
 Kernmetriken der Extraktionsgenauigkeit. Ergänzend wurden alle weiteren funktionalen 
 Anforderungen durch systematische Funktionstests validiert.
 
-\textbf{Anmerkung zur Testabdeckung:} Die Anforderungen FA-001 bis FA-007 wurden bereits 
+\textbf{Anmerkung zur Testabdeckung:} Die Anforderungen \hyperref[req:FA-001]{FA-001} bis \hyperref[req:FA-007]{FA-007} wurden bereits 
 durch quantitative Metriken in den Abschnitten~\ref{subsec:detection_eval} (Objekterkennung) 
 und~\ref{subsec:e2e_test_eval} (End-to-End-Evaluation) validiert:
 
 \begin{itemize}
-    \item \textbf{FA-001} (Erkennungsrate $\geq$ 90\%): Recall = 95.7\% 
+    \item \textbf{\hyperref[req:FA-001]{FA-001}} (Erkennungsrate $\geq$ 90\,\%): Recall = 95,7\,\%
     (Tabelle~\ref{tab:detection_per_class})
-    \item \textbf{FA-002} (Rotationsinvarianz): 100\% OCR-Erfolg bei $|\theta|>30^\circ$ 
+    \item \textbf{\hyperref[req:FA-002]{FA-002}} (Rotationsinvarianz): 100\,\% OCR-Erfolg bei $|\theta|>30^\circ$
     (Tabelle~\ref{tab:rotation_analysis})
-    \item \textbf{FA-003} (Zielobjekte): Alle 13~Symbolklassen erfolgreich detektiert 
+    \item \textbf{\hyperref[req:FA-003]{FA-003}} (Zielobjekte): Alle 13~Symbolklassen erfolgreich detektiert
     (Tabelle~\ref{tab:detection_per_class})
-    \item \textbf{FA-004} (OCR-Genauigkeit): Integriert in E2E-Genauigkeit von 97.22\% 
+    \item \textbf{\hyperref[req:FA-004]{FA-004}} (OCR-Genauigkeit): Integriert in E2E-Genauigkeit von 97,22\,\%
     (Tabelle~\ref{tab:e2e_per_class_test})
-    \item \textbf{FA-005} (OCR-Robustheit): 100\% OCR-Erfolg bei Steilrotation 
+    \item \textbf{\hyperref[req:FA-005]{FA-005}} (OCR-Robustheit): 100\,\% OCR-Erfolg bei Steilrotation
     (Tabelle~\ref{tab:rotation_analysis})
-    \item \textbf{FA-006} (Fahrtrichtung): 99.61\% Genauigkeit
+    \item \textbf{\hyperref[req:FA-006]{FA-006}} (Fahrtrichtung): 99,61\,\% Genauigkeit
     (Tabelle~\ref{tab:signal_attribute_accuracy})
-    \item \textbf{FA-007} (Symbol-Koordinaten-Verknüpfung): 99.12\% Linking-Genauigkeit 
+    \item \textbf{\hyperref[req:FA-007]{FA-007}} (Symbol-Koordinaten-Verknüpfung): 99,12\,\% Linking-Genauigkeit
     (Abschnitt~\ref{subsec:e2e_test_eval})
 \end{itemize}
 
 Tabelle~\ref{tab:functional_validation} dokumentiert die Validierung der verbleibenden 
-funktionalen Anforderungen (FA-008 bis FA-014) durch manuelle Funktionstests.
+funktionalen Anforderungen (\hyperref[req:FA-008]{FA-008} bis \hyperref[req:FA-014]{FA-014}) durch manuelle Funktionstests.
 
 \begin{table}[H]
 \centering
+\caption{Validierung funktionaler Anforderungen durch systematische Funktionstests}
+\label{tab:functional_validation}
 \small
 \begin{tabular}{|l|p{7.5cm}|c|}
 \hline
 \textbf{Anf.} & \textbf{Testmethode} & \textbf{Ergebnis} \\
 \hline
-\multicolumn{3}{|c|}{\textit{Datenaufbereitung und Export (FA-009 bis FA-011)}} \\
+\multicolumn{3}{|c|}{\textit{Datenaufbereitung und Export (\hyperref[req:FA-009]{FA-009} bis \hyperref[req:FA-011]{FA-011})}} \\
 \hline
-FA-009 & Export aller 9 Testpläne nach XLSX; manuelle Verifikation der korrekten Zellzuordnung (Signale, GKS, GM-Blöcke in separaten Sheets) & Bestanden \\
+\hyperref[req:FA-009]{FA-009} & Export aller 9 Testpläne nach XLSX; manuelle Verifikation der korrekten Zellzuordnung (Signale, GKS, GM-Blöcke in separaten Sheets) & Bestanden \\
 \hline
-FA-010 & Import in bestehende Excel-Vorlage mit Formeln und Formatierung; Prüfung auf Strukturerhalt nach Export & Bestanden \\
+\hyperref[req:FA-010]{FA-010} & Import in bestehende Excel-Vorlage mit Formeln und Formatierung; Prüfung auf Strukturerhalt nach Export & Bestanden \\
 \hline
-FA-011 & Diff-Vergleich zweier Planversionen (Plan~3 vs. modifizierte Kopie); Verifikation aller 3 Änderungstypen (hinzugefügt, entfernt, verschoben) & Bestanden \\
+\hyperref[req:FA-011]{FA-011} & Diff-Vergleich zweier Planversionen (Plan~3 vs. modifizierte Kopie); Verifikation aller 3 Änderungstypen (hinzugefügt, entfernt, verschoben) & Bestanden \\
 \hline
-\multicolumn{3}{|c|}{\textit{Benutzerinteraktion und Konfiguration (FA-012 bis FA-014)}} \\
+\multicolumn{3}{|c|}{\textit{Benutzerinteraktion und Konfiguration (\hyperref[req:FA-012]{FA-012} bis \hyperref[req:FA-014]{FA-014})}} \\
 \hline
-FA-012 & Visuelle Validierung durch Bounding-Box-Overlays für alle 1473 Testobjekte; Prüfung der korrekten Werten nach Klasse & Bestanden \\
+\hyperref[req:FA-012]{FA-012} & Visuelle Validierung durch Bounding-Box-Overlays für alle 1473 Testobjekte; Prüfung der korrekten Werten nach Klasse & Bestanden \\
 \hline
-FA-013 & GUI-Workflow: PDF-Upload → Analyse-Start → Ergebnisanzeige → Export; Test durch 3 Anwender ohne CLI-Kenntnisse & Bestanden \\
+\hyperref[req:FA-013]{FA-013} & GUI-Workflow: PDF-Upload → Analyse-Start → Ergebnisanzeige → Export; Test durch 3 Anwender ohne CLI-Kenntnisse & Bestanden \\
 \hline
-FA-014 & Modulare Architektur: Alle 13~Symbolklassen erfolgreich integriert; modulare Architektur (Kapitel~\ref{chap:konzeption}) ermöglicht unabhängige Weiterentwicklung der Komponenten & Bestanden \\
+\hyperref[req:FA-014]{FA-014} & Modulare Architektur: Alle 13~Symbolklassen erfolgreich integriert; modulare Architektur (Kapitel~\ref{chap:konzeption}) ermöglicht unabhängige Weiterentwicklung der Komponenten & Bestanden \\
 \hline
-\multicolumn{3}{|c|}{\textit{Manuelle Korrektur und Qualitätssicherung (FA-008)}} \\
+\multicolumn{3}{|c|}{\textit{Manuelle Korrektur und Qualitätssicherung (\hyperref[req:FA-008]{FA-008})}} \\
 \hline
-FA-008 & Test des Linking-Override: Manuelle Korrektur von 5 absichtlich fehlerhaften Verknüpfungen; Verifikation der Persistierung in Datenbank & Bestanden \\
+\hyperref[req:FA-008]{FA-008} & Test des Linking-Override: Manuelle Korrektur von 5 absichtlich fehlerhaften Verknüpfungen; Verifikation der Persistierung in Datenbank & Bestanden \\
 \hline
 \end{tabular}
-\caption{Validierung funktionaler Anforderungen durch systematische Funktionstests}
-\label{tab:functional_validation}
 \end{table}
 
 \textbf{Anmerkung zur Testmethodik:} Die Funktionstests wurden als manuelle 
@@ -936,12 +938,12 @@ Testsuite empfohlen (vgl. Kapitel~\ref{chap:diskussion}).
 \subsection{Validierung weiterer nicht-funktionaler Anforderungen}
 \label{subsec:nfa_validation}
 
-\textbf{NFA-001 (On-Premise-Verarbeitung):} Das System wurde vollständig lokal auf der 
+\textbf{\hyperref[req:NFA-001]{NFA-001} (On-Premise-Verarbeitung):} Das System wurde vollständig lokal auf der 
 in Tab.~\ref{tab:testumgebung} beschriebenen Hardware ausgeführt. Keine Daten wurden 
 an externe Server übertragen. Die PyQt5-basierte Desktop-Anwendung erfordert keine 
 Internetverbindung zur Laufzeit.
 
-\textbf{NFA-002 (Lizenzkonformität):} Alle verwendeten Bibliotheken (Tab.~\ref{tab:tech_stack}) 
+\textbf{\hyperref[req:NFA-002]{NFA-002} (Lizenzkonformität):} Alle verwendeten Bibliotheken (Tab.~\ref{tab:tech_stack}) 
 unterliegen Open-Source-Lizenzen, die für den kommerziellen Einsatz geeignet sind:
 \begin{itemize}
     \item PyTorch, Ultralytics: Apache 2.0
@@ -951,14 +953,14 @@ unterliegen Open-Source-Lizenzen, die für den kommerziellen Einsatz geeignet si
     \item PostgreSQL: PostgreSQL License (BSD-ähnlich)
 \end{itemize}
 
-\textbf{FA-014 (Modulare Architektur):} Die modulare Architektur ermöglicht die Integration aller 13~Symbolklassen. Die Klassen wurden modular konfiguriert mit klassenspezifischen Parametern für OCR-Pipeline, Linking-Algorithmus und Export-Modul. Alle Klassen erreichen hohe Detektionsleistungen (Ø mAP@0.5: 98.4\%).
+\textbf{\hyperref[req:FA-014]{FA-014} (Modulare Architektur):} Die modulare Architektur ermöglicht die Integration aller 13~Symbolklassen. Die Klassen wurden modular konfiguriert mit klassenspezifischen Parametern für OCR-Pipeline, Linking-Algorithmus und Export-Modul. Alle Klassen erreichen hohe Detektionsleistungen (Ø mAP@0,5: 98,4\,\%).
 
-\textbf{NFA-008 (Update-Fähigkeit):} Die trainierten Modellgewichte werden als externe
+\textbf{\hyperref[req:NFA-008]{NFA-008} (Update-Fähigkeit):} Die trainierten Modellgewichte werden als externe
 Datei (\texttt{best.pt}) geladen. Ein Nachtraining auf erweiterten Datensätzen wurde
 während der Entwicklung mehrfach durchgeführt, wobei lediglich die Gewichtsdatei
 ausgetauscht werden musste.
 
-\textbf{NFA-009 (Eingabeformate):} Alle 9 Testpläne wurden als PDF-Dateien
+\textbf{\hyperref[req:NFA-009]{NFA-009} (Eingabeformate):} Alle 9 Testpläne wurden als PDF-Dateien
 verarbeitet. Die interne Verarbeitungspipeline konvertiert PDFs zunächst
 in hochauflösende Rasterbilder (500 DPI, PNG-Format) mittels PyMuPDF
 (Abschnitt \ref{subsec:inferenz}), bevor die YOLO-Inferenz erfolgt. Damit wird die
@@ -967,7 +969,7 @@ Ein direkter Import von Bilddateien ohne PDF-Konvertierung wurde nicht
 explizit getestet, ist jedoch aufgrund der identischen nachgelagerten
 Pipeline-Stufen funktional äquivalent.
 
-\textbf{NFA-010 (Ausgabeformate):} Das System unterstützt alle geforderten 
+\textbf{\hyperref[req:NFA-010]{NFA-010} (Ausgabeformate):} Das System unterstützt alle geforderten 
 Ausgabeformate (Abbildung~\ref{fig:export_format_selection}):
 
 \begin{itemize}
@@ -985,12 +987,12 @@ bestätigt.
 \subsection{Validierung der Export- und Hilfsfunktionen}
 \label{subsec:export_validation}
 
-Die Anforderungen FA-009 bis FA-011 betreffen unterstützende Funktionen, deren
+Die Anforderungen \hyperref[req:FA-009]{FA-009} bis \hyperref[req:FA-011]{FA-011} betreffen unterstützende Funktionen, deren
 ausführliche Evaluation den Rahmen dieser auf Objekterkennung und Texterkennung
 fokussierten Arbeit übersteigen würde. Die Funktionsfähigkeit wurde durch 
 kontinuierliche Nutzung während der Evaluationsphase validiert.
 
-\textbf{FA-009 (Excel-Integration) und FA-010 (Strukturerhalt):}
+\textbf{\hyperref[req:FA-009]{FA-009} (Excel-Integration) und \hyperref[req:FA-010]{FA-010} (Strukturerhalt):}
 
 Der in Abschnitt~\ref{subsec:exportfunktionlität} beschriebene Export-Dialog wurde für 
 alle 9 Testpläne erfolgreich genutzt. Abbildung~\ref{fig:export_result} zeigt 
@@ -999,7 +1001,7 @@ Die resultierenden Excel-Dateien dienten als Grundlage für den Ground-Truth-Ver
 der E2E-Evaluation (vgl. Tabelle~\ref{tab:e2e_per_class_test}).
 
 
-\textbf{FA-011 (Änderungsverfolgung):} Die Änderungsverfolgung wurde anhand eines
+\textbf{\hyperref[req:FA-011]{FA-011} (Änderungsverfolgung):} Die Änderungsverfolgung wurde anhand eines
 realen Versionspaars des Plans validiert (Abbildung~\ref{fig:diff_ui}).
 Das System erkannte automatisch 9 Änderungen zwischen den Planversionen A\_000
 und B\_000 für die ausgewählten Klassen:
@@ -1011,7 +1013,7 @@ und B\_000 für die ausgewählten Klassen:
     \item 112 unveränderte Elemente der ausgewählten Klassen
 \end{itemize}
 
-\textit{Hinweis:} Die Änderungsanalyse wurde auf alle 12~Ankerklassen angewendet. Die Anzahl der unveränderten Objekte (112) bezieht sich auf die Objekte der im Vergleichsdialog ausgewählten Klassen.
+\textit{Hinweis:} Die Änderungsanalyse wurde auf alle 12~Symbolklassen angewendet. Die Anzahl der unveränderten Objekte (112) bezieht sich auf die Objekte der im Vergleichsdialog ausgewählten Klassen.
 
 Die Ergebnisse wurden in eine strukturierte Excel-Datei exportiert
 (Abbildung~\ref{fig:diff_export}), die eine revisionssichere Dokumentation
@@ -1026,7 +1028,7 @@ quantitative Evaluation mit vielen Versionspaaren war daher nicht erforderlich
 -- die Funktionsfähigkeit wurde anhand des verfügbaren Versionspaar-Beispiels 
 erfolgreich demonstriert.
 
-\textbf{FA-012 (Visuelle Validierung):} Die Bounding-Box-Overlays 
+\textbf{\hyperref[req:FA-012]{FA-012} (Visuelle Validierung):} Die Bounding-Box-Overlays 
 (vgl. Abbildung~\ref{fig:complete_ui}) wurden während der gesamten 
 Evaluationsphase zur manuellen Verifikation der Extraktionsergebnisse verwendet 
 und funktionierten zuverlässig.
@@ -1050,22 +1052,22 @@ Zur Sicherstellung der vollständigen Umsetzung aller in Kapitel~\ref{chap:anfor
 
 \hyperref[req:FA-001]{FA-001} & Erkennungsrate $\geq$ 90\% &
 Abschn.~\ref{sec:yolo_implementation}: YOLOv8-OBB Training mit 13 Klassen &
-Abschn.~\ref{subsec:detection_eval}: Recall = 95.7\% (Val), 100\% (Test) \\
+Abschn.~\ref{subsec:detection_eval}: Recall = 95,7\,\% (Val), 99,93\,\% (Test) \\
 \hline
 
 \hyperref[req:FA-002]{FA-002} & Rotationsinvarianz ($0^\circ$--$360^\circ$) &
 Abschn.~\ref{sec:yolo_implementation}: OBB-Annotation, synthetische Rotation (10 Winkel) &
-Abschn.~\ref{subsec:e2e_test_eval}, Tab.~\ref{tab:rotation_analysis}: 38 Objekte mit $|\theta|>30^\circ$ bei höherer Konfidenz (0.946 vs. 0.890) \\
+Abschn.~\ref{subsec:e2e_test_eval}, Tab.~\ref{tab:rotation_analysis}: 38 Objekte mit $|\theta|>30^\circ$ bei höherer Konfidenz (0,946 vs. 0,890) \\
 \hline
 
 \hyperref[req:FA-003]{FA-003} & Zielobjekte (13 Klassen) &
 Abschn.~\ref{sec:yolo_implementation}: Alle 13~Symbolklassen &
-Abschn.~\ref{subsec:e2e_test_eval}: 1432/1473 Objekte korrekt (97.22\%)\\
+Abschn.~\ref{subsec:e2e_test_eval}: 1432/1473 Objekte korrekt (97,22\,\%)\\
 \hline
 
 \hyperref[req:FA-004]{FA-004} & OCR-Genauigkeit (in E2E integriert) &
 Abschn.~\ref{sec:ocrpipeline}: Multi-Engine Kaskade (PaddleOCR, Tesseract, EasyOCR) &
-Abschn.~\ref{subsec:e2e_test_eval}: 27 OCR-bedingte Fehler (1.83\% Fehlerrate) \\
+Abschn.~\ref{subsec:e2e_test_eval}: 27 OCR-bedingte Fehler (1,83\,\% Fehlerrate) \\
 \hline
 
 \hyperref[req:FA-005]{FA-005} & OCR-Robustheit (Rauschen, Rotation) &
@@ -1075,7 +1077,7 @@ Abschn.~\ref{subsec:e2e_test_eval}, Tab.~\ref{tab:rotation_analysis}: 100\% OCR-
 
 \hyperref[req:FA-006]{FA-006} & Fahrtrichtungsdetektion &
 Abschn.~\ref{sec:fahrtrichtung}: Geometrische Ableitung aus Signal-GKS-Relation &
-Abschn.~\ref{subsec:e2e_test_eval}: 255/256 korrekt (99.61\%), Tab.~\ref{tab:signal_attribute_accuracy} \\
+Abschn.~\ref{subsec:e2e_test_eval}: 255/256 korrekt (99,61\,\%), Tab.~\ref{tab:signal_attribute_accuracy} \\
 \hline
 
 \hyperref[req:FA-007]{FA-007} & Symbol-Koordinaten-Verknüpfung &
@@ -1146,7 +1148,7 @@ Abschn.~\ref{subsec:nfa_validation}: Lizenzprüfung dokumentiert \\
 
 \hyperref[req:NFA-003]{NFA-003} & Gesamtgenauigkeit $\geq$ 85\% &
 Gesamte Pipeline (Kap.~\ref{chap:implementierung}) &
-Abschn.~\ref{subsec:e2e_test_eval}: 97.22\% erreicht \\
+Abschn.~\ref{subsec:e2e_test_eval}: 97,22\,\% erreicht \\
 \hline
 
 \hyperref[req:NFA-004]{NFA-004} & Robustheit (fehlerhafte Eingaben) &
@@ -1166,7 +1168,7 @@ Abschn.~\ref{subsubsec:processing_time}: 89,7\% Zeitersparnis \\
 
 \hyperref[req:NFA-007]{NFA-007} & Ressourceneffizienz &
 CPU-kompatible Inferenz &
-Abschn.~\ref{subsubsec:processing_time}: Ø 10.6 min/Plan \\
+Abschn.~\ref{subsubsec:processing_time}: Ø 10,6 min/Plan \\
 \hline
 
 \hyperref[req:NFA-008]{NFA-008} & Update-Fähigkeit &
@@ -1195,6 +1197,8 @@ Tabelle~\ref{tab:alle_anforderungen} fasst die Erfüllung aller in Kapitel~\ref{
 
 \begin{table}[H]
 \centering
+\caption{Validierung aller funktionalen und nicht-funktionalen Anforderungen}
+\label{tab:alle_anforderungen}
 \small
 \begin{tabular}{|l|p{7.5cm}|c|}
 \hline
@@ -1202,37 +1206,35 @@ Tabelle~\ref{tab:alle_anforderungen} fasst die Erfüllung aller in Kapitel~\ref{
 \hline
 \multicolumn{3}{|c|}{\textit{Funktionale Anforderungen}} \\
 \hline
-FA-001 & Erkennungsrate $\geq$ 90\% & \checkmark (95.7\% Val, 100\% Test) \\
-FA-002 & Rotationsinvarianz & \checkmark (100\% bei $|\theta|>30^\circ$) \\
-FA-003 & Zielobjekte detektierbar & \checkmark \\
-FA-004 & OCR-Genauigkeit & \checkmark (integriert in 97.22\% E2E) \\
-FA-005 & OCR-Robustheit & \checkmark (100\% bei $|\theta|>30^\circ$) \\
-FA-006 & Fahrtrichtungsdetektion & \checkmark (99.61\%) \\
-FA-007 & Symbol-Koordinaten-Verknüpfung & \checkmark (99.12\%) \\
-FA-008 & Manuelle Korrektur & \checkmark \\
-FA-009 & Excel-Integration & \checkmark \\
-FA-010 & Strukturerhalt & \checkmark \\
-FA-011 & Änderungsverfolgung & \checkmark \\
-FA-012 & Visuelle Validierung & \checkmark \\
-FA-013 & GUI & \checkmark \\
-FA-014 & Modularität & \checkmark \\
+\hyperref[req:FA-001]{FA-001} & Erkennungsrate $\geq$ 90\,\% & \checkmark (95,7\,\% Val, 99,93\,\% Test) \\
+\hyperref[req:FA-002]{FA-002} & Rotationsinvarianz & \checkmark (100\,\% bei $|\theta|>30^\circ$) \\
+\hyperref[req:FA-003]{FA-003} & Zielobjekte detektierbar & \checkmark \\
+\hyperref[req:FA-004]{FA-004} & OCR-Genauigkeit & \checkmark (integriert in 97,22\,\% E2E) \\
+\hyperref[req:FA-005]{FA-005} & OCR-Robustheit & \checkmark (100\,\% bei $|\theta|>30^\circ$) \\
+\hyperref[req:FA-006]{FA-006} & Fahrtrichtungsdetektion & \checkmark (99,61\,\%) \\
+\hyperref[req:FA-007]{FA-007} & Symbol-Koordinaten-Verknüpfung & \checkmark (99,12\,\%) \\
+\hyperref[req:FA-008]{FA-008} & Manuelle Korrektur & \checkmark \\
+\hyperref[req:FA-009]{FA-009} & Excel-Integration & \checkmark \\
+\hyperref[req:FA-010]{FA-010} & Strukturerhalt & \checkmark \\
+\hyperref[req:FA-011]{FA-011} & Änderungsverfolgung & \checkmark \\
+\hyperref[req:FA-012]{FA-012} & Visuelle Validierung & \checkmark \\
+\hyperref[req:FA-013]{FA-013} & GUI & \checkmark \\
+\hyperref[req:FA-014]{FA-014} & Modularität & \checkmark \\
 \hline
 \multicolumn{3}{|c|}{\textit{Nicht-funktionale Anforderungen}} \\
 \hline
-NFA-001 & On-Premise-Verarbeitung & \checkmark \\
-NFA-002 & Lizenzkonformität & \checkmark \\
-NFA-003 & Gesamtsystem-Genauigkeit $\geq$ 85\% & \checkmark (97.22\%) \\
-NFA-004 & Robustheit & \checkmark \\
-NFA-005 & Prüfbarkeit & \checkmark \\
-NFA-006 & Prozessoptimierung & \checkmark (89,7\% Zeitersparnis) \\
-NFA-007 & Ressourceneffizienz & \checkmark (10.6 min/Plan) \\
-NFA-008 & Update-Fähigkeit & \checkmark \\
-NFA-009 & Eingabeformate & \checkmark \\
-NFA-010 & Ausgabeformate & \checkmark \\
+\hyperref[req:NFA-001]{NFA-001} & On-Premise-Verarbeitung & \checkmark \\
+\hyperref[req:NFA-002]{NFA-002} & Lizenzkonformität & \checkmark \\
+\hyperref[req:NFA-003]{NFA-003} & Gesamtsystem-Genauigkeit $\geq$ 85\,\% & \checkmark (97,22\,\%) \\
+\hyperref[req:NFA-004]{NFA-004} & Robustheit & \checkmark \\
+\hyperref[req:NFA-005]{NFA-005} & Prüfbarkeit & \checkmark \\
+\hyperref[req:NFA-006]{NFA-006} & Prozessoptimierung & \checkmark (89,7\% Zeitersparnis) \\
+\hyperref[req:NFA-007]{NFA-007} & Ressourceneffizienz & \checkmark (10,6 min/Plan) \\
+\hyperref[req:NFA-008]{NFA-008} & Update-Fähigkeit & \checkmark \\
+\hyperref[req:NFA-009]{NFA-009} & Eingabeformate & \checkmark \\
+\hyperref[req:NFA-010]{NFA-010} & Ausgabeformate & \checkmark \\
 \hline
 \end{tabular}
-\caption{Validierung aller funktionalen und nicht-funktionalen Anforderungen}
-\label{tab:alle_anforderungen}
 \end{table}
 
 \section{Zusammenfassung der Evaluationsergebnisse}
@@ -1242,12 +1244,12 @@ Die systematische Evaluation des entwickelten Prototyps auf einem unabhängigen 
 
 \textbf{Objekterkennung (YOLO):}
 \begin{itemize}
-    \item Exzellente Detektionsleistung mit mAP@0.5 von 98.4\% auf dem Validierungssatz
-    \item 100\% Detektionsrate auf dem Testsatz (kein Symbol übersehen)
-    \item 1 Klassifikationsfehler (GKS-Typ-Verwechslung) auf dem Testsatz
-    \item Robuste Rotationsinvarianz: Steilrotierte Objekte ($|\theta|>30^\circ$) erreichen 
-    100\% OCR-Erfolg bei höherer Konfidenz (0.946 vs. 0.890)
-    \item Erfolgreiche Anforderungserfüllung FA-001 (Recall 95.7\% $>$ 90\%) und FA-002 (Rotationsinvarianz)
+    \item Exzellente Detektionsleistung mit mAP@0,5 von 98,4\,\% auf dem Validierungssatz
+    \item 99,93\,\% Detektionsrate auf dem Testsatz (1.472 von 1.473 Objekten erkannt)
+    \item 1 Detection-Fehler: Ein \textit{isolierstoß} in Plan 9 wurde nicht detektiert
+    \item Robuste Rotationsinvarianz: Steilrotierte Objekte ($|\theta|>30^\circ$) erreichen
+    100\,\% OCR-Erfolg bei höherer Konfidenz (0,946 vs. 0,890)
+    \item Erfolgreiche Anforderungserfüllung \hyperref[req:FA-001]{FA-001} (Recall 95,7\,\% $>$ 90\,\%) und \hyperref[req:FA-002]{FA-002} (Rotationsinvarianz)
 \end{itemize}
 
 \textbf{Symbol-Text-Verknüpfung:}
@@ -1258,27 +1260,27 @@ Die systematische Evaluation des entwickelten Prototyps auf einem unabhängigen 
         \item 8× Falsche Koordinatenzuordnung (weichengruppenende, haltepunkt, gks, isolierstoß)
         \item 5× Koordinaten vertauscht zwischen benachbarten Symbolen
     \end{itemize}
-    \item Fahrtrichtungsdetektion: 255 von 256 Signalen korrekt (99.61\%)
+    \item Fahrtrichtungsdetektion: 255 von 256 Signalen korrekt (99,61\,\%)
     \item Proximity-basierter Algorithmus robust für typische Layouts
 \end{itemize}
 
 \textbf{End-to-End Systemleistung:}
 \begin{itemize}
-    \item Gesamtgenauigkeit von \textbf{97.22\%} auf dem Testsatz übertrifft Zielwert von 85\% (NFA-003) deutlich
-    \item Nur 41 von 1473 Objekten (2.78\%) erforderten Korrektur
-    \item Fehlerverteilung: 27 OCR-Fehler (65.9\%), 13 Linking-Fehler (31.7\%), 1 Detection-Fehler (2.4\%)
-    \item Stabile Leistung über alle Komplexitätsstufen (97.07\% -- 97.81\%)
+    \item Gesamtgenauigkeit von \textbf{97,22\,\%} auf dem Testsatz übertrifft Zielwert von 85\,\% (\hyperref[req:NFA-003]{NFA-003}) deutlich
+    \item Nur 41 von 1473 Objekten (2,78\,\%) erforderten Korrektur
+    \item Fehlerverteilung: 27 OCR-Fehler (65,9\,\%), 13 Linking-Fehler (31,7\,\%), 1 Detection-Fehler (2,4\,\%)
+    \item Stabile Leistung über alle Komplexitätsstufen (97,07\,\% -- 97,81\,\%)
     \item Für produktiven Einsatz auf diversen Plänen wird realistische Genauigkeit von 90--95\% erwartet
     \item Umfangreiche Validierungs- und Korrekturwerkzeuge reduzieren Prüfaufwand um 85\% durch gezielte Fehleridentifikation
 \end{itemize}
 
 \textbf{Verarbeitungseffizienz und Praxisnutzen:}
 \begin{itemize}
-    \item Durchschnittliche Verarbeitungszeit von \textbf{10.6 Minuten} pro A0-Plan auf Standard-CPU-Hardware
-    \item Zeitverteilung der Pipeline: YOLO-Inferenz 75.3\%, OCR 10.3\%, Linking 6.8\%, Sonstige 7.7\%
+    \item Durchschnittliche Verarbeitungszeit von \textbf{10,6 Minuten} pro A0-Plan auf Standard-CPU-Hardware
+    \item Zeitverteilung der Pipeline: YOLO-Inferenz 75,3\,\%, OCR 10,3\,\%, Linking 6,8\,\%, Sonstige 7,7\,\%
     \item \textbf{89,7\% Zeitersparnis} bei vollständiger Extraktion aller 12 Symbolklassen mit Koordinaten gegenüber manuellem Prozess (102 min $\rightarrow$ 10,6 min pro Plan)
     \item Bei typischen Projekten mit 20--50 Plänen: 30--76 Stunden (4--10 Arbeitstage) Einsparung
-    \item Anforderungen NFA-006 (Prozessoptimierung) und NFA-007 (Ressourceneffizienz) erfüllt
+    \item Anforderungen \hyperref[req:NFA-006]{NFA-006} (Prozessoptimierung) und \hyperref[req:NFA-007]{NFA-007} (Ressourceneffizienz) erfüllt
 \end{itemize}
 
 Die Evaluation bestätigt, dass das entwickelte System alle definierten funktionalen und nicht-funktionalen Anforderungen erfüllt und die gesetzten Zielmetriken signifikant übertrifft. Der verbleibende manuelle Korrekturaufwand von geschätzt 5--10\% im produktiven Einsatz wird durch die integrierten Validierungswerkzeuge effizient adressiert. Die erzielte Zeitersparnis von 89,7\% transformiert den bisherigen manuellen Prozess zu einem KI-gestützten Workflow, der sowohl die Effizienz als auch die Konsistenz der Datenextraktion erheblich verbessert. Der primäre technische Optimierungspotenzial liegt in der OCR-Komponente, insbesondere bei der Erkennung von Koordinatenbeschriftungen unter ungünstigen Bedingungen (niedrige Auflösung, starke Rotation). Diese Aspekte werden in Kapitel~\ref{chap:diskussion} detailliert diskutiert.

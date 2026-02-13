@@ -299,10 +299,12 @@ Diese Komponente bildet den kritischen Eingangskanal der Pipeline. Die Entscheid
 \end{itemize}
 
 \subsubsection{Abgrenzung zu alternativen Bibliotheken}
-Die Auswahl wurde gegen populäre Alternativen validiert. Die folgende Tabelle fasst die Ausschlusskriterien zusammen, wobei insbesondere lizenzrechtliche Aspekte im Unternehmenskontext eine Rolle spielten:
+Die Auswahl von \texttt{pdf2image} erfolgte nicht isoliert, sondern im direkten Vergleich mit etablierten Alternativen aus dem Python-Ökosystem. Da die PDF-Rasterisierung den ersten und damit kritischen Schritt der gesamten Verarbeitungspipeline darstellt, wurden die Kandidaten systematisch evaluiert. Rendering-Qualität, Performance und API-Design bildeten die technische Bewertungsgrundlage. Besonders relevant im industriellen Kontext erwies sich jedoch die lizenzrechtliche Kompatibilität. Dieser Aspekt ist für den Einsatz innerhalb von Siemens Mobility von zentraler Bedeutung, da bestimmte Open-Source-Lizenzen (insbesondere Copyleft-Lizenzen wie AGPL) die Verwendung in proprietären Systemen erheblich einschränken oder vollständig ausschließen können. Die folgende Tabelle fasst die identifizierten Ausschlusskriterien für die evaluierten Alternativen zusammen:
 
 \begin{table}[H]
     \centering
+    \caption{Vergleich verschiedener PDF-Verarbeitungsbibliotheken}
+    \label{tab:Alternative_PDF}
     \renewcommand{\arraystretch}{1.5}
     \begin{tabularx}{\textwidth}{|p{3.5cm}|X|}
     \hline
@@ -315,8 +317,6 @@ Die Auswahl wurde gegen populäre Alternativen validiert. Die folgende Tabelle f
     \textbf{Poppler CLI} & \textit{Systembruch:} Die direkte Nutzung der Kommandozeilen-Tools (\texttt{pdftoppm}) erfordert Systemaufrufe via \texttt{subprocess}. Dies erschwert das Exception-Handling und verhindert den direkten Datenaustausch im RAM (erzwungener File-I/O), was die Pipeline verlangsamt.\\
     \hline
     \end{tabularx}
-    \caption{Vergleich verschiedener PDF-Verarbeitungsbibliotheken}
-    \label{tab:Alternative_PDF}
 \end{table}
 
 Die konkrete Wahl der Rendering-Parameter (DPI-Auflösung, Farbtiefe, 
@@ -349,17 +349,17 @@ Im Auswahlprozess wurden verschiedene Architekturen evaluiert. Die folgende Tabe
 
 \begin{table}[H]
     \centering
+    \caption{Vergleich und Bewertung von Alternativen zu YOLOv8}
+    \label{tab:Alternative_Detection}
     \renewcommand{\arraystretch}{1.5}
-    \begin{tabularx}{\textwidth}{|p{3cm}|p{4.5cm}|X|} 
+    \begin{tabularx}{\textwidth}{|p{3cm}|p{4.5cm}|X|}
     \hline
     \textbf{Alternative} & \textbf{Evaluationsergebnis} & \textbf{Grund für die Ablehnung} \\ \hline
-    \textbf{RTMDet} & Hohe Präzision (mAP: 91.2\%), vergleichbar mit YOLOv8 & Obwohl die Rotation-Aware-Features vielversprechend sind, zeigte RTMDet eine instabilere Konvergenz bei kleinen Datensätzen ($<2000$ Samples) und verfügt über ein kleineres Entwickler-Ökosystem im Vergleich zu YOLO \cite{lyu2022rtmdetempiricalstudydesigning}. \\ \hline
+    \textbf{RTMDet} & Hohe Präzision (mAP: 91,2\,\%), vergleichbar mit YOLOv8 & Obwohl die Rotation-Aware-Features vielversprechend sind, zeigte RTMDet eine instabilere Konvergenz bei kleinen Datensätzen ($<2000$ Samples) und verfügt über ein kleineres Entwickler-Ökosystem im Vergleich zu YOLO \cite{lyu2022rtmdetempiricalstudydesigning}. \\ \hline
     \textbf{Template Matching} (OpenCV) & Geringer Recall ($<60\%$) bei leichten Rotationen ($\pm 10^\circ$) & Klassische Computer-Vision-Verfahren sind nicht robust gegenüber Skalierung und Artefakten. Zudem ist der Ansatz bei $>13$ Symbolklassen rechnerisch nicht skalierbar \cite{Brunelli2009}. \\ \hline
     \textbf{DETR / DINOv2} & Trainingszeit ca. $3\times$ länger als bei CNNs & Transformer-basierte Ansätze benötigen enorme Datenmengen, um die Inductive Biases von CNNs zu lernen. Für die strukturierte Domäne technischer Zeichnungen stellt dies einen unverhältnismäßigen Ressourcenaufwand dar \cite{Carion2020_DETR}. \\ \hline
     \textbf{Faster R-CNN} & Inferenz: $\sim 8$ FPS (vs. 40 FPS bei YOLO) & Die Two-Stage-Architektur (Region Proposal Network + Classifier) ist zwar präzise, aber für das Feedback in einer User-Interface-Anwendung zu langsam \cite{Ren2015_FasterRCNN}. \\ \hline
     \end{tabularx}
-    \caption{Vergleich und Bewertung von Alternativen zu YOLOv8}
-    \label{tab:Alternative_Detection}
 \end{table}
 Die Entscheidung für YOLOv8-OBB adressiert direkt die Anforderungen \textbf{\hyperref[req:FA-001]{FA-001}}
 (Erkennungsrate $\geq$ 90\%), \textbf{\hyperref[req:FA-002]{FA-002}} (Rotationsinvarianz durch OBB-Regression)
@@ -459,6 +459,8 @@ Die folgende Tabelle fasst zusammen, warum aktuelle Transformer-basierte Ansätz
 
 \begin{table}[H]
     \centering
+    \caption{Vergleich und Bewertung alternativer OCR-Ansätze}
+    \label{tab:ocr_alternatives}
     \renewcommand{\arraystretch}{1.4}
     \begin{tabularx}{\textwidth}{|p{3.5cm}|X|}
     \hline
@@ -471,8 +473,6 @@ Die folgende Tabelle fasst zusammen, warum aktuelle Transformer-basierte Ansätz
     \textbf{TrOCR} & \textit{Rotations-Schwäche:} TrOCR ist auf horizontale Textzeilen spezialisiert. Da Gleispläne Text in beliebigen Winkeln enthalten, wäre ein komplexes Pre-Alignment notwendig, was den Vorteil der Architektur negiert \cite{li2022trocrtransformerbasedopticalcharacter}.\\
     \hline
     \end{tabularx}
-    \caption{Vergleich und Bewertung alternativer OCR-Ansätze}
-    \label{tab:ocr_alternatives}
 \end{table}
 Die Multi-Engine-Strategie mit Dual-Angle-Routing erfüllt die Anforderungen \textbf{\hyperref[req:FA-004]{FA-004}}
 (OCR-Genauigkeit) und \textbf{\hyperref[req:FA-005]{FA-005}} (OCR-Robustheit bei Rotation und Rauschen).
@@ -505,6 +505,8 @@ Die Entscheidung für diesen Ansatz stützt sich auf drei zentrale Gründe:
 
     \begin{table}[H]
         \centering
+        \caption{Vergleich der Export-Alternativen zu pandas + openpyxl}
+        \label{tab:Alternative_Export}
         \renewcommand{\arraystretch}{1.4} % Etwas mehr Zeilenabstand für Lesbarkeit
         \begin{tabularx}{\textwidth}{|p{3.5cm}|X|}
         \hline
@@ -517,8 +519,6 @@ Die Entscheidung für diesen Ansatz stützt sich auf drei zentrale Gründe:
         \textbf{LibreOffice API / COM} & Systemabhängig und langsam. Erfordert eine lokale Installation der Office-Suite auf dem Server, was die Portabilität der Anwendung einschränkt.\\
         \hline
         \end{tabularx}
-        \caption{Vergleich der Export-Alternativen zu pandas + openpyxl}
-        \label{tab:Alternative_Export}
     \end{table}
 
 \end{enumerate}
@@ -537,6 +537,8 @@ Die Gründe für diese gewählte Lösung sind:
 Andere Alternativen:
 \begin{table}[H]
 \centering
+\caption{Alternativen zur hybriden Rückverfolgbarkeit}
+\label{tab:Alternative5}
 \renewcommand{\arraystretch}{1.3} % More row height
 \begin{tabularx}{\textwidth}{|p{4cm}|X|}
 \hline
@@ -550,8 +552,6 @@ Andere Alternativen:
 \\
 \hline
 \end{tabularx}
-\caption{Alternativen zur hybriden Rückverfolgbarkeit}
-\label{tab:Alternative5}
 \end{table}
 \subsection{Änderungsverfolgung: Konzeptioneller Ansatz}
 \label{sec:änderungsverfolgung}
@@ -611,7 +611,9 @@ Für die Benutzeroberfläche wurde das Framework PyQt5 aus der Python-Bibliothek
     \item Vergleich mit alternativen Technologien: Im Vorfeld der Entwicklung wurden verschiedene UI-Frameworks evaluiert. Die folgende Tabelle fasst die Gründe für deren Ausschluss zusammen:
     \begin{table}[H]
     \centering
-    \begin{tabular}{|p{2.5cm}|p{4cm}|p{9cm}|} 
+    \caption{Alternative zu PyQt5}
+    \label{tab:Alternative6}
+    \begin{tabular}{|p{2.5cm}|p{4cm}|p{9cm}|}
         \hline
         \textbf{Alternative} & \textbf{Technologie} & \textbf{Hauptgrund für den Ausschluss} \\ \hline
         Streamlit & Python Web-Wrapper & Kein Multi-Window Support- Statelessness erzwingt ständiges Neuladen (Rerun) bei Interaktionen, was bei großen Bildern zu inakzeptablen Wartezeiten führt.\cite{StreamlitSecurity} \\ \hline
@@ -619,8 +621,6 @@ Für die Benutzeroberfläche wurde das Framework PyQt5 aus der Python-Bibliothek
         Electron & JS/Chromium & Ressourcenverbrauch \cite{Electron2024}- Hoher Speicherbedarf durch gebündelte Chromium Instanz; Sicherheitsrisiken durch JavaScript Bibliotheken; Performance bei 60k Pixel Bildern unterlegen.\\ \hline
         Tkinter & Python Native & Veraltete UX \cite{Tkinter2024}; Fehlende GPU-Beschleunigung für Canvas-Elemente; keine moderne HiDPI-Skalierung (\enquote{blurry} Text auf 4K-Monitoren).\\ \hline
     \end{tabular}
-    \caption{Alternative zu PyQt5}
-    \label{tab:Alternative6}
     \end{table}
 Die Wahl von PyQt5 als Desktop-Framework adressiert die Anforderungen \textbf{\hyperref[req:FA-013]{FA-013}}
 (GUI ohne CLI-Kenntnisse), \textbf{\hyperref[req:NFA-001]{NFA-001}} (On-Premise-Verarbeitung ohne Cloud) und
@@ -632,22 +632,22 @@ Für die dauerhafte Speicherung der Analyseergebnisse und Gleisplandaten wurde d
     \item Schema-Design und Datenspeicherung: Das zentrale Speicherelement ist die Tabelle \textit{workspaces}. Anstatt für jede erkannte Objektklasse (Signale, Weichen, Texte) separate relationale Tabellen anzulegen, werden die heterogenen Analyseergebnisse in einem semi-strukturierten Format aggregiert. Dieser Entwurf adressiert zwei spezifische Anforderungen der Gleisplananalyse:
     \begin{itemize}
         \item Semi strukturierte Metadaten(JSONB): Die Ergebnisse der Objekterkennung (Bounding Boxes, Klassenwahrscheinlichkeiten, OCR-Texte) variieren stark in ihrer Struktur. Das JSONB-Format (Binary JSON) erlaubt es, diese hierarchischen Daten effizient zu speichern, ohne das Datenbankschema bei jeder Änderung der YOLO-Klassen anpassen zu müssen (Schema Evolution). Der GIN-Index (Generalized Inverted Index) ermöglicht dabei Abfragen auf tief verschachtelte Attribute (z. B. \enquote{Finde alle Pläne mit Signalen vom Typ AH}) in logarithmischer Zeit, vergleichbar mit klassischen Spaltenindizes.
-        \item Binäre Topologie-Daten (BYTEA): Das extrahierte Gleisskelett (der Graph der Fahrwege) liegt zur Laufzeit als speicheroptimiertes NumPy-Array vor. Die Konvertierung in Textform (JSON/CSV) wäre ineffizient und würde Präzision kosten. Daher wird dieses Array direkt als binäres Objekt (BYTEA) persistiert, was Ladezeiten minimiert und die exakte Repräsentation der Gleisgeometrie wahrt.
+        \item Binäre Topologie-Daten (BYTEA): Die extrahierte Gleistopologie (der Graph der Fahrstraßen) liegt zur Laufzeit als speicheroptimiertes NumPy-Array vor. Die Konvertierung in Textform (JSON/CSV) wäre ineffizient und würde Präzision kosten. Daher wird dieses Array direkt als binäres Objekt (BYTEA) persistiert, was Ladezeiten minimiert und die exakte Repräsentation der Gleisgeometrie wahrt.
     \end{itemize}
     \item Versionierung und \enquote{Upsert}-Strategie: Um Dateninkonsistenzen bei mehrfacher Analyse desselben Plans zu vermeiden, implementiert die Anwendung eine UPSERT-Logik (Update or Insert)
     \item Vorbereitung für Active Learning (Human in the Loop): Ein wesentliches Ziel der Architektur ist die nachhaltige Verbesserung der KI Modelle durch Nutzer Feedback (siehe Kapitel 8.3.2). Hierfür wurde ein separates Schema entworfen, das Abweichungen zwischen KI-Vorhersage und Nutzerkorrektur protokolliert:
     \item Abgrenzung zu alternativen Speichertechnologien
         \begin{table}[ht]
     \centering
-    \begin{tabular}{|p{2cm}|p{4cm}|p{8.5cm}|} 
+    \caption{Alternativen zu PostgreSQL}
+    \label{tab:Alternative7}
+    \begin{tabular}{|p{2cm}|p{4cm}|p{8.5cm}|}
         \hline
         \textbf{Alternative} & \textbf{Evaluationsergebnis} & \textbf{Begründung der Ablehnung} \\ \hline
         SQLite & Bedingt geeignet & Obwohl leichtgewichtig, fehlt SQLite eine robuste Multi-User-Unterstützung (Database Locking bei Schreibzugriffen) und die JSON-Abfragefunktionen sind weniger performant als die GIN-Indizierung von PostgreSQL.\cite{SQLiteVsPostgres} \\ \hline
         MongoDB & Nicht gewählt & Als native NoSQL-DB wäre sie für JSON gut geeignet \cite{MongoDB2024}, bietet jedoch schwächere Garantien für relationale Integrität (z. B. Foreign Keys für user\_corrections) und erhöht die Komplexität im Deployment (zusätzliche Infrastruktur-Komponente).\\ \hline
         JSON-Files & Ungenügend & Die Speicherung in reinen Textdateien bietet keine Transaktionssicherheit (ACID), keine Indizierung für schnelle Suchen und führt bei parallelen Zugriffen zu \enquote{Race Conditions}.\\ \hline
     \end{tabular}
-    \caption{Alternativen zu PostgreSQL}
-    \label{tab:Alternative7}
     \end{table}
 \end{enumerate}
 
@@ -656,7 +656,7 @@ Metadaten-Persistierung), \textbf{\hyperref[req:FA-011]{FA-011}} (Änderungsverf
 \section{Linking- \& Assoziationsmodul}
 \label{sec:linkingassociationmodul}
 Die semantische Interpretation der Gleispläne erfordert die korrekte Verknüpfung 
-zwischen erkannten Symbolen (Ankerobjekten) und den zugehörigen Texten (IDs, Koordinaten). 
+zwischen erkannten Symbolen und den zugehörigen Texten (IDs, Koordinaten). 
 Dieses Modul adressiert die Anforderungen \textbf{\hyperref[req:FA-006]{FA-006}} (Fahrtrichtungsdetektion) und
 \textbf{\hyperref[req:FA-007]{FA-007}} (Symbol-Koordinaten-Verknüpfung).
 
@@ -684,8 +684,7 @@ Das Linking-Modul basiert auf drei Kernprinzipien:
 
 \subsubsection{Proximity-basierte Suche}
 
-Textkandidaten werden innerhalb klassenspezifischer Suchradien um das Ankersymbol 
-gesucht. Die Auswahl erfolgt nach:
+Textkandidaten werden innerhalb klassenspezifischer Suchradien um das Symbol gesucht. Die Auswahl erfolgt nach:
 
 \begin{itemize}
   \item Minimaler euklidischer Distanz

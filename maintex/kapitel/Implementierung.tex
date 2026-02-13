@@ -12,6 +12,8 @@ Die gesamte Implementierung erfolgte in \textbf{Python 3.9}, da diese Sprache ei
 
 \begin{table}[H]
 \centering
+\caption{Übersicht der verwendeten Technologien und Bibliotheken}
+\label{tab:tech_stack}
 \small
 \begin{tabular}{|l|l|l|p{7cm}|}
 \hline
@@ -43,10 +45,8 @@ Datenbank & PostgreSQL & 14.9 & Datenpersistenz \\
 ORM & psycopg2 & 2.9.7 & PostgreSQL-Adapter \\
 \hline
 \end{tabular}
-\caption{Übersicht der verwendeten Technologien und Bibliotheken}
-\label{tab:tech_stack}
 \end{table}
-\textbf{Lizenzkonformität (NFA-002):} Alle verwendeten Bibliotheken unterliegen 
+\textbf{Lizenzkonformität (\hyperref[req:NFA-002]{NFA-002}):} Alle verwendeten Bibliotheken unterliegen 
 Open-Source-Lizenzen (Apache 2.0, MIT, BSD), die für den kommerziellen Einsatz 
 bei Siemens Mobility geeignet sind. Eine detaillierte Lizenzprüfung wurde durchgeführt 
 und bestätigt die Konformität mit den Unternehmensrichtlinien.
@@ -78,7 +78,7 @@ Die Implementierung folgt einer modularen Architektur mit klarer Trennung der Ve
     \item \texttt{main.py} - Haupteinstiegspunkt
 \end{itemize}
 
-\textbf{Modularität (FA-014, NFA-008):} Die dargestellte Projektstruktur gewährleistet 
+\textbf{Modularität (\hyperref[req:FA-014]{FA-014}, \hyperref[req:NFA-008]{NFA-008}):} Die dargestellte Projektstruktur gewährleistet 
 eine klare Trennung der Verantwortlichkeiten. Jedes Modul (\texttt{core/}, \texttt{ui/}, 
 \texttt{validation/}) kann unabhängig weiterentwickelt werden. Die Integration neuer 
 Symbolklassen erfordert lediglich Anpassungen in \texttt{core/detection.py} und 
@@ -155,7 +155,7 @@ $(w, h)$ und Rotationswinkel~$\theta$:
 
 CVAT exportiert im YOLO-OBB-Format, bei dem jede Bounding Box durch ihre vier normalisierten Eckpunktkoordinaten $\{(x_i/W,\; y_i/H)\}_{i=1}^{4}$ beschrieben wird, wobei $W$ und $H$ die Bildbreite bzw.\ -höhe bezeichnen.
 
-Der finale Datensatz umfasst insgesamt \textbf{13~Symbolklassen} gemäß Anforderung \textbf{FA-003}: \textit{coordinate}, \textit{signal}, \textit{gks\_festkodiert}, \textit{gks\_gesteuert}, \textit{gm\_block}, \textit{sverbinder}, \textit{haltepunkt}, \textit{weichen\_block}, \textit{isolierstoß}, \textit{prellbock}, \textit{haltetafel}, \textit{endeweichen} und \textit{weichengruppeende}. Die Klasse \textit{coordinate} nimmt eine besondere Rolle ein: Sie liefert die Positionsinformation (Kilometrierung), die den anderen 12~Klassen zugeordnet wird. Alle 13~Klassen werden in Kapitel~\ref{chap:evaluation} quantitativ evaluiert.
+Der finale Datensatz umfasst insgesamt \textbf{13~Symbolklassen} gemäß Anforderung \hyperref[req:FA-003]{FA-003}: \textit{coordinate}, \textit{signal}, \textit{gks\_festkodiert}, \textit{gks\_gesteuert}, \textit{gm\_block}, \textit{sverbinder}, \textit{haltepunkt}, \textit{weichen\_block}, \textit{isolierstoß}, \textit{prellbock}, \textit{haltetafel}, \textit{weichenende} und \textit{weichengruppenende}. Die Klasse \textit{coordinate} nimmt eine besondere Rolle ein: Sie liefert die Positionsinformation (Kilometrierung), die den anderen 12~Klassen zugeordnet wird. Alle 13~Klassen werden in Kapitel~\ref{chap:evaluation} quantitativ evaluiert.
 
 % ── 6.2.1.3  Augmentation ───────────────────────────────────────────────────
 \subsubsection{Synthetische Datenaugmentation durch Rotation}
@@ -164,7 +164,7 @@ Der finale Datensatz umfasst insgesamt \textbf{13~Symbolklassen} gemäß Anforde
 Um die Robustheit des Modells gegenüber beliebigen Symbolorientierungen zu erhöhen und die Klassenbalance zu optimieren, wurde vor der Datensatzaufteilung eine gezielte synthetische Augmentation durch Rotation implementiert. Diese Strategie adressiert zwei zentrale Herausforderungen:
 
 \begin{enumerate}
-    \item \textbf{Klassenungleichgewicht:} Die natürliche Verteilung der Symbolklassen in den 482~annotierten Original-Tiles ist stark unausgeglichen. Häufige Klassen wie \textit{coordinate} dominieren, während seltene Klassen wie \textit{endeweichen} oder \textit{weichengruppeende} nur in wenigen Tiles vorkommen. Ohne Gegenmaßnahmen besteht die Gefahr, dass das Modell auf häufige Klassen overfittet und seltene Symbole unzureichend lernt.
+    \item \textbf{Klassenungleichgewicht:} Die natürliche Verteilung der Symbolklassen in den 482~annotierten Original-Tiles ist stark unausgeglichen. Häufige Klassen wie \textit{coordinate} dominieren, während seltene Klassen wie \textit{weichenende} oder \textit{weichengruppenende} nur in wenigen Tiles vorkommen. Ohne Gegenmaßnahmen besteht die Gefahr, dass das Modell auf häufige Klassen overfittet und seltene Symbole unzureichend lernt.
     
     \item \textbf{Orientierungsvielfalt:} Obwohl technische Zeichnungen Symbole in verschiedenen Winkeln enthalten, sind bestimmte Orientierungen -- insbesondere $0^\circ$ und $90^\circ$ -- in den realen Plänen überrepräsentiert, während diagonale Ausrichtungen seltener auftreten. Da das Modell in der Praxis Symbole unter beliebigen Rotationswinkeln zuverlässig erkennen muss, ist eine ausreichende Abdeckung aller relevanten Orientierungen im Trainingsdatensatz erforderlich.
 \end{enumerate}
@@ -185,10 +185,10 @@ Die Rotation erfolgte um den Bildmittelpunkt, wobei sowohl der Bildinhalt als au
 \end{pmatrix}
 \end{equation}
 
-entsprechend transformiert wurden. Jeder Eckpunkt $(x_i, y_i)$ einer OBB wird relativ zum Rotationszentrum transformiert, sodass die geometrische Korrektheit der Annotation erhalten bleibt. In Kombination mit der OBB-Architektur wird durch die 10~Rotationswinkel eine vollständige Rotationsinvarianz von $0^\circ$ bis $360^\circ$ sichergestellt (vgl.\ Anforderung \textbf{FA-002}).
+entsprechend transformiert wurden. Jeder Eckpunkt $(x_i, y_i)$ einer OBB wird relativ zum Rotationszentrum transformiert, sodass die geometrische Korrektheit der Annotation erhalten bleibt. In Kombination mit der OBB-Architektur wird durch die 10~Rotationswinkel eine vollständige Rotationsinvarianz von $0^\circ$ bis $360^\circ$ sichergestellt (vgl.\ Anforderung \hyperref[req:FA-002]{FA-002}).
 
 \paragraph{Klassenspezifische Steuerung.}
-Die Anzahl der pro Tile generierten synthetischen Kopien wurde klassenabhängig gesteuert, um eine Zielverteilung von ca.\ 600~Instanzen pro unterrepräsentierter Klasse zu erreichen. Tiles, die ausschließlich bereits häufige Klassen wie \textit{coordinate} enthalten, wurden nur moderat augmentiert, um deren ohnehin hohe Ausgangszahl nicht unverhältnismäßig weiter zu steigern. Bei stark unterrepräsentierten Klassen (z.\,B.\ \textit{weichengruppeende} mit nur 74~Original-Instanzen oder \textit{haltetafel} mit 93~Original-Instanzen) wurden bis zu 10~Rotationsvarianten pro Tile generiert.
+Die Anzahl der pro Tile generierten synthetischen Kopien wurde klassenabhängig gesteuert, um eine Zielverteilung von ca.\ 600~Instanzen pro unterrepräsentierter Klasse zu erreichen. Tiles, die ausschließlich bereits häufige Klassen wie \textit{coordinate} enthalten, wurden nur moderat augmentiert, um deren ohnehin hohe Ausgangszahl nicht unverhältnismäßig weiter zu steigern. Bei stark unterrepräsentierten Klassen (z.\,B.\ \textit{weichengruppenende} mit nur 74~Original-Instanzen oder \textit{haltetafel} mit 93~Original-Instanzen) wurden bis zu 10~Rotationsvarianten pro Tile generiert.
 
 \paragraph{Technische Umsetzung.}
 Die Implementierung nutzt \texttt{cv2.getRotationMatrix2D()} und \\ \texttt{cv2.warpAffine()} aus OpenCV. Die Bildgröße wurde dynamisch angepasst, um ein Abschneiden rotierter Objekte am Rand zu vermeiden. Die augmentierten Tiles wurden als separate Dateien mit eindeutiger Benennung (z.\,B.\ \texttt{*\_a+30.jpg} für eine $+30^\circ$-Rotation) im Datensatz gespeichert, was eine deterministische Reproduzierbarkeit gewährleistet. 
@@ -220,6 +220,8 @@ Die Aufteilung des augmentierten Gesamtdatensatzes erfolgte stratifiziert mit ei
 
 \begin{table}[H]
 \centering
+\caption{Aufteilung des Datensatzes in Trainings- und Validierungssatz}
+\label{tab:dataset_split}
 \begin{tabular}{|l|r|r|r|r|}
 \hline
 \textbf{Teilmenge} & \textbf{Original} & \textbf{Augmentiert} & \textbf{Gesamt Bilder} & \textbf{Instanzen} \\
@@ -230,17 +232,19 @@ Validierung  &  83 & 125 & 208 &  3.076 \\
 \textbf{Gesamt} & \textbf{482} & \textbf{649} & \textbf{1.131} & \textbf{15.582} \\
 \hline
 \end{tabular}
-\caption{Aufteilung des Datensatzes in Trainings- und Validierungssatz}
-\label{tab:dataset_split}
 \end{table}
 
-Der Anteil augmentierter Bilder ist in beiden Teilmengen vergleichbar (56,8\,\% im Trainings- und 60,1\,\% im Validierungssatz), was die stratifizierte Aufteilung bestätigt.
+Der Anteil augmentierter Bilder beträgt 56,8\,\% im Trainings- und 60,1\,\% im Validierungssatz. Die annähernd proportionale Klassenverteilung in Tabelle~\ref{tab:dataset_distribution} bestätigt die stratifizierte Aufteilung.
 
 \paragraph{Klassenverteilung.}
-Tabelle~\ref{tab:dataset_distribution} zeigt die vollständige Verteilung der Annotationen über alle 13~Symbolklassen, aufgeschlüsselt nach Trainings- und Validierungssatz. Die Spalte \textit{Bilder} gibt an, in wie vielen Bildern der jeweiligen Teilmenge mindestens eine Instanz der betreffenden Klasse vorkommt. Da ein einzelnes Bild typischerweise mehrere Symbolklassen gleichzeitig enthält, überlappen sich die Einzelwerte der Spalte \textit{Bilder} und summieren sich nicht zur Gesamtbildzahl.
-
+Tabelle~\ref{tab:dataset_distribution} zeigt die vollständige Verteilung der Annotationen über alle 13~Symbolklassen, aufgeschlüsselt nach Trainings- und Validierungssatz. Die Spalte \textit{Bilder} gibt an, in wie vielen Bildern der jeweiligen Teilmenge mindestens eine Instanz der betreffenden Klasse vorkommt. Da ein einzelnes Bild typischerweise mehrere Symbolklassen gleichzeitig enthält, überlappen sich die Einzelwerte der Spalte \textit{Bilder} und summieren sich nicht zur Gesamtbildzahl. Die Klasse \textit{coordinate} dominiert mit 7.428~Instanzen (47,7\,\% aller Annotationen), da jedes Betriebselement im Gleisplan eine zugehörige Kilometrierungsangabe besitzt -- Signale, Weichen, GKS und Haltepunkte werden jeweils durch mindestens eine Koordinate referenziert. Gefolgt wird sie von \textit{signal} mit 2.348~Instanzen. Am seltensten vertreten sind \textit{weichengruppenende} (92~Instanzen) und \textit{haltetafel} (116~Instanzen), was die in Abschnitt~\ref{subsubsec:augmentation} beschriebene gezielte Augmentierung dieser Klassen motivierte.
 \begin{table}[H]
 \centering
+\caption{Verteilung der Annotationen über alle 13~Klassen im Trainings- und Validierungssatz.
+Die Spalte \textit{Bilder} zeigt die Anzahl der Bilder mit mindestens einer Instanz
+der jeweiligen Klasse; da Bilder mehrere Klassen gleichzeitig enthalten, ist die Summe
+der Einzelwerte größer als die mit~\textsuperscript{*} markierte Gesamtbildzahl.}
+\label{tab:dataset_distribution}
 \footnotesize
 \begin{tabular}{|l|r|r|r|r|r|}
 \hline
@@ -255,23 +259,17 @@ sverbinder       & 611 &   703 & 140 &   150 &   853 \\
 isolierstoß      & 264 &   618 &  67 &   147 &   765 \\
 weichen\_block   & 325 &   514 &  67 &   129 &   643 \\
 haltepunkt       & 376 &   388 &  92 &    92 &   480 \\
-endeweichen      & 170 &   198 &  50 &    50 &   248 \\
+weichenende      & 170 &   198 &  50 &    50 &   248 \\
 prellbock        & 109 &   125 &  31 &    31 &   156 \\
 haltetafel       &  81 &    93 &  23 &    23 &   116 \\
-weichengruppeende&  74 &    74 &  18 &    18 &    92 \\
+weichengruppenende&  74 &    74 &  18 &    18 &    92 \\
 \hline
 \textbf{Gesamt} & \textbf{923\textsuperscript{*}} & \textbf{12.506} & \textbf{208\textsuperscript{*}} & \textbf{3.076} & \textbf{15.582} \\
 \hline
 \end{tabular}
-\caption{Verteilung der Annotationen über alle 13~Klassen im Trainings- und Validierungssatz.
-Die Spalte \textit{Bilder} zeigt die Anzahl der Bilder mit mindestens einer Instanz
-der jeweiligen Klasse; da Bilder mehrere Klassen gleichzeitig enthalten, ist die Summe
-der Einzelwerte größer als die mit~\textsuperscript{*} markierte Gesamtbildzahl.}
-\label{tab:dataset_distribution}
 \end{table}
 
-Die Daten wurden in eine standardisierte COCO-Verzeichnisstruktur (Abbildung~\ref{fig:COCODatenset}) überführt, welche die Organisation von Trainings- und Validierungsdaten sowie die zugehörigen Annotationen in separaten Verzeichnissen vorsieht.
-
+Die Daten wurden in eine standardisierte COCO-Verzeichnisstruktur (Abbildung~\ref{fig:COCODatenset}) überführt, welche die Organisation von Trainings- und Validierungsdaten sowie die zugehörigen Annotationen in separaten Verzeichnissen vorsieht. Diese Struktur trennt Bilder und Labels in dedizierte Unterverzeichnisse (\texttt{images/} und \texttt{labels/}), wobei jeweils eine weitere Unterteilung in \texttt{train/} und \texttt{val/} erfolgt. Jede Bilddatei besitzt eine korrespondierende Textdatei im Labels-Verzeichnis, die die OBB-Annotationen im YOLO-Format enthält (Klassen-ID, normalisierte Polygon-Koordinaten). Diese standardisierte Struktur ermöglicht die direkte Verwendung des Datensatzes mit der Ultralytics-Trainings-API ohne zusätzliche Konvertierungsschritte.
 \begin{figure}[H]
     \centering
     \includegraphics[width=5cm]{images/Kapitel6/cocodatasetconfig.png} 
@@ -336,6 +334,8 @@ Tabelle~\ref{tab:training_hyperparameters} fasst die verwendeten Hyperparameter 
 
 \begin{table}[H]
 \centering
+\caption{Hyperparameter des YOLOv8l-OBB-Trainings}
+\label{tab:training_hyperparameters}
 \begin{tabular}{|l|l|l|}
 \hline
 \textbf{Parameter} & \textbf{Wert} & \textbf{Begründung} \\
@@ -353,8 +353,6 @@ Momentum & 0,937 & Standard-Konfiguration \\
 Weight Decay & 0,0005 & Regularisierung \\
 \hline
 \end{tabular}
-\caption{Hyperparameter des YOLOv8l-OBB-Trainings}
-\label{tab:training_hyperparameters}
 \end{table}
 
 Die \textbf{Eingabegröße} von $1024 \times 1024$~Pixel weicht vom YOLOv8-Standard (640~Pixel) ab und wurde bewusst gewählt, um der Kleinteiligkeit der Gleisplansymbole gerecht zu werden. Bei einer Standard-Eingabegröße von 640~Pixel würden die bereits kleinen Symbole (vgl.\ Größenverteilung in Abbildung~\ref{fig:labels_distribution}) weiter verkleinert und könnten unterhalb der effektiven Erkennungsgrenze des Feature-Extractors fallen.
@@ -386,9 +384,9 @@ Die Gesamtdauer des Trainings über 120~Epochen betrug \textbf{ca.\ 6~Stunden}. 
 Abbildung~\ref{fig:training_curves} zeigt den Verlauf aller drei Verlustkomponenten sowie der Evaluationsmetriken über die 120~Trainingsepoch\-en. Der Trainingsverlauf lässt sich in drei charakteristische Phasen unterteilen:
 
 \begin{enumerate}
-    \item \textbf{Warmup-Phase (Epochen 1--3):} Die Lernrate wird linear auf den Initialwert hochgefahren. Alle Verlustkomponenten fallen steil ab, was die schnelle Adaption der vortrainierten COCO-Gewichte an die Gleisplan-Domäne zeigt. Bereits nach Epoche~3 erreicht das Modell eine mAP@0.5 von 92,5\,\%.
+    \item \textbf{Warmup-Phase (Epochen 1--3):} Die Lernrate wird linear auf den Initialwert hochgefahren. Alle Verlustkomponenten fallen steil ab, was die schnelle Adaption der vortrainierten COCO-Gewichte an die Gleisplan-Domäne zeigt. Bereits nach Epoche~3 erreicht das Modell eine mAP@0,5 von 92,5\,\%.
     
-    \item \textbf{Primäre Lernphase (Epochen 4--60):} Die Verluste sinken stetig, während Precision, Recall und mAP kontinuierlich ansteigen. Die mAP@0.5 steigt von 92,5\,\% auf ca.\ 98,0\,\%, die mAP@0.5:0.95 von 79,1\,\% auf ca.\ 92,0\,\%. In dieser Phase lernt das Modell die domänenspezifischen Merkmale der 13~Symbolklassen.
+    \item \textbf{Primäre Lernphase (Epochen 4--60):} Die Verluste sinken stetig, während Precision, Recall und mAP kontinuierlich ansteigen. Die mAP@0,5 steigt von 92,5\,\% auf ca.\ 98,0\,\%, die mAP@0,5:0,95 von 79,1\,\% auf ca.\ 92,0\,\%. In dieser Phase lernt das Modell die domänenspezifischen Merkmale der 13~Symbolklassen.
     
     \item \textbf{Feintuning-Phase (Epochen 61--120):} Die Validierungsmetriken stabilisieren sich auf hohem Niveau mit geringfügigen Schwankungen. Die Trainingsverluste sinken weiter -- insbesondere zeigt sich bei Epoche~$\sim$110 ein markanter Abfall (\textit{box\_loss}: 0,26$\to$0,21; \textit{cls\_loss}: 0,21$\to$0,17), der auf die finale Phase des Cosine-Annealing-Schedules zurückzuführen ist, in der die stark reduzierte Lernrate eine feinere Gewichtsoptimierung ermöglicht.
 \end{enumerate}
@@ -405,6 +403,8 @@ Tabelle~\ref{tab:training_results} fasst die finalen Detektionsmetriken des trai
 
 \begin{table}[H]
 \centering
+\caption{Aggregierte Detektionsmetriken auf dem Validierungsdatensatz (208~Bilder, instanzgewichteter Durchschnitt)}
+\label{tab:training_results}
 \begin{tabular}{|l|r|}
 \hline
 \textbf{Metrik} & \textbf{Wert} \\
@@ -412,38 +412,38 @@ Tabelle~\ref{tab:training_results} fasst die finalen Detektionsmetriken des trai
 Precision (Durchschnitt, alle Klassen)  & 97,4\,\% \\
 Recall (Durchschnitt, alle Klassen)     & 95,6\,\% \\
 F1-Score (bei Konfidenzschwelle 0,674)  & 96,0\,\% \\
-mAP@0.5 (alle Klassen)                 & 98,4\,\% \\
-mAP@0.5:0.95 (alle Klassen)            & 92,7\,\% \\
+mAP@0,5 (alle Klassen)                 & 98,4\,\% \\
+mAP@0,5:0,95 (alle Klassen)            & 92,7\,\% \\
 \hline
 \end{tabular}
-\caption{Aggregierte Detektionsmetriken auf dem Validierungsdatensatz (208~Bilder)}
-\label{tab:training_results}
 \end{table}
 
-Die berichteten Metriken beziehen sich auf das automatisch gesicherte Modell mit den besten Validierungsergebnissen (Epoche~103 von~120), welches als \texttt{best.pt} exportiert und für die produktive Inferenz verwendet wird.Die mAP@0.5 von \textbf{98,4\,\%} zeigt, dass das Modell bei einem IoU-Schwellenwert von 50\,\% nahezu alle Symbole korrekt lokalisiert und klassifiziert. Die strengere Metrik mAP@0.5:0.95, die über IoU-Schwellenwerte von 50\,\% bis 95\,\% mittelt, erreicht \textbf{92,7\,\%} und bestätigt eine hohe Lokalisierungspräzision auch bei strengen Überlappungsanforderungen. Der optimale F1-Score von 0,96 wird bei einer Konfidenzschwelle von 0,674 erreicht, was darauf hindeutet, dass das Modell überwiegend hochkonfidente Vorhersagen trifft.
+Die berichteten Metriken beziehen sich auf das automatisch gesicherte Modell mit den besten Validierungsergebnissen (Epoche~103 von~120), welches als \texttt{best.pt} exportiert und für die produktive Inferenz verwendet wird. Die mAP@0,5 von \textbf{98,4\,\%} zeigt, dass das Modell bei einem IoU-Schwellenwert von 50\,\% nahezu alle Symbole korrekt lokalisiert und klassifiziert. Die strengere Metrik mAP@0,5:0,95, die über IoU-Schwellenwerte von 50\,\% bis 95\,\% mittelt, erreicht \textbf{92,7\,\%} und bestätigt eine hohe Lokalisierungspräzision auch bei strengen Überlappungsanforderungen. Der optimale F1-Score von 0,96 wird bei einer Konfidenzschwelle von 0,674 erreicht, was darauf hindeutet, dass das Modell überwiegend hochkonfidente Vorhersagen trifft.
 
 \paragraph{Klassenspezifische Leistung.}
-Abbildung~\ref{fig:pr_curve} zeigt die Precision-Recall-Kurven für alle 13~Symbolklassen. Die klassenspezifischen AP@0.5-Werte sind in Tabelle~\ref{tab:per_class_ap} zusammengestellt.
+Abbildung~\ref{fig:pr_curve} zeigt die Precision-Recall-Kurven für alle 13~Symbolklassen. Die klassenspezifischen AP@0,5-Werte sind in Tabelle~\ref{tab:per_class_ap} zusammengestellt.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.85\textwidth]{images/Kapitel6/BoxPR_curve.png}
     \caption{Precision-Recall-Kurven für alle 13~Symbolklassen auf dem Validierungsdatensatz. 
-    Die Werte in der Legende geben die jeweilige AP@0.5 an.}
+    Die Werte in der Legende geben die jeweilige AP@0,5 an.}
     \label{fig:pr_curve}
 \end{figure}
 
 \begin{table}[H]
 \centering
+\caption{Klassenspezifische AP@0,5 auf dem Validierungsdatensatz, sortiert nach absteigender AP@0,5}
+\label{tab:per_class_ap}
 \begin{tabular}{|l|r|r|r|}
 \hline
-\textbf{Klasse} & \textbf{Val Inst.} & \textbf{AP@0.5} & \textbf{Bewertung} \\
+\textbf{Klasse} & \textbf{Val Inst.} & \textbf{AP@0,5} & \textbf{Bewertung} \\
 \hline
 gm\_block        &   201 & 99,5\,\% & Exzellent \\
 sverbinder       &   150 & 99,5\,\% & Exzellent \\
 prellbock        &    31 & 99,5\,\% & Exzellent \\
-endeweichen      &    50 & 99,5\,\% & Exzellent \\
-weichengruppeende&    18 & 99,0\,\% & Exzellent \\
+weichenende      &    50 & 99,5\,\% & Exzellent \\
+weichengruppenende&    18 & 99,0\,\% & Exzellent \\
 coordinate       & 1.483 & 98,7\,\% & Exzellent \\
 haltepunkt       &    92 & 98,7\,\% & Exzellent \\
 haltetafel       &    23 & 98,4\,\% & Exzellent \\
@@ -456,11 +456,9 @@ gks\_gesteuert   &   157 & 95,1\,\% & Gut \\
 \textbf{$\varnothing$ Alle Klassen} & \textbf{3.076} & \textbf{98,4\,\%} & \\
 \hline
 \end{tabular}
-\caption{Klassenspezifische AP@0.5 auf dem Validierungsdatensatz, sortiert nach absteigender AP@0.5}
-\label{tab:per_class_ap}
 \end{table}
 
-Bemerkenswert ist, dass \textbf{alle 13~Klassen eine AP@0.5 über 95\,\%} erreichen und die Streuung mit 95,1\,\% bis 99,5\,\% sehr gering ist. Dies bestätigt, dass die in Abschnitt~\ref{subsubsec:augmentation} beschriebene Augmentationsstrategie das Klassenungleichgewicht erfolgreich adressiert hat: Auch Klassen mit wenigen Validierungsinstanzen (z.\,B.\ \textit{weichengruppeende} mit nur 18~Instanzen) erreichen eine AP@0.5 von 99,0\,\%.
+Bemerkenswert ist, dass \textbf{alle 13~Klassen eine AP@0,5 über 95\,\%} erreichen und die Streuung mit 95,1\,\% bis 99,5\,\% sehr gering ist. Dies bestätigt, dass die in Abschnitt~\ref{subsubsec:augmentation} beschriebene Augmentationsstrategie das Klassenungleichgewicht erfolgreich adressiert hat: Auch Klassen mit wenigen Validierungsinstanzen (z.\,B.\ \textit{weichengruppenende} mit nur 18~Instanzen) erreichen eine AP@0,5 von 99,0\,\%.
 
 \paragraph{Fehleranalyse.}
 Abbildung~\ref{fig:confusion_matrix} zeigt die normalisierte Konfusionsmatrix auf dem Validierungsdatensatz. Die Diagonale zeigt durchgehend hohe Werte ($\geq 0{,}93$), was eine zuverlässige Klassifikation über alle Klassen bestätigt. Die vereinzelten Fehlklassifikationen betreffen primär die visuell ähnlichen GKS-Varianten sowie kleine Symbole wie Isolierstöße an Tile-Grenzen. Eine detaillierte klassenspezifische Analyse der Detektionsleistung erfolgt in Kapitel~\ref{chap:evaluation}.
@@ -472,7 +470,7 @@ Abbildung~\ref{fig:confusion_matrix} zeigt die normalisierte Konfusionsmatrix au
     Zeilen repräsentieren die vorhergesagten Klassen, Spalten die tatsächlichen Klassen.}
     \label{fig:confusion_matrix}
 \end{figure}
-
+\newpage
 \paragraph{Konfidenzkalibrierung.}
 Abbildung~\ref{fig:f1_curve} zeigt die F1-Score-Konfidenz-Kurve für alle 13~Klassen.
 
@@ -570,7 +568,7 @@ Nach Abschluss des Trainings wurde das Modell mit den optimalen Gewichten (\text
         \textbf{Parameter:}\\
         $\bullet$ Stride: 1792 px\\
         $\bullet$ Halo: 128 px\\
-        $\bullet$ Overlap: $\sim$12.5\%
+        $\bullet$ Overlap: $\sim$12,5\,\%
     };
     \draw[dashed, gray] (tile) -- (tilingparams);
 
@@ -585,7 +583,7 @@ Nach Abschluss des Trainings wurde das Modell mit den optimalen Gewichten (\text
 Der erste Schritt der Inferenz-Pipeline besteht in der Überführung der 
 Eingabedaten in ein einheitliches Rasterformat. Das System unterscheidet 
 dabei zwischen zwei Verarbeitungspfaden entsprechend dem Eingabeformat 
-(Anforderung \textbf{NFA-009}).
+(Anforderung \hyperref[req:NFA-009]{NFA-009}).
 
 \textbf{PDF-Verarbeitung:}
 
@@ -793,10 +791,10 @@ Die resultierenden Bounding-Box-Koordinaten werden anschließend mit dem Faktor 
     \label{fig:grid_overlap_square}
 \end{figure}
 
-Die Überlappung zwischen benachbarten Tiles beträgt $O = 12.5\%$, was einer absoluten Überlappung von $256$ Pixeln bei einer Tile-Größe von $2048$ Pixeln entspricht. Der Stride (Schrittweite) zwischen Tiles ergibt sich zu:
+Die Überlappung zwischen benachbarten Tiles beträgt $O = 12{,}5\,\%$, was einer absoluten Überlappung von $256$ Pixeln bei einer Tile-Größe von $2048$ Pixeln entspricht. Der Stride (Schrittweite) zwischen Tiles ergibt sich zu:
 
 \begin{equation}
-S = T \cdot (1 - O) = 2048 \cdot 0.875 = 1792 \text{ Pixel}
+S = T \cdot (1 - O) = 2048 \cdot 0{,}875 = 1792 \text{ Pixel}
 \end{equation}
 Abbildung \ref{fig:grid_overlap_square} illustriert diese Strategie, bei der durch die identische Schrittweite in X- und Y-Richtung eine gleichmäßige Abdeckung mit definiertem Überlappungsbereich gewährleistet wird.
 Die Überlappung ist essenziell, um zu verhindern, dass Symbole, die nahe an Tile-Grenzen liegen, durch die Segmentierung geteilt werden und somit nicht oder nur unvollständig detektiert werden können. Ein Symbol, das im Überlappungsbereich liegt, wird von mindestens zwei benachbarten Tiles erfasst und hat somit eine hohe Chance, in mindestens einem der Tiles vollständig sichtbar zu sein.
@@ -908,6 +906,8 @@ Für jede Orientierung werden unterschiedliche Expansionsfaktoren $(e_x, e_y)$ u
 
 \begin{table}[H]
 \centering
+\caption{Winkeladaptive Bounding-Box-Parameter}
+\label{tab:angle_adaptive_params}
 \begin{tabular}{|l|c|c|c|}
 \hline
 \textbf{Orientierung} & \textbf{$e_x$} & \textbf{$e_y$} & \textbf{$p$ [Pixel]} \\
@@ -917,8 +917,6 @@ Vertikal & 1.5 & 2.5 & 16 \\
 Angular & 2.0 & 2.0 & 24 \\
 \hline
 \end{tabular}
-\caption{Winkeladaptive Bounding-Box-Parameter}
-\label{tab:angle_adaptive_params}
 \end{table}
 
 Die effektiven Dimensionen der Bounding Box werden dann berechnet als:
@@ -1035,6 +1033,8 @@ Die NMS-Schwellenwerte sind klassenspezifisch konfiguriert:
 
 \begin{table}[H]
 \centering
+\caption{Klassenspezifische NMS-Schwellenwerte}
+\label{tab:nms_thresholds}
 \begin{tabular}{|l|r|p{7cm}|}
 \hline
 \textbf{Klasse} & \textbf{$\tau_{\text{NMS}}$} & \textbf{Begründung} \\
@@ -1045,8 +1045,6 @@ weichen\_block & 0.6 & Lockerer Schwellenwert für große Symbole mit natürlich
 default & 0.5 & Fallback für nicht explizit konfigurierte Klassen \\
 \hline
 \end{tabular}
-\caption{Klassenspezifische NMS-Schwellenwerte}
-\label{tab:nms_thresholds}
 \end{table}
 
 Zusätzlich zur NMS werden Detektionen unterhalb klassenspezifischer Konfidenzschwellen verworfen. Diese Schwellen wurden empirisch auf dem Validierungssatz optimiert, um ein Gleichgewicht zwischen Precision und Recall zu erreichen.
@@ -1076,7 +1074,7 @@ Die Texterkennung aus den detektierten Symbolen stellt eine zentrale Herausforde
 da die Textregionen beliebig im Gleisplan rotiert sein können. Dieses Kapitel beschreibt 
 die implementierte OCR-Pipeline, die durch Multi-Engine-Kaskadierung, rotationsadaptive 
 Strategien und klassenspezifische Bildvorverarbeitung eine robuste Texterkennung ermöglicht 
-und damit die Anforderungen \textbf{FA-004} (OCR-Genauigkeit) und \textbf{FA-005} 
+und damit die Anforderungen \hyperref[req:FA-004]{FA-004} (OCR-Genauigkeit) und \hyperref[req:FA-005]{FA-005}
 (OCR-Robustheit) adressiert.
 
 \subsection{Multi-Engine Kaskadierung}
@@ -1302,7 +1300,7 @@ Abbildung~\ref{fig:angular_ocr_example} demonstriert die erfolgreiche Verarbeitu
 
 
 
-Das System erkannte den Koordinatentext \texttt{0.0629} korrekt trotz der nicht-kardinalen Orientierung von $\theta = -37{,}5^\circ$. Die Perspektiventransformation richtete die gedrehte Oriented Bounding Box horizontal aus, wodurch PaddleOCR mit einer Konfidenz von 0.95 den Text extrahieren konnte. Die erfolgreiche Verknüpfung mit dem benachbarten Symbol (Gl.112) validiert sowohl die OCR-Robustheit (FA-005) als auch die Rotationsinvarianz (FA-002) für beliebige Winkel außerhalb der kardinalen Orientierungen.
+Das System erkannte den Koordinatentext \texttt{0.0629} korrekt trotz der nicht-kardinalen Orientierung von $\theta = -37{,}5^\circ$. Die Perspektiventransformation richtete die gedrehte Oriented Bounding Box horizontal aus, wodurch PaddleOCR mit einer Konfidenz von 0.95 den Text extrahieren konnte. Die erfolgreiche Verknüpfung mit dem benachbarten Symbol (Gl.112) validiert sowohl die OCR-Robustheit (\hyperref[req:FA-005]{FA-005}) als auch die Rotationsinvarianz (\hyperref[req:FA-002]{FA-002}) für beliebige Winkel außerhalb der kardinalen Orientierungen.
 
 \begin{figure}[H]
 \centering
@@ -1330,6 +1328,7 @@ Die folgende Tabelle zeigt die optimierten Faktoren für jede Symbolklasse:
 
 \begin{table}[H]
 \centering
+\caption{Klassenspezifische Padding-Faktoren und deren Begründung}
 \begin{tabular}{|l|c|c|p{5cm}|}
 \hline
 \textbf{Klasse} & $\boldsymbol{\alpha}$ & $\boldsymbol{\beta}$ & \textbf{Begründung} \\
@@ -1340,7 +1339,6 @@ Weiche & 0.1 & 0.1 & Text direkt am Symbol \\
 Koordinate & 0.25 & 0.25 & Längere Zahlenfolgen, mehr Platz nötig \\
 \hline
 \end{tabular}
-\caption{Klassenspezifische Padding-Faktoren und deren Begründung}
 \end{table}
 
 Für Signale wurde beispielsweise ein Faktor von $\alpha = 0.2$ (20\% der Breite) und $\beta = 0.3$ (30\% der Höhe) als optimal ermittelt. Das größere vertikale Padding berücksichtigt, dass Signal-Beschriftungen typischerweise oberhalb des Symbols positioniert sind. Bei einer Bounding Box von $100 \times 50$ Pixeln würde dies ein Padding von 20 Pixeln horizontal und 15 Pixeln vertikal bedeuten.
@@ -1484,7 +1482,7 @@ Die Länge von 25 Pixeln für die strukturierenden Elemente wurde so gewählt, d
 
 \subsubsection{CLAHE (Contrast Limited Adaptive Histogram Equalization)}
 
-CLAHE ist ein adaptiver Kontrast-Verbesserungsalgorithmus, der besonders bei Bildern mit ungleichmäßiger Beleuchtung effektiv ist. Viele Gleispläne sind alte Scans oder Fotografien mit Schatten, Verfärbungen oder ungleichmäßiger Belichtung. In solchen Fällen kann einfache Histogramm-Entzerrung zu übermäßigem Rauschen führen.
+CLAHE ist ein adaptiver Kontrast-Verbesserungsalgorithmus, der besonders bei Bildern mit ungleichmäßiger Beleuchtung effektiv ist. Viele Gleispläne sind alte Scans oder Fotografien mit Schatten, Verfärbungen oder ungleichmäßiger Belichtung. In solchen Fällen kann einfache Histogrammentzerrung zu übermäßigem Rauschen führen.
 
 CLAHE arbeitet anders als globale Histogrammentzerrung: Das Bild wird in ein Raster von 8×8 Kacheln (Tiles) aufgeteilt. Für jede Kachel wird separat eine Histogrammentzerrung durchgeführt, die dunkle Bereiche aufhellt und helle Bereiche abdunkelt. Der entscheidende Unterschied: Für jede Kachel wird der Kontrast \textit{lokal} optimiert, nicht global.
 
@@ -1508,6 +1506,7 @@ Nach der OCR-Verarbeitung durchläuft jedes Ergebnis mehrere Validierungsschritt
 Die in Tabelle~\ref{tab:regex_patterns} (Kapitel~\ref{chap:theoretischeundtechnischegrundlagen}) eingeführten domänenspezifischen Validierungsmuster werden wie folgt implementiert:
 \begin{table}[H]
 \centering
+\caption{Validierungs-Patterns pro Symbolklasse mit Klassifizierung}
 \small
 \begin{tabular}{|l|p{3.7cm}|p{4.5cm}|c|}
 \hline
@@ -1521,7 +1520,6 @@ Haltepunkt & \verb|^[A-Z]{2,4}$| & AB, WXYZ  \\
 Weiche & \verb|^W\d{2,4}[a-z]?$| & W12, W234  \\
 \hline
 \end{tabular}
-\caption{Validierungs-Patterns pro Symbolklasse mit Klassifizierung}
 \end{table}
 
 Für Signale bedeutet das Pattern \verb|^[A-Z]\d{1,3}[a-z]?$| konkret:
@@ -1635,8 +1633,8 @@ Nach der erfolgreichen Detektion von Symbolen durch YOLOv8-OBB und der Extraktio
 Textinhalten mittels der orientierungsadaptiven OCR-Pipeline besteht die zentrale 
 Herausforderung in der korrekten Zuordnung der extrahierten Texte zu ihren zugehörigen 
 Symbolen. Diese Verknüpfung ist essenziell für die Generierung semantisch korrekter 
-Datensätze aus den Gleisplänen und adressiert die Anforderungen \textbf{FA-006} 
-(Fahrtrichtungsdetektion) und \textbf{FA-007} (Symbol-Koordinaten-Verknüpfung).
+Datensätze aus den Gleisplänen und adressiert die Anforderungen \hyperref[req:FA-006]{FA-006}
+(Fahrtrichtungsdetektion) und \hyperref[req:FA-007]{FA-007} (Symbol-Koordinaten-Verknüpfung).
 
 Die naive Anwendung rein distanzbasierter Proximity-Algorithmen -- bei denen einfach der nächstgelegene Text einem Symbol zugeordnet wird -- führt bei rotierten Symbolen zu systematischen Fehlzuordnungen. Ein Signal, das beispielsweise um $45^\circ$ gedreht ist, besitzt eine eigene lokale Orientierung, und der zugehörige Text befindet sich typischerweise \enquote{unterhalb} des Signals in dessen lokaler Ausrichtung, nicht notwendigerweise in globalen Bildkoordinaten. Die Implementierung muss daher rotationsinvariante Algorithmen einsetzen, die geometrische Transformationen nutzen, um die semantische räumliche Beziehung zwischen Symbolen und Texten korrekt zu erfassen.
 
@@ -1784,21 +1782,21 @@ Für jeden Textkandidaten im Umkreis eines Symbols wird diese Transformation dur
 
 Im Gegensatz zu statischen Suchradien verwendet die Implementierung einen \textit{dimensionsadaptiven} Ansatz, bei dem die Suchbereiche dynamisch aus den Abmessungen der detektierten Bounding Boxes berechnet werden. Dies gewährleistet Robustheit gegenüber unterschiedlichen Symbolgrößen und Planauflösungen.
 
-Für die Verknüpfung eines Ankersymbols (z.B. Signal, GKS) mit seiner zugehörigen Koordinatenbeschriftung werden die maximalen Suchentfernungen wie folgt berechnet:
+Für die Verknüpfung eines Symbols (z.B. Signal, GKS) mit seiner zugehörigen Koordinatenbeschriftung werden die maximalen Suchentfernungen wie folgt berechnet:
 
 \textbf{Vertikaler Suchbereich:}
 \begin{equation}
-dy_{\text{max}} = 1{,}6 \cdot h_{\text{anchor}} \cdot k_{dy}
+dy_{\text{max}} = 1{,}6 \cdot h_{\text{symbol}} \cdot k_{dy}
 \label{eq:dy_max}
 \end{equation}
 
 \textbf{Horizontaler Suchbereich:}
 \begin{equation}
-dx_{\text{max}} = \max\left( k_{dx} \cdot 0{,}6 \cdot \max(w_{\text{anchor}}, w_{\text{coord}}), \; 30 \right)
+dx_{\text{max}} = \max\left( k_{dx} \cdot 0{,}6 \cdot \max(w_{\text{symbol}}, w_{\text{coord}}), \; 30 \right)
 \label{eq:dx_max}
 \end{equation}
 
-wobei $h_{\text{anchor}}$ die Höhe und $w_{\text{anchor}}$ die Breite der Anker-Bounding-Box bezeichnen, $w_{\text{coord}}$ die Breite der Koordinaten-Box, und $k_{dy}$, $k_{dx}$ klassenspezifische Multiplikatoren sind. Der Mindestwert von 30 Pixeln für $dx_{\text{max}}$ stellt sicher, dass auch bei sehr schmalen Symbolen ein ausreichender horizontaler Suchbereich gewährleistet ist.
+wobei $h_{\text{symbol}}$ die Höhe und $w_{\text{symbol}}$ die Breite der Symbol-Bounding-Box bezeichnen, $w_{\text{coord}}$ die Breite der Koordinaten-Box, und $k_{dy}$, $k_{dx}$ klassenspezifische Multiplikatoren sind. Der Mindestwert von 30 Pixeln für $dx_{\text{max}}$ stellt sicher, dass auch bei sehr schmalen Symbolen ein ausreichender horizontaler Suchbereich gewährleistet ist.
 
 \subsubsection{Klassenspezifische Multiplikatoren}
 
@@ -1806,37 +1804,39 @@ Die Multiplikatoren wurden empirisch auf Basis der typischen Layoutkonventionen 
 
 \begin{table}[H]
 \centering
-\begin{tabular}{|l|c|c|r|r|c|}
-\hline
-\textbf{Klasse} & $\boldsymbol{k_{dy}}$ & $\boldsymbol{k_{dx}}$ & \textbf{$dy_{\text{max}}$} & \textbf{$dx_{\text{max}}$} & \textbf{Rolle} \\
-\hline
-coordinate & --- & --- & \multicolumn{2}{c|}{(Verknüpfungsziel)} & Koordinate \\
-\hline
-signal & 1.0 & 1.0 & 80--130 px & 30--50 px & Anker \\
-gks\_festkodiert & 1.0 & 1.0 & 80--130 px & 30--50 px & Anker \\
-gks\_gesteuert & 1.0 & 1.0 & 80--130 px & 30--50 px & Anker \\
-gm\_block & 1.0 & 1.0 & 80--130 px & 30--50 px & Anker \\
-haltepunkt & 1.0 & 1.0 & 80--130 px & 30--50 px & Anker \\
-sverbinder & 1.0 & 1.0 & 80--130 px & 30--50 px & Anker \\
-isolierstoß & 1.0 & 1.0 & 80--130 px & 30--50 px & Anker \\
-haltetafel & 1.0 & 2.0 & 80--130 px & 60--100 px & Anker \\
-prellbock & 1.0 & 2.0 & 80--130 px & 60--100 px & Anker \\
-weichenende & 1.0 & 3.0 & 80--130 px & 90--150 px & Anker \\
-weichengruppenende & 1.0 & 4.0 & 80--130 px & 120--200 px & Anker \\
-\hline
-\end{tabular}
 \caption{Klassenspezifische Linking-Parameter. Die Wertebereiche für $dy_{\text{max}}$ und $dx_{\text{max}}$ basieren auf typischen Symbolgrößen von 50--80 Pixeln bei 500 DPI.}
 \label{tab:linking_multipliers}
+\begin{tabular}{|l|c|c|r|r|}
+\hline
+\textbf{Klasse} & $\boldsymbol{k_{dy}}$ & $\boldsymbol{k_{dx}}$ & \textbf{$dy_{\text{max}}$} & \textbf{$dx_{\text{max}}$} \\
+\hline
+coordinate & --- & --- & \multicolumn{2}{c|}{(Verknüpfungsziel)} \\
+\hline
+signal & 1.0 & 1.0 & 80--130 px & 30--50 px \\
+gks\_festkodiert & 1.0 & 1.0 & 80--130 px & 30--50 px \\
+gks\_gesteuert & 1.0 & 1.0 & 80--130 px & 30--50 px \\
+gm\_block & 1.0 & 1.0 & 80--130 px & 30--50 px \\
+haltepunkt & 1.0 & 1.0 & 80--130 px & 30--50 px \\
+sverbinder & 1.0 & 1.0 & 80--130 px & 30--50 px \\
+isolierstoß & 1.0 & 1.0 & 80--130 px & 30--50 px \\
+haltetafel & 1.0 & 2.0 & 80--130 px & 60--100 px \\
+prellbock & 1.0 & 2.0 & 80--130 px & 60--100 px \\
+weichenende & 1.0 & 3.0 & 80--130 px & 90--150 px \\
+weichengruppenende & 1.0 & 4.0 & 80--130 px & 120--200 px \\
+\hline
+\end{tabular}
 \end{table}
 
 Die erhöhten horizontalen Multiplikatoren ($k_{dx} > 1$) für Klassen wie \textit{haltetafel}, \textit{prellbock} und \textit{weichengruppenende} reflektieren deren typische Layoutcharakteristik: Diese Symbole haben häufig horizontal versetzte Beschriftungen, während andere Klassen überwiegend vertikal ausgerichtete Text-Symbol-Relationen aufweisen.
 
 \subsubsection{Spezialfälle mit festen Suchparametern}
 
-Für bestimmte komplexe Verknüpfungsaufgaben, die über die einfache Anker-Koordinaten-Zuordnung hinausgehen, werden feste Pixelwerte verwendet. Diese wurden empirisch auf Basis der bei 500 DPI typischen physikalischen Abstände kalibriert.
+Für bestimmte komplexe Verknüpfungsaufgaben, die über die einfache Symbol-Koordinaten-Zuordnung hinausgehen, werden feste Pixelwerte verwendet. Diese wurden empirisch auf Basis der bei 500 DPI typischen physikalischen Abstände kalibriert.
 
 \begin{table}[H]
 \centering
+\caption{Feste Suchparameter für Spezialfälle (kalibriert für 500 DPI)}
+\label{tab:linking_special_params}
 \small
 \begin{tabular}{|l|r|r|p{5.5cm}|}
 \hline
@@ -1849,27 +1849,36 @@ GKS-Suche & $d_{\text{max}}$ & 250 px & Max. euklidische Distanz zum Signal \\
 & $dy_{\text{max}}$ & 200 px & Max. vertikale Separation \\
 & $dx_{\text{tol}}$ & $\pm$120 px & Horizontale Toleranz \\
 \hline
-\multicolumn{4}{|c|}{\textit{Haltetafel-GKS-Fallback}} \\
+\multicolumn{4}{|c|}{\textit{Fahrtrichtung-Fallback (TIER 2: Gleistopologie-Fallback)}} \\
 \hline
-GKS-Proximity & $d_{\text{max}}$ & 250 px & Euklidische Distanz zur GKS \\
-& $dy_{\text{tol}}$ & 100 px & Max. vertikale Separation \\
-& $dx_{\text{tol}}$ & 300 px & Max. horizontale Separation \\
+Track Ray-Casting & $d_{\text{ray}}$ & 1500 px & Sicherheitslimit für Ray-Casting \\
 \hline
-\multicolumn{4}{|c|}{\textit{Fallback-Mechanismen}} \\
+\multicolumn{4}{|c|}{\textit{Fahrtrichtung-Fallback (TIER 3: Relaxierte Spaltensuche)}} \\
+\hline
+GKS-Relaxed & $dx_{\text{tol}}$ & 200 px & Erweiterte horizontale Toleranz \\
+& $dy_{\text{min}}$ & 30 px & Min. vertikale Separation \\
+& $dy_{\text{max}}$ & 600 px & Max. vertikale Separation \\
+\hline
+\multicolumn{4}{|c|}{\textit{Fahrtrichtung-Fallback (TIER 4: Euklidische Suche)}} \\
+\hline
+GKS-Nearest & $d_{\text{max}}$ & 800 px & Euklidische Distanz \\
+& $dy_{\text{min}}$ & 30 px & Min. vertikale Separation \\
+\hline
+\multicolumn{4}{|c|}{\textit{Koordinatenzuordnung}} \\
 \hline
 Isolierstoß & $r_{\text{max}}$ & 300 px & $360^\circ$-Suchradius bei fehlender Zuordnung \\
-Gleismittellinie & $d_{\text{ray}}$ & 1500 px & Sicherheitslimit für Ray-Casting \\
 \hline
 \end{tabular}
-\caption{Feste Suchparameter für Spezialfälle (kalibriert für 500 DPI)}
-\label{tab:linking_special_params}
 \end{table}
 
 \textbf{Physikalische Interpretation:} Bei einer Renderauflösung von 500 DPI entsprechen die Parameter folgenden physikalischen Abständen:
 \begin{itemize}
     \item 250 px $\approx$ 12,7 mm (typischer Abstand zwischen Signal und zugehöriger GKS)
     \item 120 px $\approx$ 6 mm (horizontale Toleranz für leicht versetzte Symbole)
-    \item 300 px $\approx$ 15 mm (erweiterter Fallback-Suchbereich)
+    \item 600 px $\approx$ 30,5 mm (erweiterter vertikaler Suchbereich TIER 3)
+    \item 800 px $\approx$ 40,6 mm (maximaler Fallback-Suchradius TIER 4)
+    \item 1500 px $\approx$ 76,2 mm (Sicherheitslimit für Gleistopologie-Ray-Casting TIER 2)
+    \item 300 px $\approx$ 15 mm (Suchradius für Koordinatenzuordnung bei Isolierstoß)
 \end{itemize}
 
 \subsubsection{Richtungsbasierte Filterung}
@@ -1885,13 +1894,13 @@ Neben der Distanzprüfung wird für jede Symbolklasse eine erwartete Richtung de
 Für den Spezialfall der \textit{tight}-Verknüpfung (bei eindeutiger räumlicher Nähe) wird der horizontale Suchbereich reduziert:
 
 \begin{equation}
-dx_{\text{max,tight}} = k_{dx} \cdot 0{,}45 \cdot \max(w_{\text{anchor}}, w_{\text{coord}})
+dx_{\text{max,tight}} = k_{dx} \cdot 0{,}45 \cdot \max(w_{\text{symbol}}, w_{\text{coord}})
 \end{equation}
 
 Zusätzlich wird bei aktivierter Linkssuche (\texttt{search\_left=True}) der horizontale Suchbereich asymmetrisch erweitert:
 
 \begin{equation}
-dx_{\text{max,left}} = 1{,}3 \cdot dx_{\text{max}} \quad \text{(falls Koordinate links vom Anker)}
+dx_{\text{max,left}} = 1{,}3 \cdot dx_{\text{max}} \quad \text{(falls Koordinate links vom Symbol)}
 \end{equation}
 
 Diese Asymmetrie berücksichtigt, dass in einigen Gleisplänen Koordinatenangaben bevorzugt links von Symbolen platziert werden.
@@ -2162,9 +2171,9 @@ Die Kombination dieser Techniken erreicht eine hohe Linking-Genauigkeit, die in 
 \label{sec:validierungundsicherung}
 Die Validierung extrahierter Daten stellt einen kritischen Schritt zur Sicherstellung 
 der Datenqualität dar. Das implementierte System kombiniert regelbasierte Validierung 
-mit intelligenten Korrekturvorschlägen und adressiert damit die Anforderungen 
-\textbf{FA-008} (manuelle Korrektur durch Human-in-the-Loop), \textbf{NFA-004} 
-(Robustheit gegenüber fehlerhaften Eingaben) und \textbf{NFA-005} (Prüfbarkeit 
+mit intelligenten Korrekturvorschlägen und adressiert damit die Anforderungen
+\hyperref[req:FA-008]{FA-008} (manuelle Korrektur durch Human-in-the-Loop), \hyperref[req:NFA-004]{NFA-004}
+(Robustheit gegenüber fehlerhaften Eingaben) und \hyperref[req:NFA-005]{NFA-005} (Prüfbarkeit
 durch strukturierte Fehlerberichte).
 
 \subsection{Validierungsarchitektur}
@@ -2652,6 +2661,8 @@ Die identifizierten Änderungen werden in einem strukturierten Change Report dok
 
 \begin{table}[H]
 \centering
+\caption{Beispielhafte Change Report Struktur mit verschiedenen Änderungstypen}
+\label{tab:change_report}
 \small
 \begin{tabular}{|l|l|p{3.5cm}|p{3.5cm}|}
 \hline
@@ -2662,8 +2673,6 @@ signal\_F5 & Hinzugefügt & $-$ & km 23.4500 \\
 gks\_98765 & Entfernt & km 15.2300 & $-$ \\
 \hline
 \end{tabular}
-\caption{Beispielhafte Change Report Struktur mit verschiedenen Änderungstypen}
-\label{tab:change_report}
 \end{table}
 
 Diese strukturierte Dokumentation ermöglicht eine effiziente Nachvollziehbarkeit von Planänderungen und unterstützt Quality-Assurance-Prozesse in der Eisenbahnplanung.
@@ -2680,7 +2689,7 @@ Der Dialog zeigt eine tabellarische Übersicht aller identifizierten Änderungen
 
 \textbf{Anmerkung zu mehrfachen Einträgen:} Die Tabelle zeigt drei Einträge für GKS 0303 und zwei Einträge für GKS 0305. Dies ist kein Fehler, sondern resultiert aus der Struktur der verglichenen Gleispläne: Diese enthalten drei Streckenabschnitte (Varianten), wobei dieselbe GKS-Kennung in mehreren Abschnitten vorkommen kann. Jede Instanz wird separat verglichen, da sie unterschiedliche Kilometrierungen aufweisen kann.
 
-Diese Darstellung erfüllt Anforderung FA-011 und ermöglicht Ingenieuren eine schnelle Identifikation relevanter Planänderungen ohne manuelle Vergleichsarbeit.
+Diese Darstellung erfüllt Anforderung \hyperref[req:FA-011]{FA-011} und ermöglicht Ingenieuren eine schnelle Identifikation relevanter Planänderungen ohne manuelle Vergleichsarbeit.
 
 Ein konkretes Beispiel einer detektierten Koordinatenänderung zeigen die Abbildungen~\ref{fig:gks_change_before} und~\ref{fig:gks_change_after} für die GKS mit der Kennung 0305.
 
@@ -2850,7 +2859,7 @@ id                SERIAL PRIMARY KEY
 layout_id         INTEGER UNIQUE NOT NULL REFERENCES track_layouts(id) 
                   ON DELETE CASCADE
 edited_data_json  JSONB NOT NULL              -- Extraktionsergebnisse
-track_skeleton    TEXT                        -- Komprimiertes Gleisskelett
+track_skeleton    TEXT                        -- Komprimierte Gleistopologie
 image_dimensions  JSONB                       -- Seitenabmessungen
 last_modified     TIMESTAMPTZ DEFAULT NOW()
 
@@ -2905,7 +2914,7 @@ Jeder Eintrag in \texttt{edited\_data\_json} repräsentiert ein extrahiertes Obj
 {
   "row_id": 42,
   "cls": "signal",
-  "anchor_text": "AS102",
+  "symbol_text": "AS102",
   "coord_text": "18.1606(GL2)",
   "coord_value": 18.1606,
   "x": 1024.5,
@@ -2950,10 +2959,10 @@ Die Datenbankinteraktion erfolgt über den PostgreSQL-Adapter \texttt{psycopg2} 
 \textbf{Workspace-Operationen:}
 \begin{itemize}
     \item $\texttt{save\_workspace\_data}(name, data, skeleton, dims) \rightarrow \text{void}$ \\
-    Persistiert Workspace mit Extraktionsdaten, optionalem Gleisskelett und Bildabmessungen
+    Persistiert Workspace mit Extraktionsdaten, optionaler Gleistopologie und Bildabmessungen
     
     \item $\texttt{get\_workspace\_data}(name) \rightarrow (data, skeleton, dims)$ \\
-    Lädt gespeicherten Workspace inkl. Dekompression des Gleisskeletts
+    Lädt gespeicherten Workspace inkl. Dekompression der Gleistopologie
 \end{itemize}
 
 \textbf{Validierungs-Operationen:}
@@ -2979,9 +2988,9 @@ Die Verwendung von Connection-Pooling mittels Context Manager optimiert die Perf
 \section{Benutzeroberfläche}
 \label{sec:benutzeroberfläche}
 Die Benutzeroberfläche dient als interaktive Komponente zur Qualitätskontrolle und 
-manuellen Nachbearbeitung der extrahierten Daten. Sie adressiert die Anforderungen 
-\textbf{FA-013} (GUI ohne CLI-Kenntnisse), \textbf{FA-012} (visuelle Validierung 
-durch Bounding-Box-Overlays) und \textbf{NFA-001} (On-Premise-Verarbeitung als 
+manuellen Nachbearbeitung der extrahierten Daten. Sie adressiert die Anforderungen
+\hyperref[req:FA-013]{FA-013} (GUI ohne CLI-Kenntnisse), \hyperref[req:FA-012]{FA-012} (visuelle Validierung
+durch Bounding-Box-Overlays) und \hyperref[req:NFA-001]{NFA-001} (On-Premise-Verarbeitung als
 Desktop-Anwendung).
 
 % === NEW SUBSECTION TO ADD ===
@@ -3006,11 +3015,11 @@ Der Workflow gliedert sich in drei sequenzielle Schritte:
     über einen Dateidialog. Das System akzeptiert PDF-Dateien beliebiger Größe 
     und zeigt einen Hinweis zur empfohlenen Mindestauflösung von 300~DPI an, 
     wobei 500~DPI für optimale Erkennungsleistung empfohlen werden 
-    (vgl. Anforderung \textbf{NFA-009}).
+    (vgl. Anforderung \hyperref[req:NFA-009]{NFA-009}).
     
     \item \textbf{KI-Modell laden:} Auswahl der trainierten YOLOv8-OBB 
     Gewichtsdatei (\texttt{best.pt}). Diese explizite Trennung von Anwendung 
-    und Modell erfüllt Anforderung \textbf{NFA-008} (Update-Fähigkeit) und 
+    und Modell erfüllt Anforderung \hyperref[req:NFA-008]{NFA-008} (Update-Fähigkeit) und 
     ermöglicht den Austausch von Modellversionen -- beispielsweise nach einem 
     Nachtraining mit zusätzlichen Symbolklassen -- ohne Neukompilierung der 
     Anwendung.
@@ -3027,7 +3036,7 @@ bereits in der PostgreSQL-Datenbank gespeicherter Ergebnisse, was für
 iterative Verbesserungen oder nach Modell-Updates relevant ist. Die 
 Schaltfläche \enquote{Neues Symbol definieren} (rechts oben) öffnet einen 
 Assistenten zur Definition zusätzlicher Symbolklassen und demonstriert die 
-Erweiterbarkeit des Systems gemäß Anforderung \textbf{NFA-008}.
+Erweiterbarkeit des Systems gemäß Anforderung \hyperref[req:NFA-008]{NFA-008}.
 
 Nach Abschluss der automatischen Analyse wechselt die Anwendung automatisch 
 in den Bearbeitungs- und Korrekturmodus (\ref{fig:complete_ui}), 
@@ -3164,7 +3173,7 @@ Der Validierungs-Dialog implementiert eine mehrstufige Fehlerklassifikation basi
 \begin{itemize}
     \item \textbf{Regex-Mismatch}: OCR-Text entspricht nicht dem erwarteten Format für die jeweilige Klasse
     \item \textbf{Niedrige Konfidenz}: YOLO-Konfidenz $< \tau_{\text{conf}}$ (Standard: $\tau_{\text{conf}} = 0.6$)
-    \item \textbf{Fehlende Verknüpfung}: Ankerelement ohne zugeordnete Koordinate
+    \item \textbf{Fehlende Verknüpfung}: Symbol ohne zugeordnete Koordinate
     \item \textbf{Duplikate}: Mehrfachvorkommen identischer Element-IDs
 \end{itemize}
 
@@ -3208,7 +3217,7 @@ Das Matching erfolgt in zwei Phasen:
 Die Scoring-Funktion berücksichtigt klassenspezifische Kriterien:
 
 \begin{itemize}
-    \item \textbf{OCR-Klassen} (Signal, GKS): Primär Textähnlichkeit des Ankertextes, ergänzt durch Koordinaten- und Positionsboni. Kein Distanz-Cutoff, da eindeutige Bezeichner vorliegen.
+    \item \textbf{OCR-Klassen} (Signal, GKS): Primär Textähnlichkeit des Symboltextes, ergänzt durch Koordinaten- und Positionsboni. Kein Distanz-Cutoff, da eindeutige Bezeichner vorliegen.
     \item \textbf{Symbol-Klassen} (Sverbinder, GM-Block, etc.): Primär Koordinatenwert-Übereinstimmung mit hartem Cutoff bei $\Delta_{\text{coord}} > 100$\,m, da keine eindeutigen Bezeichner existieren.
 \end{itemize}
 
@@ -3227,7 +3236,7 @@ s_B = s_A \cdot \frac{h_B}{h_A}
 wobei $s_A$ die Scrollposition in Viewer A, $h_A$ dessen Gesamthöhe und entsprechend für Viewer B. Dies gewährleistet proportionale Navigation bei unterschiedlichen Seitengrößen.
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.95\textwidth]{images/Kapitel6/diff_dialog2.png}\caption{Änderungsvergleich-Dialog}
+\includegraphics[width=0.95\textwidth]{images/Kapitel6/diff_dialog.png}\caption{Änderungsvergleich-Dialog}
 \label{fig:diff_dialog}
 \end{figure}
 
@@ -3258,7 +3267,7 @@ Zusätzlich wird ein \textit{Metadata}-Sheet erzeugt, das Verarbeitungsmetadaten
 
 Für die praktische Anwendung wurde ein umfassender Export-Dialog implementiert 
 (Abbildung~\ref{fig:export_dialog}), der über die Grundfunktionalität hinausgeht 
-und die Anforderungen FA-009 (Excel-Integration) sowie FA-010 (Strukturerhalt) 
+und die Anforderungen \hyperref[req:FA-009]{FA-009} (Excel-Integration) sowie \hyperref[req:FA-010]{FA-010} (Strukturerhalt) 
 adressiert. Die wichtigsten Funktionen umfassen:
 
 \begin{itemize}
@@ -3299,7 +3308,7 @@ der E2E-Evaluation (vgl. Tabelle~\ref{tab:e2e_per_class_test}).
 Die Option \enquote{Bestehende Datei} (Abbildung~\ref{fig:export_dialog}) ermöglicht 
 das Einfügen von Daten in existierende Excel-Vorlagen ab einer wählbaren Startposition, 
 ohne bestehende Formatierungen, Formeln oder Makros zu überschreiben. Diese 
-Funktionalität erfüllt die Anforderung FA-010 (Strukturerhalt).
+Funktionalität erfüllt die Anforderung \hyperref[req:FA-010]{FA-010} (Strukturerhalt).
 
 \begin{figure}[H]
 \centering
@@ -3340,7 +3349,7 @@ drei Ausgabeformate: Excel (.xlsx), CSV (.csv) und JSON (.json). }
 \label{fig:export_format_selection}
 \end{figure}
 
-Gemäß Anforderung \textbf{NFA-010} unterstützt das System drei Ausgabeformate:
+Gemäß Anforderung \hyperref[req:NFA-010]{NFA-010} unterstützt das System drei Ausgabeformate:
 
 \begin{itemize}
     \item \textbf{Excel (.xlsx):} Primärformat für Engineering-Workflows mit 
@@ -3381,7 +3390,7 @@ Dieses Kapitel stellte die technische Realisierung der automatisierten Datenextr
 Die Extraktionspipeline besteht aus folgenden Hauptmodulen:
 
 \textbf{Objekterkennung (Abschnitt \ref{sec:yolo_implementation}):}
-Das YOLOv8-OBB Modell wurde auf einem Datensatz mit 13 Symbolklassen trainiert (vgl. Anforderung FA-003). Die Klasse \textit{coordinate} liefert Positionsinformationen, die den anderen 12~Klassen zugeordnet werden. Alle 13~Klassen werden in Kapitel~\ref{chap:evaluation} quantitativ evaluiert.
+Das YOLOv8-OBB Modell wurde auf einem Datensatz mit 13 Symbolklassen trainiert (vgl. Anforderung \hyperref[req:FA-003]{FA-003}). Die Klasse \textit{coordinate} liefert Positionsinformationen, die den anderen 12~Klassen zugeordnet werden. Alle 13~Klassen werden in Kapitel~\ref{chap:evaluation} quantitativ evaluiert.
 
 \textbf{OCR-Pipeline (Abschnitt \ref{sec:ocrpipeline}):}
 Die orientierungsadaptive OCR-Pipeline bildet das Herzstück der Textextraktion. Durch die Kaskadierung dreier OCR-Engines (PaddleOCR, Tesseract, EasyOCR) wird eine hohe Erkennungsrobustheit erreicht. Das Dual-Winkel-Routing-System behandelt sowohl achsenparallele als auch beliebig rotierte Texte mittels unterschiedlicher Transformationsstrategien. Klassenspezifische Vorverarbeitungspipelines passen die Bildaufbereitung an die jeweiligen Charakteristika der Symbole an (z.B. adaptive Padding für Signale, morphologische Filterung für GKS). Die Validierung erfolgt durch regex-basierte Pattern-Matching-Verfahren mit konfidenzgewichteten Scoring-Mechanismen.
@@ -3406,6 +3415,8 @@ Die Gesamtimplementierung umfasst folgende Modulgrößen:
 
 \begin{table}[H]
 \centering
+\caption{Codeumfang der Implementierungsmodule (gerundet)}
+\label{tab:implementation_scope}
 \begin{tabular}{|l|r|}
 \hline
 \textbf{Modul} & \textbf{Umfang (LOC)} \\
@@ -3421,8 +3432,6 @@ UI-Komponenten & \textasciitilde2.100 \\
 \textbf{Gesamt} & \textbf{\textasciitilde11.350} \\
 \hline
 \end{tabular}
-\caption{Codeumfang der Implementierungsmodule (gerundet)}
-\label{tab:implementation_scope}
 \end{table}
 
 Die Architektur folgt einer modularen Struktur, die eine klare Trennung der Verarbeitungsstufen gewährleistet. Zentrale Design-Entscheidungen (vgl. Kapitel \ref{chap:konzeption}) wurden konsequent umgesetzt:

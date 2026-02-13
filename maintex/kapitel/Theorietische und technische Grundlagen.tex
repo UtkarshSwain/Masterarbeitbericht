@@ -8,7 +8,7 @@ Diese zeitintensive manuelle Arbeit motiviert den Einsatz automatisierter Verfah
 
 \subsection{Grundlagen des Gleisplans}
 Der Gleisplan bildet die fundamentale Datengrundlage für die Planung, den Bau und den operativen Betrieb von Bahnanlagen. Er repräsentiert die technische Infrastruktur und dient als visuelle Schnittstelle zwischen der physischen Außenanlage und der sicherungstechnischen Logik (Stellwerk).
-\\
+
 Gleispläne existieren in zwei Darstellungsformen \cite{Pachl}: maßstäbliche 
 Lagepläne (topografisch, bautechnisch) und schematische Übersichtspläne 
 (topologisch, sicherungstechnisch). Diese Arbeit fokussiert letztere, da sie 
@@ -37,11 +37,13 @@ In den Gleisplänen kommen zahlreiche Symbole zum Einsatz, um die verschiedenen 
 
 \begin{table}[h]
 \centering
+\caption{Klassifikation bahntechnischer Symbole nach funktionalen Kategorien}
+\label{tab:symbol_categories}
 \begin{tabular}{|p{3.5cm}|p{11.5cm}|}
 \hline
 \textbf{Kategorie} & \textbf{Elemente und Funktion} \\
 \hline
-Stellwerkselemente & \textbf{Signale}: Fahrterlaubnis und Geschwindigkeitsvorgabe\cite{Pachl}. 
+Stellwerkselemente & \textbf{Signale}: Fahrterlaubnis und Geschwindigkeitsvorgabe\cite{Pachl}.
 \textbf{Weichen}: Fahrwegverzweigungen\cite{Pachl}. \\
 \hline
 Zugbeeinflussung & \textbf{Balisen}, \textbf{Gleismagnete (GM)}, \textbf{Gleiskoppelspulen (GKS)}: Übertragung von Informationen (Fahrt-/Haltinformationen, ggf. auch Geschwindigkeitsvorgaben und weitere Daten) vom Stellwerk an den Zug\cite{Pachl}. \\
@@ -49,12 +51,10 @@ Zugbeeinflussung & \textbf{Balisen}, \textbf{Gleismagnete (GM)}, \textbf{Gleisko
 Belegungserkennung & \textbf{Isolierstöße}: Abgrenzung von Gleisabschnitten zur Belegungserkennung mittels Gleisstromkreisen\cite{Pachl}.
 \textbf{Achszähler}: Zählpunktbasierte Belegungserkennung durch Erfassung ein- und ausfahrender Achsen\cite{Pachl}. \\
 \hline
-Metadaten & \textbf{Positionsangaben}: Kilometrierung, Lagepunkte\cite{DB2008Regelwerk}. 
+Metadaten & \textbf{Positionsangaben}: Kilometrierung, Lagepunkte\cite{DB2008Regelwerk}.
 \textbf{Gleisabschnittsnamen}: Eindeutige Gleisidentifikation\cite{DB2008Regelwerk}. \\
 \hline
 \end{tabular}
-\caption{Klassifikation bahntechnischer Symbole nach funktionalen Kategorien}
-\label{tab:symbol_categories}
 \end{table}
 
 Die automatisierte Analyse visueller Informationen bildet das Fundament zahlreicher technischer Anwendungen von der Qualitätskontrolle in der industriellen Fertigung über die medizinische Bildanalyse bis hin zur autonomen Navigation. Während Menschen mühelos in der Lage sind, Objekte in Bildern zu identifizieren und zu lokalisieren, erfordert die Replikation dieser Fähigkeit in Maschinen die Lösung komplexer Teilprobleme. Historisch wurde diese Aufgabe durch explizite Programmierung von Erkennungsregeln adressiert. Der konzeptionelle Durchbruch gelang durch maschinelles Lernen, insbesondere durch tiefe neuronale Netze, die relevante Merkmale selbstständig aus Trainingsdaten extrahieren können \cite{LeCun1998_GradientBasedLearning,Krizhevsky2012_AlexNet}. Diese Methodik bildet das Fundament für die in dieser Arbeit entwickelte Symbol- und Texterkennung in Gleisplänen.
@@ -391,8 +391,6 @@ Oriented Bounding Boxes erweitern die AABB-Repräsentation um einen zusätzliche
 
 wobei $(c_x, c_y)$ das Zentrum, $w$ und $h$ die Dimensionen entlang der lokalen Achsen und $\theta \in [-90^\circ, 90^\circ)$ den Rotationswinkel relativ zur horizontalen Bildachse beschreiben. Diese Parametrisierung ermöglicht eine eng anliegende Umhüllung rotierter Objekte und reduziert den Hintergrundanteil auf das geometrische Minimum.
 
-\subsubsection{Vorteile für rotierte Objekte}
-
 Die präzisere geometrische Modellierung durch OBB bietet mehrere Vorteile \cite{Xie2021OrientedRD}. Die IoU zwischen OBB reflektiert die tatsächliche Objektüberlappung, wodurch Fehlunterdrückungen bei NMS vermieden werden. Dies ist besonders wichtig bei dicht gruppierten Objekten, wo AABB fälschlicherweise hohe Überlappungen anzeigen würden. Zudem kodiert der Parameter $\theta$ explizit die Objektorientierung, was für nachgelagerte Prozesse wie orientierungsabhängige OCR wertvoll ist.
 
 \subsection{Herausforderungen bei der Verwendung von OBB}
@@ -464,9 +462,7 @@ Trotz der geometrischen Vorteile bringen OBB zusätzliche Komplexität in die De
 \label{fig:obb_challenges}
 \end{figure}
 
-\subsubsection{Erhöhte Berechnungskomplexität}
-
-Die Berechnung der Intersection over Union zwischen zwei OBB ist algorithmisch aufwendiger als bei AABB. Während die AABB-IoU durch einfache Min-Max-Operationen in konstanter Zeit $\mathcal{O}(1)$ berechnet werden kann, erfordert die OBB-IoU die Lösung eines Polygon-Clipping-Problems\cite{Zhou2017EastAE}:
+\textbf{Erhöhte Berechnungskomplexität.} Die Berechnung der Intersection over Union zwischen zwei OBB ist algorithmisch aufwendiger als bei AABB. Während die AABB-IoU durch einfache Min-Max-Operationen in konstanter Zeit $\mathcal{O}(1)$ berechnet werden kann, erfordert die OBB-IoU die Lösung eines Polygon-Clipping-Problems\cite{Zhou2017EastAE}:
 
 \begin{equation}
 \text{IoU}_{\text{OBB}}(B_1, B_2) = \frac{\text{Area}(P_1 \cap P_2)}{\text{Area}(P_1 \cup P_2)}
@@ -474,14 +470,10 @@ Die Berechnung der Intersection over Union zwischen zwei OBB ist algorithmisch a
 
 wobei $P_1$ und $P_2$ die als Vierecke repräsentierten OBB sind. Die Schnittpunktberechnung zwischen den Kantensegmenten skaliert mit $\mathcal{O}(n^2)$ für $n$-Ecke, was in der Praxis zu einem Faktor 3-5 langsameren NMS-Durchläufen führt\cite{Xie2021OrientedRD}.
 
-\subsubsection{Winkelperiodizität und Trainingsinstabilität}
-
-Der Rotationswinkel $\theta$ weist eine zyklische Periodizität auf: Eine Rotation um $180^\circ$ (bzw. bei symmetrischen Objekten um $90^\circ$) resultiert in einer geometrisch identischen Bounding Box\cite{Yang2021RSDETR,Zhao2023ABFL}. Dies führt zu Ambiguitäten in der Netzwerk-Ausgabe. Betrachtet man beispielsweise zwei Vorhersagen $\theta_1 = 0^\circ$ und $\theta_2 = 89^\circ$ für dasselbe Objekt, so sind diese geometrisch nur $1^\circ$ voneinander entfernt, numerisch jedoch $89^\circ$. Standard-Regressionsverluste (z.B. Smooth L1) behandeln diese Diskrepanz linear, was zu instabilen Gradienten führt.
+\textbf{Winkelperiodizität und Trainingsinstabilität.} Der Rotationswinkel $\theta$ weist eine zyklische Periodizität auf: Eine Rotation um $180^\circ$ (bzw. bei symmetrischen Objekten um $90^\circ$) resultiert in einer geometrisch identischen Bounding Box\cite{Yang2021RSDETR,Zhao2023ABFL}. Dies führt zu Ambiguitäten in der Netzwerk-Ausgabe. Betrachtet man beispielsweise zwei Vorhersagen $\theta_1 = 0^\circ$ und $\theta_2 = 89^\circ$ für dasselbe Objekt, so sind diese geometrisch nur $1^\circ$ voneinander entfernt, numerisch jedoch $89^\circ$. Standard-Regressionsverluste (z.B. Smooth L1) behandeln diese Diskrepanz linear, was zu instabilen Gradienten führt.
 
 
-\subsubsection{Erhöhter Trainingsaufwand}
-
-Die zusätzliche Parameterregression für $\theta$ erhöht die Komplexität des Lernproblems. Empirische Studien zeigen, dass OBB-Modelle typischerweise 20-30\% mehr Trainingsepochen benötigen als vergleichbare AABB-Modelle, um ähnliche Konvergenzniveaus zu erreichen\cite{Xie2021OrientedRD}. Eine Trainingsepoche bezeichnet dabei einen vollständigen Durchlauf durch den gesamten Trainingsdatensatz, bei dem jedes Trainingsbeispiel einmal zur Gewichtsoptimierung verwendet wird. Dies resultiert aus der Notwendigkeit, sowohl die präzise Lokalisierung als auch die korrekte Orientierungsprädiktion zu erlernen.
+\textbf{Erhöhter Trainingsaufwand.} Die zusätzliche Parameterregression für $\theta$ erhöht die Komplexität des Lernproblems. Empirische Studien zeigen, dass OBB-Modelle typischerweise 20-30\% mehr Trainingsepochen benötigen als vergleichbare AABB-Modelle, um ähnliche Konvergenzniveaus zu erreichen\cite{Xie2021OrientedRD}. Eine Trainingsepoche bezeichnet dabei einen vollständigen Durchlauf durch den gesamten Trainingsdatensatz, bei dem jedes Trainingsbeispiel einmal zur Gewichtsoptimierung verwendet wird. Dies resultiert aus der Notwendigkeit, sowohl die präzise Lokalisierung als auch die korrekte Orientierungsprädiktion zu erlernen.
 
 \subsection{YOLOv8-OBB Architektur}
 
@@ -695,6 +687,8 @@ Transformer-basierte Ansätze bieten Vorteile bei langen Sequenzen und ermöglic
 Tabelle~\ref{tab:ocr_arch_comparison} fasst die wesentlichen Unterschiede zwischen CRNN und Transformer-basierten Ansätzen zusammen.
 \begin{table}[H]
 \centering
+\caption{Vergleich von CRNN- und Transformer-basierten OCR-Architekturen}
+\label{tab:ocr_arch_comparison}
 \renewcommand{\arraystretch}{1.3}
 \begin{tabular}{|p{3.5cm}|p{5cm}|p{5cm}|}
 \hline
@@ -709,8 +703,6 @@ Modellgröße & 8--12 MB \cite{du2020ppocrpracticalultralightweight} & 300--500 
 Trainingsdatenbedarf & Moderat (10k--100k Samples) & Hoch (>1M Samples für Pretraining) \cite{li2022trocrtransformerbasedopticalcharacter} \\
 \hline
 \end{tabular}
-\caption{Vergleich von CRNN- und Transformer-basierten OCR-Architekturen}
-\label{tab:ocr_arch_comparison}
 \end{table}
 \footnotetext{Transformer-basierte Modelle erfordern aufgrund des quadratischen 
 Attention-Mechanismus höhere Inferenzzeiten \cite{Vaswani2017_Attention}.}
@@ -791,6 +783,8 @@ Tabelle~\ref{tab:ocr_systems_comparison} vergleicht die für technische Zeichnun
 
 \begin{table}[H]
 \centering
+\caption{Vergleich etablierter OCR-Systeme für technische Anwendungen}
+\label{tab:ocr_systems_comparison}
 \small
 \renewcommand{\arraystretch}{1.3}
 \begin{tabular}{|p{2cm}|p{2.7cm}|p{4.5cm}|p{4.5cm}|}
@@ -806,8 +800,6 @@ EasyOCR & CRAFT(Character Region Awareness for Text) + CRNN \cite{baek2019charac
 TrOCR & Transformer & State-of-the-Art Genauigkeit & Hoher GPU-Bedarf, langsam\\
 \hline
 \end{tabular}
-\caption{Vergleich etablierter OCR-Systeme für technische Anwendungen}
-\label{tab:ocr_systems_comparison}
 \end{table}
 
 
@@ -1055,6 +1047,8 @@ definiert die Validierungsmuster für die wichtigsten Textklassen.
 
 \begin{table}[H]
 \centering
+\caption{Regex-Validierungsmuster für Gleisplan-Textklassen}
+\label{tab:regex_patterns}
 \renewcommand{\arraystretch}{1.3}
 \begin{tabular}{|p{3cm}|p{5cm}|p{4cm}|}
 \hline
@@ -1069,8 +1063,6 @@ GKS & \verb|^\d{4}$| & 1234, 5678 \\
 Weiche & \verb|^W\d{2,4}[a-z]?$| & W12, W234a \\
 \hline
 \end{tabular}
-\caption{Regex-Validierungsmuster für Gleisplan-Textklassen}
-\label{tab:regex_patterns}
 \end{table}
 
 \subsubsection{Homoglyphen-Korrektur}
@@ -1079,6 +1071,8 @@ OCR-Systeme verwechseln häufig visuell ähnliche Zeichen (Homoglyphen). Tabelle
 
 \begin{table}[H]
 \centering
+\caption{Typische OCR-Homoglyphen und deren Korrekturmöglichkeiten}
+\label{tab:homoglyphs}
 \renewcommand{\arraystretch}{1.3}
 \begin{tabular}{|c|c|p{5cm}|c|}
 \hline
@@ -1095,8 +1089,6 @@ B & 8, 3 & Kontextabhängig & Teilweise \\
 Z & 2 & Selten in Signalnamen & Ja \\
 \hline
 \end{tabular}
-\caption{Typische OCR-Homoglyphen und deren Korrekturmöglichkeiten}
-\label{tab:homoglyphs}
 \end{table}
 
 \subsubsection{Fuzzy-Matching zur Fehlerkorrektur}
@@ -1109,6 +1101,8 @@ Ersetzungsoperationen zur Transformation eines Strings in einen anderen.
 
 \begin{table}[H]
 \centering
+\caption{Fuzzy-Matching mittels Levenshtein-Distanz}
+\label{tab:fuzzy_matching}
 \renewcommand{\arraystretch}{1.2}
 \begin{tabular}{|c|c|c|l|}
 \hline
@@ -1121,8 +1115,6 @@ BHR2O1 & BHR201 & 1 & Korrektur: O $\rightarrow$ 0 \\
 XYZAB & AS102 & 5 & Keine Korrektur (zu verschieden) \\
 \hline
 \end{tabular}
-\caption{Fuzzy-Matching mittels Levenshtein-Distanz}
-\label{tab:fuzzy_matching}
 \end{table}
 
 Dieses Verfahren wird als \textit{Fuzzy-Matching} bezeichnet, da es 
@@ -1536,6 +1528,8 @@ In der Praxis variieren die räumlichen Beziehungen zwischen Symbol und Text je 
 
 \begin{table}[H]
 \centering
+\caption{Domänenspezifische Konventionen für Textpositionen relativ zu Symbolen}
+\label{tab:text_position_conventions}
 \renewcommand{\arraystretch}{1.3}
 \begin{tabular}{|p{3cm}|p{4cm}|p{6cm}|}
 \hline
@@ -1548,8 +1542,6 @@ Kilometerstein & Direkt am Markierungspunkt & Kompakte Darstellung der Streckenp
 Weiche & Variable Positionen & Komplexe Geometrie erfordert flexible Platzierung \\
 \hline
 \end{tabular}
-\caption{Domänenspezifische Konventionen für Textpositionen relativ zu Symbolen}
-\label{tab:text_position_conventions}
 \end{table}
 
 Diese Konventionen werden als \textbf{Domänenwissen} in das System integriert und ermöglichen eine gezieltere Suche nach zusammengehörigen Elementen. Derartige domänenspezifische Layoutregeln sind charakteristisch für technische Dokumentationen und folgen etablierten Zeichnungsnormen \cite{DIN_ISO_128, Hoischen2022}. 
@@ -1561,7 +1553,7 @@ Diese Konventionen werden als \textbf{Domänenwissen} in das System integriert u
 
 Technische Dokumente unterliegen einem kontinuierlichen Änderungsprozess. Im Verlauf eines Projekts werden Pläne mehrfach überarbeitet: Elemente werden hinzugefügt, verschoben oder entfernt; Bezeichnungen werden korrigiert. Die systematische Erfassung dieser Änderungen ist essenziell für die Qualitätssicherung und Nachvollziehbarkeit im Engineering-Prozess.
 
-\subsection{Motivation: Das Revisionswesen}
+\subsection{Motivation und konzeptuelle Analogie}
 
 In der industriellen Praxis folgt die Dokumentenlenkung definierten Prozessen gemäß Qualitätsmanagementsystemen wie DIN EN ISO 9001 \cite{DINISO9001}. Jede Änderung an einer technischen Zeichnung muss:
 
@@ -1572,8 +1564,6 @@ In der industriellen Praxis folgt die Dokumentenlenkung definierten Prozessen ge
 \end{itemize}
 
 Die manuelle Identifikation von Änderungen zwischen zwei Planversionen, das sogenannte \enquote{Rödeln} ist zeitaufwändig und fehleranfällig, insbesondere bei umfangreichen Dokumenten mit hunderten von Elementen.
-
-\subsection{Analogie: Stücklistenvergleich}
 
 Das Konzept der Änderungserkennung ist Ingenieuren aus dem Stücklistenwesen bekannt. Wenn sich eine Baugruppe ändert, muss die zugehörige Stückliste (Bill of Materials, BOM) aktualisiert werden \cite{stark2022}. Ein BOM-Vergleich identifiziert:
 
@@ -1666,6 +1656,8 @@ Abbildung~\ref{fig:revision_example} zeigt typische Änderungen zwischen zwei Do
 
 \begin{table}[H]
 \centering
+\caption{Die drei Grundtypen von Änderungen zwischen Dokumentversionen}
+\label{tab:change_categories}
 \renewcommand{\arraystretch}{1.4}
 \begin{tabular}{|p{2.5cm}|p{5cm}|p{5.5cm}|}
 \hline
@@ -1678,11 +1670,7 @@ Abbildung~\ref{fig:revision_example} zeigt typische Änderungen zwischen zwei Do
 \textbf{Verschiebung} & Element existiert in beiden Versionen, aber mit geänderter Kilometrierung & Die Streckenposition eines Signals wurde korrigiert \\
 \hline
 \end{tabular}
-\caption{Die drei Grundtypen von Änderungen zwischen Dokumentversionen}
-\label{tab:change_categories}
 \end{table}
-
-\subsection{Prinzip: Identifikation durch eindeutige Merkmale}
 
 Um Änderungen automatisch zu erkennen, muss zunächst festgestellt werden, welche Elemente in beiden Versionen \enquote{dasselbe} Objekt darstellen. Dies erfolgt über \textbf{eindeutige Identifikationsmerkmale} -- vergleichbar mit Artikelnummern in einer Stückliste oder Sachnummern in einem PDM-System \cite{stark2022}.
 
@@ -1692,8 +1680,6 @@ Für technische Zeichnungen können solche Identifikatoren aus den Objektattribu
 \label{subsec:hungarian_algorithm}
 
 Die Kernherausforderung bei der Änderungserkennung besteht in der optimalen Zuordnung von Elementen zwischen zwei Versionen. Bei eindeutigen Identifikatoren (z.\,B. Signalbezeichnungen) ist die Zuordnung trivial. Problematisch wird es jedoch bei Elementen ohne eindeutige Bezeichner oder bei Duplikaten -- mehrere gleichartige Elemente an ähnlichen Positionen.
-
-\subsubsection{Das Assignment Problem}
 
 Formal handelt es sich um ein \textit{Assignment Problem} (Zuordnungsproblem): Gegeben seien zwei Mengen $A = \{a_1, \ldots, a_m\}$ (Elemente der Altversion) und $B = \{b_1, \ldots, b_n\}$ (Elemente der Neuversion) sowie eine Kostenmatrix $C \in \mathbb{R}^{m \times n}$, wobei $c_{ij}$ die \enquote{Kosten} (oder negativen Ähnlichkeitswert) für die Zuordnung von $a_i$ zu $b_j$ angibt. Gesucht ist eine Zuordnung, die die Gesamtkosten minimiert \cite{Kuhn1955, Munkres1957}.
 
@@ -1722,6 +1708,8 @@ Der Algorithmus basiert auf dem Konzept der \textit{augmentierenden Pfade} und t
 
 \begin{table}[H]
 \centering
+\caption{Vergleich von Greedy- und Hungarian-Algorithmus für das Zuordnungsproblem}
+\label{tab:greedy_vs_hungarian}
 \renewcommand{\arraystretch}{1.3}
 \begin{tabular}{|l|c|c|}
 \hline
@@ -1736,11 +1724,7 @@ Duplikatbehandlung & Reihenfolgeabhängig & \textbf{Optimal} \\
 Falsche Zuordnungen & Häufig bei Duplikaten & Minimiert \\
 \hline
 \end{tabular}
-\caption{Vergleich von Greedy- und Hungarian-Algorithmus für das Zuordnungsproblem}
-\label{tab:greedy_vs_hungarian}
 \end{table}
-
-\subsubsection{Anwendung auf die Änderungserkennung}
 
 Für die Änderungserkennung in technischen Zeichnungen wird der Hungarian Algorithm klassenweise angewendet: Für jede Objektklasse (Signale, GKS, Koordinaten, etc.) wird eine separate Kostenmatrix erstellt, wobei die Kosten aus der Ähnlichkeit der Elemente (Textübereinstimmung, räumliche Nähe, Koordinatendifferenz) abgeleitet werden. Zuordnungen mit einem Score unterhalb eines Schwellenwerts werden verworfen -- die entsprechenden Elemente gelten als hinzugefügt bzw. entfernt.
 
@@ -1909,6 +1893,8 @@ Für ein Dokumentenanalysesystem sind folgende Parameter typischerweise konfigur
 
 \begin{table}[H]
 \centering
+\caption{Kategorien konfigurierbarer Parameter}
+\label{tab:config_parameters}
 \renewcommand{\arraystretch}{1.3}
 \begin{tabular}{|p{3.5cm}|p{4.5cm}|p{5cm}|}
 \hline
@@ -1923,8 +1909,6 @@ NMS-Parameter & Klassenspezifische IoU-Schwellen & Unterdrückung von Duplikaten
 OCR-Vorverarbeitung & Schärfung, Rauschunterdrückung & Optimierung der Texterkennung \\
 \hline
 \end{tabular}
-\caption{Kategorien konfigurierbarer Parameter}
-\label{tab:config_parameters}
 \end{table}
 
 \subsection{Klassenspezifische Parameter}
@@ -2037,6 +2021,8 @@ Die wesentlichen Metadaten, die für eine vollständige Rückverfolgbarkeit gesp
 
 \begin{table}[H]
 \centering
+\caption{Wesentliche Metadaten für die Rückverfolgbarkeit}
+\label{tab:traceability_metadata}
 \renewcommand{\arraystretch}{1.3}
 \begin{tabular}{|p{4cm}|p{10cm}|}
 \hline
@@ -2051,8 +2037,6 @@ Verarbeitungsmetadaten & Verwendete Algorithmen, Zeitstempel der Verarbeitung \\
 Konfidenzinformation & Sicherheit der Erkennung als quantitativer Wert \\
 \hline
 \end{tabular}
-\caption{Wesentliche Metadaten für die Rückverfolgbarkeit}
-\label{tab:traceability_metadata}
 \end{table}
 
 \subsection{Qualitätssicherung durch Validierung}

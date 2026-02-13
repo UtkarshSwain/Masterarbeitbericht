@@ -64,6 +64,9 @@
 }
 % --- ENDE GEÄNDERTE SEITENRÄNDER ---
 
+% Verhindert vertikales Stretching von Absätzen auf nicht vollen Seiten
+\raggedbottom
+
 % --- KORRIGIERTE HEADER-HÖHE (aus vorherigem Fehler) ---
 \setlength{\headheight}{46.13278pt} % Adjust the height of the header (Wert aus Compiler-Warnung)
 \setlength{\headsep}{1cm}     % Add gap between the header and the text
@@ -240,7 +243,7 @@ Des Weiteren erkläre ich mich \textbf{nicht} damit einverstanden, dass meine Fo
 \input{kapitel/fazit.tex}
 \clearpage
 
-\input{kapitel/anhang}
-\clearpage
+% \input{kapitel/anhang}  % Appendix currently empty - uncomment if content is added
+% \clearpage
 \printbibliography[title=Literaturverzeichnis]
 \end{document}
