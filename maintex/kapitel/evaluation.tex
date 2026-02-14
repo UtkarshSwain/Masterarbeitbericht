@@ -114,7 +114,7 @@ Die Bewertung des Prototyps erfolgt auf mehreren Ebenen mit jeweils spezifischen
 
 \subsubsection{Metriken für die Objekterkennung}
 
-Für die Bewertung der YOLO-basierten Objekterkennung werden die in Abschnitt~\ref{subsec:evaluationsmetriken} definierten Standardmetriken verwendet:
+Für die Bewertung der YOLO-basierten Objekterkennung werden die in Abschnitt~\ref{subsec:theoretischeevaluationsmetriken} definierten Standardmetriken verwendet:
 
 \begin{itemize}
     \item \textbf{Precision}: Anteil korrekter Detektionen an allen Vorhersagen
@@ -236,22 +236,22 @@ mAP@0,5:0,95 & 92,7\,\% \\
 
 Der erreichte Recall von 95,7\,\% übertrifft die Anforderung \hyperref[req:FA-001]{FA-001} deutlich, die eine Mindesterkennungsrate von 90\,\% fordert. Die hohe Precision von 97,5\,\% zeigt, dass das Modell nur wenige Falschdetektionen produziert -- von 100 vorhergesagten Objekten sind durchschnittlich 97--98 korrekt. Der F1-Score von 96,6\,\% belegt die ausgewogene Leistung zwischen Precision und Recall, was für produktive Anwendungen essentiell ist: Das System findet nahezu alle vorhandenen Objekte (hoher Recall) und produziert dabei nur wenige Fehlalarme (hohe Precision).
 
-Die mAP@0,5 von 98,4\,\% demonstriert die exzellente Detektionsqualität bei einem IoU-Schwellen\-wert von 50\,\%. Dies bedeutet, dass die vorhergesagten Bounding Boxes im Durchschnitt zu mindestens 50\,\% mit den Ground-Truth-Boxen überlappen, was für nachgelagerte OCR-Verarbeitung ausreichend präzise ist. Die mAP@0,5:0,95 von 92,7\,\% bestätigt die robuste Leistung auch bei strengeren Überlappungskriterien (IoU von 50\,\% bis 95\,\% in 5\,\%-Schritten gemittelt). Der Abstand von 5,7 Prozentpunkten zwischen mAP@0,5 und mAP@0,5:0,95 ist für orientierte Bounding Boxes typisch und liegt im erwarteten Bereich. Insbesondere bei rotierten Objekten ist eine geringfügige Abweichung der Eckpunkte zu erwarten, da das Modell die Orientierung zusätzlich zu Position und Größe schätzen muss. Die konsistent hohen Werte über alle Metriken hinweg bestätigen, dass das trainierte YOLOv8-OBB-Modell für den produktiven Einsatz in der Gleisplananalyse geeignet ist.
+Die mAP@0,5 von 98,4\,\% demonstriert die exzellente Detektionsqualität bei einem IoU-Schwellen\-wert von 50\,\%. Dies bedeutet, dass die vorhergesagten Bounding Boxes im Durchschnitt zu mindestens 50\,\% mit den Ground-Truth-Boxen überlappen, was für nachgelagerte OCR-Verarbeitung ausreichend präzise ist. Die mAP@0,5:0,95 von 92,7\,\% bestätigt die robuste Leistung auch bei strengeren Überlappungskriterien (IoU von 50\,\% bis 95\,\% in 5\,\%-Schritten gemittelt). Der Abstand von 5,7 Prozentpunkten zwischen mAP@0,5 und mAP@0,5:0,95 ist für orientierte Bounding Boxes typisch und liegt im erwarteten Bereich. Insbesondere bei rotierten Objekten ist eine geringfügige Abweichung der Eckpunkte zu erwarten, da das Modell die Orientierung zusätzlich zu Position und Größe schätzen muss. Die konsistent hohen Werte über alle Metriken hinweg bestätigen, dass das trainierte YOLOv8-OBB-Modell für den produktiven Einsatz in der Gleisplananalyse geeignet ist. Abbildung~\ref{fig:pr_curve_eval} zeigt die Precision-Recall-Kurven, wobei die Fläche unter jeder Kurve dem klassenspezifischen AP-Wert entspricht und der Gesamtwert mAP@0,5 bei 98,4\,\% liegt.
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.85\textwidth]{images/Kapitel7/BoxPR_curve.png}
-    \caption{Precision-Recall-Kurven für alle Objektklassen auf dem Validierungsdatensatz. Die Fläche unter jeder Kurve entspricht dem klassenspezifischen AP-Wert. Der Gesamtwert mAP@0,5 beträgt 98,4\,\%.}
+    \caption{Precision-Recall-Kurven für alle Objektklassen auf dem Validierungsdatensatz}
     \label{fig:pr_curve_eval}
 \end{figure}
 
 Die Precision-Recall-Kurven in Abbildung~\ref{fig:pr_curve_eval} visualisieren das Verhältnis zwischen Precision und Recall für verschiedene Konfidenzschwellenwerte. Die nahezu rechteckige Form der Kurven für die meisten Klassen bestätigt die hohe Detektionsqualität. Lediglich bei den GKS-Klassen zeigt sich ein geringfügig früherer Precision-Abfall bei hohen Recall-Werten, was auf die in Abschnitt~\ref{subsec:e2e_test_eval} diskutierten Verwechslungen zwischen \texttt{gks\_festkodiert} und \texttt{gks\_gesteuert} zurückzuführen ist.
 \subsubsection{Klassenspezifische Analyse}
 
-Die Detektionsleistung variiert zwischen den verschiedenen Symbolklassen moderat. Tabelle~\ref{tab:detection_per_class} zeigt die klassenspezifischen Metriken für alle 13~Klassen. Precision und Recall wurden basierend auf den Werten der Konfusionsmatrix (Abbildung~\ref{fig:confusion_matrix_eval}) berechnet, während die mAP@0,5-Werte die durchschnittliche Precision über alle Recall-Stufen repräsentieren.
+Die Detektionsleistung variiert zwischen den verschiedenen Symbolklassen moderat. Tabelle~\ref{tab:detection_per_class} zeigt die klassenspezifischen Metriken für alle 13~Klassen, wobei der Makro-Durchschnitt alle Klassen unabhängig von der Instanzanzahl gleich gewichtet. Precision und Recall wurden basierend auf den Werten der Konfusionsmatrix (Abbildung~\ref{fig:confusion_matrix_eval}) berechnet, während die mAP@0,5-Werte die durchschnittliche Precision über alle Recall-Stufen repräsentieren.
 
 \begin{table}[H]
 \centering
-\caption{Detektionsmetriken für alle 13~Klassen auf dem Validierungsdatensatz. Der Makro-Durchschnitt gewichtet alle Klassen gleich, unabhängig von der Instanzanzahl.}
+\caption{Detektionsmetriken für alle 13~Klassen auf dem Validierungsdatensatz}
 \label{tab:detection_per_class}
 \begin{tabular}{|l|r|r|r|r|}
 \hline
@@ -287,13 +287,11 @@ Symbolorientierungen. Die quantitative Analyse in Tabelle~\ref{tab:rotation_anal
 bestätigt dies: 38 Objekte mit Steilrotation ($|\theta| > 30^\circ$) erreichen eine
 höhere Detektionskonfidenz (0,946) als kardinal orientierte Objekte (0,890).
 
-\textbf{\hyperref[req:FA-003]{FA-003} (Zielobjekte):} Alle 13~Symbolklassen werden zuverlässig detektiert. Die Klasse \textit{coordinate} liefert Positionsinformationen, die den anderen 12~Klassen zugeordnet werden.
+\textbf{\hyperref[req:FA-003]{FA-003} (Zielobjekte):} Alle 13~Symbolklassen werden zuverlässig detektiert. Die Klasse \textit{coordinate} liefert Positionsinformationen, die den anderen 12~Klassen zugeordnet werden. Abbildung~\ref{fig:confusion_matrix_eval} zeigt die Konfusionsmatrix, wobei 4 Instanzen von \textit{gks\_gesteuert} fälschlicherweise als \textit{gks\_festkodiert} klassifiziert wurden.
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.7\textwidth]{images/Kapitel7/confusion_matrix.png}
-\caption{Konfusionsmatrix der YOLO-Klassifikation (Validierungsset). 
-Die Matrix zeigt, dass 4 Instanzen von \textit{gks\_gesteuert}
-fälschlicherweise als \textit{gks\_festkodiert} klassifiziert wurden.}
+\caption{Konfusionsmatrix der YOLO-Klassifikation (Validierungsset)}
 \label{fig:confusion_matrix_eval}
 \end{figure}
 Die Analyse der klassenspezifischen Ergebnisse offenbart mehrere bedeutende Beobachtungen:
@@ -362,13 +360,12 @@ Manuelle Korrektur erforderlich & $\leq$ 15\,\% & 2,78\,\% & \checkmark \\
 \end{tabular}
 \end{table}
 Da Signale das komplexeste Extraktionsziel darstellen (drei Attribute: Name, Koordinate, 
-Fahrtrichtung), wird deren Genauigkeit in Tabelle~\ref{tab:signal_attribute_accuracy} 
-detailliert aufgeschlüsselt.
+Fahrtrichtung), wird deren Genauigkeit in Tabelle~\ref{tab:signal_attribute_accuracy}
+detailliert aufgeschlüsselt. Ein Signal gilt dabei als vollständig korrekt, wenn alle drei Attribute fehlerfrei extrahiert wurden.
 
 \begin{table}[H]
 \centering
-\caption{Attribut-spezifische Genauigkeit für Signale (9 Testpläne). Ein Signal gilt als
-vollständig korrekt, wenn alle drei Attribute fehlerfrei extrahiert wurden.}
+\caption{Attribut-spezifische Genauigkeit für Signale (9 Testpläne)}
 \label{tab:signal_attribute_accuracy}
 \begin{tabular}{|l|r|r|r|}
 \hline
@@ -421,12 +418,11 @@ Rotationsaugmentation sowie des Angular-Path-Routings im OCR-Modul in Abschnitt 
 
 
 
-\textbf{Detaillierte Ergebnisse pro Testplan:}
+\textbf{Detaillierte Ergebnisse pro Testplan:} Tabelle~\ref{tab:e2e_per_plan_test} zeigt die detaillierten Ergebnisse, wobei FP (False Positives) Extra-Erkennungen bezeichnet, die im Validierungsschritt entfernt werden können und daher nicht als Fehler gezählt werden.
 
 \begin{table}[H]
 \centering
-\caption{Detaillierte End-to-End Ergebnisse pro Testplan mit Fehlertyp-Annotation.
-FP = False Positives (Extra-Erkennungen), die im Validierungsschritt entfernt werden können und daher nicht als Fehler gezählt werden.}
+\caption{Detaillierte End-to-End Ergebnisse pro Testplan mit Fehlertyp-Annotation}
 \label{tab:e2e_per_plan_test}
 \begin{tabular}{|l|l|r|r|r|r|p{4.2cm}|}
 \hline
@@ -893,7 +889,9 @@ und~\ref{subsec:e2e_test_eval} (End-to-End-Evaluation) validiert:
     (Abschnitt~\ref{subsec:e2e_test_eval})
 \end{itemize}
 
-Tabelle~\ref{tab:functional_validation} dokumentiert die Validierung der verbleibenden 
+Die quantitativen Ergebnisse bestätigen, dass alle messbaren Anforderungen (\hyperref[req:FA-001]{FA-001} bis \hyperref[req:FA-007]{FA-007}) die definierten Schwellenwerte erreichen oder übertreffen. Die durchgehend hohen Genauigkeitswerte von über 95\,\% in allen Kategorien demonstrieren die Robustheit der entwickelten Pipeline.
+
+Tabelle~\ref{tab:functional_validation} dokumentiert die Validierung der verbleibenden
 funktionalen Anforderungen (\hyperref[req:FA-008]{FA-008} bis \hyperref[req:FA-014]{FA-014}) durch manuelle Funktionstests.
 
 \begin{table}[H]

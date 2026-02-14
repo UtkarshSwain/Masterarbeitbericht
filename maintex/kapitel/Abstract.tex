@@ -16,9 +16,9 @@ driving direction (Fahrtrichtung) and element groupings. All extracted objects a
 are persisted in a PostgreSQL backend with JSONB storage, versioned records, and change
 tracking for full traceability between layout versions.
 The solution is evaluated on nine production A0 layouts from Siemens Mobility projects,
-achieving \textbf{97.22\% end-to-end accuracy} for all 12 symbol classes,
+achieving 97.22\% end-to-end accuracy for all 13 object classes,
 integrating detection, OCR, and spatial linking in a unified evaluation metric.
-The system reduces manual processing time by \textbf{89.7\%}, from an average of 102 minutes
+The system reduces manual processing time by 89.7\%, from an average of 102 minutes
 to approximately 10.6 minutes per layout. A comprehensive PyQt5-based desktop application
 provides interactive visualization, manual correction tools, and validation overlays for
 human-in-the-loop quality assurance.
@@ -27,8 +27,7 @@ scalable, automated layout analysis that significantly reduces manual effort whi
 data integrity and decision-making efficiency in safety-critical railway systems.
 
 \vspace{1em}
-\noindent\textbf{Keywords:} Deep Learning, Object Detection, YOLOv8-OBB, Optical Character Recognition,
-Railway Infrastructure, Document Analysis, Automated Data Extraction
+\noindent\textbf{Keywords:} Deep Learning, Computer Vision, Object Detection, OBB, OCR, Human-in-the-Loop, Railway Infrastructure, Document Analysis, Automated Data Extraction, Change Detection
 
 \newpage
 
@@ -36,12 +35,9 @@ Railway Infrastructure, Document Analysis, Automated Data Extraction
 \addcontentsline{toc}{chapter}{Zusammenfassung}
 \label{chap:zusammenfassung}
 Die Planung von Eisenbahninfrastruktur basiert auf technischen Gleisplänen im PDF- oder Bildformat, die komplexe Anordnungen von Symbolen, Textannotationen und Positionsinformationen enthalten. Die manuelle Extraktion und Interpretation dieser Informationen ist zeitaufwendig, fehleranfällig und schwer skalierbar. Diese Masterarbeit präsentiert den Entwurf und die prototypische Implementierung einer intelligenten, modularen Pipeline zur automatisierten Analyse von Gleisplänen, entwickelt in Kooperation mit der Siemens Mobility GmbH.
-
 Das System kombiniert Deep-Learning-basierte Objekterkennung mittels YOLOv8 mit Oriented Bounding Boxes (OBB) für rotationsinvariante Symbolerkennung, eine Multi-Engine-OCR-Kaskade (PaddleOCR, Tesseract, EasyOCR) mit orientierungsadaptiver Vorverarbeitung für robuste Textextraktion sowie einen adaptiven räumlichen Linking-Algorithmus, der erkannte Symbole automatisch ihren textuellen Beschriftungen zuordnet. Regelbasierte Logik bestimmt räumliche Beziehungen wie Fahrtrichtung und Elementgruppierungen. Alle extrahierten Objekte und Metadaten werden in einem PostgreSQL-Backend mit JSONB-Speicherung, versionierten Datensätzen und Änderungsverfolgung für vollständige Nachvollziehbarkeit zwischen Planversionen persistiert.
-
-Die Lösung wird anhand von neun produktiven A0-Gleisplänen aus Siemens-Mobility-Projekten evaluiert und erreicht eine \textbf{End-to-End-Genauigkeit von 97,22\%} für alle 12 Symbolklassen, wobei Erkennung, OCR und räumliches Linking in einer einheitlichen Evaluationsmetrik integriert werden. Das System reduziert die manuelle Bearbeitungszeit um \textbf{89,7\%}, von durchschnittlich 102 Minuten auf etwa 10,6 Minuten pro Gleisplan. Eine umfassende PyQt5-basierte Desktop-Anwendung bietet interaktive Visualisierung, manuelle Korrekturwerkzeuge und Validierungs-Overlays für Human-in-the-Loop-Qualitätssicherung.
-
+Die Lösung wird anhand von neun produktiven A0-Gleisplänen aus Siemens-Mobility-Projekten evaluiert und erreicht eine End-to-End-Genauigkeit von 97,22\% für alle 13 Objektklassen, wobei Erkennung, OCR und räumliches Linking in einer einheitlichen Evaluationsmetrik integriert werden. Das System reduziert die manuelle Bearbeitungszeit um 89,7\%, von durchschnittlich 102 Minuten auf etwa 10,6 Minuten pro Gleisplan. Eine umfassende PyQt5-basierte Desktop-Anwendung bietet interaktive Visualisierung, manuelle Korrekturwerkzeuge und Validierungs-Overlays für Human-in-the-Loop-Qualitätssicherung.
 Diese Arbeit trägt zur Digitalisierung der Eisenbahninfrastrukturplanung bei, indem sie skalierbare, automatisierte Gleisplananalyse ermöglicht, die den manuellen Aufwand signifikant reduziert und gleichzeitig die Datenintegrität und Entscheidungseffizienz in sicherheitskritischen Bahnsystemen verbessert.
 
 \vspace{1em}
-\noindent\textbf{Schlagwörter:} Deep Learning, Objekterkennung, YOLOv8-OBB, Optische Zeichenerkennung, Eisenbahninfrastruktur, Dokumentenanalyse, Automatisierte Datenextraktion
+\noindent\textbf{Schlagwörter:} Deep Learning, Computer Vision, Objekterkennung, OBB, OCR, Human-in-the-Loop, Eisenbahninfrastruktur, Dokumentenanalyse, Automatisierte Datenextraktion, Änderungserkennung

@@ -87,6 +87,7 @@
 }
 % --- NEU HINZUGEFÜGT: Für klickbare Links in Schwarz ---
 % (hyperref MUSS als eines der letzten Pakete geladen werden)
+\usepackage{pdfpages}  % For including external PDF pages
 \usepackage[hidelinks, linktoc=all]{hyperref}
 % --- ENDE NEU HINZUGEFÜGT ---
 
@@ -203,6 +204,9 @@ Des Weiteren erkläre ich mich \textbf{nicht} damit einverstanden, dass meine Fo
 \end{tabular}
 
 \clearpage
+% ===== AUFGABENSTELLUNG =====
+\includepdf[pages=-]{Aufgabenstellung.pdf}
+
 % ===== RÖMISCHE SEITENZAHLEN FÜR VORSPANN =====
 \pagenumbering{roman}  % Aktiviert römische Seitenzahlen (i, ii, iii, ...)
 % Table of Contents
@@ -243,7 +247,7 @@ Des Weiteren erkläre ich mich \textbf{nicht} damit einverstanden, dass meine Fo
 \input{kapitel/fazit.tex}
 \clearpage
 
-% \input{kapitel/anhang}  % Appendix currently empty - uncomment if content is added
-% \clearpage
+\input{kapitel/anhang}  % Anhang mit Quellcode-Verweis
+\clearpage
 \printbibliography[title=Literaturverzeichnis]
 \end{document}

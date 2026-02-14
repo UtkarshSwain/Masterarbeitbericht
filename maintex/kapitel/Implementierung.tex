@@ -240,10 +240,7 @@ Der Anteil augmentierter Bilder beträgt 56,8\,\% im Trainings- und 60,1\,\% im 
 Tabelle~\ref{tab:dataset_distribution} zeigt die vollständige Verteilung der Annotationen über alle 13~Symbolklassen, aufgeschlüsselt nach Trainings- und Validierungssatz. Die Spalte \textit{Bilder} gibt an, in wie vielen Bildern der jeweiligen Teilmenge mindestens eine Instanz der betreffenden Klasse vorkommt. Da ein einzelnes Bild typischerweise mehrere Symbolklassen gleichzeitig enthält, überlappen sich die Einzelwerte der Spalte \textit{Bilder} und summieren sich nicht zur Gesamtbildzahl. Die Klasse \textit{coordinate} dominiert mit 7.428~Instanzen (47,7\,\% aller Annotationen), da jedes Betriebselement im Gleisplan eine zugehörige Kilometrierungsangabe besitzt -- Signale, Weichen, GKS und Haltepunkte werden jeweils durch mindestens eine Koordinate referenziert. Gefolgt wird sie von \textit{signal} mit 2.348~Instanzen. Am seltensten vertreten sind \textit{weichengruppenende} (92~Instanzen) und \textit{haltetafel} (116~Instanzen), was die in Abschnitt~\ref{subsubsec:augmentation} beschriebene gezielte Augmentierung dieser Klassen motivierte.
 \begin{table}[H]
 \centering
-\caption{Verteilung der Annotationen über alle 13~Klassen im Trainings- und Validierungssatz.
-Die Spalte \textit{Bilder} zeigt die Anzahl der Bilder mit mindestens einer Instanz
-der jeweiligen Klasse; da Bilder mehrere Klassen gleichzeitig enthalten, ist die Summe
-der Einzelwerte größer als die mit~\textsuperscript{*} markierte Gesamtbildzahl.}
+\caption{Verteilung der Annotationen über alle 13~Klassen im Trainings- und Validierungssatz}
 \label{tab:dataset_distribution}
 \footnotesize
 \begin{tabular}{|l|r|r|r|r|r|}
@@ -269,25 +266,24 @@ weichengruppenende&  74 &    74 &  18 &    18 &    92 \\
 \end{tabular}
 \end{table}
 
-Die Daten wurden in eine standardisierte COCO-Verzeichnisstruktur (Abbildung~\ref{fig:COCODatenset}) überführt, welche die Organisation von Trainings- und Validierungsdaten sowie die zugehörigen Annotationen in separaten Verzeichnissen vorsieht. Diese Struktur trennt Bilder und Labels in dedizierte Unterverzeichnisse (\texttt{images/} und \texttt{labels/}), wobei jeweils eine weitere Unterteilung in \texttt{train/} und \texttt{val/} erfolgt. Jede Bilddatei besitzt eine korrespondierende Textdatei im Labels-Verzeichnis, die die OBB-Annotationen im YOLO-Format enthält (Klassen-ID, normalisierte Polygon-Koordinaten). Diese standardisierte Struktur ermöglicht die direkte Verwendung des Datensatzes mit der Ultralytics-Trainings-API ohne zusätzliche Konvertierungsschritte.
+Die Daten wurden in eine standardisierte YOLO-Verzeichnisstruktur (Abbildung~\ref{fig:COCODatenset}) überführt, welche die Organisation von Trainings- und Validierungsdaten sowie die zugehörigen Annotationen in separaten Verzeichnissen vorsieht. Diese Struktur trennt Bilder und Labels in dedizierte Unterverzeichnisse (\texttt{images/} und \texttt{labels/}), wobei jeweils eine weitere Unterteilung in \texttt{train/} und \texttt{val/} erfolgt. Jede Bilddatei besitzt eine korrespondierende Textdatei im Labels-Verzeichnis, die die OBB-Annotationen im YOLO-Format enthält (Klassen-ID, normalisierte Polygon-Koordinaten). Diese standardisierte Struktur ermöglicht die direkte Verwendung des Datensatzes mit der Ultralytics-Trainings-API ohne zusätzliche Konvertierungsschritte.
 \begin{figure}[H]
     \centering
     \includegraphics[width=5cm]{images/Kapitel6/cocodatasetconfig.png} 
-    \caption{COCO-konforme Datensetstruktur für das YOLOv8-OBB-Training}
+    \caption{YOLO-konforme Datensetstruktur für das YOLOv8-OBB-Training}
     \label{fig:COCODatenset}
 \end{figure}
+
+Abbildung~\ref{fig:labels_distribution} visualisiert die Charakteristika des Trainingsdatensatzes mit Klassenverteilung (oben links), räumlicher Verteilung der Bounding-Box-Zentren (unten links) und Größenverteilung der annotierten Objekte (unten rechts).
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.95\textwidth]{images/Kapitel6/labels.jpg}
-    \caption{Charakteristika des Trainingsdatensatzes (923~Bilder, 12.506~Instanzen): 
-    (oben links)~Klassenverteilung mit absoluten Instanzzahlen, 
-    (unten links)~räumliche Verteilung der Bounding-Box-Zentren,
-    (unten rechts)~Größenverteilung der annotierten Objekte in normalisierten Koordinaten.}
+    \caption{Charakteristika des Trainingsdatensatzes (923~Bilder, 12.506~Instanzen)}
     \label{fig:labels_distribution}
 \end{figure}
 
-Abbildung~\ref{fig:labels_distribution} visualisiert die Charakteristika des Trainingsdatensatzes. Die Klassenverteilung zeigt die nach Augmentation resultierende Verteilung mit der erwartungsgemäß dominierenden Koordinaten-Klasse (5.945~Trainingsinstanzen), gefolgt von Signalen (1.875~Trainingsinstanzen). Die räumliche Verteilung der Bounding-Box-Zentren zeigt eine gleichmäßige Abdeckung des Bildbereichs ohne systematische Häufungen oder Leerräume, was auf eine gute Repräsentativität des Datensatzes hindeutet. Die Größenverteilung verdeutlicht die charakteristisch kleinen Objektdimensionen der Gleisplansymbole, die überwiegend im Bereich von 2--10\,\% der normalisierten Bilddimensionen liegen.
+Die Abbildung zeigt die nach Augmentation resultierende Verteilung. Die Klassenverteilung zeigt die nach Augmentation resultierende Verteilung mit der erwartungsgemäß dominierenden Koordinaten-Klasse (5.945~Trainingsinstanzen), gefolgt von Signalen (1.875~Trainingsinstanzen). Die räumliche Verteilung der Bounding-Box-Zentren zeigt eine gleichmäßige Abdeckung des Bildbereichs ohne systematische Häufungen oder Leerräume, was auf eine gute Repräsentativität des Datensatzes hindeutet. Die Größenverteilung verdeutlicht die charakteristisch kleinen Objektdimensionen der Gleisplansymbole, die überwiegend im Bereich von 2--10\,\% der normalisierten Bilddimensionen liegen.
 
 \paragraph{Diskussion der Klassenverteilung.}
 Die \textbf{Dominanz der Koordinaten-Klasse} ist ein inhärentes Merkmal von Gleisplänen und kein Artefakt des Datensatzes: Grundsätzlich besitzt jedes Objekt in einem Gleisplan -- ob Signal, GKS, Weiche oder Haltepunkt -- eine eigene Kilometerangabe. Die Anzahl der Koordinatenbeschriftungen entspricht daher annähernd der Summe aller übrigen Objektinstanzen. Ein direkter Größenvergleich zwischen der Koordinaten-Klasse und einzelnen Symbolklassen ist somit methodisch nur bedingt aussagekräftig, da Koordinaten funktional eine Referenzklasse darstellen, die alle anderen Symbolklassen begleitet.
@@ -323,7 +319,7 @@ GPU-Instanz erforderlich. Durch den Einsatz von Transfer Learning
 bereits trainierten Gewichten aufgebaut werden, was die benötigte
 Trainingszeit und Datenmenge für solche Erweiterungen deutlich reduziert.
 
-Das Modell wurde mit auf dem COCO-Datensatz \cite{Lin2014_COCO}
+Das Modell wurde mit auf dem DOTA-Datensatz \cite{Xia2018_DOTA}
 vortrainierten Gewichten initialisiert (\textit{Transfer Learning}), um die
 in den frühen Netzwerkschichten bereits gelernten generischen
 Merkmalsextraktoren -- wie Kanten-, Ecken- und Texturerkennung -- zu nutzen
@@ -341,7 +337,7 @@ Tabelle~\ref{tab:training_hyperparameters} fasst die verwendeten Hyperparameter 
 \textbf{Parameter} & \textbf{Wert} & \textbf{Begründung} \\
 \hline
 Modell & YOLOv8l-OBB & Hohe Kapazität für 13 Klassen \\
-Vortraining & COCO-Weights & Transfer Learning \\
+Vortraining & DOTA-Weights & Transfer Learning \\
 Eingabegröße & $1024 \times 1024$~px & Angepasst an Tile-Dimensionen \\
 Epochen & 120 & Konvergenz ab Epoche~$\sim$60 \\
 Batch-Größe & 8 & Limitiert durch 16~GB VRAM \\
@@ -384,7 +380,7 @@ Die Gesamtdauer des Trainings über 120~Epochen betrug \textbf{ca.\ 6~Stunden}. 
 Abbildung~\ref{fig:training_curves} zeigt den Verlauf aller drei Verlustkomponenten sowie der Evaluationsmetriken über die 120~Trainingsepoch\-en. Der Trainingsverlauf lässt sich in drei charakteristische Phasen unterteilen:
 
 \begin{enumerate}
-    \item \textbf{Warmup-Phase (Epochen 1--3):} Die Lernrate wird linear auf den Initialwert hochgefahren. Alle Verlustkomponenten fallen steil ab, was die schnelle Adaption der vortrainierten COCO-Gewichte an die Gleisplan-Domäne zeigt. Bereits nach Epoche~3 erreicht das Modell eine mAP@0,5 von 92,5\,\%.
+    \item \textbf{Warmup-Phase (Epochen 1--3):} Die Lernrate wird linear auf den Initialwert hochgefahren. Alle Verlustkomponenten fallen steil ab, was die schnelle Adaption der vortrainierten DOTA-Gewichte an die Gleisplan-Domäne zeigt. Bereits nach Epoche~3 erreicht das Modell eine mAP@0,5 von 92,5\,\%.
     
     \item \textbf{Primäre Lernphase (Epochen 4--60):} Die Verluste sinken stetig, während Precision, Recall und mAP kontinuierlich ansteigen. Die mAP@0,5 steigt von 92,5\,\% auf ca.\ 98,0\,\%, die mAP@0,5:0,95 von 79,1\,\% auf ca.\ 92,0\,\%. In dieser Phase lernt das Modell die domänenspezifischen Merkmale der 13~Symbolklassen.
     
@@ -421,13 +417,12 @@ mAP@0,5:0,95 (alle Klassen)            & 92,7\,\% \\
 Die berichteten Metriken beziehen sich auf das automatisch gesicherte Modell mit den besten Validierungsergebnissen (Epoche~103 von~120), welches als \texttt{best.pt} exportiert und für die produktive Inferenz verwendet wird. Die mAP@0,5 von \textbf{98,4\,\%} zeigt, dass das Modell bei einem IoU-Schwellenwert von 50\,\% nahezu alle Symbole korrekt lokalisiert und klassifiziert. Die strengere Metrik mAP@0,5:0,95, die über IoU-Schwellenwerte von 50\,\% bis 95\,\% mittelt, erreicht \textbf{92,7\,\%} und bestätigt eine hohe Lokalisierungspräzision auch bei strengen Überlappungsanforderungen. Der optimale F1-Score von 0,96 wird bei einer Konfidenzschwelle von 0,674 erreicht, was darauf hindeutet, dass das Modell überwiegend hochkonfidente Vorhersagen trifft.
 
 \paragraph{Klassenspezifische Leistung.}
-Abbildung~\ref{fig:pr_curve} zeigt die Precision-Recall-Kurven für alle 13~Symbolklassen. Die klassenspezifischen AP@0,5-Werte sind in Tabelle~\ref{tab:per_class_ap} zusammengestellt.
+Abbildung~\ref{fig:pr_curve} zeigt die Precision-Recall-Kurven für alle 13~Symbolklassen, wobei die Werte in der Legende die jeweilige AP@0,5 angeben. Die klassenspezifischen AP@0,5-Werte sind in Tabelle~\ref{tab:per_class_ap} zusammengestellt.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.85\textwidth]{images/Kapitel6/BoxPR_curve.png}
-    \caption{Precision-Recall-Kurven für alle 13~Symbolklassen auf dem Validierungsdatensatz. 
-    Die Werte in der Legende geben die jeweilige AP@0,5 an.}
+    \caption{Precision-Recall-Kurven für alle 13~Symbolklassen auf dem Validierungsdatensatz}
     \label{fig:pr_curve}
 \end{figure}
 
@@ -461,24 +456,22 @@ gks\_gesteuert   &   157 & 95,1\,\% & Gut \\
 Bemerkenswert ist, dass \textbf{alle 13~Klassen eine AP@0,5 über 95\,\%} erreichen und die Streuung mit 95,1\,\% bis 99,5\,\% sehr gering ist. Dies bestätigt, dass die in Abschnitt~\ref{subsubsec:augmentation} beschriebene Augmentationsstrategie das Klassenungleichgewicht erfolgreich adressiert hat: Auch Klassen mit wenigen Validierungsinstanzen (z.\,B.\ \textit{weichengruppenende} mit nur 18~Instanzen) erreichen eine AP@0,5 von 99,0\,\%.
 
 \paragraph{Fehleranalyse.}
-Abbildung~\ref{fig:confusion_matrix} zeigt die normalisierte Konfusionsmatrix auf dem Validierungsdatensatz. Die Diagonale zeigt durchgehend hohe Werte ($\geq 0{,}93$), was eine zuverlässige Klassifikation über alle Klassen bestätigt. Die vereinzelten Fehlklassifikationen betreffen primär die visuell ähnlichen GKS-Varianten sowie kleine Symbole wie Isolierstöße an Tile-Grenzen. Eine detaillierte klassenspezifische Analyse der Detektionsleistung erfolgt in Kapitel~\ref{chap:evaluation}.
+Abbildung~\ref{fig:confusion_matrix} zeigt die normalisierte Konfusionsmatrix auf dem Validierungsdatensatz, wobei Zeilen die vorhergesagten Klassen und Spalten die tatsächlichen Klassen repräsentieren. Die Diagonale zeigt durchgehend hohe Werte ($\geq 0{,}93$), was eine zuverlässige Klassifikation über alle Klassen bestätigt. Die vereinzelten Fehlklassifikationen betreffen primär die visuell ähnlichen GKS-Varianten sowie kleine Symbole wie Isolierstöße an Tile-Grenzen. Eine detaillierte klassenspezifische Analyse der Detektionsleistung erfolgt in Kapitel~\ref{chap:evaluation}.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.85\textwidth]{images/Kapitel6/confusion_matrix_normalized.png}
-    \caption{Normalisierte Konfusionsmatrix auf dem Validierungsdatensatz.
-    Zeilen repräsentieren die vorhergesagten Klassen, Spalten die tatsächlichen Klassen.}
+    \caption{Normalisierte Konfusionsmatrix auf dem Validierungsdatensatz}
     \label{fig:confusion_matrix}
 \end{figure}
 \newpage
 \paragraph{Konfidenzkalibrierung.}
-Abbildung~\ref{fig:f1_curve} zeigt die F1-Score-Konfidenz-Kurve für alle 13~Klassen.
+Abbildung~\ref{fig:f1_curve} zeigt die F1-Score-Konfidenz-Kurve für alle 13~Klassen, wobei das globale Optimum bei $F1 = 0{,}96$ bei einer Schwelle von 0,674 liegt.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.85\textwidth]{images/Kapitel6/BoxF1_curve.png}
-    \caption{F1-Score in Abhängigkeit der Konfidenzschwelle. 
-    Das globale Optimum liegt bei $F1 = 0{,}96$ bei einer Schwelle von 0,674.}
+    \caption{F1-Score in Abhängigkeit der Konfidenzschwelle}
     \label{fig:f1_curve}
 \end{figure}
 
@@ -896,8 +889,8 @@ Basierend auf dem normalisierten Winkel $\theta_{\text{norm}}$ wird entschieden,
 
 \begin{equation}
 \text{Orientierung} = \begin{cases}
-\text{Horizontal}, & \text{falls } |\theta_{\text{norm}}| < 15^\circ \text{ oder } |\theta_{\text{norm}} - 180^\circ| < 15^\circ \\
-\text{Vertikal}, & \text{falls } |\theta_{\text{norm}} - 90^\circ| < 15^\circ \text{ oder } |\theta_{\text{norm}} - 270^\circ| < 15^\circ \\
+\text{Horizontal}, & \text{falls } |\theta_{\text{norm}}| < 12^\circ \text{ oder } |\theta_{\text{norm}} - 180^\circ| < 12^\circ \\
+\text{Vertikal}, & \text{falls } |\theta_{\text{norm}} - 90^\circ| < 12^\circ \text{ oder } |\theta_{\text{norm}} - 270^\circ| < 12^\circ \\
 \text{Angular}, & \text{sonst}
 \end{cases}
 \end{equation}
@@ -1120,7 +1113,7 @@ Die Whitelist ist besonders wichtig, da sie die Fehlerrate deutlich reduziert. O
     \item \textbf{GPU-Nutzung}: Aktiviert - beschleunigt die Verarbeitung erheblich, wenn eine GPU verfügbar ist
 \end{itemize}
 
-
+Der Ablauf dieser Multi-Engine-Kaskadierung ist in Abbildung~\ref{fig:ocr_cascade} dargestellt.
 
 \begin{figure}[H]
 \centering
@@ -1226,23 +1219,23 @@ Das System unterscheidet zwischen dem \textbf{Cardinal Path} (für nahezu horizo
 
 Zunächst wird der von YOLO gelieferte Winkel normalisiert. Da YOLO Winkel im Bereich von $0^\circ$ bis $360^\circ$ liefern kann, werden Winkel über $180^\circ$ durch Subtraktion von $360^\circ$ in den Bereich $-180^\circ$ bis $180^\circ$ transformiert. Ein Winkel von $270^\circ$ wird beispielsweise zu $-90^\circ$. Dies vereinfacht die Logik erheblich, da nun positive Winkel eine Drehung gegen den Uhrzeigersinn und negative Winkel eine Drehung im Uhrzeigersinn darstellen.
 
-Anschließend wird geprüft, ob der Absolutwert des normalisierten Winkels unter $15^\circ$ liegt. Diese $15^\circ$ wurden empirisch durch Experimente bestimmt: Bei Winkeln bis zu dieser Größe liefert eine einfache Rotation auf den nächsten kardinalen Winkel ($0^\circ, 90^\circ, 180^\circ$ oder $270^\circ$) bessere Ergebnisse als eine komplexe Perspektiventransformation. Der Grund ist, dass bei kleinen Winkeln die Perspektiventransformation zu leichten Verzerrungen führen kann, während die diskrete Rotation verlustfrei ist.
+Anschließend wird geprüft, ob der Absolutwert des normalisierten Winkels unter $12^\circ$ liegt. Diese $12^\circ$ wurden empirisch durch Experimente bestimmt: Bei Winkeln bis zu dieser Größe liefert eine einfache Rotation auf den nächsten kardinalen Winkel ($0^\circ, 90^\circ, 180^\circ$ oder $270^\circ$) bessere Ergebnisse als eine komplexe Perspektiventransformation. Der Grund ist, dass bei kleinen Winkeln die Perspektiventransformation zu leichten Verzerrungen führen kann, während die diskrete Rotation verlustfrei ist.
 
-\textbf{Cardinal Path (Winkel $\leq$ $15^\circ$):} Die vier kardinalen Kandidaten ($0^\circ, 90^\circ, 180^\circ, 270^\circ$) sind jeweils $90^\circ$ voneinander entfernt. Der Schwellenwert von $15^\circ$ bedeutet, dass der gemessene Winkel maximal $15^\circ$ vom nächstgelegenen Kardinalwinkel abweicht. Da die Kardinale $90^\circ$ auseinander liegen, deckt dieser Schwellenwert einen Bereich von $\pm15^\circ$ um jeden Kardinalwinkel ab -- also insgesamt $30^\circ$ von den $90^\circ$ zwischen zwei benachbarten Kardinalen. Bei Winkeln innerhalb dieses Bereichs wird der Bildausschnitt einfach auf den nächstgelegenen kardinalen Winkel rotiert. Die Rotation erfolgt mittels einer Standard-Rotationsmatrix, die das Bild um den Mittelpunkt dreht. Diese Methode ist schnell, einfach und vermeidet Interpolationsartefakte, da nur $90^\circ$-Schritte verwendet werden.
+\textbf{Cardinal Path (Winkel $\leq$ $12^\circ$):} Die vier kardinalen Kandidaten ($0^\circ, 90^\circ, 180^\circ, 270^\circ$) sind jeweils $90^\circ$ voneinander entfernt. Der Schwellenwert von $12^\circ$ bedeutet, dass der gemessene Winkel maximal $12^\circ$ vom nächstgelegenen Kardinalwinkel abweicht. Da die Kardinale $90^\circ$ auseinander liegen, deckt dieser Schwellenwert einen Bereich von $\pm12^\circ$ um jeden Kardinalwinkel ab -- also insgesamt $24^\circ$ von den $90^\circ$ zwischen zwei benachbarten Kardinalen. Bei Winkeln innerhalb dieses Bereichs wird der Bildausschnitt einfach auf den nächstgelegenen kardinalen Winkel rotiert. Die Rotation erfolgt mittels einer Standard-Rotationsmatrix, die das Bild um den Mittelpunkt dreht. Diese Methode ist schnell, einfach und vermeidet Interpolationsartefakte, da nur $90^\circ$-Schritte verwendet werden.
 
-Konkret wird aus den vier Kandidaten derjenige gewählt, der die kleinste Winkeldifferenz zum normalisierten Winkel hat. Ein Winkel von $12^\circ$ liegt innerhalb des $15^\circ$-Schwellenwerts und wird daher auf $0^\circ$ rotiert; ein Winkel von $85^\circ$ wird auf $90^\circ$ rotiert, da die Differenz nur $5^\circ$ beträgt.
+Konkret wird aus den vier Kandidaten derjenige gewählt, der die kleinste Winkeldifferenz zum normalisierten Winkel hat. Ein Winkel von $10^\circ$ liegt innerhalb des $12^\circ$-Schwellenwerts und wird daher auf $0^\circ$ rotiert; ein Winkel von $85^\circ$ wird auf $90^\circ$ rotiert, da die Differenz nur $5^\circ$ beträgt.
 
 
-\textbf{Angular Path (Winkel > $15^\circ$):} Bei größeren Abweichungen von den kardinalen Winkeln wird eine Perspektiventransformation verwendet. Diese Methode nutzt die vier Eckpunkte der Oriented Bounding Box (OBB), um eine Transformationsmatrix zu berechnen. Die Transformation wandelt die gedrehte OBB in ein achsenparalleles Rechteck um, wodurch der Text horizontal ausgerichtet wird.
+\textbf{Angular Path (Winkel > $12^\circ$):} Bei größeren Abweichungen von den kardinalen Winkeln wird eine Perspektiventransformation verwendet. Diese Methode nutzt die vier Eckpunkte der Oriented Bounding Box (OBB), um eine Transformationsmatrix zu berechnen. Die Transformation wandelt die gedrehte OBB in ein achsenparalleles Rechteck um, wodurch der Text horizontal ausgerichtet wird.
 
 Die Perspektiventransformation wird mit OpenCV's \texttt{getPerspectiveTransform()}-Funktion implementiert. Diese Funktion benötigt zwei Sätze von je vier Punkten: die Quellpunkte (die vier Ecken der gedrehten OBB) und die Zielpunkte (die vier Ecken eines aufrechten Rechtecks). Aus diesen acht Punkten berechnet die Funktion eine 3x3-Transformationsmatrix, die dann mit \texttt{warpPerspective()} auf das Bild angewendet wird.
 
-Obwohl diese Methode rechenintensiver ist (etwa 2-3 Mal langsamer als eine einfache Rotation), liefert sie bei beliebigen Winkeln deutlich bessere Ergebnisse, da der Text exakt horizontal ausgerichtet wird, nicht nur annähernd.
+Obwohl diese Methode rechenintensiver ist (etwa 2-3 Mal langsamer als eine einfache Rotation), liefert sie bei beliebigen Winkeln deutlich bessere Ergebnisse, da der Text exakt horizontal ausgerichtet wird, nicht nur annähernd. Abbildung~\ref{fig:dual_path} veranschaulicht den Unterschied zwischen beiden Rotationsstrategien.
 
 \begin{figure}[H]
 \centering
 \begin{tikzpicture}[
-    >=latex, 
+    >=latex,
     font=\small,
     % Styles für Konsistenz
     box/.style={thick, fill=gray!20},
@@ -1252,7 +1245,7 @@ Obwohl diese Methode rechenintensiver ist (etwa 2-3 Mal langsamer als eine einfa
 
 % --- OBERER TEIL: CARDINAL PATH ---
 \begin{scope}[yshift=0cm] % Lokaler Bereich oben
-    \node at (0, 1.5) {\textbf{Cardinal Path ($|\theta| \leq 15^\circ$)}};
+    \node at (0, 1.5) {\textbf{Cardinal Path ($|\theta| \leq 12^\circ$)}};
 
     % Original (lokal rotiert um 0,0)
     \draw[box, rotate=10] (-1, -0.5) rectangle (1, 0.5);
@@ -1273,7 +1266,7 @@ Obwohl diese Methode rechenintensiver ist (etwa 2-3 Mal langsamer als eine einfa
 % --- UNTERER TEIL: ANGULAR PATH ---
 % Wir verschieben den ganzen Block nach unten (y = -4cm)
 \begin{scope}[yshift=-4cm] 
-    \node at (0, 1.5) {\textbf{Angular Path ($|\theta| > 15^\circ$)}};
+    \node at (0, 1.5) {\textbf{Angular Path ($|\theta| > 12^\circ$)}};
 
     % Original (Jetzt zentriert gezeichnet, Rotation wirkt lokal!)
     \draw[box, rotate=35] (-1, -0.5) rectangle (1, 0.5);
@@ -1351,7 +1344,7 @@ GKS-Symbole sind häufig von dünnen Linien umgeben, die die OCR-Qualität beein
 
 Opening ist eine Kombination aus zwei aufeinanderfolgenden Operationen: Zunächst wird eine \textbf{Erosion} durchgeführt, die kleine helle Strukturen (wie dünne Linien) entfernt. Anschließend wird eine \textbf{Dilation} durchgeführt, die die verbleibenden Strukturen (die Textzeichen) wieder auf ihre ursprüngliche Größe erweitert. Der Effekt ist, dass dünne Linien komplett verschwinden, während dickere Strukturen (Buchstaben und Zahlen) erhalten bleiben.
 
-Der Filter verwendet ein quadratisches strukturierendes Element mit der Größe 3x3 Pixel - also eine Matrix aus 9 Einsen. Diese Größe wurde gewählt, weil sie ausreicht, um typische Störlinien (1-2 Pixel dick) zu entfernen, aber nicht so groß ist, dass sie die Textzeichen selbst beschädigt. Die Anwendung erfolgt auf dem binärisierten Bild, wobei die Pixel entweder komplett weiß (Text) oder komplett schwarz (Hintergrund) sind.
+Der Filter verwendet ein quadratisches strukturierendes Element mit der Größe 3x3 Pixel - also eine Matrix aus 9 Einsen. Diese Größe wurde gewählt, weil sie ausreicht, um typische Störlinien (1-2 Pixel dick) zu entfernen, aber nicht so groß ist, dass sie die Textzeichen selbst beschädigt. Die Anwendung erfolgt auf dem binärisierten Bild, wobei die Pixel entweder komplett weiß (Text) oder komplett schwarz (Hintergrund) sind (siehe Abbildung~\ref{fig:morphology}).
 \begin{figure}[H]
 \centering
 \begin{tikzpicture}
@@ -1405,7 +1398,7 @@ Dieser Ansatz erhöht zwar die Rechenzeit erheblich (die OCR wird dreimal durchg
 
 \subsection{Bildvorverarbeitungs-Algorithmen}
 
-Vor der eigentlichen OCR-Verarbeitung werden die Bildausschnitte durch eine Reihe von Vorverarbeitungsschritten optimiert, um die Textqualität zu verbessern und störende Elemente zu entfernen.
+Vor der eigentlichen OCR-Verarbeitung werden die Bildausschnitte durch eine Reihe von Vorverarbeitungsschritten optimiert, um die Textqualität zu verbessern und störende Elemente zu entfernen. Abbildung~\ref{fig:preprocessing} zeigt diese Schritte schematisch.
 
 \begin{figure}[H]
 \centering
@@ -1553,7 +1546,7 @@ Die drei Komponenten sind:
     \item $S_{\text{length}}$: Wie gut passt die Textlänge zur erwarteten Länge dieser Klasse? Berechnet mit einer Gauß-Kurve: Je näher die Länge am Erwartungswert, desto höher der Score.
 \end{itemize}
 
-Die Gewichte (0.5, 0.3, 0.2) wurden empirisch optimiert. Die OCR-Konfidenz wird am stärksten gewichtet (50\%), da sie direkt von der Engine stammt und deren \enquote{Sicherheit} widerspiegelt. Die Regex-Validierung erhält 30\%, da sie strukturelle Korrektheit prüft. Der Längen-Score erhält nur 20\%, da Längenabweichungen manchmal legitim sind (z.B. \enquote{A1} vs. \enquote{A123} - beide gültige Signale).
+Die Gewichte (0.5, 0.3, 0.2) wurden empirisch optimiert, wie in Abbildung~\ref{fig:Konfidenz_weights} dargestellt. Die OCR-Konfidenz wird am stärksten gewichtet (50\%), da sie direkt von der Engine stammt und deren \enquote{Sicherheit} widerspiegelt. Die Regex-Validierung erhält 30\%, da sie strukturelle Korrektheit prüft. Der Längen-Score erhält nur 20\%, da Längenabweichungen manchmal legitim sind (z.B. \enquote{A1} vs. \enquote{A123} - beide gültige Signale).
 \begin{figure}[H]
 \centering
 \begin{tikzpicture}
@@ -1613,7 +1606,7 @@ Die gesamte OCR-Pipeline wird als modulare Funktion implementiert, die eine List
     
     \item \textbf{Klassenspezifisches Preprocessing}: Je nach Symbolklasse werden die entsprechenden Vorverarbeitungsschritte angewendet - adaptive Padding-Berechnung, morphologische Filterung für GKS, oder Multi-Scale-Processing für Koordinaten.
     
-    \item \textbf{Dual-Angle Routing}: Basierend auf dem Rotationswinkel wird entweder der Cardinal Path (bei Winkeln $\leq$ $15^\circ$) oder der Angular Path (bei Winkeln >$15^\circ$) gewählt und die entsprechende Transformation (diskrete Rotation oder Perspektiventransformation) durchgeführt.
+    \item \textbf{Dual-Angle Routing}: Basierend auf dem Rotationswinkel wird entweder der Cardinal Path (bei Winkeln $\leq$ $12^\circ$) oder der Angular Path (bei Winkeln >$12^\circ$) gewählt und die entsprechende Transformation (diskrete Rotation oder Perspektiventransformation) durchgeführt.
     
     \item \textbf{Multi-Engine OCR}: Der vorverarbeitete Bildausschnitt wird durch die kaskadierende OCR-Pipeline geschickt. Zuerst PaddleOCR mit vier Rotationen, dann bei Bedarf Tesseract, und optional EasyOCR.
     
@@ -1693,8 +1686,7 @@ d_{\text{local}} = \sqrt{dx_{\text{local}}^2 + dy_{\text{local}}^2} = \sqrt{dx^2
 
 \subsubsection{Praktische Berechnung der Koordinatentransformation}
 
-Die Implementierung der Koordinatentransformation erfolgt für jedes Symbol-Text-Paar einzeln. Zunächst werden die globalen Koordinaten des Symbols $(x_A, y_A)$ und des Textkandidaten $(x_C, y_C)$ aus den YOLO- bzw. OCR-Ergebnissen extrahiert. Der Rotationswinkel $\theta_A$ des Symbols liegt ebenfalls aus der YOLO-Detektion vor und muss von Gradmaß in Bogenmaß konvertiert werden. Die Berechnung der lokalen Koordinaten erfolgt dann durch direkte Anwendung der Transformationsgleichung (6.3), wobei die trigonometrischen Funktionen numerisch ausgewertet werden. 
-
+Die Implementierung der Koordinatentransformation erfolgt für jedes Symbol-Text-Paar einzeln. Zunächst werden die globalen Koordinaten des Symbols $(x_A, y_A)$ und des Textkandidaten $(x_C, y_C)$ aus den YOLO- bzw. OCR-Ergebnissen extrahiert. Der Rotationswinkel $\theta_A$ des Symbols liegt ebenfalls aus der YOLO-Detektion vor und muss von Gradmaß in Bogenmaß konvertiert werden. Die Berechnung der lokalen Koordinaten erfolgt dann durch direkte Anwendung der Transformationsgleichung (6.3), wobei die trigonometrischen Funktionen numerisch ausgewertet werden. Abbildung~\ref{fig:coordinate_transformation} verdeutlicht dieses Prinzip.
 
 \begin{figure}[H]
 \centering
@@ -1800,11 +1792,11 @@ wobei $h_{\text{symbol}}$ die Höhe und $w_{\text{symbol}}$ die Breite der Symbo
 
 \subsubsection{Klassenspezifische Multiplikatoren}
 
-Die Multiplikatoren wurden empirisch auf Basis der typischen Layoutkonventionen in Gleisplänen optimiert. Tabelle~\ref{tab:linking_multipliers} zeigt die konfigurierten Werte für alle Symbolklassen.
+Die Multiplikatoren wurden empirisch auf Basis der typischen Layoutkonventionen in Gleisplänen optimiert. Tabelle~\ref{tab:linking_multipliers} zeigt die konfigurierten Werte für alle Symbolklassen, wobei die Wertebereiche für $dy_{\text{max}}$ und $dx_{\text{max}}$ auf typischen Symbolgrößen von 50--80 Pixeln bei 500 DPI basieren.
 
 \begin{table}[H]
 \centering
-\caption{Klassenspezifische Linking-Parameter. Die Wertebereiche für $dy_{\text{max}}$ und $dx_{\text{max}}$ basieren auf typischen Symbolgrößen von 50--80 Pixeln bei 500 DPI.}
+\caption{Klassenspezifische Linking-Parameter}
 \label{tab:linking_multipliers}
 \begin{tabular}{|l|c|c|r|r|}
 \hline
@@ -2187,7 +2179,7 @@ Die Validierung erfolgt durch sequenzielle Ausführung aller implementierten Pr�
 \textbf{Validierungsfokus:} Die regelbasierte Validierung umfasst alle 13 Symbolklassen. Jede Klasse besitzt klassenspezifische Validierungsregeln, die auf deren typischen Textformaten und Plausibilitätsanforderungen basieren.
 \subsubsection{Dreistufige Validierungsstrategie}
 
-Die Validierung ist hierarchisch in drei Ebenen organisiert, die aufeinander aufbauen und unterschiedliche Aspekte der Datenqualität adressieren. Diese Strukturierung ermöglicht eine systematische Fehleridentifikation von grundlegenden Formatproblemen bis hin zu komplexen semantischen Inkonsistenzen.
+Die Validierung ist hierarchisch in drei Ebenen organisiert, die aufeinander aufbauen und unterschiedliche Aspekte der Datenqualität adressieren (siehe Abbildung~\ref{fig:validation_architecture}). Diese Strukturierung ermöglicht eine systematische Fehleridentifikation von grundlegenden Formatproblemen bis hin zu komplexen semantischen Inkonsistenzen.
 
 \begin{figure}[H]
     \centering
@@ -2283,12 +2275,12 @@ Für GKS-Nummern wurde beobachtet, dass OCR-Engines gelegentlich Trennzeichen wi
 
 \subsubsection{Konfidenzbasierte Anwendungsstrategie}
 
-Die Anwendung automatischer Korrekturen erfolgt nicht undifferenziert, sondern wird durch ein konfidenzbasiertes Bewertungssystem gesteuert. Jede potenzielle Korrektur wird mit einem normalisierten Konfidenzwert im Intervall $[0, 1]$ versehen, der die Zuverlässigkeit der Transformation quantifiziert. Dieser Wert wird aus mehreren Faktoren abgeleitet, insbesondere der Eindeutigkeit der Korrektur, der Häufigkeit des identifizierten Fehlermusters und dem Risiko einer Fehlkorrektur.
+Die Anwendung automatischer Korrekturen erfolgt nicht undifferenziert, sondern wird durch ein konfidenzbasiertes Bewertungssystem gesteuert (siehe Abbildung~\ref{fig:confidence_decision_readable}). Jede potenzielle Korrektur wird mit einem normalisierten Konfidenzwert im Intervall $[0, 1]$ versehen, der die Zuverlässigkeit der Transformation quantifiziert. Dieser Wert wird aus mehreren Faktoren abgeleitet, insbesondere der Eindeutigkeit der Korrektur, der Häufigkeit des identifizierten Fehlermusters und dem Risiko einer Fehlkorrektur.
 
 \begin{figure}[H]
 \centering
 \begin{tikzpicture}[
-    scale=0.75, 
+    scale=0.75,
     transform shape, 
     % --- HIER IST DER TRICK ---
     % Wir setzen die Grundschrift auf \large. 
@@ -2362,7 +2354,7 @@ Ein spezialisierter Tab ist den automatisch korrigierbaren Problemen gewidmet un
 
 
 
-Weitere Tabs bieten gefilterte Ansichten, die ausschließlich Fehler, Warnungen oder Informationshinweise anzeigen. Diese kategoriespezifischen Ansichten reduzieren die kognitive Last bei der Fehleranalyse, indem sie eine fokussierte Bearbeitung nach Priorität ermöglichen. Kritische Fehler, die zwingend einer Korrektur bedürfen, können somit isoliert betrachtet werden, ohne durch weniger dringende Warnungen oder informative Hinweise überlagert zu werden.
+Weitere Tabs bieten gefilterte Ansichten, die ausschließlich Fehler, Warnungen oder Informationshinweise anzeigen. Diese kategoriespezifischen Ansichten reduzieren die kognitive Last bei der Fehleranalyse, indem sie eine fokussierte Bearbeitung nach Priorität ermöglichen. Kritische Fehler, die zwingend einer Korrektur bedürfen, können somit isoliert betrachtet werden, ohne durch weniger dringende Warnungen oder informative Hinweise überlagert zu werden. Die verwendete Farbkodierung zeigt Abbildung~\ref{fig:validation_color_coding}.
 
 \begin{figure}[H]
 \centering
@@ -2393,7 +2385,7 @@ Weitere Tabs bieten gefilterte Ansichten, die ausschließlich Fehler, Warnungen 
 
 \subsubsection{Jump-to-Detection Funktionalität}
 
-Eine wesentliche Herausforderung bei der manuellen Validierung besteht in der effizienten Lokalisierung problematischer Erkennungen im Originaldokument. Das System adressiert dies durch eine integrierte Navigation, die eine direkte Verlinkung zwischen Validierungsproblemen und der entsprechenden Position im PDF-Viewer ermöglicht.
+Eine wesentliche Herausforderung bei der manuellen Validierung besteht in der effizienten Lokalisierung problematischer Erkennungen im Originaldokument. Das System adressiert dies durch eine integrierte Navigation, die eine direkte Verlinkung zwischen Validierungsproblemen und der entsprechenden Position im PDF-Viewer ermöglicht (siehe Abbildung~\ref{fig:jump_to_detection}).
 
 \begin{figure}[H]
 \centering
@@ -2546,7 +2538,7 @@ Für die eindeutige Identifikation extrahierter Objekte über verschiedene Planv
 
 \begin{equation} \text{UID}(o) = \text{class}(o) \oplus \text{normalize}(\text{content}(o)) \oplus \text{GridIndex}(x, y) \end{equation}
 
-wobei GridIndex(x,y) die Koordinaten auf ein grobes Raster abbildet, um Robustheit gegen minimale Pixelverschiebungen zu gewährleisten, während Identität bei gleicher Semantik an verschiedenen Orten unterschieden wird. $\oplus$ bezeichnet die String-Konkatenation und die Normalisierungsfunktion $\text{normalize}: \Sigma^* \rightarrow \Sigma^*$ Leerzeichen entfernt und Sonderzeichen standardisiert, um konsistente Identifikatoren zu gewährleisten.
+wobei GridIndex(x,y) die Koordinaten auf ein grobes Raster abbildet, um Robustheit gegen minimale Pixelverschiebungen zu gewährleisten, während Identität bei gleicher Semantik an verschiedenen Orten unterschieden wird. $\oplus$ bezeichnet die String-Konkatenation und die Normalisierungsfunktion $\text{normalize}: \Sigma^* \rightarrow \Sigma^*$ Leerzeichen entfernt und Sonderzeichen standardisiert, um konsistente Identifikatoren zu gewährleisten. Abbildung~\ref{fig:uid_generation} zeigt diesen Prozess schematisch.
 \begin{figure}[H]
 \centering
 \begin{tikzpicture}[
@@ -2604,6 +2596,8 @@ Der Vergleichsalgorithmus verwendet den \textit{Hungarian Algorithm} (Kuhn-Munkr
 \Delta_{\text{rem}} &= \{a \in A \mid \nexists\, b \in B: \text{matched}(a, b)\} \quad \text{(entfernte Objekte)} \\
 \Delta_{\text{mov}} &= \{(a, b) \mid \text{matched}(a, b) \land \text{coord}(a) \neq \text{coord}(b)\} \quad \text{(verschobene Objekte)}
 \end{align}
+
+Abbildung~\ref{fig:diff_algorithm} visualisiert diese mengentheoretischen Relationen.
 
 \begin{figure}[H]
 \centering
@@ -2713,11 +2707,11 @@ Ein konkretes Beispiel einer detektierten Koordinatenänderung zeigen die Abbild
 Die automatische Änderungsdetektion identifizierte eine Verschiebung um $\Delta = -0{,}0041$ km (ca. 4,1 Meter) durch UID-basierten Objektvergleich. Der Algorithmus erkannte, dass beide Versionen dasselbe Objekt (\texttt{gks\_gesteuert\_0305}) beschreiben, jedoch unterschiedliche Koordinatenwerte aufweisen. Solche Präzisionsänderungen im Meterbereich sind in der Feinplanung von Bahnanlagen kritisch und müssen dokumentiert werden, da sie die Positionierung sicherheitsrelevanter Komponenten betreffen.
 \subsection{Rückverfolgbarkeit zur Quelldokumentation}
 
-Die vollständige Rückverfolgbarkeit extrahierter Daten zur Originalquelle ist essentiell für die Validierung und manuelle Nachkorrektur von Extraktionsergebnissen. Hierzu wird für jeden extrahierten Datensatz ein umfassender Metadatensatz persistiert.
+Die vollständige Rückverfolgbarkeit extrahierter Daten zur Originalquelle ist essentiell für die Validierung und manuelle Nachkorrektur von Extraktionsergebnissen. Hierzu wird für jeden extrahierten Datensatz ein umfassender Metadatensatz persistiert, dessen hierarchische Struktur Abbildung~\ref{fig:metadata_structure} zeigt.
 \begin{figure}[H]
 \centering
 \begin{tikzpicture}[
-    scale=0.95, 
+    scale=0.95,
     transform shape,
     % --- Baum-Einstellungen ---
     level 1/.style={sibling distance=4.2cm, level distance=1.8cm}, % Weiter auseinander für Platz
@@ -2835,7 +2829,7 @@ Diese Funktionalität reduziert den kognitiven Aufwand bei der manuellen Validie
 
 \subsection{Persistente Datenhaltung}
 
-Das System verwendet PostgreSQL (Version 14.9) zur persistenten Speicherung von Extraktionsergebnissen, Workspace-Zuständen und Qualitätsmetriken.
+Das System verwendet PostgreSQL (Version 14.9) zur persistenten Speicherung von Extraktionsergebnissen, Workspace-Zuständen und Qualitätsmetriken. Das Datenbankschema ist in Abbildung~\ref{fig:database_schema} dargestellt.
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.9\textwidth]{images/Kapitel6/Postgresql datenbank diagramm .png} 
@@ -3109,7 +3103,7 @@ wobei 72 die Standard-DPI-Referenz für PDF-Dokumente darstellt. Der Zoomfaktor 
 \end{figure}
 \subsubsection{Overlay-Darstellung}
 
-Über dem gerenderten PDF wird eine transparente Grafikschicht gelegt, auf der die erkannten Bounding Boxes (OBBs) als Polygone visualisiert werden. Alle 12 Objektklassen werden einheitlich in Grün dargestellt, um eine klare visuelle Abgrenzung vom Dokumentinhalt zu gewährleisten. Jede Bounding Box zeigt zusätzlich folgende Informationen als Textlabel an:
+Über dem gerenderten PDF wird eine transparente Grafikschicht gelegt, auf der die erkannten Bounding Boxes (OBBs) als Polygone visualisiert werden. Alle 12 Symbolklassen werden einheitlich in Grün dargestellt, um eine klare visuelle Abgrenzung vom Dokumentinhalt zu gewährleisten. Jede Bounding Box zeigt zusätzlich folgende Informationen als Textlabel an:
 
 \begin{itemize}
     \item Objektbezeichnung (z.\,B. Signalname, GKS-Nummer)
@@ -3340,12 +3334,11 @@ Der JSON-Export folgt einem hierarchischen Schema mit vollständigen Geometrieda
 }
 \end{verbatim}
 
-Diese Struktur ermöglicht die vollständige Rekonstruktion der Extraktionsergebnisse und eignet sich für Weiterverarbeitung in anderen Systemen.
+Diese Struktur ermöglicht die vollständige Rekonstruktion der Extraktionsergebnisse und eignet sich für Weiterverarbeitung in anderen Systemen. Abbildung~\ref{fig:export_format_selection} zeigt den Export-Dialog, dessen Dropdown-Menü drei Ausgabeformate bietet: Excel (.xlsx), CSV (.csv) und JSON (.json).
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.95\textwidth]{images/Kapitel6/export_dialog_json.png}
-\caption{Export-Dialog mit Formatauswahl. Das Dropdown-Menü (rechts) bietet 
-drei Ausgabeformate: Excel (.xlsx), CSV (.csv) und JSON (.json). }
+\caption{Export-Dialog mit Formatauswahl}
 \label{fig:export_format_selection}
 \end{figure}
 

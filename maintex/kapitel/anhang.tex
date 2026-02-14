@@ -1,0 +1,30 @@
+\chapter{Anhang}
+\label{chap:anhang}
+
+\section{Quellcode}
+\label{sec:quellcode}
+
+Der vollständige Quellcode des entwickelten Prototyps wird dieser Arbeit als separate Datei beigefügt. Die Codebasis umfasst folgende Hauptkomponenten:
+
+\begin{itemize}
+    \item \textbf{core/} -- Kernmodule für Objekterkennung, OCR und Linking
+    \begin{itemize}
+        \item \texttt{yolo\_detection.py} -- YOLO-Detektionslogik
+        \item \texttt{ocr\_engine.py} -- Multi-Engine OCR-Kaskade
+        \item \texttt{linking.py} -- Räumlicher Linking-Algorithmus
+        \item \texttt{pipelineworker.py} -- Pipeline-Orchestrierung
+        \item \texttt{image\_processing.py} -- Bildvorverarbeitung
+    \end{itemize}
+    \item \textbf{ui/} -- PyQt5-basierte Desktop-Anwendung (18 Module)
+    \item \textbf{pdfcomparison/} -- Vergleichsmodul für Planversionen
+    \item \textbf{uservalidation/} -- Human-in-the-Loop Validierungskomponenten
+    \item \textbf{utils/} -- Hilfsfunktionen (DPI, Rotation, UUID)
+    \item \texttt{config.py} -- Zentrale Konfiguration und Klassenparameter
+    \item \texttt{database.py} -- Datenbankanbindung
+    \item \texttt{main.py} -- Applikations-Einstiegspunkt
+\end{itemize}
+
+\vspace{1em}
+\noindent\textbf{Bereitstellung:} Der Quellcode ist im folgenden Ordner dieser Arbeit beigefügt:\\[0.5em]
+\texttt{2026\_MA Swain\_KIPrototypErkennungGleisplan\_Anhang\_Code}
+

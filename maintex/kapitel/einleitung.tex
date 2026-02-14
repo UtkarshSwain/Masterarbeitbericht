@@ -105,47 +105,22 @@ Diese Hauptfrage wird in der vorliegenden Arbeit exemplarisch am Anwendungsfall 
     \item \textbf{TF3:} Wie muss eine Systemarchitektur gestaltet sein, um neue Symbolklassen und Datenformate modular zu integrieren, wobei Änderungen auf einzelne Pipeline-Komponenten beschränkt bleiben?
     \item \textbf{TF4:} Welcher algorithmische Ansatz eignet sich, um in rein visuellen Daten semantische Änderungen zwischen zwei Planversionen robust zu identifizieren und visualisierbar zu machen?
 \end{itemize}
-
+\newpage
 \section{Forschungsvorgehen}
 
-Zur Beantwortung der formulierten Forschungsfragen wurde ein methodischer
-Ansatz gewählt, der sich aus vier aufeinander aufbauenden Phasen zusammensetzt.
+Zur Beantwortung der formulierten Forschungsfragen wurde ein methodischer Ansatz gewählt, der sich aus vier aufeinander aufbauenden Phasen zusammensetzt.
 
 \textbf{Phase 1: Literaturrecherche und Technologieanalyse.}
-Zunächst wurde eine systematische Literaturrecherche in den Bereichen
-Objekterkennung in technischen Zeichnungen, optische Zeichenerkennung
-sowie branchenübergreifende Digitalisierung von Planungsunterlagen
-durchgeführt. Dabei wurden sowohl aktuelle Fachpublikationen aus Datenbanken
-wie IEEE Xplore, Springer und Google Scholar als auch die offizielle
-Dokumentation relevanter Open-Source-Werkzeuge (insbesondere YOLOv8,
-PaddleOCR, Tesseract und EasyOCR) ausgewertet. Die Ergebnisse dieser
-Phase bilden die Grundlage für Kapitel~\ref{chap:theoretischeundtechnischegrundlagen}.
+Zunächst wurde eine systematische Literaturrecherche in den Bereichen Objekterkennung in technischen Zeichnungen, optische Zeichenerkennung sowie branchenübergreifende Digitalisierung von Planungsunterlagen durchgeführt. Dabei wurden sowohl aktuelle Fachpublikationen aus Datenbanken wie IEEE Xplore, Springer und Google Scholar als auch die offizielle Dokumentation relevanter Open-Source-Werkzeuge (insbesondere YOLOv8, PaddleOCR, Tesseract und EasyOCR) ausgewertet. Die Ergebnisse dieser Phase bilden die Grundlage für Kapitel~\ref{chap:theoretischeundtechnischegrundlagen}.
 
 \textbf{Phase 2: Anforderungserhebung und Domänenanalyse.}
-Parallel zur Literaturrecherche wurden Experteninterviews mit
-Fachspezialisten der Siemens Mobility GmbH sowie Rücksprachen mit
-wissenschaftlichen Betreuern an der TU Clausthal geführt. Diese dienten
-der Identifikation praxisrelevanter Anforderungen, der Analyse bestehender
-manueller Arbeitsabläufe sowie dem Verständnis domänenspezifischer
-Besonderheiten der Gleisplanverarbeitung. Auf dieser Basis wurden die
-funktionalen und nicht-funktionalen Anforderungen systematisch abgeleitet
-(Kapitel~\ref{chap:anforderungen}).
+Parallel zur Literaturrecherche wurden Experteninterviews mit Fachspezialisten der Siemens Mobility GmbH sowie Rücksprachen mit wissenschaftlichen Betreuern an der TU Clausthal geführt. Diese dienten der Identifikation praxisrelevanter Anforderungen, der Analyse bestehender manueller Arbeitsabläufe sowie dem Verständnis domänenspezifischer Besonderheiten der Gleisplanverarbeitung. Auf dieser Basis wurden die funktionalen und nicht-funktionalen Anforderungen systematisch abgeleitet (Kapitel~\ref{chap:anforderungen}).
 
 \textbf{Phase 3: Iterative Konzeption und Implementierung.}
-Ausgehend von den erhobenen Anforderungen und den identifizierten
-technologischen Möglichkeiten wurde eine modulare Systemarchitektur
-konzipiert (Kapitel~\ref{chap:konzeption}) und prototypisch umgesetzt
-(Kapitel~\ref{chap:implementierung}). Die Entwicklung erfolgte iterativ:
-Einzelne Komponenten wie Objektdetektion, Texterkennung und
-Verknüpfungsalgorithmen wurden schrittweise implementiert, getestet und
-auf Basis der Ergebnisse optimiert.
+Ausgehend von den erhobenen Anforderungen und den identifizierten technologischen Möglichkeiten wurde eine modulare Systemarchitektur konzipiert (Kapitel~\ref{chap:konzeption}) und prototypisch umgesetzt (Kapitel~\ref{chap:implementierung}). Die Entwicklung erfolgte iterativ: Einzelne Komponenten wie Objektdetektion, Texterkennung und Verknüpfungsalgorithmen wurden schrittweise implementiert, durch Komponententests validiert und auf Basis der Ergebnisse optimiert.
 
 \textbf{Phase 4: Evaluation und Validierung.}
-Die abschließende Evaluation umfasst sowohl komponentenbezogene
-Leistungskennzahlen als auch eine End-to-End-Bewertung des Gesamtsystems
-anhand realer Gleispläne (Kapitel~\ref{chap:evaluation}). Die Validierung
-erfolgte durch den systematischen Abgleich der automatisiert extrahierten
-Daten mit manuell erstellten Referenzlisten der Siemens Mobility GmbH.
+Die abschließende Evaluation umfasst sowohl komponentenbezogene Leistungskennzahlen als auch eine End-to-End-Bewertung des Gesamtsystems anhand realer Gleispläne aus Siemens-Mobility-Projekten (Kapitel~\ref{chap:evaluation}). Die Validierung erfolgte durch den systematischen Abgleich der automatisiert extrahierten Daten mit manuell erstellten Referenzlisten.
 
 \section{Aufbau der Arbeit}
 Die vorliegende Arbeit gliedert sich in acht Hauptkapitel:

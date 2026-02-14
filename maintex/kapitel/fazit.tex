@@ -41,7 +41,7 @@ Die Entscheidung für CPU-basierte Inferenz erfüllt die Anforderungen \hyperref
 
 \subsection{Nicht vollständig erreichte Aspekte}
 
-Trotz der hohen Genauigkeit erfordert die verbleibende Fehlerrate von 2,78\% weiterhin menschliche Qualitätskontrolle. Bei durchschnittlich 164 Objekten pro Plan entspricht dies etwa 4--5 Korrekturen. Das System ist daher als \textit{Assistenzsystem} konzipiert, nicht als vollautomatische Lösung -- was für sicherheitskritische Anwendungen angemessen ist.
+Trotz der hohen Genauigkeit erfordert die verbleibende Fehlerrate von 2,78\% weiterhin menschliche Qualitätskontrolle. Bei durchschnittlich 164 Objekten pro Plan entspricht dies etwa 4--5 Korrekturen. Das System ist daher als \textit{Human-in-the-Loop-Werkzeug} konzipiert, nicht als vollautomatische Lösung -- was für sicherheitskritische Anwendungen angemessen ist.
 
 Der Prototyp ist zudem auf das Trainguard MT ZUB Layout spezialisiert. Die strikte 500-DPI-Anforderung und die Beschränkung auf 13 Symbolklassen bedeuten, dass eine Übertragung auf andere Layouts Nachtraining erfordert. Die modulare Architektur ermöglicht solche Anpassungen durch Austausch von Konfigurationsdateien und Modellgewichten, wie in Abschnitt~\ref{sec:generalisierung} erläutert.
 
@@ -147,7 +147,9 @@ Der zentrale technische Beitrag liegt in der erfolgreichen Kombination von OBB-b
 
 Methodisch zeigt die Arbeit, dass domänenspezifisches Training mit begrenzten Daten -- 482 annotierte Tiles aus 24 Originalplänen -- durch gezielte Augmentation hohe Genauigkeit erzielen kann. Dies ist ein ermutigendes Ergebnis für industrielle Anwendungen, bei denen annotierte Trainingsdaten oft knapp sind.
 
-Der praktische Beitrag besteht in einem funktionsfähigen Prototyp mit Benutzeroberfläche für realistische Human-in-the-Loop-Workflows. Die integrierten Validierungswerkzeuge reduzieren den Prüfaufwand auf die 2,78\% fehlerhaften Fälle, was den Einsatz als Assistenzsystem in sicherheitskritischen Anwendungen ermöglicht.
+Der praktische Beitrag besteht in einem funktionsfähigen Prototyp mit Benutzeroberfläche für realistische Human-in-the-Loop-Workflows. Die integrierten Validierungswerkzeuge reduzieren den Prüfaufwand auf die 2,78\% fehlerhaften Fälle, was den Einsatz als Human-in-the-Loop-Werkzeug in sicherheitskritischen Anwendungen ermöglicht.
+
+Damit leistet die Arbeit einen praxisnahen Beitrag zur digitalen Transformation innerhalb der Siemens Mobility GmbH und zeigt exemplarisch auf, wie moderne Verfahren der Computer Vision konkret auf industrielle Anwendungsfälle im Ingenieurwesen übertragen werden können. Der entwickelte Ansatz demonstriert, dass domänenspezifische Anpassungen generischer Deep-Learning-Architekturen in Kombination mit regelbasierter Nachverarbeitung eine effektive Strategie für die Automatisierung dokumentenbasierter Prozesse in technischen Domänen darstellen.
 
 Die Limitationen -- Layout-Spezialisierung, 500-DPI-Anforderung, verbleibende Fehlerrate -- sind klar identifiziert und adressierbar. Die modulare Architektur gewährleistet Erweiterbarkeit und Wartbarkeit.
 

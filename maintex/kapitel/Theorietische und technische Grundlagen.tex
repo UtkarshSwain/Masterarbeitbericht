@@ -1,6 +1,6 @@
 \chapter{Theoretische und technische Grundlagen}
 \label{chap:theoretischeundtechnischegrundlagen}
-Im Rahmen dieses Kapitels werden die maßgeblichen Grundlagen dargelegt, auf denen das entwickelte System basiert. Dabei umfassen die \textit{theoretischen Grundlagen} die konzeptionellen Aspekte wie die Struktur von Gleisplänen, die Klassifikation bahntechnischer Symbole sowie die Prinzipien der Objekterkennung, während die \textit{technischen Grundlagen} die eingesetzten Technologien und Werkzeuge behandeln. Der Fokus liegt auf drei Kernbereichen, die den in Kapitel~\ref{chap:einleitung} definierten Zielen entsprechen: (1) automatisierte Objekterkennung zur Symboldetektion, (2) Textextraktion zur Erfassung von Bezeichnungen und Positionsangaben, sowie (3) strukturierte Informationsverarbeitung zur semantischen Verknüpfung der erkannten Elemente.
+Im Rahmen dieses Kapitels werden die maßgeblichen Grundlagen dargelegt, auf denen das entwickelte System basiert. Dabei umfassen die \textit{theoretischen Grundlagen} die konzeptionellen Aspekte wie die Struktur von Gleisplänen, die Klassifikation bahntechnischer Symbole sowie die Prinzipien der Objekterkennung, während die \textit{technischen Grundlagen} die eingesetzten Technologien und Werkzeuge behandeln. Der Fokus liegt auf drei Kernbereichen, die sich aus der Natur der Aufgabenstellung zwingend ergeben: (1) \textbf{Automatisierte Objekterkennung} zur Symboldetektion, da Gleispläne ihre Informationen primär über grafische Symbole kodieren und das System zunächst deren Position und Typ identifizieren muss. (2) \textbf{Textextraktion} zur Erfassung von Bezeichnungen und Positionsangaben, da Symbole erst durch ihre textuellen Annotationen (Signalbezeichnungen, Kilometerangaben) eindeutig interpretierbar werden. (3) \textbf{Strukturierte Informationsverarbeitung} zur semantischen Verknüpfung der erkannten Elemente, da isolierte Detektionen ohne die Zuordnung von Text zu Symbol keinen verwertbaren Mehrwert bieten. Diese drei Bereiche bilden eine logische Verarbeitungskette: Erkennen, Lesen, Verknüpfen.
 \section{Grafische Gleispläne im Bahnkontext}
 Die Dokumentation einer Bahnanlage stellt eine komplexe Aufgabe dar, da diese typischerweise aus einer Vielzahl von Gleisabschnitten, Weichen und Signalen besteht. Die manuelle Erfassung aller Anlagendetails erfordert üblicherweise mehrere Wochen Arbeit, was die Skalierbarkeit traditioneller Dokumentationsansätze erheblich einschränkt.\cite{railroadstationdrawing}
 
@@ -158,7 +158,7 @@ Abbildung~\ref{fig:two_stage_vs_one_stage} illustriert den fundamentalen Untersc
 
 Das Training moderner Objektdetektoren wie YOLOv8 erfolgt überwacht (supervised) mit annotierten Bounding Boxes \cite{yolov8_ultralytics}. Jedes Trainingsbeispiel besteht aus einem Eingabebild und den zugehörigen Ground-Truth-Annotationen, die Position, Größe und Klassenzugehörigkeit jedes Objekts spezifizieren.
 
-\textbf{Transfer Learning.} Anstatt ein Modell von Grund auf zu trainieren, wird typischerweise mit vortrainierten Gewichten initialisiert \cite{yaseen2024yolov8indepthexplorationinternal}. YOLOv8-Modelle werden standardmäßig auf dem COCO-Datensatz (Common Objects in Context) mit 80 Objektklassen vortrainiert. Dieses Transfer Learning ermöglicht es, bereits erlernte low-level Features (Kanten, Texturen) auf die Zieldomäne zu übertragen und beschleunigt die Konvergenz erheblich, insbesondere bei kleineren domänenspezifischen Datensätzen wie sie für Gleispläne typisch sind.
+\textbf{Transfer Learning.} Anstatt ein Modell von Grund auf zu trainieren, wird typischerweise mit vortrainierten Gewichten initialisiert \cite{yaseen2024yolov8indepthexplorationinternal}. Standard-YOLOv8-Modelle werden auf dem COCO-Datensatz (Common Objects in Context) mit 80 Objektklassen vortrainiert, während die OBB-Varianten (Oriented Bounding Box) auf dem DOTA-Datensatz \cite{Xia2018_DOTA} für Luftbildanalyse trainiert werden. Dieses Transfer Learning ermöglicht es, bereits erlernte low-level Features (Kanten, Texturen) auf die Zieldomäne zu übertragen und beschleunigt die Konvergenz erheblich, insbesondere bei kleineren domänenspezifischen Datensätzen wie sie für Gleispläne typisch sind.
 
 \textbf{Datenaugmentation.} Zur Verbesserung der Generalisierungsfähigkeit und Vermeidung von Overfitting setzt YOLOv8 verschiedene Augmentationstechniken ein \cite{Bochkovskiy2020_YOLOv4}:
 \begin{itemize}
@@ -365,10 +365,10 @@ Bei dicht platzierten rotierten Objekten führen AABB zu hohen IoU-Werten, obwoh
 
     % --- AABBs (red and dashed) ---
     % AABB for Text 1
-    \draw[thick, red, dashed] (0.232,1.134) rectangle (2.768,2.866);
+    \draw[thick, red, dashed] (0.232,1.0) rectangle (2.768,3);
 
     % AABB for Text 2
-    \draw[thick, red, dashed] (2.732,1.134) rectangle (5.268,2.866);
+    \draw[thick, red, dashed] (2.732,1.0) rectangle (5.268,3);
 
     % Overlap region (AABB overlap)
     \fill[red, opacity=0.2] (2.732,1.134) rectangle (2.768,2.866);
@@ -420,7 +420,7 @@ Trotz der geometrischen Vorteile bringen OBB zusätzliche Komplexität in die De
             \node at (1.5, -0.7) {\textcolor{blue}{OBB: $\mathcal{O}(n)$}};
         \end{scope}
         % Explanation
-        \node[align=center, font=\footnotesize] at (1.75, 1) {Polygon-Clipping\\für IoU-Berechnung};
+        \node[align=center, font=\footnotesize] at (1.75, 0.75) {Polygon-Clipping\\für IoU-Berechnung};
     \end{scope}
 
     % Challenge 2: Angle Periodicity
@@ -458,7 +458,7 @@ Trotz der geometrischen Vorteile bringen OBB zusätzliche Komplexität in die De
         \node[align=center, font=\footnotesize] at (2, 0.8) {Rotationsparameter $\theta$\\verlängert Konvergenz};
     \end{scope}
 \end{tikzpicture}
-\caption{Hauptherausforderungen bei OBB-Verwendung: IoU-Berechnung erfordert Polygon-Clipping statt einfacher Min/Max-Operationen (links), zyklische Winkel führen zu Gradienteninstabilität (Mitte), und der zusätzliche Rotationsparameter erhöht den Trainingsaufwand (rechts).}
+\caption{Hauptherausforderungen bei der Verwendung von OBB}
 \label{fig:obb_challenges}
 \end{figure}
 
@@ -561,14 +561,14 @@ Das Training von YOLOv8-OBB optimiert eine kombinierte Verlustfunktion, die drei
 
 Die Box-Loss $\mathcal{L}_{\text{box}}$ quantifiziert die Lokalisierungsgenauigkeit der vorhergesagten OBB gegenüber der Ground Truth. Die Classification-Loss $\mathcal{L}_{\text{cls}}$ verwendet Binary Cross-Entropy für die Klassenzuordnung\cite{Lin2017_FocalLoss}. Focal Loss adressiert dabei das Problem der Klassenungleichverteilung, das bei Gleisplänen auftritt, da manche Symbolklassen (z.B. Koordinaten) deutlich häufiger vorkommen als andere (z.B. Gleismagnete). Die Distribution Focal Loss (DFL)\cite{Li2020GeneralizedFocal} verbessert die Bounding-Box-Regression durch Modellierung der Koordinaten als Verteilungen anstelle von Punktschätzungen.
 
-Die konkreten Trainingsparameter und -ergebnisse für den im Rahmen dieser Arbeit trainierten Detektor werden in Kapitel 6 detailliert dokumentiert. Die Kombination aus Echtzeitfähigkeit, Rotationsinvarianz und Anchor-Free-Design macht YOLOv8-OBB zu einem geeigneten Kandidaten für die Gleisplananalyse. Die endgültige Architekturentscheidung 
+Die konkreten Trainingsparameter und -ergebnisse für den im Rahmen dieser Arbeit trainierten Detektor werden in Kapitel~\ref{chap:implementierung} detailliert dokumentiert. Die Kombination aus Echtzeitfähigkeit, Rotationsinvarianz und Anchor-Free-Design macht YOLOv8-OBB zu einem geeigneten Kandidaten für die Gleisplananalyse. Die endgültige Architekturentscheidung 
 wird in Kapitel~\ref{chap:konzeption} dokumentiert.
 
 \subsection{Relevanz für Gleisplananalyse}
 
-Die beschriebenen OBB-Eigenschaften sind besonders relevant für die automatisierte Analyse von Gleisplänen. Technische Zeichnungen dieses Typs weisen drei charakteristische Merkmale auf, die den Einsatz orientierter Bounding Boxes notwendig machen. Symbole folgen der Topologie der Gleisachsen und können daher in jedem Winkel $\theta \in [0^\circ, 360^\circ)$ vorliegen. In Bahnhöfen und Weichenstraßen treten Symbole räumlich konzentriert auf, wobei AABB-basierte NMS zu Fehlunterdrückungen führen würde. Die vom OBB-Detektor gelieferte Rotation $\theta$ ist für nachgelagerte Prozesse wie die orientierungsabhängige OCR (vgl. Kapitel 6.3) essentiell, da Textlabels entsprechend ihrer Ausrichtung verarbeitet werden müssen.
+Die beschriebenen OBB-Eigenschaften sind besonders relevant für die automatisierte Analyse von Gleisplänen. Technische Zeichnungen dieses Typs weisen drei charakteristische Merkmale auf, die den Einsatz orientierter Bounding Boxes notwendig machen. Symbole folgen der Topologie der Gleisachsen und können daher in jedem Winkel $\theta \in [0^\circ, 360^\circ)$ vorliegen. In Bahnhöfen und Weichenstraßen treten Symbole räumlich konzentriert auf, wobei AABB-basierte NMS zu Fehlunterdrückungen führen würde. Die vom OBB-Detektor gelieferte Rotation $\theta$ ist für nachgelagerte Prozesse wie die orientierungsabhängige OCR (vgl. Abschnitt~\ref{sec:ocrpipeline}) essentiell, da Textlabels entsprechend ihrer Ausrichtung verarbeitet werden müssen.
 
-Die in Kapitel 4 definierten funktionalen Anforderungen an die Symbolerkennung erfordern daher zwingend den Einsatz rotationsinvarianter Detektionsverfahren. Die in Kapitel 6 beschriebene Implementierung nutzt YOLOv8-OBB mit Standard-Konfiguration für die Detektion von 13 domänenspezifischen Symbolklassen (vgl. Tabelle~\ref{tab:symbolklassen} in Kapitel 4).
+Die in Kapitel~\ref{chap:anforderungen} definierten funktionalen Anforderungen an die Symbolerkennung erfordern daher zwingend den Einsatz rotationsinvarianter Detektionsverfahren. Die in Kapitel~\ref{chap:implementierung} beschriebene Implementierung nutzt YOLOv8-OBB mit Standard-Konfiguration für die Detektion von 13 domänenspezifischen Symbolklassen (vgl. Tabelle~\ref{tab:symbolklassen} in Kapitel~\ref{chap:anforderungen}).
 
 \section{Optical Character Recognition (OCR)}
 \label{sec:ocr}
@@ -733,6 +733,8 @@ PaddleOCR \cite{du2020ppocrpracticalultralightweight} ist ein vom chinesischen T
     \item \textbf{Winkelklassifikator}: Bestimmt die Orientierung des Textes (0$^\circ$ oder 180$^\circ$) zur automatischen Korrektur.
     \item \textbf{CRNN-Recognizer}: Erkennt die Zeichenfolge basierend auf der in Abschnitt~\ref{subsec:ocr_architekturen} beschriebenen Architektur.
 \end{enumerate}
+
+Abbildung~\ref{fig:paddleocr_pipeline} zeigt diese dreistufige Architektur.
 
 \begin{figure}[H]
 \centering
@@ -1164,7 +1166,7 @@ Textorientierung abhängt (Abbildung~\ref{fig:roi_extraction_methods}).
     % Cardinal path
     \node[box, fill=green!15] (cardinal) at (0, 0) {
         \textbf{Kardinal}\\[0.2cm]
-        $|\theta_{\text{norm}}| \leq 15^\circ$\\[0.2cm]
+        $|\theta_{\text{norm}}| \leq 12^\circ$\\[0.2cm]
         \scriptsize Affine Rotation\\
         \scriptsize \texttt{warpAffine()}
     };
@@ -1172,7 +1174,7 @@ Textorientierung abhängt (Abbildung~\ref{fig:roi_extraction_methods}).
     % Angular path
     \node[box, fill=orange!15, right=2.5cm of cardinal] (angular) {
         \textbf{Angular}\\[0.2cm]
-        $|\theta_{\text{norm}}| > 15^\circ$\\[0.2cm]
+        $|\theta_{\text{norm}}| > 12^\circ$\\[0.2cm]
         \scriptsize Perspektivtransformation\\
         \scriptsize \texttt{warpPerspective()}
     };
@@ -1189,8 +1191,8 @@ Textorientierung abhängt (Abbildung~\ref{fig:roi_extraction_methods}).
     
     % Arrows
     \draw[arrow] (input) -- (decision);
-    \draw[arrow] (decision) -| node[pos=0.25, above] {\small $\leq 15^\circ$} (cardinal);
-    \draw[arrow] (decision) -| node[pos=0.25, above] {\small $> 15^\circ$} (angular);
+    \draw[arrow] (decision) -| node[pos=0.25, above] {\small $\leq 12^\circ$} (cardinal);
+    \draw[arrow] (decision) -| node[pos=0.25, above] {\small $> 12^\circ$} (angular);
     \draw[arrow] (cardinal) |- (output);
     \draw[arrow] (angular) |- (output);
 \end{tikzpicture}
@@ -1200,7 +1202,7 @@ Textorientierung abhängt (Abbildung~\ref{fig:roi_extraction_methods}).
 \label{fig:roi_extraction_methods}
 \end{figure}
 
-\textbf{Kardinale Orientierung} ($|\theta_{\text{norm}}| \leq 15^\circ$): 
+\textbf{Kardinale Orientierung} ($|\theta_{\text{norm}}| \leq 12^\circ$): 
 Für nahezu achsenparallele Texte genügt eine affine Rotation um den 
 Mittelpunkt $(c_x, c_y)$. Die Transformation verwendet eine $2 \times 3$ 
 Rotationsmatrix:
@@ -1219,7 +1221,7 @@ dass die Rotation um den Mittelpunkt $(c_x, c_y)$ erfolgt. Diese Transformation
 ist recheneffizient und ausreichend für Texte, die bereits nahezu horizontal 
 oder vertikal ausgerichtet sind.
 
-\textbf{Beliebige Orientierung} ($|\theta_{\text{norm}}| > 15^\circ$): 
+\textbf{Beliebige Orientierung} ($|\theta_{\text{norm}}| > 12^\circ$): 
 Für stark geneigte Texte wird eine perspektivische Transformation 
 (Homographie) verwendet \cite{szeliski2022}. Die vier Eckpunkte $(x_i, y_i)$ 
 der OBB werden zunächst durch Rotation um den Mittelpunkt berechnet:
@@ -1249,7 +1251,7 @@ Matrix $\mathbf{H}$ wird aus den vier korrespondierenden Punktpaaren
 Die Entscheidung zwischen beiden Methoden basiert auf dem 
 \textit{normalisierten} Winkel $\theta_{\text{norm}}$, der durch die in 
 Abschnitt~\ref{subsubsec:winkelnormalisierung} beschriebene Normalisierung aus dem Rohwinkel 
-gewonnen wird. Der Schwellenwert von $15^\circ$ wurde empirisch bestimmt und 
+gewonnen wird. Der Schwellenwert von $12^\circ$ wurde empirisch bestimmt und 
 bietet einen guten Kompromiss zwischen Recheneffizienz (affine Transformation) und geometrischer Genauigkeit (perspektivische Transformation). Bei größeren Abweichungen führt die affine Rotation zu sichtbaren Verzerrungen an den Texträndern, während kleinere Winkel durch die Multi-Rotations-Inferenz ($0^\circ, 90^\circ, 180^\circ, 270^\circ$) ausreichend abgedeckt werden.
 \subsection{Relevanz für die Gleisplananalyse}
 \label{subsec:ocr_relevanz}
@@ -1276,7 +1278,7 @@ Dieser Abschnitt behandelt die theoretischen Grundlagen, wie räumlich getrennte
 
 \subsection{Das Prinzip der räumlichen Nähe}
 
-Die automatische Verknüpfung von Elementen basiert auf einem fundamentalen Prinzip der menschlichen Wahrnehmung: dem \textbf{Gesetz der Nähe} aus der Gestaltpsychologie \cite{Wertheimer1923}. Dieses besagt, dass räumlich nahe beieinander liegende Objekte als zusammengehörig wahrgenommen werden. 
+Die automatische Verknüpfung von Elementen basiert auf einem fundamentalen Prinzip der menschlichen Wahrnehmung: dem \textbf{Gesetz der Nähe} aus der Gestaltpsychologie \cite{Wertheimer1923}. Dieses besagt, dass räumlich nahe beieinander liegende Objekte als zusammengehörig wahrgenommen werden (siehe Abbildung~\ref{fig:gestalt_proximity}).
 
 \begin{figure}[H]
 \centering

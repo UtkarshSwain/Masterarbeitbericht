@@ -139,7 +139,7 @@ Die folgenden 13 Objektklassen bilden die Detektionsziele des Prototyps. Die Kla
 \begin{itemize}
     \item \textbf{FA-004}\label{req:FA-004} \textbf{OCR-Genauigkeit:} Der Prototyp \textbf{muss} Textinformationen (Signalbezeichnungen, Kilometrierungen) zuverlässig \textbf{extrahieren}.
 
-    \item \textbf{FA-005}\label{req:FA-005} \textbf{Robustheit:} Wenn Textregionen unter erschwerten Bedingungen vorliegen (niedriger Kontrast, Bildrauschen, Rotation $0^\circ$--$360^\circ$, Überlagerungen), \textbf{muss} der Prototyp in der Lage sein, diese Texte zuverlässig zu \textbf{extrahieren}.
+    \item \textbf{FA-005}\label{req:FA-005} \textbf{Robustheit:} Wenn Textregionen unter erschwerten Bedingungen vorliegen (niedriger Kontrast, Bildrauschen, Rotation $0^\circ$--$360^\circ$, Überlagerungen), \textbf{muss} der Prototyp in der Lage sein, diese Texte zuverlässig zu \textbf{extrahieren} (siehe Abbildung~\ref{fig:Ocrsample}).
     \begin{figure}[H]
     \centering
     \includegraphics[width=5cm]{images/Kapitel4/OCRsample.png} 
@@ -160,7 +160,7 @@ Die folgenden 13 Objektklassen bilden die Detektionsziele des Prototyps. Die Kla
 
 \subsection{Datenaufbereitung und Export}
 \begin{itemize}
-    \item \textbf{FA-009}\label{req:FA-009} \textbf{Excel-Export:} Der Prototyp \textbf{muss} extrahierte Daten vollautomatisch in vordefinierte Excel-Tabellen (.xlsx) mit korrekter Zuordnung zu Zeilen und Spalten \textbf{exportieren}.
+    \item \textbf{FA-009}\label{req:FA-009} \textbf{Excel-Export:} Der Prototyp \textbf{muss} extrahierte Daten vollautomatisch in vordefinierte Excel-Tabellen (.xlsx) mit korrekter Zuordnung zu Zeilen und Spalten \textbf{exportieren}, wie in Abbildung~\ref{fig:excelübertragung} schematisch dargestellt.
     \begin{figure}[H]
     \centering
     \includegraphics[width=6cm]{images/Kapitel4/excelübertragung.png}
@@ -170,7 +170,7 @@ Die folgenden 13 Objektklassen bilden die Detektionsziele des Prototyps. Die Kla
 
     \item \textbf{FA-010}\label{req:FA-010} \textbf{Strukturerhalt:} Wenn Daten in bestehende Excel-Dateien exportiert werden, \textbf{soll} der Prototyp die vorhandene Struktur (Formatierung, Formeln, Makros) \textbf{bewahren} und ausschließlich Werte in definierte Bereiche einfügen.
 
-    \item \textbf{FA-011}\label{req:FA-011} \textbf{Änderungsverfolgung:} Wenn zwei Planversionen verglichen werden, \textbf{muss} der Prototyp Änderungen \textbf{identifizieren} und \textbf{kategorisieren}.
+    \item \textbf{FA-011}\label{req:FA-011} \textbf{Änderungsverfolgung:} Wenn zwei Planversionen verglichen werden, \textbf{muss} der Prototyp Änderungen \textbf{identifizieren} und \textbf{kategorisieren} (siehe Abbildung~\ref{fig:änderungsample}).
     \begin{figure}[H]
     \centering
     \includegraphics[width=9cm]{images/Kapitel4/änderungsample.png}
@@ -182,7 +182,7 @@ Die folgenden 13 Objektklassen bilden die Detektionsziele des Prototyps. Die Kla
 
 \subsection{Benutzerinteraktion und Konfiguration}
 \begin{itemize}
-    \item \textbf{FA-012}\label{req:FA-012} \textbf{Visuelle Validierung:} Der Prototyp \textbf{soll} alle erkannten Objekte durch farbige Bounding Boxes im Gleisplan oder als Overlay zur manuellen Überprüfung \textbf{visualisieren}.
+    \item \textbf{FA-012}\label{req:FA-012} \textbf{Visuelle Validierung:} Der Prototyp \textbf{soll} alle erkannten Objekte durch farbige Bounding Boxes im Gleisplan oder als Overlay zur manuellen Überprüfung \textbf{visualisieren}, wie in Abbildung~\ref{fig:gleisplanmarkierung} exemplarisch gezeigt.
     \begin{figure}[H]
     \centering
     \includegraphics[width=14cm]{images/Kapitel4/gleisplanmarkierungv2.png}
@@ -192,7 +192,7 @@ Die folgenden 13 Objektklassen bilden die Detektionsziele des Prototyps. Die Kla
 
     \item \textbf{FA-013}\label{req:FA-013} \textbf{Grafische Benutzeroberfläche:} Der Prototyp \textbf{muss} eine grafische Benutzeroberfläche für PDF-Upload, Analyse-Start und Datenexport ohne erforderliche Kommandozeilen-Kenntnisse \textbf{bereitstellen}.
 
-    \item \textbf{FA-014}\label{req:FA-014} \textbf{Modulare Architektur:} Der Prototyp \textbf{muss} mit modularer Architektur \textbf{gestaltet sein}, die klare Trennung der Verarbeitungsstufen (Objekterkennung, Texterkennung, UI, Export) gewährleistet und Erweiterungen (z.B. neue Symbolklassen, CAD-Anbindung) ohne Modifikation der Kernlogik ermöglicht.
+    \item \textbf{FA-014}\label{req:FA-014} \textbf{Modulare Architektur:} Der Prototyp \textbf{muss} mit modularer Architektur \textbf{gestaltet sein}, die klare Trennung der Verarbeitungsstufen (Objekterkennung, Texterkennung, UI, Export) gewährleistet und Erweiterungen (z.\,B. neue Symbolklassen, CAD-Anbindung) ohne Modifikation der Kernlogik ermöglicht.
 \end{itemize}
 
 \section{Nicht-funktionale Anforderungen}
@@ -282,6 +282,42 @@ Die Realisierung der in den Abschnitten \ref{subsec:req_symbol} bis \ref{subsec:
     \item \textbf{Mangel an Trainingsdaten:} Es existiert kein öffentlicher Datensatz für bahntechnische Symbolik. Ein \enquote{Cold Start} ist notwendig, bei dem Trainingsdaten zunächst manuell (z.\,B. via CVAT) annotiert werden müssen.
     \item \textbf{Semantische Lücke:} Der Schritt von der Erkennung (\enquote{Da ist eine Box}) zur Bedeutung (\enquote{Das ist Weiche 12 in Rechtslage}) erfordert komplexe Heuristiken, insbesondere beim Mapping von Textboxen zu den geometrisch nächsten Symbolen.
 \end{enumerate}
+
+Die nachfolgenden Kapitel adressieren diese Herausforderungen durch gezielte Maßnahmen:
+
+\begin{itemize}
+    \item \textbf{Daten-Heterogenität:} Synthetische Datenaugmentation durch
+    Rotation (10 Winkel von $-90^\circ$ bis $+90^\circ$) sowie Transfer Learning
+    von vortrainierten DOTA-Gewichten erhöhen die Robustheit gegenüber
+    Eingabevarianz (Kapitel~\ref{chap:implementierung},
+    Abschnitt~\ref{subsec:Datensatzerstellung}).
+
+    \item \textbf{Visuelle Ambiguität:} Die Kombination aus OBB-basierter
+    Detektion mit YOLOv8 und OCR-gestützter Kontextanalyse ermöglicht die
+    Disambiguierung visuell ähnlicher Symbole. Der erkannte Begleittext
+    (z.\,B. \enquote{GKS1} vs. \enquote{GKS2}) liefert die entscheidende
+    Differenzierungsinformation (Kapitel~\ref{chap:konzeption} und
+    \ref{chap:implementierung}).
+
+    \item \textbf{OCR-Komplexität:} Eine Multi-Engine-Kaskade (PaddleOCR,
+    Tesseract, EasyOCR) mit orientierungsadaptiver Vorverarbeitung adressiert
+    rotierte Texte. Morphologische Operationen entfernen störende Linienelemente
+    vor der Erkennung (Kapitel~\ref{chap:theoretischeundtechnischegrundlagen},
+    Abschnitt~\ref{subsec:ocr_challenges} sowie Kapitel~\ref{chap:implementierung},
+    Abschnitt~\ref{sec:ocrpipeline}).
+
+    \item \textbf{Mangel an Trainingsdaten:} Manuelle Annotation von 24
+    Gleisplänen mittels CVAT, erweitert durch synthetische Augmentation
+    auf 1.131 Trainingsbilder. Transfer Learning von DOTA-vortrainierten
+    Modellgewichten reduziert den Datenbedarf zusätzlich
+    (Kapitel~\ref{chap:implementierung}, Abschnitt~\ref{subsec:Datensatzerstellung}).
+
+    \item \textbf{Semantische Lücke:} Ein regelbasiertes Post-Processing-Modul
+    mit rotationsinvarianter Koordinatentransformation und klassenspezifischen
+    Suchheuristiken überbrückt die Lücke zwischen geometrischer Detektion und
+    semantischer Interpretation (Kapitel~\ref{chap:implementierung},
+    Abschnitt~\ref{sec:intelligentesymboltextverknüpfung}).
+\end{itemize}
 
 \section{Anforderungs-Rückverfolgbarkeit}
 \label{sec:traceability}

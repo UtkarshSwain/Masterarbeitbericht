@@ -393,13 +393,16 @@ Ein neuartiger Ansatz der Pipeline ist das \textit{Dual Angle Routing}. Da die O
     \item \textbf{Pfad A (Original):} Der Crop wird unverändert an die OCR übergeben.
     \item \textbf{Pfad B (Orthogonal):} Der Crop wird um $90^\circ$ rotiert an die OCR übergeben.
 \end{enumerate}
+
+Abbildung~\ref{fig:dual_angle_comparison} veranschaulicht dieses Konzept: Der Cardinal Path verwendet diskrete Rotation für nahezu ausgerichtete Texte ($|\theta| \leq 12^\circ$), während der Angular Path Perspektiventransformation für stark geneigte Texte ($|\theta| > 12^\circ$) anwendet.
+
 \begin{figure}[h]
 \centering
 \begin{tikzpicture}[scale=1.0]
     % LEFT: Cardinal Path
     \begin{scope}
         \node[above, font=\large\bfseries] at (1.5, 3.2) {Cardinal Path};
-        \node[below, font=\small] at (1.5, 2.8) {$|\theta| \leq 15^\circ$};
+        \node[below, font=\small] at (1.5, 2.8) {$|\theta| \leq 12^\circ$};
         
         % Slightly rotated text box (12 degrees)
         \draw[thick, blue, rotate around={12:(1.5,1.5)}] (0.5,1) rectangle (2.5,2);
@@ -421,7 +424,7 @@ Ein neuartiger Ansatz der Pipeline ist das \textit{Dual Angle Routing}. Da die O
     % RIGHT: Angular Path
     \begin{scope}[xshift=6cm]
         \node[above, font=\large\bfseries] at (1.5, 3.2) {Angular Path};
-        \node[below, font=\small] at (1.5, 2.8) {$|\theta| > 15^\circ$};
+        \node[below, font=\small] at (1.5, 2.8) {$|\theta| > 12^\circ$};
         
         % Heavily rotated text box (45 degrees)
         \draw[thick, orange, rotate around={45:(1.5,1.5)}] (0.5,1) rectangle (2.5,2);
@@ -440,7 +443,7 @@ Ein neuartiger Ansatz der Pipeline ist das \textit{Dual Angle Routing}. Da die O
         \node[below, font=\footnotesize] at (1.5, -1.8) {OCR-bereit};
     \end{scope}
 \end{tikzpicture}
-\caption{Konzeptioneller Vergleich der Dual-Winkel-Verarbeitungsstrategien: Cardinal Path für nahezu ausgerichtete Texte ($|\theta| \leq 15^\circ$) mit diskreter Rotation; Angular Path für stark geneigte Texte ($|\theta| > 15^\circ$) mit Perspektiventransformation}
+\caption{Vergleich der Dual-Winkel-Verarbeitungsstrategien}
 \label{fig:dual_angle_comparison}
 \end{figure}
 
